@@ -451,6 +451,26 @@ button:disabled { opacity: 0.42; cursor: default; }
 .choice button span { font-size: 11.8px; color: var(--muted); }
 .choice button .risk { color: var(--warn); }
 .choice button:active:not(:disabled) { background: #4b3418; }
+.choice button:disabled { opacity: .5; }
+.choice button .cost { margin-inline-start: auto; font-size: 12px; color: var(--bronze-hi); display: inline-flex; align-items: center; gap: 3px; }
+.choice button .cost .ico { width: 13px; height: 13px; }
+
+/* أحداث العالم */
+.box.decide { background: rgba(163,110,40,.12); border-color: rgba(220,170,80,.5); }
+.box.decide.urgent { background: rgba(163,48,42,.14); border-color: rgba(220,90,60,.6); }
+.box.decide .sec-h .muted { margin-inline-start: auto; font-size: 11.5px; }
+.box.throne { background: rgba(160,120,40,.1); border-color: rgba(220,180,90,.4); }
+.ctl { display: grid; gap: 6px; border-inline-start: 2px solid var(--line-soft); padding-inline-start: 9px; }
+.ctl-i p { margin: 0; font-size: 12.6px; line-height: 1.55; }
+.ctl-i .when { font-size: 10.8px; color: var(--muted); }
+.crisis-list { display: grid; gap: 5px; margin-bottom: 6px; }
+.crisis-row { display: grid; grid-template-columns: 18px 1fr auto; align-items: center; gap: 7px; text-align: start; padding: 6px 9px; border-radius: 10px; border: 1px solid var(--line-soft); background: rgba(255,240,200,.04); font-size: 12.8px; }
+.crisis-row .ico { width: 16px; height: 16px; color: var(--bronze-hi); }
+.crisis-row.ask { border-color: rgba(220,110,70,.6); background: rgba(163,48,42,.12); }
+.crisis-row.over { opacity: .6; }
+.gcard.ruler { border-color: rgba(229,193,115,.55); }
+.gcard .crown-i { width: 14px; height: 14px; color: #f2d77a; vertical-align: -2px; margin-inline-end: 3px; }
+.row-btns.wrap .chip { flex: 0 0 auto; }
 
 /* السجل التاريخي */
 .chron { display: grid; gap: 8px; }

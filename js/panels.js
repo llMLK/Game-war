@@ -130,6 +130,8 @@ const Panels = {
     if (own && Game.overstack(n, P) > 0) body.appendChild(h('p', { class: 'hint warn' }, hstat('supply', `${Game.stackAt(n, P)}/${Game.supplyCap(n, P)}`, { cls: 'bad' }), ' ازدحام: الجيوش هنا فوق قدرة الإمداد.'));
     const gov = Game.governorAt(n);
     if (gov) body.appendChild(h('p', { class: 'hint' }, icon('seal'), ` الحاكم: ${gov.name} `, traitChip(gov)));
+    if (n.charter) body.appendChild(h('p', { class: 'hint' }, icon('scroll'), ' مدينة ذات ميثاق حر: ولاء أعلى ودخل أقل.'));
+    if (Game.crisesAt) for (const c of Game.crisesAt(n.id)) body.appendChild(h('button', { class: 'box crisis', onclick: () => this.openCrisis(scene, c) }, h('div', { class: 'sec-h' }, icon(CRISES[c.type].icon), Game.crisisTitle(c), h('span', { class: 'muted' }, c.ask[P] ? 'قرار مطلوب' : Game.crisisStatus(c)))));
 
     if (!own) { this.foreignCity(scene, n, body, intel); return; }
     // ——— أقسام المدينة ———
@@ -328,9 +330,14 @@ const Panels = {
 
   // ——— اختيار قائد ———
   genCard(g, extra) {
-    return h('div', { class: 'gcard' },
-      h('div', { class: 'gtop' }, h('b', null, g.name, ' ', stars(g.rank)), h('span', { class: 'muted small' }, iv('gold', Game.genSalary(g)), '/دور')),
-      h('div', { class: 'gline' }, traitChip(g)),
+    const ruler = Game.isRuler && Game.isRuler(g), heir = Game.isHeir && Game.isHeir(g);
+    const own = g.fid === Game.S.player;
+    const loyWarn = own && !ruler && g.loy != null && g.loy < 45 && ['army', 'gov', 'pool'].includes(g.status);
+    return h('div', { class: 'gcard' + (ruler ? ' ruler' : '') },
+      h('div', { class: 'gtop' }, h('b', null, ruler ? icon('crown', 'crown-i') : null, g.name, ' ', stars(g.rank)), h('span', { class: 'muted small' }, iv('gold', Game.genSalary(g)), '/دور')),
+      h('div', { class: 'gline' }, traitChip(g), ruler ? h('span', { class: 'tag' }, 'الحاكم') : null, heir ? h('span', { class: 'tag' }, icon('seal'), 'ولي العهد') : null,
+        loyWarn ? hstat('genloy', g.loy, { label: g.loy < 32 ? 'طامح' : 'ساخط', cls: g.loy < 32 ? 'bad' : 'warn', lines: () => [['الولاء الآن', g.loy], ['يتجه نحو', Game.genLoyTarget(g), 'sum']] }) : null,
+        own && !ruler && g.loy != null && g.loy < 60 && ['army', 'gov', 'pool'].includes(g.status) ? h('button', { class: 'chip', onclick: (e) => { e.stopPropagation(); const er = Game.honorGeneral(Game.S.player, g); UI.toast(er || `كرّمتَ ${g.name}: الولاء ${g.loy}`); if (!er && Game.track) Game.track('honor'); Sheets.render(); } }, icon('star'), `كرّمه ${Game.honorCost(g)}`) : null),
       g.trait ? h('p', { class: 'small' }, TRAITS[g.trait].desc) : h('p', { class: 'small muted' }, 'ضابط بلا موهبة خاصة.'),
       g.flaw ? h('p', { class: 'small warn' }, FLAWS[g.flaw].desc) : null,
       g.vendetta ? h('p', { class: 'small warn' }, `يطلب الثأر من ${Game.fname(g.vendetta)}`) : null,
@@ -729,6 +736,7 @@ const Panels = {
     body.appendChild(seg);
     if (tab === 'goals' && Game.objectivesOf) { this.goalsTab(scene, body); return; }
     if (tab === 'gens') {
+      if (Game.rulerOf) body.appendChild(this.throneBox(scene));
       const groups = [['army', 'في الميدان'], ['gov', 'حكّام المدن'], ['pool', 'في البلاط (متاحون)'], ['captive', 'أسرى لدى العدو'], ['dead', 'الراحلون']];
       for (const [st, name] of groups) {
         const gs = Game.gensOf(P).filter((g) => g.status === st && !(st === 'pool' && g.name.startsWith('الضابط')));
@@ -758,7 +766,7 @@ const Panels = {
       const e = Game.economy(P);
       body.appendChild(h('div', { class: 'sec-h' }, icon('gold'), 'الخزينة كل دور'));
       body.appendChild(h('div', { class: 'pop-lines' },
-        [['دخل المدن', '+' + e.gold, 'pos'], ['التجارة', '+' + e.trade, 'pos'], ['الجزية', signed(e.tribute), e.tribute >= 0 ? 'pos' : 'neg'], ['صيانة الوحدات', '−' + e.upkeep, 'neg'], ['رواتب القادة', '−' + e.salaries, 'neg'], ['جيوش زائدة عن مدنك', '−' + e.overhead, 'neg'], ['الصافي', signed(e.netGold), 'sum']]
+        [['دخل المدن', '+' + e.gold, 'pos'], ['التجارة', '+' + (e.trade - (e.route || 0)), 'pos'], ['طريق القوافل', '+' + (e.route || 0), 'pos'], ['الجزية', signed(e.tribute), e.tribute >= 0 ? 'pos' : 'neg'], ['صيانة الوحدات', '−' + e.upkeep, 'neg'], ['رواتب القادة', '−' + e.salaries, 'neg'], ['جيوش زائدة عن مدنك', '−' + e.overhead, 'neg'], ['الصافي', signed(e.netGold), 'sum']]
           .map(([k, v, c]) => h('div', { class: 'pl ' + c }, h('span', null, k), h('bdi', null, v)))));
       body.appendChild(h('p', { class: 'hint' }, 'كل جيش زائد عن عدد مدنك يكلّف 10 إدارة. الممالك الواسعة تعاني الفساد وضعف ولاء المدن البعيدة.'));
     }
@@ -843,6 +851,15 @@ const Panels = {
       body.appendChild(box);
       return;
     }
+    if (tab === 'world' && Game.visibleCrises) {
+      const cs = Game.visibleCrises(P);
+      if (cs.length) {
+        body.appendChild(h('div', { class: 'sec-h' }, hstat('crisis', 'أحداث جارية', { label: '' })));
+        body.appendChild(h('div', { class: 'crisis-list' }, cs.map((c) => h('button', { class: 'crisis-row' + (c.ask[P] ? ' ask' : '') + (c.over ? ' over' : ''), onclick: () => this.openCrisis(scene, c) },
+          icon(CRISES[c.type].icon), h('b', null, Game.crisisTitle(c)), h('span', { class: 'muted small' }, c.ask[P] ? 'قرار مطلوب' : Game.crisisStatus(c))))));
+      }
+      if (Game.S.route) body.appendChild(h('p', { class: 'small' }, hstat('route', `${Game.S.route.name} ${Game.S.route.dead ? '(منقطع)' : Math.round(Game.routeHealth() * 100) + '٪'}`, { icon: 'camel', label: '' })));
+    }
     const list = (Game.S.chron || []).filter((e) => (tab === 'realm' ? e.fids.includes(P) : e.imp >= 2)).slice().reverse();
     const box = h('div', { class: 'chron' });
     let year = null;
@@ -856,6 +873,124 @@ const Panels = {
     }
     if (!list.length) box.appendChild(h('p', { class: 'hint' }, 'لم يُكتب شيء بعد. التاريخ يُصنع الآن.'));
     body.appendChild(box);
+  },
+
+
+  // ═══════════════ أحداث العالم ═══════════════
+  crisisSpec(scene, c) {
+    const d = CRISES[c.type];
+    return {
+      key: 'crisis:' + c.id, icon: d.icon, color: '#9a3a26',
+      title: () => Game.crisisTitle(c),
+      short: () => Game.crisisShort(c),
+      sub: () => [icon('hourglass'), Game.crisisStatus(c)],
+      status: () => (c.ask[scene.P] ? 'قرار مطلوب' : Game.crisisStatus(c)),
+      alert: () => { const q = c.ask[scene.P]; return q ? (q.urgent ? 'crit' : 'imp') : false; },
+      valid: () => Game.S.crises.includes(c) && Game.crisisKnown(c, scene.P) > 0,
+      render: (body) => this.crisisBody(scene, c, body),
+    };
+  },
+  openCrisis(scene, c) {
+    Sheets.open(this.crisisSpec(scene, c));
+    const n = c.node && Game.node(c.node);
+    if (n) scene.flyTo(n.x, n.y);
+  },
+  optBtn(o, onPick) {
+    return h('button', { disabled: o.dis, title: o.why || '', onclick: onPick },
+      h('b', null, icon(o.icon || 'chevL'), o.label, o.gold ? h('span', { class: 'cost' }, iv('gold', o.gold)) : null, o.food ? h('span', { class: 'cost' }, iv('food', o.food)) : null),
+      h('span', null, o.desc || '', o.risk ? h('span', { class: 'risk' }, ' — ' + o.risk) : null, o.why ? h('span', { class: 'risk' }, ` (${o.why})`) : null));
+  },
+  crisisBody(scene, c, body) {
+    const P = scene.P;
+    const why = CRISIS_WHY[c.type];
+    if (why) body.appendChild(h('p', { class: 'lead small' }, why));
+    const q = c.ask[P];
+    if (q && !c.over) {
+      const opts = Game.crisisOpts(c, P, q.key, q.data);
+      const left = q.until - Game.S.turn + 1;
+      const def = opts.find((o) => o.k === q.def);
+      body.appendChild(h('div', { class: 'box decide' + (q.urgent ? ' urgent' : '') },
+        h('div', { class: 'sec-h' }, icon('warning'), q.title, h('span', { class: 'muted' }, left > 1 ? `أمامك ${left} أدوار` : 'قرّر هذا الدور')),
+        h('div', { class: 'choice' }, opts.map((o) => this.optBtn(o, () => { Game.crisisDecide(c, P, q.key, o.k, q.data); scene.afterAction(); Sheets.render(); }))),
+        def ? h('p', { class: 'hint' }, `إن لم تقرر: «${def.label}».`) : null));
+    }
+    const acts = c.over ? [] : Game.crisisActions(c, P);
+    if (acts.length) {
+      body.appendChild(h('div', { class: 'sec-h' }, icon('hammer'), 'ما تستطيع فعله الآن'));
+      body.appendChild(h('div', { class: 'choice' }, acts.map((o) => this.optBtn(o, () => { const e = Game.crisisAct(c, P, o.k, o.node); if (e) UI.toast(e); scene.afterAction(); Sheets.render(); }))));
+    }
+    const places = [...new Set([c.node, ...(c.type === 'plague' ? Object.keys(c.v.inf) : c.type === 'famine' ? c.v.region : c.type === 'uprising' ? c.v.cities : [])].filter((id) => id && Game.node(id)))].slice(0, 8);
+    if (places.length) body.appendChild(h('div', { class: 'row-btns wrap' }, places.map((id) => { const n = Game.node(id); return h('button', { class: 'chip', onclick: () => { scene.selNode = n; scene.flyTo(n.x, n.y); } }, dotEl(Game.f(n.owner).color), n.name); })));
+    body.appendChild(h('div', { class: 'sec-h' }, icon('scroll'), 'ما جرى حتى الآن'));
+    const tl = h('div', { class: 'ctl' });
+    for (const l of c.log.slice().reverse()) tl.appendChild(h('div', { class: 'ctl-i' }, h('span', { class: 'when' }, WX.when(l.turn)), h('p', null, l.text)));
+    if (!c.log.length) tl.appendChild(h('p', { class: 'hint' }, 'لم يتضح شيء بعد.'));
+    body.appendChild(tl);
+    if (c.over) body.appendChild(h('p', { class: 'hint' }, icon('check'), ' انتهى هذا الحدث، وبقي في السجل التاريخي.'));
+  },
+  // القرارات العاجلة فقط تظهر فوراً؛ الباقي تنبيه في الشريط
+  async pendingDecisions(scene) {
+    const P = scene.P;
+    for (const c of Game.S.crises) {
+      const q = c.ask[P];
+      if (!q || !q.urgent || q.shown || c.over) continue;
+      q.shown = true;
+      await this.decisionModal(scene, c, q);
+      if (Game.S.over) return;
+    }
+  },
+  decisionModal(scene, c, q) {
+    return new Promise((resolve) => {
+      const P = scene.P;
+      const opts = Game.crisisOpts(c, P, q.key, q.data);
+      const last = c.log.slice(-2).map((l) => l.text).join(' ');
+      let close = null;
+      const done = () => { resolve(); };
+      const box = h('div', { class: 'choice' }, opts.map((o) => this.optBtn(o, () => { if (close) close(); Game.crisisDecide(c, P, q.key, o.k, q.data); scene.afterAction(); done(); })));
+      const n = q.node || c.node;
+      close = UI.modal({
+        title: q.title, icon: CRISES[c.type].icon, cls: 'wide',
+        body: h('div', null, last ? h('p', { class: 'lead' }, last) : null, box, h('p', { class: 'hint' }, 'يمكنك التأجيل والقرار من نافذة الحدث قبل نهاية الدور.')),
+        buttons: [
+          n ? { label: 'انظر إلى الخريطة', icon: 'map', ghost: true, onClick: () => { const nn = Game.node(n); if (nn) scene.flyTo(nn.x, nn.y); this.openCrisis(scene, c); done(); } } : null,
+          { label: 'لاحقاً', ghost: true, onClick: () => { this.openCrisis(scene, c); done(); } },
+        ].filter(Boolean),
+        dismissable: false,
+      });
+    });
+  },
+  // مختصر العرش في شاشة المملكة
+  throneBox(scene) {
+    const P = scene.P, F = Game.f(P);
+    const r = Game.rulerOf(P);
+    const heir = Game.gen(F.heir);
+    const box = h('div', { class: 'box throne' });
+    if (r) {
+      const fx = Game.rulerFxText(r);
+      box.appendChild(h('div', { class: 'sec-h' }, icon('crown'), hstat('ruler', `${r.name} · ${Game.ageOf(r)} سنة`, { label: 'الحاكم' }),
+        r.status === 'army' ? h('span', { class: 'tag warn' }, icon('swords'), 'في الميدان') : r.status === 'captive' ? h('span', { class: 'tag bad' }, icon('chains'), 'أسير') : null));
+      if (fx.length) box.appendChild(h('p', { class: 'small' }, 'أثره: ', fx.join(' · ')));
+      if (r.status === 'army') box.appendChild(h('p', { class: 'hint warn' }, 'الحاكم يرفع معنويات جيشه، لكنه قد يُقتل أو يؤسر فيهتز العرش.'));
+    }
+    box.appendChild(h('div', { class: 'row-btns' },
+      h('span', { class: 'small' }, icon('seal'), ' ولي العهد: ', heir && heir.fid === P ? h('b', null, heir.name) : h('b', { class: 'warn' }, 'لم يُسمَّ')),
+      h('button', { class: 'chip', onclick: () => this.heirPicker(scene) }, icon('crown'), heir ? 'تغيير' : 'سمِّ وريثاً')));
+    return box;
+  },
+  heirPicker(scene) {
+    const P = scene.P;
+    const cands = Game.heirCandidates(P).slice(0, 6);
+    let close = null;
+    const list = h('div', { class: 'glist' });
+    for (const g of cands) {
+      const hurt = Game.passedOver(P, g).map((x) => x.name);
+      const fx = Game.rulerFxText(g);
+      list.appendChild(h('button', { class: 'gpick', onclick: () => { Game.setHeir(P, g); if (Game.track) Game.track('heir'); if (close) close(); scene.afterAction(); Sheets.render(); } },
+        this.genCard(g, h('div', null, fx.length ? h('p', { class: 'small' }, 'حاكماً: ', fx.join(' · ')) : h('p', { class: 'small muted' }, 'حاكماً: بلا أثر خاص'),
+          hurt.length ? h('p', { class: 'small warn' }, 'سيغضب: ', hurt.join('، ')) : null))));
+    }
+    if (!cands.length) list.appendChild(h('p', { class: 'hint' }, 'لا قادة يصلحون للعهد.'));
+    close = UI.modal({ title: 'ولي العهد', icon: 'crown', cls: 'wide', body: h('div', null, h('p', { class: 'hint' }, 'سمة الوريث تصبح أثراً على المملكة كلها. القادة الأعلى رتبة الذين تتخطاهم يغضبون.'), list), buttons: [{ label: 'إغلاق', ghost: true }] });
   },
 
   // ═══════════════ القائمة والحفظ ═══════════════
@@ -1083,3 +1218,20 @@ const Panels = {
     });
   },
 };
+
+const CRISIS_WHY = {
+  horde: 'جيش من السهوب يقترب على مراحل. كل مرحلة فرصة: تجسس، تحصّن، ادفع، أو وجّهه نحو غيرك.',
+  migration: 'قوم يبحثون عن أرض: رجال وخيل لمن يؤويهم، وسيف لمن يردّهم.',
+  plague: 'العدوى تنتقل على الطرق ومع الجيوش. الحجر يوقفها لكنه يقطع الدخل والتجارة.',
+  famine: 'الحقول تجف: المدن تجوع والولاء ينهار. المخازن والتجارة تنقذ الموقف — والجار الجائع ضعيف.',
+  succession: 'العرش يهتز. الوريث وولاء القادة الكبار يحددان ما سيحدث.',
+  rebel: 'قائد يطمح إلى أكثر من القيادة. كل مرحلة تقربه من التمرد بجيشه ومدنه.',
+  coalition: 'الممالك تتحالف ضد الأقوى: تنازل، أو مال، أو حرب على أكثر من جبهة.',
+  freecity: 'مدينة غنية تريد حكماً ذاتياً: دخل أقل وولاء أكبر، أو خطر الاستقلال.',
+  uprising: 'دعوة تنتشر في المدن الساخطة: العطاء، أو القمع، أو استمالة الزعيم.',
+  star: 'موهبة نادرة تبحث عن سيد. من يدفع أكثر يكسبها — ومن لا يدفع قد يواجهها.',
+  route: 'القوافل تبحث عن طريق. من يستثمر يربح ذهب التجارة لسنوات.',
+};
+Game.openCrisis = (scene, a) => { const c = Game.crisisById(a.crisis); if (c) Panels.openCrisis(scene, c); };
+Game.pendingDecisions = (scene) => Panels.pendingDecisions(scene);
+Game.crisesAt = (id) => Game.visibleCrises(Game.S.player).filter((c) => !c.over && (c.node === id || (c.type === 'plague' && c.v.inf[id]) || (c.type === 'famine' && c.v.region.includes(id)) || (c.type === 'uprising' && c.v.cities.includes(id))));

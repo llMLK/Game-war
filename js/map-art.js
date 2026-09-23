@@ -675,6 +675,15 @@ class MapArt {
         if (s.kind === 'sack' && a <= 2) { this.smoke(ctx, n.x - R * 0.4, n.y + R * 0.1, t, 4, true); this.fire(ctx, n.x - R * 0.3, n.y + R * 0.3, t); }
       }
       if (s.kind === 'surrender' && a === 0) drawIcon(ctx, 'flag', n.x + R + 4, n.y - R * 0.6, 7, '#f4efe2', { outline: '#2a1e12' });
+      // مخيم لاجئين عند الأسوار
+      if (s.kind === 'refugees' && a <= 4) {
+        const bx = n.x + R + 4, by = n.y + R * 0.55;
+        ctx.globalAlpha = a <= 2 ? 0.95 : 0.6;
+        ctx.fillStyle = 'rgba(120,95,60,.28)'; ctx.beginPath(); ctx.ellipse(bx, by + 1.5, 9, 3.8, 0, 0, TAU); ctx.fill();
+        for (let i = 0; i < 4; i++) this.tent(ctx, bx - 6 + i * 4, by - (i % 2) * 1.8, 1.9, i % 2 ? '#cdbb92' : '#b9a67c');
+        this.smoke(ctx, bx + 2, by - 3, t, 5);
+        ctx.globalAlpha = 1;
+      }
     }
   }
 }

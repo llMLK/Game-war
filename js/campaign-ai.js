@@ -77,7 +77,7 @@ Object.assign(Game, {
 
 const CampaignAI = {
   pers(fid) {
-    const p = Game.sc.factions[fid] ? Game.sc.factions[fid].personality : { aggr: 1, honor: 1, prefs: {} };
+    const p = Game.pers(fid);
     return { aggr: p.aggr * DIFFS[Game.S.difficulty].aiAggr, honor: p.honor, prefs: p.prefs };
   },
   enemyNear(n, fid) { return Game.adjAll(n.id).map((id) => Game.node(id)).filter((m) => m.owner !== fid && Game.atWar(fid, m.owner)); },
@@ -120,9 +120,12 @@ const CampaignAI = {
     const armies = this.fieldArmies(fid);
     const myPow = armies.reduce((s, a) => s + Game.armyPower(a), 0);
     let best = null, bs = 0;
+    // الممالك بلا مدن (الغزاة، المتمردون في الميدان) تقيس المسافة من جيوشها
+    const origins = mine.length ? mine.map((m) => m.id) : armies.map((a) => a.node);
+    if (!origins.length) { f.goals = null; return; }
     for (const n of Game.S.nodes) {
       if (n.owner === fid || Game.friendly(n.owner, fid)) continue;
-      const d = Math.min(...mine.map((m) => Game.hops(m.id, n.id, 3)));
+      const d = Math.min(...origins.map((id) => Game.hops(id, n.id, 3)));
       if (d > 2) continue;
       const st = Game.status(fid, n.owner);
       const truce = (f.truce[n.owner] || 0) > 0;
@@ -173,6 +176,8 @@ const CampaignAI = {
         }
         continue;
       }
+      // الغزاة لا يعقدون تجارة ولا مصاهرة ولا أحلافاً: حرب أو صلح بجزية
+      if (f.kind === 'horde' || G.kind === 'horde') continue;
       // كسر حلف لم يعد مفيداً
       if (st === 'alliance') {
         const since = (f.allySince || {})[g] || 0;
@@ -424,9 +429,16 @@ const CampaignAI = {
         const enc = Game.makeEnc('assault', Game.besiegers(here.id).filter((b) => b.fid === fid), here.id);
         const { pa, pd } = Game.encPower(enc);
         const ratio = pa / Math.max(1, pd);
-        const canBreach = enc.equip && (enc.equip.ram || enc.equip.tower) || enc.att.some((id) => Game.army(id).regs.some((r) => r.type === 'catapult'));
+        const canBreach = here.walls === 0 || (enc.equip && (enc.equip.ram || enc.equip.tower)) || enc.att.some((id) => Game.army(id).regs.some((r) => r.type === 'catapult'));
         const lead = Game.besiegers(here.id).find((b) => b.fid === fid);
         if (lead !== a) { a.mp = 0; continue; }
+        // الغزاة لا يطيلون الحصار الميؤوس منه: يبحثون عن فريسة أضعف
+        if (f.kind === 'horde' && ratio < 0.7) {
+          const reach = Game.reach(a);
+          const prey = Object.keys(reach).map((id) => Game.node(id)).filter((n) => { const pl = Game.planMove(a, n.id); return !pl.err && !pl.needWar && (pl.kind === 'siege' || pl.kind === 'assault'); })
+            .sort((x, y) => Game.defensePower(x) - Game.defensePower(y))[0];
+          if (prey && Game.defensePower(prey) < pow * 1.2) { await Game.executeMove(a, prey.id); continue; }
+        }
         // مدينة جائعة: عرض الأمان قبل الاقتحام
         if (here.stores < 0 && here.parley !== Game.S.turn) {
           here.parley = Game.S.turn;

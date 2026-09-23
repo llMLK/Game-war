@@ -1548,7 +1548,7 @@ class WarSim {
     }
     return {
       winner: this.winner, reason: this.reason,
-      sides: this.sides.map((s) => ({ units: s.units.map((u) => ({ ref: u.ref, type: u.type, men: Math.max(0, u.men), men0: u.men0, kills: Math.round(u.kills), gen: u.gen })) })),
+      sides: this.sides.map((s) => ({ gens: s.gens.map((g) => g.id).filter(Boolean), units: s.units.map((u) => ({ ref: u.ref, type: u.type, men: Math.max(0, u.men), men0: u.men0, kills: Math.round(u.kills), gen: u.gen })) })),
       fates,
       report: this.report(),
     };

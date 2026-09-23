@@ -122,12 +122,12 @@ Object.assign(Game, {
   },
 
   // ——— الذكاء في تقييم العروض ———
-  honor(fid) { return this.sc.factions[fid] ? this.sc.factions[fid].personality.honor : 1; },
+  honor(fid) { return this.pers(fid).honor; },
   aiWillAcceptPeace(ai, other, tribute = 0) {
     const A = this.f(ai);
     if (A.vendetta && A.vendetta[other] > 0) return false;
     const pa = this.factionPower(ai), po = this.factionPower(other);
-    const aggr = this.sc.factions[ai].personality.aggr * DIFFS[this.S.difficulty].aiAggr;
+    const aggr = this.pers(ai).aggr * DIFFS[this.S.difficulty].aiAggr;
     let s = this.rel(ai, other) * 0.4 + (po / Math.max(1, pa) - 1) * 40 + (A.warTurns[other] || 0) * 2 + tribute / 8 + (A.lostRecently || 0) * 10 - aggr * 12;
     s += (this.f(other).rep - 50) / 4;
     const otherWars = this.aliveMajors().filter((c) => c !== ai && c !== other && this.atWar(ai, c)).length;

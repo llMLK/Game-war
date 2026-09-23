@@ -82,6 +82,8 @@ class CampaignScene {
     this.reach = reach;
     const onPath = new Set();
     for (const id in reach) { let prev = this.selArmy.node; for (const p of reach[id].path) { onPath.add(prev + '|' + p); onPath.add(p + '|' + prev); prev = p; } }
+    // طريق القوافل تحت الطرق
+    this.drawRoute(ctx);
     // الطرق
     ctx.lineCap = 'round';
     for (const e of Game.sc.edges) {
@@ -128,6 +130,9 @@ class CampaignScene {
       if (si) art.drawSiegeCamp(ctx, n, si);
       art.drawScars(ctx, n, Game.scarsAt(n.id, 4), t, age);
     }
+    // آثار أحداث العالم (وباء، قحط، زحف على الأفق)
+    const marks = Game.crisisMarkers ? Game.crisisMarkers() : [];
+    this.drawCrisisWorld(ctx, marks);
     // الوجهات الممكنة
     for (const id in reach) {
       const n = Game.node(id), R = art.rad(n);
@@ -145,6 +150,8 @@ class CampaignScene {
     ctx.setTransform(d, 0, 0, d, 0, 0);
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     this.hits = [];
+    this.badges = {};
+    for (const m of marks) if (m.node) (this.badges[m.node] = this.badges[m.node] || []).push(m);
     for (const n of S.nodes) {
       const s = cam.toScreen(n.x, n.y);
       const R = art.rad(n) * cam.z;
@@ -165,6 +172,74 @@ class CampaignScene {
       }
     }
     for (const n of S.nodes) this.drawArmiesAt(ctx, n);
+    for (const m of marks) if (m.kind === 'threat') this.threatMarker(ctx, m);
+  }
+
+  // ——— طريق القوافل: شريط ذهبي وقوافل تتحرك، وأحمر متقطع حيث انقطع ———
+  drawRoute(ctx) {
+    const r = Game.S.route;
+    if (!r || r.path.length < 2) return;
+    for (let i = 0; i < r.path.length - 1; i++) {
+      const A = Game.node(r.path[i]), B = Game.node(r.path[i + 1]);
+      if (!A || !B) continue;
+      const ok = !r.dead && Game.routeSegOk(A.id, B.id);
+      ctx.lineCap = 'round';
+      ctx.setLineDash(ok ? [] : [5, 6]);
+      ctx.strokeStyle = ok ? 'rgba(214,168,62,.42)' : 'rgba(160,60,40,.38)';
+      ctx.lineWidth = ok ? 6.5 : 4;
+      ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
+      ctx.setLineDash([]);
+      if (!ok) continue;
+      const len = Math.hypot(B.x - A.x, B.y - A.y) || 1;
+      for (let k = 0; k < 2; k++) {
+        const f = ((this.t * 9) / len + i * 0.37 + k * 0.5) % 1;
+        drawIcon(ctx, 'camel', lerp(A.x, B.x, f), lerp(A.y, B.y, f) - 2.5, 7.5, '#5e3f18', { outline: 'rgba(255,240,205,.9)' });
+      }
+    }
+  }
+
+  // ——— آثار الأزمات على الأرض ———
+  drawCrisisWorld(ctx, marks) {
+    for (const m of marks) {
+      if (m.kind === 'threat') {
+        const ang = Math.atan2(m.ty - m.y, m.tx - m.x);
+        const p = 0.5 + 0.5 * Math.sin(this.t * 2.2);
+        const g = ctx.createRadialGradient(m.x, m.y, 3, m.x, m.y, 44);
+        g.addColorStop(0, `rgba(125,92,48,${0.5 + p * 0.12})`); g.addColorStop(1, 'rgba(125,92,48,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.ellipse(m.x, m.y, 46, 28, ang, 0, TAU); ctx.fill();
+        const L = Math.min(80, Math.hypot(m.tx - m.x, m.ty - m.y) * 0.55);
+        const ex = m.x + Math.cos(ang) * L, ey = m.y + Math.sin(ang) * L;
+        ctx.strokeStyle = m.sure ? 'rgba(150,40,25,.8)' : 'rgba(150,40,25,.45)'; ctx.lineWidth = 2.4; ctx.setLineDash(m.sure ? [] : [5, 4]);
+        ctx.beginPath(); ctx.moveTo(m.x + Math.cos(ang) * 16, m.y + Math.sin(ang) * 16); ctx.lineTo(ex, ey); ctx.stroke(); ctx.setLineDash([]);
+        ctx.fillStyle = ctx.strokeStyle;
+        ctx.beginPath(); ctx.moveTo(ex + Math.cos(ang) * 7, ey + Math.sin(ang) * 7); ctx.lineTo(ex + Math.cos(ang + 2.5) * 7, ey + Math.sin(ang + 2.5) * 7); ctx.lineTo(ex + Math.cos(ang - 2.5) * 7, ey + Math.sin(ang - 2.5) * 7); ctx.closePath(); ctx.fill();
+        continue;
+      }
+      const n = m.node ? Game.node(m.node) : null;
+      if (!n) continue;
+      const R = this.art.rad(n);
+      const col = m.kind === 'plague' ? '118,146,58' : m.kind === 'famine' ? '160,112,52' : m.kind === 'torch' ? '190,70,40' : null;
+      if (!col) continue;
+      const a = (m.kind === 'famine' && !m.on ? 0.16 : 0.42) * (0.85 + 0.15 * Math.sin(this.t * 2 + n.x));
+      const g = ctx.createRadialGradient(n.x, n.y, R * 0.4, n.x, n.y, R + 17);
+      g.addColorStop(0, `rgba(${col},${a})`); g.addColorStop(1, `rgba(${col},0)`);
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(n.x, n.y, R + 17, 0, TAU); ctx.fill();
+      if (m.quar) { ctx.strokeStyle = 'rgba(96,120,44,.8)'; ctx.setLineDash([3, 3]); ctx.lineWidth = 1.4; ctx.beginPath(); ctx.arc(n.x, n.y, R + 8, 0, TAU); ctx.stroke(); ctx.setLineDash([]); }
+    }
+  }
+
+  // علامة الزحف على الأفق (بمقاس الشاشة)
+  threatMarker(ctx, m) {
+    const s = this.cam.toScreen(m.x, m.y);
+    const x = clamp(s.x, 40, App.W - 40), y = clamp(s.y, 60, App.H - 40);
+    ctx.font = '700 11px "Noto Naskh Arabic", Tahoma, sans-serif';
+    const w = ctx.measureText(m.label).width + 30, h2 = 20;
+    ctx.fillStyle = 'rgba(60,24,14,.9)'; this.rrect(ctx, x - w / 2, y - h2 / 2, w, h2, 10); ctx.fill();
+    ctx.strokeStyle = m.color || '#8a6a3c'; ctx.lineWidth = 1.6; this.rrect(ctx, x - w / 2, y - h2 / 2, w, h2, 10); ctx.stroke();
+    drawIcon(ctx, m.icon || 'horse', x + w / 2 - 11, y, 12, '#ffd9a0');
+    ctx.fillStyle = '#fff0d8'; ctx.fillText(m.label, x - 6, y + 0.5);
+    this.hits.push({ kind: 'crisis', c: m.c, x, y, r: Math.max(16, w / 2) });
   }
 
   rrect(ctx, x, y, w, h2, r) {
@@ -189,6 +264,18 @@ class CampaignScene {
     ctx.fillText(n.name, x + (cap ? 4 : -1), y + 0.5);
     if (cap) drawIcon(ctx, 'crown', x - w / 2 + 8, y, 9, '#b8862a');
     if (own && (n.loyalty < 30 || n.unrest > 0) && !besieged) drawIcon(ctx, n.loyalty < 30 ? 'torch' : 'fire', x + w / 2 + 8, y, 11, n.loyalty < 30 ? '#c0392b' : '#b8702a', { outline: 'rgba(250,240,220,.9)' });
+    if (n.charter) drawIcon(ctx, 'scroll', x - w / 2 - 8, y, 10, '#7a5a22', { outline: 'rgba(250,240,220,.9)' });
+    const bs = (this.badges || {})[n.id] || [];
+    let bx = x - w / 2 - (n.charter ? 26 : 11);
+    for (const m of bs.slice(0, 3)) {
+      const col = m.kind === 'plague' ? '#5d7a22' : m.kind === 'famine' ? '#8a5a1e' : m.kind === 'torch' || m.kind === 'dagger' ? '#a0301e' : m.kind === 'crown' ? '#8a6a1e' : '#6a4a8a';
+      ctx.fillStyle = 'rgba(250,240,220,.95)'; ctx.beginPath(); ctx.arc(bx, y, 8.5, 0, TAU); ctx.fill();
+      ctx.strokeStyle = col; ctx.lineWidth = 1.4; ctx.stroke();
+      drawIcon(ctx, m.icon, bx, y, 10, col);
+      if (m.c.ask && m.c.ask[this.P]) { ctx.fillStyle = '#d23a22'; ctx.beginPath(); ctx.arc(bx + 6, y - 6, 3, 0, TAU); ctx.fill(); }
+      this.hits.push({ kind: 'crisis', c: m.c, x: bx, y, r: 11 });
+      bx -= 19;
+    }
   }
 
   siegePlate(ctx, n, si, x, y) {
@@ -294,6 +381,8 @@ class CampaignScene {
       }
     }
     if (a.mood && (a.mood.k === 'shaken' || a.mood.k === 'hungry')) drawIcon(ctx, a.mood.k === 'hungry' ? 'food' : 'warning', x + 13, y - 12, 9, '#ffb49c', { outline: '#2a1208' });
+    else if (a.sick > 0) drawIcon(ctx, 'skull', x + 13, y - 12, 9, '#c8e08a', { outline: '#1e2a08' });
+    if (Game.isRuler && Game.isRuler(Game.armyGen(a))) drawIcon(ctx, 'crown', x - 13, y - 17, 8, '#ffd24a', { outline: '#2a1a08' });
     ctx.globalAlpha = 1;
   }
 
@@ -301,9 +390,10 @@ class CampaignScene {
   onTap(w, p) {
     if (this.busy) return;
     Help.hide();
-    const score = (h2) => h2.d - (h2.kind === 'army' ? 8 : h2.kind === 'siege' ? 4 : 0);
-    const hits = (this.hits || []).map((h2) => ({ ...h2, d: Math.hypot(h2.x - p.x, h2.y - p.y) })).filter((h2) => h2.d < h2.r).sort((a, b) => score(a) - score(b));
+    const score = (h2) => h2.d - (h2.kind === 'army' ? 8 : h2.kind === 'siege' ? 4 : h2.kind === 'crisis' ? 3 : 0);
+    const hits = (this.hits || []).map((h2) => ({ ...h2, d: Math.hypot(h2.x - p.x, h2.y - p.y) })).filter((h2) => h2.d < h2.r && !(this.selArmy && h2.kind === 'crisis')).sort((a, b) => score(a) - score(b));
     const hit = hits[0];
+    if (hit && hit.kind === 'crisis') { Panels.openCrisis(this, hit.c); return; }
     // وضع اختيار الوجهة
     if (this.selArmy && hit) {
       const n = hit.kind === 'army' ? Game.node(hit.a.node) : hit.n;
@@ -478,6 +568,7 @@ class CampaignScene {
     this.setBadge(this.hud.king, pend);
     const call = f.allyCall ? 1 : 0;
     this.setBadge(this.hud.diplo, call);
+    this.setBadge(this.hud.chron, (Game.S.crises || []).filter((c) => !c.over && c.ask[P]).length);
     Sheets.refresh();
     AlertsUI.render();
   }

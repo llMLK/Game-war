@@ -68,6 +68,7 @@ const Game = {
     for (const id of ids) this.refreshMercs(id);
     this.event('pol', 'بدأت الحملة. ' + sc.intro, { imp: 3 });
     this.chronicle('start', `${S.factions[player].name} تبدأ طريقها. ${sc.intro}`, { fids: [player], imp: 3 });
+    if (this.initWorld) this.initWorld();
     this.save();
     return S;
   },
@@ -174,6 +175,7 @@ const Game = {
       if (a.mood === undefined) a.mood = null;
       if (!a.from) a.from = a.node;
     }
+    if (this.initWorld) this.initWorld();
   },
 
   // ——————————————————— مساعدات ———————————————————
@@ -246,7 +248,7 @@ const Game = {
     const S = this.S;
     if (!S || !S.alerts) return;
     const ttl = { crit: 3, imp: 2, info: 1 }[level] || 1;
-    const a = { id: S.aid++, turn: S.turn, level, text, node: o.node || null, army: o.army || null, icon: o.icon || null, key: o.key || null, cond: !!o.cond, until: S.turn + ttl, win: o.win || null };
+    const a = { id: S.aid++, turn: S.turn, level, text, node: o.node || null, army: o.army || null, icon: o.icon || null, key: o.key || null, cond: !!o.cond, until: S.turn + ttl, win: o.win || null, crisis: o.crisis || null };
     if (a.key) {
       const old = S.alerts.find((x) => x.key === a.key);
       if (old) { a.seen = old.seen && old.text === text; S.alerts.splice(S.alerts.indexOf(old), 1); }
@@ -511,6 +513,7 @@ const Game = {
     if (n.unrest > 0) r *= 0.3;
     if (n.loyalty < 40) r *= 0.6;
     if (n.owner !== 'neutral' && this.lastStand(n.owner)) r *= 2;
+    if (this.nodeMods) r *= this.nodeMods(n).mp;
     return Math.round(r);
   },
   manpowerOf(fid) { return this.nodesOf(fid).reduce((t, n) => t + Math.floor(n.manpower), 0); },
@@ -547,6 +550,7 @@ const Game = {
     g *= Math.max(0.5, 1 - 0.05 * this.overstack(n, n.owner));
     // الفساد في الإمبراطوريات المترامية
     g *= Math.max(0.6, 1 - 0.03 * Math.max(0, this.nodesOf(n.owner).length - 8));
+    if (this.nodeMods) g *= this.nodeMods(n).inc * (1 + this.rulerMod(n.owner, 'income'));
     return Math.round(g);
   },
   // تفصيل الدخل (للشرح السياقي)
@@ -566,6 +570,13 @@ const Game = {
     if (ov > 0) lines.push([`ازدحام ×${Math.max(0.5, 1 - 0.05 * ov).toFixed(2)}`, '', 'neg']);
     const cities = this.nodesOf(n.owner).length;
     if (cities > 8) lines.push([`فساد الاتساع ×${Math.max(0.6, 1 - 0.03 * (cities - 8)).toFixed(2)}`, '', 'neg']);
+    if (this.nodeMods) {
+      const m = this.nodeMods(n);
+      if (n.charter) lines.push(['ميثاق حر ×0.65', '', 'neg']);
+      if (m.inc !== 1 && !(n.charter && Math.abs(m.inc - 0.65) < 0.001)) lines.push([`أزمة ×${(n.charter ? m.inc / 0.65 : m.inc).toFixed(2)}`, '', 'neg']);
+      const rm = this.rulerMod(n.owner, 'income');
+      if (rm) lines.push([`الحاكم ×${(1 + rm).toFixed(2)}`, '', rm > 0 ? 'pos' : 'neg']);
+    }
     const total = this.cityIncome(n);
     lines.push(['الصافي', '+' + total, 'sum']);
     return { total, lines };
@@ -594,6 +605,11 @@ const Game = {
       if (gov.flaw === 'harsh') parts.push(['حاكم قاسٍ', -8]);
     }
     if (this.policyMod) { const pm = this.policyMod(n.owner, 'loyalty'); if (pm) parts.push(['سياسة المملكة', pm]); }
+    if (this.nodeMods) {
+      for (const pl of this.nodeMods(n).loy) parts.push(pl);
+      const rl = this.rulerMod(n.owner, 'loyalty');
+      if (rl) parts.push(['الحاكم', rl]);
+    }
     const target = parts.reduce((t, p) => t + p[1], 0);
     return { target: Math.round(target), parts };
   },
@@ -608,6 +624,7 @@ const Game = {
     if (this.besieger(n.id)) return 0;
     let f = 5 + n.farm * 6 + n.pop / 8000;
     if (n.unrest > 0) f *= 0.5;
+    if (this.nodeMods) f *= this.nodeMods(n).food;
     return Math.round(f);
   },
   armyEat(a) {
@@ -617,6 +634,7 @@ const Game = {
     if (n.terrain === 'desert' && !this.hasTrait(a, 'desert')) e *= 1.5;
     if (this.isWinter()) e *= 1.2;
     if (this.hasTrait(a, 'logistician')) e *= 0.5;
+    if (this.rulerMod) e *= 1 + this.rulerMod(a.fid, 'eat');
     return e;
   },
   tradeIncome(fid) {
@@ -643,13 +661,16 @@ const Game = {
     const cities = this.nodesOf(fid).length;
     overhead = Math.max(0, armies.length - Math.max(2, cities)) * 10;
     if (!f.isPlayer && fid !== 'neutral') gold = Math.round(gold * DIFFS[this.S.difficulty].aiIncome);
-    const trade = this.tradeIncome(fid);
+    // الغزاة يعيشون على النهب: لا رواتب ولا مؤن
+    if (f.horde) { upkeep = 0; eat = 0; salaries = 0; overhead = 0; }
+    const route = this.routeIncome ? this.routeIncome(fid) : 0;
+    const trade = this.tradeIncome(fid) + route;
     let tribute = 0;
     for (const t of this.S.tributes) { if (t.payee === fid) tribute += t.amount; if (t.payer === fid) tribute -= t.amount; }
     upkeep = Math.round(upkeep);
     eat = Math.round(eat);
     const netGold = gold + trade + tribute - upkeep - salaries - overhead;
-    return { gold, trade, tribute, upkeep, salaries, overhead, food, eat, netGold, netFood: food - eat };
+    return { gold, trade, route, tribute, upkeep, salaries, overhead, food, eat, netGold, netFood: food - eat };
   },
 
   // ——————————————————— التجنيد والبناء ———————————————————
@@ -1027,12 +1048,13 @@ const Game = {
       let intel = fid === P ? this.intelLevel(P, other) : 3;
       if (fid === P && regs.some((r) => UNITS[r.type].cls === 'cav')) intel = Math.min(3, intel + 1);
       if (fid === P && gens.some((g) => g.trait === 'tactician')) intel = Math.min(3, intel + 1);
-      const pers = this.sc.factions[fid] ? this.sc.factions[fid].personality : (this.f(fid) && this.f(fid).pers) || { aggr: 1 };
+      const pers = this.pers ? this.pers(fid) : { aggr: 1 };
+      const rm = this.rulerMod ? this.rulerMod(fid, 'morale') + (gens.some((g) => this.isRuler(g)) ? 6 : 0) : 0;
       return {
         fid, name: this.fname(fid), color: this.f(fid).color, player: fid === P,
         regs: regs.filter((r) => r.men > 0),
         gens: gens.filter((g) => g.status === 'army').map((g) => ({ id: g.id, name: g.name, trait: g.trait, flaw: g.flaw, rank: g.rank, men: this.genMen(g), vendetta: g.vendetta })),
-        mood: moodOf(armies, fid, defending), ai: fid === 'neutral' ? Math.min(skill, 0.45) : skill, intel, aggr: pers.aggr || 1,
+        mood: moodOf(armies, fid, defending) + rm, ai: fid === 'neutral' ? Math.min(skill, 0.45) : skill, intel, aggr: pers.aggr || 1,
       };
     };
     return {
@@ -1055,6 +1077,13 @@ const Game = {
     }
     const fates = {};
     for (const [id, f] of Object.entries(res.fates || {})) if (f === 'killed' || f === 'captured') fates[id] = f;
+    // النصر يربط القادة بمملكتهم، والهزيمة تزرع الشك
+    for (let si = 0; si < 2; si++) {
+      for (const gg of (res.sides[si].gens || [])) {
+        const g = this.gen(gg.id || gg);
+        if (g && g.loy != null && !(this.isRuler && this.isRuler(g))) g.loy = clamp(g.loy + (res.winner === si ? 3 : -2), 0, 100);
+      }
+    }
     return { winner: res.winner, fates, report: res.report, reason: res.reason };
   },
   autoResolve(enc) {
@@ -1180,8 +1209,13 @@ const Game = {
       a.from = a.node; a.node = dest.id;
       return true;
     }
-    // لا مهرب: يلقي السلاح
+    // لا مهرب: الغزاة يعودون إلى السهوب، وغيرهم يلقي السلاح
     const here = this.node(a.node);
+    if (this.f(a.fid) && this.f(a.fid).horde) {
+      this.event('mil', `${this.fname(a.fid)}: جيش ${this.gname(this.armyGen(a))} يرتد نحو السهوب${here ? ' من ' + here.name : ''}.`, { fids: [a.fid], node: a.node, imp: 2 });
+      this.removeArmy(a);
+      return false;
+    }
     const captor = captorFid || (here && this.atWar(here.owner, a.fid) ? here.owner : null);
     const g = this.armyGen(a);
     this.event('mil', `جيش ${this.fname(a.fid)} بقيادة ${this.gname(g)} حوصر وألقى السلاح${here ? ' قرب ' + here.name : ''}.`, { fids: [a.fid, captor].filter(Boolean), node: a.node, imp: 3 });
@@ -1229,8 +1263,8 @@ const Game = {
     let choice = 'occupy';
     if (this.f(fid).isPlayer) choice = this.hooks.occupation ? await this.hooks.occupation(node, how) : 'occupy';
     else {
-      const p = this.sc.factions[fid] ? this.sc.factions[fid].personality : { aggr: 1, honor: 1 };
-      choice = p.aggr > 1.15 && p.honor < 1 && R() < 0.45 ? 'sack' : (p.honor > 1.1 && R() < 0.4 ? 'clemency' : 'occupy');
+      const p = this.pers ? this.pers(fid) : { aggr: 1, honor: 1 };
+      choice = this.f(fid).horde ? (R() < 0.7 ? 'sack' : 'occupy') : p.aggr > 1.15 && p.honor < 1 && R() < 0.45 ? 'sack' : (p.honor > 1.1 && R() < 0.4 ? 'clemency' : 'occupy');
     }
     this.applyOccupation(node, fid, old, choice, how);
     this.validate();
@@ -1266,7 +1300,7 @@ const Game = {
     for (const id of this.majors()) {
       const f = this.f(id);
       if (!f.alive) continue;
-      if (this.nodesOf(id).length === 0) {
+      if (this.nodesOf(id).length === 0 && !(f.kind && this.armiesOf(id).length)) {
         f.alive = false;
         for (const a of this.armiesOf(id)) this.removeArmy(a);
         for (const g of this.gensOf(id)) if (g.status === 'pool') g.status = 'exiled';
