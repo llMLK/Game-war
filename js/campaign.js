@@ -69,6 +69,7 @@ const Game = {
     this.event('pol', 'بدأت الحملة. ' + sc.intro, { imp: 3 });
     this.chronicle('start', `${S.factions[player].name} تبدأ طريقها. ${sc.intro}`, { fids: [player], imp: 3 });
     if (this.initWorld) this.initWorld();
+    if (this.tradeGoal) this.tradeGoal(player);
     this.save();
     return S;
   },
@@ -202,7 +203,7 @@ const Game = {
   armiesAt(nodeId) { return this.S.armies.filter((a) => a.node === nodeId); },
   besiegers(nodeId) { return this.S.armies.filter((a) => a.node === nodeId && a.siege); },
   besieger(nodeId) { return this.besiegers(nodeId)[0] || null; },
-  friendly(a, b) { return a === b || this.status(a, b) === 'alliance'; },
+  friendly(a, b) { if (a === b || this.status(a, b) === 'alliance') return true; const A = this.f(a), B = this.f(b); return !!((A && A.overlord === b) || (B && B.overlord === a)); },
   // المدافعون عن المدينة: جيوش مالكها وحلفائه داخلها
   defendersOf(n) { return this.S.armies.filter((a) => a.node === n.id && !a.siege && this.friendly(a.fid, n.owner)); },
   armiesOfAt(fid, nodeId) { return this.S.armies.filter((a) => a.fid === fid && a.node === nodeId && !a.siege); },
@@ -514,6 +515,7 @@ const Game = {
     if (n.loyalty < 40) r *= 0.6;
     if (n.owner !== 'neutral' && this.lastStand(n.owner)) r *= 2;
     if (this.nodeMods) r *= this.nodeMods(n).mp;
+    if (this.policyMod && n.owner !== 'neutral') r *= 1 + this.policyMod(n.owner, 'mp');
     return Math.round(r);
   },
   manpowerOf(fid) { return this.nodesOf(fid).reduce((t, n) => t + Math.floor(n.manpower), 0); },
@@ -550,7 +552,7 @@ const Game = {
     g *= Math.max(0.5, 1 - 0.05 * this.overstack(n, n.owner));
     // الفساد في الإمبراطوريات المترامية
     g *= Math.max(0.6, 1 - 0.03 * Math.max(0, this.nodesOf(n.owner).length - 8));
-    if (this.nodeMods) g *= this.nodeMods(n).inc * (1 + this.rulerMod(n.owner, 'income'));
+    if (this.nodeMods) g *= this.nodeMods(n).inc * (1 + this.rulerMod(n.owner, 'income') + (this.policyMod ? this.policyMod(n.owner, 'income') : 0));
     return Math.round(g);
   },
   // تفصيل الدخل (للشرح السياقي)
@@ -601,6 +603,7 @@ const Game = {
     if (here.some((a) => this.hasFlaw(a, 'harsh'))) parts.push(['قائد قاسٍ', -8]);
     const gov = this.governorAt(n);
     if (gov) {
+      parts.push(['حاكم مقيم', 4]);
       if (gov.trait === 'merchant' || gov.trait === 'defender') parts.push(['حاكم ' + TRAITS[gov.trait].name, 5]);
       if (gov.flaw === 'harsh') parts.push(['حاكم قاسٍ', -8]);
     }
@@ -664,7 +667,8 @@ const Game = {
     // الغزاة يعيشون على النهب: لا رواتب ولا مؤن
     if (f.horde) { upkeep = 0; eat = 0; salaries = 0; overhead = 0; }
     const route = this.routeIncome ? this.routeIncome(fid) : 0;
-    const trade = this.tradeIncome(fid) + route;
+    const trade = Math.round((this.tradeIncome(fid) + route) * (1 + (this.policyMod ? this.policyMod(fid, 'trade') : 0)));
+    for (const g of this.gensOf(fid)) if (g.status === 'gov') salaries += this.genSalary(g);
     let tribute = 0;
     for (const t of this.S.tributes) { if (t.payee === fid) tribute += t.amount; if (t.payer === fid) tribute -= t.amount; }
     upkeep = Math.round(upkeep);
@@ -1313,7 +1317,7 @@ const Game = {
     if (!this.f(p).alive || this.nodesOf(p).length === 0) S.over = 'lose';
     else {
       const rivals = this.majors().filter((id) => id !== p && this.f(id).alive);
-      if (rivals.length === 0 || this.nodesOf(p).length / S.nodes.length >= 0.75) S.over = 'win';
+      if (!S.endless && (rivals.length === 0 || this.nodesOf(p).length / S.nodes.length >= 0.75)) { S.over = 'win'; if (!S.overWhy) S.overWhy = rivals.length === 0 ? 'لم تبقَ مملكة تنازعك. البلاد كلها لك.' : null; }
     }
   },
 

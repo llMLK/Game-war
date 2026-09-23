@@ -690,6 +690,8 @@ const Panels = {
       }));
       box.append(h('button', { class: 'chip warn', onclick: () => this.confirmWarAttack(id).then((ok) => { if (ok) { Game.declareWar(P, id, 'بقرار منك'); redo(); } }) }, icon('swords'), 'إعلان الحرب'));
     }
+    if (Game.isVassalOf && Game.isVassalOf(P, id)) box.append(h('button', { class: 'chip warn', onclick: () => { Game.freeVassal(P, 'إعلان الاستقلال'); UI.toast('أعلنت استقلالك — إنها الحرب'); redo(); } }, icon('flag'), 'إعلان الاستقلال'));
+    if (Game.isVassalOf && Game.isVassalOf(id, P)) box.append(h('span', { class: 'lbl' }, `تابعة لك: تدفع ${Math.max(0, Math.round(Game.economy(id).gold * 0.15))} كل دور`));
     if (myF.allyCall && myF.allyCall.enemy === id && !Game.atWar(P, id)) {
       box.append(act('bell', 'لبِّ نداء الحليف', () => { Game.declareWar(P, id, 'نصرةً لحليفها'); Game.addRel(P, myF.allyCall.ally, 15); myF.allyCall = null; }, false, 'on'));
     }
@@ -875,6 +877,41 @@ const Panels = {
     body.appendChild(box);
   },
 
+
+
+  // ═══════════════ الأهداف والفصول ═══════════════
+  goalsTab(scene, body) {
+    const P = scene.P;
+    const ch = Game.chapter();
+    if (ch) body.appendChild(h('div', { class: 'box chapter' }, h('div', { class: 'sec-h' }, hstat('chapter', ch.name, { label: '' })), h('p', { class: 'small' }, ch.desc)));
+    body.appendChild(h('p', { class: 'hint' }, 'يكفي تحقيق هدف واحد للنصر. اختر الطريق الذي يناسب مملكتك.'));
+    for (const o of Game.objectivesOf(P)) {
+      const pct = clamp(o.have / Math.max(1, o.need), 0, 1) * 100;
+      body.appendChild(h('div', { class: 'goal' + (o.done ? ' done' : '') },
+        h('div', { class: 'gh' }, icon(o.icon), h('b', null, o.name), h('span', { class: 'sp' }), h('bdi', { class: 'muted small' }, `${o.have}/${o.need}`)),
+        h('span', { class: 'bar' }, h('i', { style: { width: pct + '%' } })),
+        h('p', { class: 'small' }, o.desc, o.sub ? ` — ${o.sub}` : '', o.hold ? ` (متتالية: ${o.hold})` : ''),
+        o.nodes ? h('div', { class: 'row-btns wrap' }, o.nodes.map((id) => { const n = Game.node(id); return h('button', { class: 'chip' + (n.owner === P ? ' on' : ''), onclick: () => scene.flyTo(n.x, n.y) }, dotEl(Game.f(n.owner).color), n.name); })) : null));
+    }
+    const vs = Game.vassalsOf(P);
+    if (vs.length) body.appendChild(h('p', { class: 'hint' }, icon('seal'), ' تابعوك: ', vs.map((v) => Game.fname(v)).join('، '), ' — يدفعون 15٪ من دخلهم ويقاتلون في حروبك.'));
+  },
+  policyExtras(scene, body) {
+    const P = scene.P, F = Game.f(P);
+    body.appendChild(h('div', { class: 'sec-h' }, icon('hammer'), 'توجّه التطوير'));
+    const row = h('div', { class: 'row-btns wrap' });
+    for (const [k, d] of Object.entries(DEV_FOCUS)) row.appendChild(h('button', { class: 'chip' + (Game.devFocus(P) === k ? ' on' : ''), title: d.desc, onclick: () => { F.dev = k; if (Game.track) Game.track('policy'); Sheets.render(); } }, icon(d.icon), d.name));
+    body.appendChild(row);
+    body.appendChild(h('p', { class: 'hint' }, Game.devFocus(P) === 'manual' ? 'تبني بنفسك. المدن التي لها حاكم تتطور وحدها.' : `${DEV_FOCUS[Game.devFocus(P)].desc} بناء واحد كل دور، ولا يُمس احتياطي ${Game.devReserve(P)} ذهباً.`));
+    body.appendChild(h('div', { class: 'sec-h' }, icon('scroll'), 'المرسوم الملكي'));
+    const er = h('div', { class: 'choice' });
+    for (const [k, d] of Object.entries(EDICTS)) {
+      const on = Game.edictOf(P) === k;
+      er.appendChild(h('button', { class: on ? 'on' : '', disabled: on, onclick: () => { const e = Game.setEdict(P, k); UI.toast(e || `صدر مرسوم «${d.name}»`); if (!e && Game.track) Game.track('policy'); scene.refresh(); Sheets.render(); } },
+        h('b', null, icon(d.icon), d.name, on ? h('span', { class: 'cost' }, 'نافذ') : h('span', { class: 'cost' }, iv('gold', 100))), h('span', null, d.desc)));
+    }
+    body.appendChild(er);
+  },
 
   // ═══════════════ أحداث العالم ═══════════════
   crisisSpec(scene, c) {

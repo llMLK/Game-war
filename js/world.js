@@ -238,6 +238,7 @@ Object.assign(Game, {
     const size = this.nodesOf(g.fid).length;
     if (size > 8) t -= (size - 8) * 2;
     const a = g.army ? this.army(g.army) : null;
+    if (g.status === 'gov' && g.city) { const n = this.node(g.city); if (n && n.owner === g.fid && this.capitalDist(n) >= 3) t -= 6; }
     if (a) {
       const n = this.node(a.node);
       if (n && n.owner === g.fid && this.capitalDist(n) >= 3) t -= 6;
@@ -532,6 +533,8 @@ Object.assign(Game, {
       r.bad = hp < 0.5 ? (r.bad || 0) + 1 : 0;
       if (r.bad >= 3 && !S.crises.some((c) => !c.over && c.type === 'route')) this.crisisStart('route', { kind: 'collapse' });
     }
+    // المملكة: التابعون، الحكّام، التطوير، الثأر، الفصول، الأهداف
+    if (this.realmTick) await this.realmTick();
     // المخرج
     this.director();
     this.statsTurn();

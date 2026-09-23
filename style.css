@@ -575,3 +575,14 @@ button:disabled { opacity: 0.42; cursor: default; }
   .bs-steps .st { font-size: 9.5px; padding: 0 5px; }
   .bs-panel { padding: 6px 8px; gap: 4px; }
 }
+
+/* الأهداف */
+.box.chapter { background: rgba(120,90,160,.1); border-color: rgba(180,150,220,.35); }
+.goal { display: grid; gap: 4px; padding: 7px 9px; border-radius: 10px; border: 1px solid var(--line-soft); background: rgba(255,240,200,.04); }
+.goal.done { border-color: rgba(159,212,138,.6); }
+.goal .gh { display: flex; align-items: center; gap: 6px; font-size: 13.2px; }
+.goal .gh .ico { width: 16px; height: 16px; color: var(--bronze-hi); }
+.goal .bar { height: 5px; border-radius: 3px; background: rgba(0,0,0,.45); overflow: hidden; display: block; }
+.goal .bar i { display: block; height: 100%; background: linear-gradient(90deg, #b8862a, #e5c173); }
+.goal p { margin: 0; }
+.choice button.on { border-color: var(--bronze-hi); background: #3d2c16; opacity: 1; }

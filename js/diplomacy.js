@@ -176,7 +176,7 @@ Object.assign(Game, {
     if (viewer === target) return 3;
     const T = this.f(target);
     if (!T || T.neutral) return 1;
-    if (this.status(viewer, target) === 'alliance') return 3;
+    if (this.status(viewer, target) === 'alliance' || T.overlord === viewer || this.f(viewer).overlord === target) return 3;
     if ((this.f(viewer).intel[target] || 0) > 0) return 3;
     const tr = this.treaty(viewer, target);
     if (tr.trade || tr.marriage) return 2;

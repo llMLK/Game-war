@@ -195,6 +195,7 @@ const CampaignAI = {
       const goalOwner = f.goals && f.goals.owner === g;
       const bored = (Game.S.peaceTurns || 0) >= 4 || Game.S.turn - (f.lastWarTurn || 0) > 10;
       const neighbor = Game.borders(fid, g);
+      if (Game.isVassalOf && (Game.isVassalOf(fid, g) || Game.isVassalOf(g, fid))) continue;
       const wantWar = (neighbor || dom === g) && (wars.length < 2 || dom === g) && Game.S.turn > 3 && (
         (goalOwner && pw > pg * 0.8 && R() < 0.35 * pers.aggr) ||
         (bored && pw > pg * 0.9 && Game.rel(fid, g) < 30 && R() < 0.25 * pers.aggr) ||
