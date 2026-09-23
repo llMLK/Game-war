@@ -134,7 +134,7 @@ Object.assign(Game, {
     let st = 0;
     if (S.turn >= 6 || n >= 6) st = 1;
     if (st >= 1 && S.turn >= 12 && atWarMajor) st = 2;
-    if (S.turn >= 36 || biggest >= total * 0.38) st = Math.max(st, 3);
+    if (S.turn >= 36 || (S.turn >= 16 && biggest >= total * 0.45)) st = Math.max(st, 3);
     const prev = S.chap || 0;
     if (st > prev) {
       S.chap = st;
