@@ -1000,51 +1000,70 @@ const Game = {
     return m;
   },
 
-  autoResolve(enc) {
-    const s = this.encSides(enc);
-    const { pa, pd } = this.encPower(enc);
-    const p = pa ** 1.6 / (pa ** 1.6 + pd ** 1.6);
-    const attWins = R() < p;
-    const [wp, lp] = attWins ? [pa, pd] : [pd, pa];
-    const lossL = 0.4 + R() * 0.35;
-    const lossW = clamp(0.5 * (lp / wp) * (0.6 + R() * 0.8), 0.05, 0.6);
-    const apply = (regs, frac) => { for (const r of regs) r.men = Math.max(0, Math.round(r.men * (1 - frac * (0.7 + R() * 0.6)))); };
-    apply(s.attRegs, attWins ? lossW : lossL);
-    apply(s.defRegs, attWins ? lossL : lossW);
-    const fates = {};
-    const fall = (gens, won) => {
-      for (const g of gens) {
-        const risk = (won ? 0.04 : 0.22) * (g.flaw === 'reckless' ? 2 : 1);
-        if (R() < risk) fates[g.id] = won ? 'killed' : (R() < 0.6 ? 'captured' : 'killed');
-      }
-    };
-    fall(s.attGens, attWins); fall(s.defGens, !attWins);
-    for (const r of attWins ? s.attRegs : s.defRegs) if (R() < 0.35) r.exp = Math.min(3, (r.exp || 0) + 1);
-    return { winner: attWins ? 0 : 1, fates, kills: {}, auto: true };
+  // ——— المعركة بالقيادة: الإعداد والنتيجة ———
+  battleWeather(node) {
+    const r = rng(hashStr(node.id + ':' + this.S.turn));
+    const season = this.S.turn % 4, x = r();
+    if (season === 3) return x < 0.3 ? 'snow' : x < 0.5 ? 'rain' : 'clear';
+    if (season === 1 && (node.terrain === 'desert' || node.terrain === 'plains')) return x < 0.35 ? 'heat' : 'clear';
+    if (season === 0) return x < 0.2 ? 'rain' : x < 0.3 ? 'fog' : 'clear';
+    if (season === 2) return x < 0.18 ? 'fog' : x < 0.3 ? 'rain' : 'clear';
+    return x < 0.1 ? 'rain' : 'clear';
   },
-
-  // نتيجة معركة حقيقية
-  battleOutcome(res) {
-    const fates = {};
-    for (let side = 0; side < 2; side++) {
-      const won = res.winner === side;
-      for (const r of res.sides[side].regs) {
-        if (!r.ref) continue;
-        if (r.type === 'general') {
-          const g = r.ref;
-          if (r.men <= 0) {
-            const risk = g.flaw === 'reckless' ? 0.7 : 0.5;
-            fates[g.id] = won ? (R() < 0.5 ? 'killed' : 'ok') : (R() < risk ? 'captured' : 'killed');
-          } else if (!won && r.fled === false && res.reason === 'rout') {
-            if (R() < 0.15) fates[g.id] = 'captured';
-          }
-          continue;
-        }
-        r.ref.men = r.men;
-        if (won && r.kills >= 8 && r.ref.exp != null) r.ref.exp = Math.min(3, (r.ref.exp || 0) + 1);
+  simConfig(enc) {
+    const s = this.encSides(enc);
+    const P = this.S.player;
+    const moodOf = (armies, fid, defending) => {
+      let m = 0;
+      for (const a of armies) if (a.mood) m += { shaken: -10, hungry: -15, confident: 5 }[a.mood.k] / armies.length;
+      if (defending && enc.kind === 'siege' && s.node.stores < 0) m -= 15;
+      const F = this.f(fid), other = fid === enc.attFid ? enc.defFid : enc.attFid;
+      if (F && F.vendetta && F.vendetta[other] > 0) m += 8;
+      return Math.round(m);
+    };
+    const skill = DIFFS[this.S.difficulty].aiSkill;
+    const side = (fid, regs, gens, armies, defending) => {
+      const other = fid === enc.attFid ? enc.defFid : enc.attFid;
+      let intel = fid === P ? this.intelLevel(P, other) : 3;
+      if (fid === P && regs.some((r) => UNITS[r.type].cls === 'cav')) intel = Math.min(3, intel + 1);
+      if (fid === P && gens.some((g) => g.trait === 'tactician')) intel = Math.min(3, intel + 1);
+      const pers = this.sc.factions[fid] ? this.sc.factions[fid].personality : (this.f(fid) && this.f(fid).pers) || { aggr: 1 };
+      return {
+        fid, name: this.fname(fid), color: this.f(fid).color, player: fid === P,
+        regs: regs.filter((r) => r.men > 0),
+        gens: gens.filter((g) => g.status === 'army').map((g) => ({ id: g.id, name: g.name, trait: g.trait, flaw: g.flaw, rank: g.rank, men: this.genMen(g), vendetta: g.vendetta })),
+        mood: moodOf(armies, fid, defending), ai: fid === 'neutral' ? Math.min(skill, 0.45) : skill, intel, aggr: pers.aggr || 1,
+      };
+    };
+    return {
+      kind: enc.kind, terrain: enc.terrain || s.node.terrain, walls: this.effWalls(s.node), equip: enc.equip || {},
+      capital: s.node.capital, stores: s.node.stores, weather: this.battleWeather(s.node),
+      seed: hashStr(s.node.id) + this.S.turn * 131 + (this.S.nextId || 0), title: s.node.name, style: this.sc.id === 'threeKingdoms' ? 'east' : 'west',
+      sides: [side(enc.attFid, s.attRegs, s.attGens, s.attArmies, false), side(enc.defFid, s.defRegs, s.defGens, s.defArmies, true)],
+    };
+  },
+  // تطبيق نتيجة المحاكاة على جيوش الحملة
+  applySim(enc, res) {
+    if (!res || res === 'cancel' || res.winner == null) return null;
+    for (let si = 0; si < 2; si++) {
+      const won = res.winner === si;
+      for (const u of res.sides[si].units) {
+        if (!u.ref) continue;
+        u.ref.men = Math.max(0, Math.round(u.men));
+        if (won && u.kills >= 10 && u.ref.exp != null && R() < 0.5) u.ref.exp = Math.min(3, (u.ref.exp || 0) + 1);
       }
     }
-    return { winner: res.winner, fates };
+    const fates = {};
+    for (const [id, f] of Object.entries(res.fates || {})) if (f === 'killed' || f === 'captured') fates[id] = f;
+    return { winner: res.winner, fates, report: res.report, reason: res.reason };
+  },
+  autoResolve(enc) {
+    const cfg = this.simConfig(enc);
+    for (const sd of cfg.sides) sd.player = false;
+    const res = new WarSim(cfg).runAuto();
+    const out = this.applySim(enc, res) || { winner: 1, fates: {}, report: null };
+    out.auto = true;
+    return out;
   },
 
   // بعد حسم المعركة بأي طريقة
@@ -1081,9 +1100,13 @@ const Game = {
 
     const verb = enc.kind === 'siege' ? 'اقتحام' : 'معركة';
     this.addScar(node.id, 'battle', { winner: winFid, loser: loseFid });
+    const involves = enc.attFid === this.S.player || enc.defFid === this.S.player;
+    if (out.report && (involves || pa + pd >= 800 || Object.keys(out.fates).length || node.capital)) {
+      this.chronicle('battle', `${verb} ${node.name}: ${out.report.verdict} لـ${this.fname(winFid)} على ${this.fname(loseFid)}.`, { fids: [enc.attFid, enc.defFid], node: node.id, imp: involves ? 3 : 2, story: out.report.story });
+    }
     const P = this.S.player;
     if ((enc.attFid === P || enc.defFid === P) && out.auto) {
-      this.alert(winFid === P ? 'info' : 'imp', `${verb} ${node.name}: ${winFid === P ? 'انتصار' : 'هزيمة'} أمام ${this.fname(winFid === P ? loseFid : winFid)}`, { node: node.id, icon: 'swords' });
+      this.alert(winFid === P ? 'info' : 'imp', `${verb} ${node.name}: ${winFid === P ? 'انتصار على' : 'هزيمة أمام'} ${this.fname(winFid === P ? loseFid : winFid)}`, { node: node.id, icon: 'swords' });
     }
     if (enc.type === 'assault') {
       if (winner === 0) {

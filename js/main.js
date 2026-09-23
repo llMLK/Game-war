@@ -1,49 +1,52 @@
 'use strict';
 // القائمة الرئيسية، المعركة السريعة، والإقلاع
 
-// خلفية القائمة: معركة حيّة بين جيشين يقودهما الذكاء الاصطناعي
+// خلفية القائمة: خريطة مرسومة لأحد العصرين تتحرك ببطء
 class MenuScene {
   constructor() {
-    this.cam = new Camera(BW, BH);
-    this.newBattle();
-  }
-  newBattle() {
-    const terrains = ['plains', 'forest', 'hills', 'river'];
-    const pal = [['#b0392c', '#3a5f9a'], ['#3f8a4f', '#b0392c'], ['#6b2f79', '#f1ece0'], ['#2f7f7a', '#3a5f9a']];
-    const [c0, c1] = pick(pal);
-    const mk = (list) => list.map((t) => ({ type: t, men: UNITS[t].men, exp: 0 }));
-    this.b = new Battle({
-      kind: 'field', terrain: pick(terrains), seed: Math.floor(R() * 1e9), ground: R() < 0.5 ? 'green' : 'dry',
-      sides: [
-        { name: 'أ', color: c0, regs: mk(pick(QUICK_ARMIES)), general: { name: 'قائد', trait: null, men: 16 }, ai: 0.8 },
-        { name: 'ب', color: c1, regs: mk(pick(QUICK_ARMIES)), general: { name: 'قائد', trait: null, men: 16 }, ai: 0.8 },
-      ],
-    });
-    this.b.ais[0].posture = 'attack';
-    this.b.start();
-    this.b.onEnd = () => { setTimeout(() => this.newBattle(), 2500); };
+    const sc = SCENARIOS[pick(Object.keys(SCENARIOS))];
+    this.sc = sc;
+    const cols = {};
+    for (const [id, f] of Object.entries(sc.factions)) cols[id] = f.color;
+    cols.neutral = NEUTRAL.color;
+    this.art = new MapArt(sc, { colorOf: (o) => cols[o] || NEUTRAL.color });
+    const r = rng(hashStr(sc.id + 'menu'));
+    this.nodes = sc.nodes.map((n) => ({ ...n, market: n.pop > 15000 ? 1 + (r() < 0.5 ? 1 : 0) : 0, farm: r() < 0.6 ? 1 : 0, granary: n.walls >= 2 ? 1 : 0, barracks: n.capital ? 1 : 0, port: 0 }));
+    this.cam = new Camera(MW, MH);
+    this.cam.cover = true;
     this.t = 0;
+    this.path = this.nodes.filter((n) => n.capital);
   }
   enter() { this.fit(); }
   onResize() { this.fit(); }
   fit() {
-    this.cam.fit();
-    this.cam.z = Math.max(this.cam.z * 1.5, Math.min(App.W / 900, 1));
+    const cover = Math.max(App.W / MW, App.H / MH);
+    this.cam.minZ = cover; this.cam.maxZ = cover * 4;
+    this.cam.z = cover * 1.8;
   }
   update(dt) {
     this.t += dt;
-    this.b.update(dt);
-    const act = this.b.regs.filter((r) => r.active);
-    if (act.length) {
-      let x = 0, y = 0;
-      for (const r of act) { x += r.x; y += r.y; }
-      x /= act.length; y /= act.length;
-      this.cam.x += (x + Math.sin(this.t * 0.1) * 60 - this.cam.x) * dt * 0.3;
-      this.cam.y += (y - this.cam.y) * dt * 0.3;
-      this.cam.clamp();
-    }
+    const k = (this.t / 22) % this.path.length;
+    const a = this.path[Math.floor(k)], b = this.path[(Math.floor(k) + 1) % this.path.length];
+    const f = k - Math.floor(k), e = f * f * (3 - 2 * f);
+    this.cam.x = lerp(a.x, b.x, e); this.cam.y = lerp(a.y, b.y, e);
+    this.cam.clamp();
   }
-  render(ctx) { this.b.render(ctx, this.cam, null); }
+  render(ctx) {
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = '#2b2217'; ctx.fillRect(0, 0, App.canvas.width, App.canvas.height);
+    this.art.renderTerritory(this.nodes);
+    this.cam.apply(ctx);
+    ctx.drawImage(this.art.bg, 0, 0, MW, MH);
+    ctx.drawImage(this.art.terr, 0, 0, MW, MH);
+    for (const e of this.sc.edges) {
+      const A = this.nodes.find((n) => n.id === e[0]), B = this.nodes.find((n) => n.id === e[1]);
+      ctx.setLineDash(e[2] === 'water' ? [2, 4] : [3.5, 3]); ctx.strokeStyle = 'rgba(95,65,35,.6)'; ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
+    }
+    ctx.setLineDash([]);
+    for (const n of [...this.nodes].sort((a, b) => a.y - b.y)) this.art.drawNode(ctx, n, { color: this.art.colorOf(n.owner), t: this.t, scars: [], age: () => 99 });
+  }
 }
 
 function showMainMenu() {
@@ -137,32 +140,34 @@ function startCampaign() {
 
 function quickBattle(kind) {
   const mk = (list) => list.map((t) => ({ type: t, men: UNITS[t].men, exp: 0 }));
-  const terrains = ['plains', 'forest', 'hills', 'river'];
-  const P = { name: 'جيشك', color: '#3f8a4f', player: true };
-  const E = { name: 'العدو', color: '#b0392c', ai: 0.6 };
+  const terrains = ['plains', 'forest', 'hills', 'river', 'desert', 'mountains'];
+  const g = (name, trait, flaw, rank = 2) => ({ name, trait, flaw, rank, men: 12 + 4 * rank });
+  const P = { fid: 'p', name: 'قواتك', color: '#3f8a4f', player: true, intel: 2, ai: 0.6 };
+  const E = { fid: 'e', name: 'قوات العدو', color: '#b0392c', ai: 0.6, intel: 3 };
+  const traits = Object.keys(TRAITS).filter((t) => !['merchant', 'elite', 'naval', 'swift', 'logistician'].includes(t));
   let cfg;
   if (kind === 'field') {
     cfg = {
-      kind: 'field', terrain: pick(terrains), seed: Math.floor(R() * 1e9),
+      kind: 'field', terrain: pick(terrains), weather: pick(['clear', 'clear', 'rain', 'fog', 'heat']), seed: Math.floor(R() * 1e9), title: 'الميدان',
       sides: [
-        { ...P, regs: mk(pick(QUICK_ARMIES)), general: { name: 'قائدك', trait: 'tactician', men: 16 } },
-        { ...E, regs: mk(pick(QUICK_ARMIES)), general: { name: 'قائد العدو', trait: 'brave', men: 16 } },
+        { ...P, regs: mk(pick(QUICK_ARMIES)), gens: [g('قائدك', pick(traits), null), g('قائد الجناح', pick(traits), null, 1)] },
+        { ...E, regs: mk(pick(QUICK_ARMIES)), gens: [g('قائد العدو', pick(traits), pick([null, 'reckless', 'cautious', 'arrogant']))] },
       ],
     };
   } else if (kind === 'siege') {
     cfg = {
-      kind: 'siege', terrain: 'plains', walls: 2, seed: Math.floor(R() * 1e9), equip: { ram: true, ladders: true },
+      kind: 'siege', terrain: 'plains', walls: 2, seed: Math.floor(R() * 1e9), equip: { ram: true, ladders: true, tower: R() < 0.5 }, title: 'المدينة', stores: 2,
       sides: [
-        { ...P, regs: mk(['spear', 'sword', 'sword', 'sword', 'archer', 'archer', 'cavalry', 'catapult']), general: { name: 'قائدك', trait: 'brave', men: 16 } },
-        { ...E, regs: mk(['militia', 'militia', 'archer', 'archer', 'spear', 'sword']), general: { name: 'حاكم المدينة', trait: 'stalwart', men: 16 } },
+        { ...P, regs: mk(['spear', 'sword', 'sword', 'sword', 'archer', 'archer', 'cavalry', 'catapult', 'spear', 'sword']), gens: [g('قائدك', pick(['siege', 'brave', 'tactician']), null)] },
+        { ...E, regs: mk(['militia', 'militia', 'archer', 'archer', 'spear', 'sword']), gens: [g('حاكم المدينة', 'defender', null)] },
       ],
     };
   } else {
     cfg = {
-      kind: 'siege', terrain: 'plains', walls: 2, seed: Math.floor(R() * 1e9), equip: { ram: true, ladders: true },
+      kind: 'siege', terrain: 'plains', walls: 2, seed: Math.floor(R() * 1e9), equip: { ram: true, ladders: true, tower: R() < 0.5 }, title: 'مدينتك', stores: 3,
       sides: [
-        { ...E, player: false, regs: mk(['spear', 'sword', 'sword', 'sword', 'archer', 'archer', 'cavalry', 'catapult']), general: { name: 'قائد الغزاة', trait: 'brave', men: 16 } },
-        { ...P, regs: mk(['militia', 'militia', 'archer', 'archer', 'spear', 'sword']), general: { name: 'أنت', trait: 'stalwart', men: 16 } },
+        { ...E, regs: mk(['spear', 'sword', 'sword', 'sword', 'archer', 'archer', 'cavalry', 'catapult', 'spear', 'sword']), gens: [g('قائد الغزاة', pick(['siege', 'brave']), null)] },
+        { ...P, regs: mk(['militia', 'militia', 'archer', 'archer', 'spear', 'sword', 'cavalry']), gens: [g('أنت', 'defender', null)] },
       ],
     };
   }
@@ -173,8 +178,8 @@ function showGuide() {
   UI.modal({
     title: 'دليل الحرب',
     body: h('div', { class: 'tips' },
-      TIPS.map(([t, d]) => h('div', { class: 'tip' }, h('b', null, t), h('p', null, d))),
-      h('div', { class: 'tip' }, h('b', null, 'الوحدات'), RECRUITABLE.map((t) => h('p', null, h('b', null, UNITS[t].icon + ' ' + UNITS[t].name + ': '), UNITS[t].desc))),
+      GUIDE.map(([t, d]) => h('div', { class: 'tip' }, h('b', null, t), h('p', null, d))),
+      h('div', { class: 'tip' }, h('b', null, 'الوحدات'), RECRUITABLE.map((t) => h('p', null, h('b', null, UNITS[t].name + ': '), UNITS[t].desc))),
       h('div', { class: 'tip' }, h('b', null, 'الحملة'), h('p', null, 'كل دور = فصل. جنّد وابنِ في مدنك، حرّك جيوشك خطوة واحدة، حاصر المدن المسوّرة أو اقتحمها، ثم فاوض على الصلح أو الأحلاف. المدن المحتلة حديثاً تثور إن تُركت بلا جيش.')),
     ),
     buttons: [{ label: 'إغلاق', primary: true }],

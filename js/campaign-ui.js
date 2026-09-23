@@ -21,7 +21,7 @@ class CampaignScene {
     this.root = h('div', { class: 'camp-ui' });
     App.ui.appendChild(this.root);
     this.buildHud();
-    Sheets.attach(this.root);
+    Sheets.attach(this.root, this.entered);
     AlertsUI.attach(this.root, this);
     this.banner = h('div', { class: 'turn-banner', hidden: true });
     this.root.append(this.banner);
@@ -408,7 +408,12 @@ class CampaignScene {
     Game.save();
     if (Game.S.over) { Panels.showEnd(this); return; }
     if (this.selArmy && !Game.S.armies.includes(this.selArmy)) this.selArmy = null;
-    if (focus) this.selNode = focus;
+    if (focus) {
+      this.selNode = focus;
+      // لا تترك موضع الحدث خارج الشاشة
+      const sp = this.cam.toScreen(focus.x, focus.y);
+      if (sp.x < 60 || sp.y < 70 || sp.x > App.W - 60 || sp.y > App.H - 70) this.flyTo(focus.x, focus.y);
+    }
     if (win === 'siege' && focus && Game.besiegers(focus.id).length && !this.selArmy) Sheets.open(Panels.siegeSpec(this, focus));
     this.refresh();
     Panels.captivePrompts(this);
@@ -544,38 +549,11 @@ function installHooks(scene) {
 }
 
 function launchBattle(enc, resolve) {
-  const P = Game.S.player;
-  const s = Game.encSides(enc);
-  const skill = DIFFS[Game.S.difficulty].aiSkill;
-  const moodOf = (armies, fid, defending) => {
-    let m = 0;
-    for (const a of armies) if (a.mood) m += { shaken: -10, hungry: -15, confident: 5 }[a.mood.k] / armies.length;
-    if (defending && enc.kind === 'siege' && s.node.stores < 0) m -= 15;
-    const F = Game.f(fid), other = fid === enc.attFid ? enc.defFid : enc.attFid;
-    if (F && F.vendetta && F.vendetta[other] > 0) m += 10;
-    return Math.round(m);
-  };
-  const side = (fid, regs, gens, armies, defending) => ({
-    name: Game.fname(fid), color: Game.f(fid).color, player: fid === P, fid,
-    regs: regs.filter((r) => r.men > 0),
-    generals: gens.filter((g) => g.status === 'army').map((g) => ({ name: g.name, trait: g.trait, flaw: g.flaw, rank: g.rank, men: Game.genMen(g), ref: g, vendetta: g.vendetta })),
-    morale: moodOf(armies, fid, defending),
-    ai: fid === 'neutral' ? Math.min(skill, 0.45) : skill,
-  });
-  const terrain = enc.terrain || s.node.terrain;
-  const cfg = {
-    kind: enc.kind, terrain, walls: Game.effWalls(s.node), equip: enc.equip,
-    seed: hashStr(s.node.id) + Game.S.turn * 131,
-    ground: terrain === 'desert' ? 'sand' : Game.sc.battleGround,
-    sides: [side(enc.attFid, s.attRegs, s.attGens, s.attArmies, false), side(enc.defFid, s.defRegs, s.defGens, s.defArmies, true)],
-    capital: s.node.capital,
-    title: s.node.name,
-  };
+  const cfg = Game.simConfig(enc);
   const camp = App.scene;
-  const scene = new BattleScene(cfg, (res) => {
-    const out = Game.battleOutcome(res);
+  App.setScene(new BattleScene(cfg, (res) => {
     App.setScene(camp);
-    resolve(out);
-  });
-  App.setScene(scene);
+    if (res === 'cancel' || !res || res.winner == null) { resolve('cancel'); return; }
+    resolve(Game.applySim(enc, res));
+  }));
 }

@@ -48,9 +48,9 @@ const UI = {
 const Sheets = {
   wins: [], host: null, dockEl: null, root: null,
 
-  attach(root) {
+  attach(root, keep) {
     this.root = root;
-    this.wins = [];
+    if (!keep) this.wins = [];
     this.host = h('div', { class: 'sheet', hidden: true });
     this.dockEl = h('div', { class: 'dock' });
     root.append(this.host, this.dockEl);

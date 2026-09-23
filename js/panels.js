@@ -1070,12 +1070,14 @@ const Panels = {
 
   autoResult(enc, out, cb) {
     const P = Game.S.player;
-    const mine = (enc.attFid === P ? 0 : 1) === out.winner;
+    const side = enc.attFid === P ? 0 : 1;
+    const mine = side === out.winner;
+    const me = out.report && typeof BattleReport !== 'undefined' ? BattleReport.mine(out.report, side) : null;
     const lost = Object.entries(out.fates || {}).filter(([, f]) => f !== 'ok').map(([id, fate]) => `${Game.gen(id).name}: ${fate === 'captured' ? 'أُسر' : 'قُتل'}`);
     UI.modal({
-      title: mine ? 'نصر' : 'هزيمة', icon: mine ? 'laurel' : 'crownbroken', cls: (mine ? 'win' : 'lose') + (out.report ? ' wide' : ''),
+      title: me ? `${me.text} ${me.sub}` : mine ? 'نصر' : 'هزيمة', icon: mine ? 'laurel' : 'crownbroken', cls: (mine ? 'win' : 'lose') + (out.report ? ' wide' : ''),
       body: h('div', null,
-        out.report && typeof BattleReport !== 'undefined' ? BattleReport.render(out.report, P) : h('p', { class: 'lead' }, mine ? 'حُسمت المعركة لصالحك.' : 'دارت الدائرة على جيشك.'),
+        me ? BattleReport.render(out.report, side, { head: false }) : h('p', { class: 'lead' }, mine ? 'حُسمت المعركة لصالحك.' : 'دارت الدائرة على جيشك.'),
         lost.length ? h('p', { class: 'warn small' }, lost.join(' · ')) : null),
       buttons: [{ label: 'متابعة', primary: true, onClick: cb }],
     });
