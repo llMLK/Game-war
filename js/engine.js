@@ -67,13 +67,18 @@ const App = {
     this.resize();
     window.addEventListener('resize', () => this.resize());
     window.addEventListener('orientationchange', () => setTimeout(() => this.resize(), 250));
+    // في وضع تطبيق الشاشة الرئيسية على iOS قد لا يشمل innerHeight المنطقة السفلية، فنقيس حاوية اللعبة نفسها
+    if (window.ResizeObserver) new ResizeObserver(() => this.resize()).observe(this.canvas.parentElement);
     this.bindInput();
     requestAnimationFrame((t) => this.frame(t));
   },
 
   resize() {
     this.dpr = Math.min(window.devicePixelRatio || 1, 2);
-    this.W = window.innerWidth; this.H = window.innerHeight;
+    const box = this.canvas.parentElement.getBoundingClientRect();
+    const W = Math.round(box.width) || window.innerWidth, H = Math.round(box.height) || window.innerHeight;
+    if (W === this.W && H === this.H && this.canvas.width === Math.round(W * this.dpr)) return;
+    this.W = W; this.H = H;
     this.canvas.width = Math.round(this.W * this.dpr);
     this.canvas.height = Math.round(this.H * this.dpr);
     this.canvas.style.width = this.W + 'px';
