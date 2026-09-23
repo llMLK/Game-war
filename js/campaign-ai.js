@@ -198,7 +198,6 @@ const CampaignAI = {
       );
       if (wantWar && (Game.treaty(fid, g).marriage ? R() < 0.25 / pers.honor : true)) {
         Game.declareWar(fid, g, f.vendetta[g] > 0 ? 'ثأراً لقائدها' : dom === g ? 'لكبح هيمنتها' : f.claims.some((id) => Game.node(id).owner === g) ? 'لاستعادة أرضها' : 'طمعاً في أرضها');
-        if (G.isPlayer && Game.hooks.notify) Game.hooks.notify(`⚔️ ${f.name} تعلن الحرب عليك!`);
         acted++;
         continue;
       }
@@ -213,7 +212,7 @@ const CampaignAI = {
           else {
             Game.addRel(fid, g, -15);
             Game.event('pol', `${G.name} ترفض دفع الجزية لـ${f.name}.`, { fids: [fid, g], imp: 2 });
-            if (R() < 0.45 * pers.aggr) { Game.declareWar(fid, g, 'بعد رفض الجزية'); if (G.isPlayer && Game.hooks.notify) Game.hooks.notify(`⚔️ رفضت الجزية فأعلنت ${f.name} الحرب!`); }
+            if (R() < 0.45 * pers.aggr) Game.declareWar(fid, g, 'بعد رفض الجزية');
           }
           acted++;
           continue;
@@ -255,8 +254,7 @@ const CampaignAI = {
     // التجسس والتخريب على الهدف
     if (f.gold > 800 && f.goals && Game.atWar(fid, f.goals.owner) && f.goals.owner !== 'neutral' && R() < 0.3) {
       const kind = Game.besiegers(f.goals.target).some((b) => b.fid === fid) ? 'sabotage' : 'incite';
-      const r = Game.spy(fid, f.goals.owner, kind);
-      if (r.ok && Game.f(f.goals.owner).isPlayer && !r.caught && Game.hooks.notify && kind === 'sabotage') Game.hooks.notify('🔥 حريق مريب في مخازن إحدى مدنك…');
+      Game.spy(fid, f.goals.owner, kind);
     }
   },
 

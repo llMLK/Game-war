@@ -52,11 +52,13 @@ Object.assign(Game, {
       B.grievance[a] = (B.grievance[a] || 0) + 2;
     }
     this.event('pol', `${A.name} تعلن الحرب على ${this.fname(b)}${treachery ? ' ناقضةً العهد' : ''}${why ? ' — ' + why : ''}.`, { fids: [a, b], imp: 3 });
+    if (b === this.S.player) this.alert('crit', `${A.name} تعلن الحرب عليك${why ? ' — ' + why : ''}`, { icon: 'swords', win: 'diplo', key: 'war:' + a });
+    if (this.chronicle) this.chronicle('war', `${A.name} تعلن الحرب على ${this.fname(b)}${treachery ? ' ناقضةً العهد' : ''}.`, { fids: [a, b], imp: treachery ? 3 : 2 });
     // حلفاء المعتدى عليه يلبّون النداء
     for (const c of this.aliveMajors()) {
       if (c === a || c === b || this.status(b, c) !== 'alliance' || this.atWar(a, c)) continue;
       if (this.f(c).isPlayer) {
-        if (this.hooks.notify) this.hooks.notify(`📯 حليفك ${this.fname(b)} يتعرض لهجوم ${A.name}. نصرته تقوّي الحلف، وتركه يُضعفه.`);
+        this.alert('imp', `حليفك ${this.fname(b)} يتعرض لهجوم ${A.name} ويستنجد بك`, { icon: 'bell', win: 'diplo', key: 'allycall:' + b });
         this.f(c).allyCall = { ally: b, enemy: a, turn: this.S.turn };
         continue;
       }
@@ -70,10 +72,12 @@ Object.assign(Game, {
     }
   },
   makePeace(a, b, truce = 8, note) {
+    if (b === this.S.player || a === this.S.player) this.alert('info', `صلح مع ${this.fname(a === this.S.player ? b : a)}`, { icon: 'dove', win: 'diplo' });
     this.setStatus(a, b, 'peace', truce);
     this.addRel(a, b, 15);
     this.f(a).lostRecently = 0; this.f(b).lostRecently = 0;
     this.event('pol', `صلح بين ${this.fname(a)} و${this.fname(b)}${note ? ' ' + note : ''}.`, { fids: [a, b], imp: 3 });
+    this.chronicle('peace', `صلح بين ${this.fname(a)} و${this.fname(b)}.`, { fids: [a, b], imp: 2 });
     this.validate();
   },
   makeAlliance(a, b) {
@@ -82,11 +86,14 @@ Object.assign(Game, {
     this.f(a).allySince = this.f(a).allySince || {}; this.f(b).allySince = this.f(b).allySince || {};
     this.f(a).allySince[b] = this.f(b).allySince[a] = this.S.turn;
     this.event('pol', `حلف بين ${this.fname(a)} و${this.fname(b)}.`, { fids: [a, b], imp: 3 });
+    this.chronicle('alliance', `${this.fname(a)} و${this.fname(b)} تعقدان حلفاً.`, { fids: [a, b], imp: 2 });
   },
   breakAlliance(a, b, why) {
     this.setStatus(a, b, 'peace', 0);
     this.addRel(a, b, -20);
     this.event('pol', `انتهى الحلف بين ${this.fname(a)} و${this.fname(b)}${why ? ' — ' + why : ''}.`, { fids: [a, b], imp: 3 });
+    this.chronicle('betray', `انفضّ الحلف بين ${this.fname(a)} و${this.fname(b)}${why ? ' — ' + why : ''}.`, { fids: [a, b], imp: 2 });
+    if (b === this.S.player) this.alert('imp', `${this.fname(a)} تفضّ حلفها معك${why ? ' — ' + why : ''}`, { icon: 'dagger', win: 'diplo' });
     this.validate();
   },
   setTrade(a, b, on) {
@@ -215,11 +222,13 @@ Object.assign(Game, {
       const n = this.spyTargetCity(by, target, kind);
       n.loyalty = Math.max(0, n.loyalty - 25);
       text = `حرّض عملاؤك أهل ${n.name} (الولاء الآن ${n.loyalty}).`;
+      if (target === this.S.player) this.alert('imp', `محرّضون يثيرون أهل ${n.name} (الولاء ${n.loyalty})`, { node: n.id, icon: 'torch' });
     } else {
       const n = this.spyTargetCity(by, target, kind);
       n.stores = Math.max(-1, n.stores - 3);
       for (const r of n.garrison) r.men = Math.round(r.men * 0.7);
       text = `أحرق عملاؤك مخازن ${n.name} وأضعفوا حاميتها.`;
+      if (target === this.S.player) this.alert('imp', `حريق مريب في مخازن ${n.name}`, { node: n.id, icon: 'fire' });
     }
     const caught = R() < SPY[kind].catch;
     if (caught) {
