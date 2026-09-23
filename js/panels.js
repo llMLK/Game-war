@@ -879,6 +879,10 @@ const Panels = {
 
 
 
+  devReport() {
+    const a = Game.analytics();
+    UI.modal({ title: 'تحليلات المطوّر', icon: 'info', cls: 'wide', body: h('pre', { class: 'dev' }, JSON.stringify(a, null, 1)), buttons: [{ label: 'إغلاق', primary: true }] });
+  },
   // ═══════════════ الأهداف والفصول ═══════════════
   goalsTab(scene, body) {
     const P = scene.P;
@@ -1038,6 +1042,7 @@ const Panels = {
       buttons: [
         { label: 'حفظ / تحميل', onClick: () => this.saves(scene) },
         { label: 'دليل الحرب', onClick: () => showGuide() },
+        /[?&]dev\b/.test(location.search) ? { label: 'تحليلات المطوّر', onClick: () => this.devReport() } : null,
         { label: 'القائمة الرئيسية', onClick: () => { Game.save(); showMainMenu(); } },
         { label: 'متابعة', primary: true },
       ],

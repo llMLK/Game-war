@@ -109,6 +109,7 @@ const CampaignAI = {
     this.economy(fid);
     await this.generals(fid);
     this.recruit(fid);
+    this.spendHoard(fid);
     await this.military(fid);
     Game.validate();
   },
@@ -144,6 +145,7 @@ const CampaignAI = {
     }
     const old = f.goals && f.goals.target && Game.node(f.goals.target);
     if (old && old.owner !== fid && !Game.friendly(old.owner, fid) && Game.S.turn - f.goals.since < 6 && best && bs < (f.goals.score || 0) * 1.5) return;
+    if (best && (!f.goals || f.goals.target !== best.id)) f.goalShifts = (f.goalShifts || 0) + 1;
     f.goals = best ? { target: best.id, owner: best.owner, score: bs, since: Game.S.turn, kind: f.claims.includes(best.id) ? 'reclaim' : Game.defendersOf(best).length ? 'expand' : 'opportunity', myPow } : null;
   },
 
@@ -256,6 +258,11 @@ const CampaignAI = {
     else if ((f.gold < 200 || e.netGold < 0) && avgLoy > 60) f.tax = 'high';
     else if (avgLoy > 55) f.tax = 'normal';
     for (const n of nodes) if (n.loyalty < 30 && f.gold > 250 && !Game.canFestival(fid, n)) Game.festival(fid, n);
+    // الخزائن المتخمة تُنفق: تكريم القادة الساخطين
+    if (f.gold > 1400 && Game.honorGeneral) {
+      const g = Game.gensOf(fid).filter((x) => ['army', 'gov'].includes(x.status) && x.loy < 55 && !Game.isRuler(x)).sort((a, b) => a.loy - b.loy)[0];
+      if (g) Game.honorGeneral(fid, g);
+    }
     this.build(fid);
     // التجسس والتخريب على الهدف
     if (f.gold > 800 && f.goals && Game.atWar(fid, f.goals.owner) && f.goals.owner !== 'neutral' && R() < 0.3) {
@@ -381,6 +388,8 @@ const CampaignAI = {
     let loops = 0;
     for (const n of cities) {
       if (loops > 14) break;
+      // لا تجنيد فوق قدرة الإمداد: الجيوش المكدسة تموت جوعاً بلا غاية
+      if (Game.stackAt(n, fid) >= Game.supplyCap(n, fid)) continue;
       let a = Game.targetArmy(fid, n);
       const cap = Math.max(2, Math.ceil(Game.nodesOf(fid).length / 2)) + Math.floor(f.gold / 800) + 1;
       if (!a) {
@@ -411,6 +420,19 @@ const CampaignAI = {
         Game.recruit(fid, n, type, a.id);
         net -= UNITS[type].upkeep;
       }
+    }
+  },
+
+  // خزينة متخمة في زمن الحرب: المرتزقة لا يحتاجون قوى بشرية
+  spendHoard(fid) {
+    const f = Game.f(fid);
+    if (f.gold < 1500 || !f.mercs || !f.mercs.length) return;
+    if (!Game.aliveMajors().some((o) => o !== fid && Game.atWar(fid, o))) return;
+    const site = Game.nodesOf(fid).filter((n) => !Game.besieger(n.id)).sort((a, b) => this.frontier(b, fid) - this.frontier(a, fid))[0];
+    if (!site) return;
+    for (let i = 0; i < 2 && f.gold > 1200 && f.mercs.length; i++) {
+      const a = Game.targetArmy(fid, site);
+      if (!a || Game.hireMerc(fid, site, 0, a.id)) break;
     }
   },
 
@@ -481,6 +503,8 @@ const CampaignAI = {
       const thr = this.threat(here, fid);
       const guard = Game.garrisonPower(here) + Game.defendersOf(here).filter((d) => d !== a).reduce((s, d) => s + Game.armyPower(d), 0);
       const homeAtRisk = here.owner === fid && thr > guard * 1.2 && (here.capital || thr > guard * 2);
+      // مدينة فُتحت للتو والعدو قريب: الجيش يثبّت الفتح بدل أن يتركها بحامية هزيلة
+      if (here.owner === fid && Game.S.turn - (here.capturedTurn || -99) <= 2 && thr > Game.garrisonPower(here) * 0.8 && !Game.defendersOf(here).some((d) => d !== a && d.fid === fid)) { a.mp = 0; continue; }
 
       let best = null, bestScore = 0, bestPlan = null;
       for (const id in reach) {
@@ -531,6 +555,12 @@ const CampaignAI = {
         if (score > bestScore) { bestScore = score; best = n; bestPlan = plan; }
       }
       if (best) { void bestPlan; await Game.executeMove(a, best.id); continue; }
+      // لا عمل: جيش في مدينة مزدحمة ينتقل إلى مدينة فيها متسع
+      if (Game.overstack(here, fid) > 0) {
+        const room = Object.keys(reach).map((id) => Game.node(id)).filter((n) => Game.planMove(a, n.id).kind === 'move' && Game.stackAt(n, fid) + a.regs.length <= Game.supplyCap(n, fid))
+          .sort((x, y) => this.frontier(y, fid) - this.frontier(x, fid))[0];
+        if (room) { await Game.executeMove(a, room.id); continue; }
+      }
       // لا عمل: دمج الجيوش الصغيرة أو التدريب
       const twin = Game.armiesOfAt(fid, a.node).find((o) => o !== a && o.role !== 'governor' && o.regs.length + a.regs.length <= MAX_REGS);
       if (twin && a.regs.length <= 3) { Game.mergeInto(a, twin); continue; }

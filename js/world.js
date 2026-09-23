@@ -140,6 +140,7 @@ Object.assign(Game, {
     S.crises = S.crises || [];
     S.dir = S.dir || { calm: 0, lastStart: -99, domTurns: 0, dom: null, starts: 0, log: [], gold: [] };
     S.stats = S.stats || { acts: {}, cur: {}, hist: [], dead: 0 };
+    S.flips = S.flips || {};
     if (S.route === undefined) this.initRoute();
     for (const g of Object.values(S.gens)) if (g.loy === undefined) g.loy = this.baseLoy(g);
     for (const fid of this.majors()) {
@@ -595,15 +596,21 @@ Object.assign(Game, {
     const boredom = clamp((D.calm - 2) / 6, 0, 1);
     D.boredom = boredom; D.hoard = hoard;
     // طموح الممالك الراكدة
+    // طموح الممالك: السلام الطويل والحرب الباردة (حرب بلا قتال) كلاهما يولّد الرغبة في الحسم
+    D.fight = D.fight || {};
+    for (const e of S.log) if (e.turn === lastTurn && /^(معركة|اقتحام)|تضرب الحصار/.test(e.text)) for (const x of e.fids) D.fight[x] = lastTurn;
     for (const fid of this.aliveMajors()) {
       const f = this.f(fid);
       if (f.isPlayer || f.kind === 'horde') continue;
       const atWar = this.aliveMajors().some((o) => o !== fid && this.atWar(fid, o));
-      if (atWar) f.ambition = Math.max(0, (f.ambition || 0) - 0.05);
+      const stalled = S.turn - (D.fight[fid] != null ? D.fight[fid] : 0);
+      if (atWar && stalled > 4) f.ambition = Math.min(0.6, (f.ambition || 0) + 0.06);
+      else if (atWar) f.ambition = Math.max(0, (f.ambition || 0) - 0.04);
       else if (S.turn - (f.lastWarTurn || 0) > 8) f.ambition = Math.min(0.45, (f.ambition || 0) + 0.04);
     }
     const active = this.activeCrises();
-    const ctx = { boredom, dom, domTurns: D.domTurns, hoard, late: S.turn > 40, calm: D.calm, P };
+    // لاعب هادئ طويلاً: يُختار حدث معقول قريب منه (دون خلق جيوش بجانبه)
+    const ctx = { boredom, dom, domTurns: D.domTurns, hoard, late: S.turn > 40, calm: D.calm, P, focus: boredom >= 0.5 && F && F.alive ? P : null };
     // مواعيد تاريخية مرنة: تختلف كل حملة، وقد لا تأتي أبداً
     if (!D.sched) D.sched = this.planEras();
     for (const e of D.sched) {
@@ -656,7 +663,7 @@ Object.assign(Game, {
     const dead = meaningful === 0 && events === 0;
     if (dead) st.dead++;
     st.hist.push({ turn: S.turn - 1, acts: cur, events, dead, gold: this.f(P) ? this.f(P).gold : 0 });
-    if (st.hist.length > 80) st.hist.shift();
+    if (st.hist.length > 240) st.hist.shift();
     st.cur = {};
   },
 });
@@ -677,11 +684,17 @@ CRISES.horde = {
     if (Game.S.crises.some((c) => c.type === 'horde' && (!c.over || Game.S.turn - c.end < 24))) return 0;
     return 1.3 + ctx.boredom * 2.6 + (ctx.late ? 1 : 0) + (ctx.dom ? 0.4 : 0);
   },
-  start(c) {
+  start(c, o = {}) {
     const hs = Game.wd().hordes || [];
     if (!hs.length) return false;
-    const hd = pick(hs);
-    const gi = Math.floor(R() * hd.gates.length);
+    let hd = pick(hs);
+    let gi = Math.floor(R() * hd.gates.length);
+    const focus = o.ctx && o.ctx.focus;
+    if (focus && Game.nodesOf(focus).length) {
+      const d = (ids) => Math.min(...ids.filter((id) => Game.node(id)).map((id) => Math.min(...Game.nodesOf(focus).map((n) => Game.hops(n.id, id, 6)))));
+      let best = 99;
+      for (const h2 of hs) h2.gates.forEach((g, i) => { const x = d(g); if (x < best) { best = x; hd = h2; gi = i; } });
+    }
     const gates = hd.gates[gi].filter((id) => Game.node(id));
     if (!gates.length) return false;
     const regs = clamp(Math.round(Game.avgMajorRegs() * (0.95 + R() * 0.4)), 14, 32);
@@ -1109,9 +1122,10 @@ CRISES.plague = {
     const wars = Game.S.armies.filter((a) => a.siege).length;
     return 0.8 + Math.min(1, wars * 0.15) + ctx.boredom * 0.6 + (ctx.late ? 0.4 : 0);
   },
-  start(c) {
+  start(c, o = {}) {
     const w = {};
-    for (const n of Game.S.nodes) if (n.pop >= 11000) w[n.id] = (n.pop / 10000) * (Game.scarsAt(n.id, 4).length ? 2 : 1) * (n.port ? 1.5 : 1) * (Game.besieger(n.id) ? 1.7 : 1) * (Game.overstack(n, n.owner) > 0 ? 1.5 : 1);
+    const focus = o.ctx && o.ctx.focus;
+    for (const n of Game.S.nodes) if (n.pop >= 11000) w[n.id] = (n.pop / 10000) * (Game.scarsAt(n.id, 4).length ? 2 : 1) * (n.port ? 1.5 : 1) * (Game.besieger(n.id) ? 1.7 : 1) * (Game.overstack(n, n.owner) > 0 ? 1.5 : 1) * (focus && (n.owner === focus || Game.adjAll(n.id).some((x) => Game.node(x).owner === focus)) ? 3 : 1);
     if (!Object.keys(w).length) return false;
     c.node = weightedPick(w);
     c.v = { name: Game.wd().plague || 'الوباء', inf: {}, done: [], quar: {}, alms: {}, deaths: 0, seen: {} };
@@ -1223,9 +1237,10 @@ CRISES.famine = {
     if (Game.S.turn < 6 || Game.S.crises.some((c) => c.type === 'famine' && (!c.over || Game.S.turn - c.end < 12))) return 0;
     return 0.9 + (Game.S.turn % 4 === 1 ? 0.6 : 0) + ctx.boredom * 0.5;
   },
-  start(c) {
+  start(c, o = {}) {
     const w = {};
-    for (const n of Game.S.nodes) if (['plains', 'desert', 'river', 'hills'].includes(n.terrain)) w[n.id] = n.pop / 10000;
+    const focus = o.ctx && o.ctx.focus;
+    for (const n of Game.S.nodes) if (['plains', 'desert', 'river', 'hills'].includes(n.terrain)) w[n.id] = n.pop / 10000 * (focus && n.owner === focus ? 3 : 1);
     if (!Object.keys(w).length) return false;
     c.node = weightedPick(w);
     const region = WX.near(c.node, 1).slice(0, 5);
@@ -1802,11 +1817,11 @@ CRISES.freecity = {
     });
   },
   weight(ctx) { return this.cands().length ? 0.7 + (ctx.hoard ? 0.8 : 0) + ctx.boredom * 0.4 + (ctx.dom ? 0.4 : 0) : 0; },
-  start(c) {
+  start(c, o = {}) {
     const cs = this.cands();
     if (!cs.length) return false;
     const w = {};
-    for (const n of cs) w[n.id] = n.pop / 10000 + n.market + (n.owner === Game.S.player ? 1 : 0) + (n.owner === (Game.S.dir.dom || '') ? 1.5 : 0);
+    for (const n of cs) w[n.id] = n.pop / 10000 + n.market + (n.owner === Game.S.player ? (o.ctx && o.ctx.focus ? 4 : 1) : 0) + (n.owner === (Game.S.dir.dom || '') ? 1.5 : 0);
     c.node = weightedPick(w);
     const n = Game.node(c.node);
     n.petition = Game.S.turn;
@@ -1877,10 +1892,11 @@ CRISES.uprising = {
     return out;
   },
   weight(ctx) { return this.cands().length ? 0.8 + ctx.boredom * 0.4 : 0; },
-  start(c) {
+  start(c, o = {}) {
     const cs = this.cands();
     if (!cs.length) return false;
-    const [fid, low] = pick(cs);
+    const mine = o.ctx && o.ctx.focus && cs.find(([f]) => f === o.ctx.focus);
+    const [fid, low] = mine || pick(cs);
     const origin = low.sort((a, b) => a.loyalty - b.loyalty)[0];
     const U = Game.wd().uprisings || {};
     const [title, leader] = U[fid] || U.def || ['ثورة المحرومين', 'زعيم مجهول'];
@@ -1989,7 +2005,9 @@ CRISES.star = {
     const hoard = o.ctx && o.ctx.hoard;
     const merc = (wd.mercs || []).length && R() < (hoard ? 0.6 : 0.35);
     const neutral = Game.S.nodes.filter((n) => n.owner === 'neutral');
-    const home = pick(neutral.length ? neutral : Game.S.nodes);
+    const focus = o.ctx && o.ctx.focus;
+    const nearF = focus ? neutral.filter((n) => Game.adjAll(n.id).some((x) => Game.node(x).owner === focus)) : [];
+    const home = pick(nearF.length ? nearF : neutral.length ? neutral : Game.S.nodes);
     if (merc) {
       const m = pick(wd.mercs);
       if (Game.S.crises.some((x) => !x.over && x.type === 'star' && x.v.name === m.name)) return false;

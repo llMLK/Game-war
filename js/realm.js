@@ -24,7 +24,7 @@ const HISTORIC = {
   umayyad: {
     umayyad: { name: 'فتح القسطنطينية', desc: 'الحلم الذي لم يتحقق: القسطنطينية ودمشق معاً.', nodes: ['constantinople', 'damascus'] },
     byzantine: { name: 'استعادة الشام', desc: 'أنطاكية وحلب ودمشق مع القسطنطينية.', nodes: ['antioch', 'aleppo', 'damascus', 'constantinople'] },
-    khazar: { name: 'أبواب القوقاز والجزيرة', desc: 'باب الأبواب ودبيل وتفليس والموصل مع إتل.', nodes: ['derbent', 'dvin', 'tiflis', 'mosul', 'atil'] },
+    khazar: { name: 'أبواب القوقاز والجزيرة', desc: 'باب الأبواب ودبيل وتفليس وملطية والموصل مع إتل.', nodes: ['derbent', 'dvin', 'tiflis', 'malatya', 'mosul', 'atil'] },
   },
 };
 const RIVAL = { threeKingdoms: { shu: 'wei', wei: 'shu', wu: 'wei' }, umayyad: { umayyad: 'byzantine', byzantine: 'umayyad', khazar: 'umayyad' } };
@@ -44,12 +44,12 @@ Object.assign(Game, {
     const total = S.nodes.length;
     const mine = this.nodesOf(fid);
     const out = [];
-    const need = Math.ceil(total * 0.6);
-    out.push({ k: 'empire', icon: 'crown', name: 'الإمبراطورية', desc: `احكم ${need} مدينة من ${total}.`, have: mine.length, need, done: mine.length >= need });
+    const need = Math.ceil(total * 0.65);
+    out.push({ k: 'empire', icon: 'crown', name: 'الإمبراطورية', desc: `احكم ${need} مدينة من ${total} ثلاثة أدوار متتالية.`, have: mine.length, need, hold: S.obj.emp || 0, done: mine.length >= need && (S.obj.emp || 0) >= 3 });
     const hd = (HISTORIC[S.scenario] || {})[fid];
     if (hd) {
       const have = hd.nodes.filter((id) => this.node(id) && this.node(id).owner === fid).length;
-      out.push({ k: 'historic', icon: 'map', name: hd.name, desc: `${hd.desc} (دوران متتاليان)`, have, need: hd.nodes.length, hold: S.obj.hist || 0, done: have >= hd.nodes.length && (S.obj.hist || 0) >= 2, nodes: hd.nodes });
+      out.push({ k: 'historic', icon: 'map', name: hd.name, desc: `${hd.desc} (ثلاثة أدوار متتالية)`, have, need: hd.nodes.length, hold: S.obj.hist || 0, done: have >= hd.nodes.length && (S.obj.hist || 0) >= 3, nodes: hd.nodes });
     }
     const rv = (RIVAL[S.scenario] || {})[fid];
     if (rv && this.f(rv)) {
@@ -83,9 +83,20 @@ Object.assign(Game, {
     S.obj = S.obj || {};
     const hd = (HISTORIC[S.scenario] || {})[P];
     S.obj.hist = hd && hd.nodes.every((id) => this.node(id) && this.node(id).owner === P) ? (S.obj.hist || 0) + 1 : 0;
+    S.obj.emp = this.nodesOf(P).length >= Math.ceil(S.nodes.length * 0.65) ? (S.obj.emp || 0) + 1 : 0;
+    // إمبراطورية منافسة تنهي الحملة بدل استمرار بلا معنى
+    const rivalEmp = this.aliveMajors().find((id) => id !== P && !this.f(id).kind && this.nodesOf(id).length >= Math.ceil(S.nodes.length * 0.65));
+    S.obj.rivalEmp = rivalEmp && rivalEmp === S.obj.rivalEmpId ? (S.obj.rivalEmp || 0) + 1 : rivalEmp ? 1 : 0;
+    S.obj.rivalEmpId = rivalEmp || null;
+    if (rivalEmp && S.obj.rivalEmp >= 3 && !this.isVassalOf(P, rivalEmp)) {
+      S.over = 'lose';
+      S.overWhy = `قامت إمبراطورية ${this.fname(rivalEmp)} على أغلب البلاد، وصار ما بقي لك هامشاً على خريطتها.`;
+      this.chronicle('realm', `${this.fname(rivalEmp)} تبسط سلطانها على أغلب البلاد.`, { fids: [rivalEmp, P], imp: 3 });
+      return;
+    }
     const r = this.tradeGoal(P);
     S.obj.trade = r && r.path.every((id) => this.node(id) && this.node(id).owner === P) ? (S.obj.trade || 0) + 1 : 0;
-    const done = this.objectivesOf(P).find((o) => o.done);
+    const done = S.turn >= 20 ? this.objectivesOf(P).find((o) => o.done) : null;
     if (done) {
       S.over = 'win';
       const txt = {
@@ -298,6 +309,31 @@ Object.assign(Game, {
       this.chronicle('war', `${g.name} يقود جيشاً ليأخذ بثأر أبيه من ${this.fname(g.vendetta)}.`, { fids: [g.fid, g.vendetta], imp: 3 });
       if (g.vendetta === this.S.player) this.alert('imp', `${g.name} يقود جيشاً طالباً الثأر منك`, { icon: 'drop', node: site.id });
     }
+  },
+
+  // ——————————————————— تحليلات المطوّر (لا تظهر للاعب) ———————————————————
+  // تكشف الأدوار الميتة والتكرار والجمود واللولب والاقتصاد المتخم
+  analytics() {
+    const S = this.S, P = S.player, st = S.stats || { hist: [], acts: {} };
+    let streak = 0, longest = 0;
+    for (const h2 of st.hist) { streak = h2.dead ? streak + 1 : 0; longest = Math.max(longest, streak); }
+    const acts = st.acts || {};
+    const totalActs = Object.values(acts).reduce((t, v) => t + v, 0) || 1;
+    const topAct = Object.entries(acts).sort((a, b) => b[1] - a[1])[0];
+    const flips = Object.entries(S.flips || {}).filter(([, v]) => v >= 3).map(([k, v]) => `${k}×${v}`);
+    const idle = this.armiesOf(P).filter((a) => !a.siege && a.mp >= this.mpMax(a) && a.regs.length).length;
+    const stale = this.aliveMajors().filter((id) => !this.f(id).isPlayer && this.f(id).goals && S.turn - this.f(id).goals.since > 10).map((id) => this.fname(id));
+    const alliances = [];
+    for (const a of this.aliveMajors()) for (const b of this.aliveMajors()) if (a < b && this.status(a, b) === 'alliance') alliances.push(`${this.fname(a)}+${this.fname(b)} (${S.turn - ((this.f(a).allySince || {})[b] || 0)})`);
+    const over = this.aliveMajors().map((id) => this.overstack ? this.nodesOf(id).reduce((t, n) => t + this.overstack(n, id), 0) : 0).reduce((t, v) => t + v, 0);
+    return {
+      turn: S.turn, deadTurns: st.dead, longestDead: longest,
+      topAction: topAct ? `${topAct[0]} ${Math.round(100 * topAct[1] / totalActs)}٪` : '—', actions: acts,
+      flipFlops: flips, idleArmies: idle, gold: this.f(P) ? this.f(P).gold : 0,
+      staleAI: stale, goalShifts: Object.fromEntries(this.majors().map((id) => [this.fname(id), this.f(id).goalShifts || 0])),
+      alliances, overstack: over,
+      crises: (S.crises || []).map((c) => `${c.type}:${c.over ? c.why : 'st' + c.stage}`), director: (S.dir || {}).log || [],
+    };
   },
 
   // ——————————————————— دورة المملكة ———————————————————

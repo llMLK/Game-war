@@ -1317,7 +1317,7 @@ const Game = {
     if (!this.f(p).alive || this.nodesOf(p).length === 0) S.over = 'lose';
     else {
       const rivals = this.majors().filter((id) => id !== p && this.f(id).alive);
-      if (!S.endless && (rivals.length === 0 || this.nodesOf(p).length / S.nodes.length >= 0.75)) { S.over = 'win'; if (!S.overWhy) S.overWhy = rivals.length === 0 ? 'لم تبقَ مملكة تنازعك. البلاد كلها لك.' : null; }
+      if (!S.endless && (rivals.length === 0 || this.nodesOf(p).length / S.nodes.length >= 0.85)) { S.over = 'win'; if (!S.overWhy) S.overWhy = rivals.length === 0 ? 'لم تبقَ مملكة تنازعك. البلاد كلها لك.' : null; }
     }
   },
 

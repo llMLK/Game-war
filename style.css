@@ -586,3 +586,4 @@ button:disabled { opacity: 0.42; cursor: default; }
 .goal .bar i { display: block; height: 100%; background: linear-gradient(90deg, #b8862a, #e5c173); }
 .goal p { margin: 0; }
 .choice button.on { border-color: var(--bronze-hi); background: #3d2c16; opacity: 1; }
+pre.dev { direction: ltr; text-align: left; font-size: 11px; max-height: 60vh; overflow: auto; white-space: pre-wrap; }
