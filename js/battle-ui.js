@@ -87,7 +87,10 @@ class BattleScene {
         h('button', { class: 'chip', onclick: () => { b.autoDeploy(this.ps, 'ambush'); this.toast('الخيالة في الغابات إن وُجدت — مخفيّون عن العدو'); } }, 'كمين في الغابة'),
         h('button', { class: 'btn primary', onclick: () => this.startBattle() }, 'ابدأ المعركة ⚔️'),
       ),
+      this.planBox = h('div', { class: 'b-plan' }),
     );
+    this.renderPlans();
+    this.el.cmdBar = h('div', { class: 'b-cmdbar', hidden: true });
     this.el.cmds = h('div', { class: 'b-cmds', hidden: true });
     this.el.cardsWrap = h('div', { class: 'b-cards' });
     this.el.multi = h('button', { class: 'grp', onclick: () => { this.multi = !this.multi; this.refreshCmds(); } }, '＋ متعدد');
@@ -100,7 +103,7 @@ class BattleScene {
     );
     const bottom = h('div', { class: 'b-bottom' }, groups, this.el.cardsWrap);
     this.el.toast = h('div', { class: 'toast', hidden: true });
-    this.root.append(top, this.el.deploy, this.el.cmds, bottom, this.el.toast);
+    this.root.append(top, this.el.deploy, this.el.cmdBar, this.el.cmds, bottom, this.el.toast);
     this.buildCards();
     this.refreshHud();
   }
@@ -121,7 +124,7 @@ class BattleScene {
   buildCards() {
     this.el.cardsWrap.innerHTML = '';
     this.cards.clear();
-    for (const r of this.b.regs) {
+    for (const r of [...this.b.regs, ...(this.b.reserves[this.ps] || [])]) {
       if (r.side !== this.ps) continue;
       const bar = h('i'), mor = h('i'), num = h('span', { class: 'num' });
       const card = h('button', { class: 'card', onclick: () => this.cardTap(r) },
@@ -136,6 +139,7 @@ class BattleScene {
   }
 
   cardTap(r) {
+    if (r.reserve) { this.toast('وحدة في الاحتياط — تدخل الميدان حين يفرغ مكان'); return; }
     if (!r.alive) return;
     if (this.multi) r.selected = !r.selected;
     else {
@@ -222,10 +226,11 @@ class BattleScene {
     if (b.kind === 'siege' && b.plazaT > 0) t += ` · الساحة ${Math.floor(b.plazaT)}/25`;
     this.el.timer.textContent = b.phase === 'deploy' ? 'التمركز' : t;
     this.el.deploy.hidden = b.phase !== 'deploy';
+    this.refreshCmdBar();
     this.el.pause.textContent = b.paused ? '▶' : '⏸';
     this.el.pause.classList.toggle('on', b.paused);
     this.el.speed.textContent = '×' + b.speed;
-    for (const r of b.regs) {
+    for (const r of [...b.regs, ...(b.reserves[ps] || [])]) {
       const c = this.cards.get(r.id);
       if (!c) continue;
       c.bar.style.width = (100 * r.men / r.maxMen) + '%';
@@ -234,6 +239,7 @@ class BattleScene {
       c.num.textContent = r.men;
       c.card.classList.toggle('sel', r.selected);
       c.card.classList.toggle('dead', !r.alive);
+      c.card.classList.toggle('reserve', !!r.reserve);
       c.card.classList.toggle('rout', r.state === 'routing');
       c.card.classList.toggle('fight', r.engaged);
     }
@@ -294,9 +300,11 @@ class BattleScene {
           if (r.type === 'ram') continue;
           r.setOrder({ type: 'attack', target: hit });
         }
+        this.focusEnemy = hit;
         this.toast(`هجوم على ${hit.type === 'general' ? 'القائد' : hit.def.name}`);
       } else {
-        this.toast(`${hit.def.icon} ${hit.def.name} — ${hit.men} رجل. ${hit.def.desc}`);
+        this.focusEnemy = hit;
+        this.toast(`${hit.def.icon} ${hit.def.name} — ${hit.men} رجل. ${hit.def.desc} (هدف تركيز الرماة)`);
       }
       return;
     }
@@ -359,6 +367,51 @@ class BattleScene {
   }
 
   // ——— التحكم العام ———
+  renderPlans() {
+    const b = this.b, ps = this.ps;
+    if (ps < 0) return;
+    const box = this.planBox;
+    box.innerHTML = '';
+    const g = b.commander[ps];
+    const tr = g && g.trait;
+    box.appendChild(h('div', { class: 'b-plan-head' },
+      h('b', null, 'خطة المعركة'),
+      g ? h('span', { class: 'muted small' }, ` · القائد ${g.name}${tr ? ' (' + TRAITS[tr].name + ')' : ''} · ${b.mods[ps].cp} نقاط أوامر`) : h('span', { class: 'warn small' }, ' · بلا قائد: لا أوامر'),
+    ));
+    const row = h('div', { class: 'b-plan-row' });
+    for (const [k, p] of Object.entries(PLANS)) {
+      const aff = PLAN_AFFINITY[tr] === k || (PLAN_AFFINITY[tr] === '*' && k !== 'balanced');
+      row.appendChild(h('button', { class: 'chip' + (b.plans[ps] === k ? ' on' : '') + (aff ? ' aff' : ''), title: p.desc, onclick: () => { b.setPlan(ps, k); this.renderPlans(); this.toast(p.name + ': ' + p.desc); } }, p.icon + ' ' + p.name + (aff ? ' ★' : '')));
+    }
+    box.appendChild(row);
+    box.appendChild(h('p', { class: 'hint' }, PLANS[b.plans[ps]].desc + (b.kind === 'field' ? ` · ${TERRAIN[b.cfg.terrain] ? TERRAIN[b.cfg.terrain].name : ''}` : '')));
+  }
+
+  refreshCmdBar() {
+    const b = this.b, ps = this.ps, bar = this.el.cmdBar;
+    if (!bar) return;
+    bar.hidden = b.phase !== 'battle' || ps < 0;
+    if (bar.hidden) return;
+    const sig = b.cp[ps] + ':' + Object.keys(COMMANDS).map((k) => !!b.canCommand(ps, k)).join(',') + ':' + Math.floor(b.cpT[ps] / 15);
+    if (sig === this.cmdSig) return;
+    this.cmdSig = sig;
+    bar.innerHTML = '';
+    bar.appendChild(h('div', { class: 'cp', title: 'نقاط أوامر القائد — تتجدد كل 75 ثانية' }, '★'.repeat(b.cp[ps]) || '—'));
+    for (const [k, c] of Object.entries(COMMANDS)) {
+      if (k === 'gate' && !(b.kind === 'siege' && ps === 0)) continue;
+      const err = b.canCommand(ps, k);
+      bar.appendChild(h('button', {
+        class: 'cmd-btn', disabled: !!err, title: err || c.desc,
+        onclick: () => {
+          const target = k === 'volley' ? this.focusEnemy : null;
+          const e = b.useCommand(ps, k, target);
+          this.toast(e || `${c.name}: ${c.desc}`);
+          this.cmdSig = null; this.refreshCmdBar();
+        },
+      }, h('span', null, c.icon), h('small', null, c.name)));
+    }
+  }
+
   startBattle() {
     this.b.start();
     this.refreshCmds(); this.refreshHud();

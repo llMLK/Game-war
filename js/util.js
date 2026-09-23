@@ -83,3 +83,5 @@ const store = {
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } },
   del(k) { try { localStorage.removeItem(k); } catch (e) { /* تجاهل */ } },
 };
+
+function hashStr(s) { let h2 = 2166136261; for (let i = 0; i < s.length; i++) { h2 ^= s.charCodeAt(i); h2 = Math.imul(h2, 16777619); } return h2 >>> 0; }

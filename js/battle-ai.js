@@ -34,11 +34,55 @@ class BattleAI {
     else if (!isAtt && hasForest && this.skill > 0.45 && R() < 0.7) this.style = 'ambush';
     else if (!isAtt && this.skill > 0.3) this.style = 'defensive';
     b.autoDeploy(this.side, this.style);
-    // المدافع الذكي يضع الرمّاحة في مربع إذا كان العدو غنياً بالخيالة
+    b.setPlan(this.side, this.choosePlan(isAtt, hasForest));
     for (const r of b.sideRegs(this.side)) {
       r.slotAnchor = { x: r.x, y: r.y, face: r.facing };
       if (r.type === 'cavalry' || r.type === 'horsearcher') r.stance = 'hold';
     }
+  }
+
+  choosePlan(isAtt, hasForest) {
+    const b = this.b, mine = b.sideRegs(this.side);
+    if (this.skill < 0.3) return 'balanced';
+    const tr = b.traits[this.side];
+    const share = (f) => mine.filter(f).length / Math.max(1, mine.length);
+    const cav = share((r) => r.def.cls === 'cav' && r.type !== 'general');
+    const arch = share((r) => r.ranged);
+    let plan = 'balanced';
+    if (b.kind === 'siege') plan = this.side === 0 ? (arch > 0.35 ? 'skirmish' : 'assault') : 'hold';
+    else if (this.style === 'ambush' && hasForest) plan = 'ambush';
+    else if (!isAtt && this.style === 'defensive') plan = 'hold';
+    else if (cav > 0.3) plan = 'flank';
+    else if (arch > 0.35) plan = 'skirmish';
+    else if (isAtt) plan = 'assault';
+    const aff = PLAN_AFFINITY[tr];
+    if (aff && aff !== '*' && R() < 0.5 && !(aff === 'hold' && isAtt)) plan = aff;
+    return plan;
+  }
+
+  // أوامر القائد
+  commands() {
+    const b = this.b, side = this.side;
+    if (this.skill < 0.3 || b.cp[side] <= 0 || b.generalDown[side]) return;
+    const mine = this.mine();
+    if (!mine.length) return;
+    const foes = this.enemies().filter((e) => e.state !== 'routing');
+    const engaged = mine.filter((r) => r.engaged).length;
+    const avgMor = mine.reduce((s, r) => s + r.morale, 0) / mine.length;
+    const S = this.strength(mine), E = this.strength(foes);
+    const use = (k, t) => b.useCommand(side, k, t) === null;
+    if (b.kind === 'siege' && side === 0 && b.time > 15 && !this.usedGate && (b.map.crossings(true).length || mine.some((r) => r.type === 'ram' || r.type === 'tower'))) {
+      if (use('gate')) { this.usedGate = true; return; }
+    }
+    if (avgMor < 42 && engaged >= 2 && use('hold')) return;
+    const idleCav = mine.filter((r) => r.def.cls === 'cav' && r.type !== 'general' && !r.ranged && !r.engaged);
+    if (idleCav.length && foes.filter((e) => e.engaged).length >= 2 && R() < 0.6 && use('flank')) return;
+    const archers = mine.filter((r) => r.ranged && r.ammo > 0);
+    if (archers.length >= 2 && R() < 0.35) {
+      const gen = foes.find((e) => e.type === 'general' && archers.some((a) => a.inRangeOf(e)));
+      if (gen && use('volley', gen)) return;
+    }
+    if (engaged >= mine.length * 0.5 && S > E * 1.1 && R() < 0.5 && use('charge')) return;
   }
 
   onStart() {
@@ -50,7 +94,11 @@ class BattleAI {
     this.t += dt;
     if (this.t < this.next) return;
     this.next = this.t + (1.3 - 0.7 * this.skill) * (0.8 + R() * 0.4);
-    try { this.think(); } catch (e) { console.error(e); }
+    try {
+      this.think();
+      this.cmdT = (this.cmdT || 0) - 1;
+      if (this.cmdT <= 0) { this.cmdT = 3; this.commands(); }
+    } catch (e) { console.error(e); }
   }
 
   strength(list) {
@@ -345,15 +393,21 @@ class BattleAI {
     const b = this.b, map = b.map;
     const breaches = map.breaches();
     const gateOpen = map.gateOpen;
-    const entries = breaches.length > 0;
-    const ladders = mine.some((r) => r.ladders);
+    const docked = Object.values(map.docked).some(Boolean);
+    const entries = breaches.length > 0 || docked;
+    const ladders = mine.some((r) => r.ladders) && map.ladders;
     const plaza = map.plaza;
     const stageY = WALL_Y + 250;
+    const towersComing = mine.some((r) => r.type === 'tower' && r.docked == null);
     const assault = entries || (ladders && b.time > 25) || b.time > 240;
     const up = -Math.PI / 2;
 
     for (const r of mine) {
       if (r.engaged) continue;
+      if (r.type === 'tower') {
+        if (r.docked == null && (!r.order || r.order.type !== 'tower')) r.setOrder({ type: 'tower', col: r.towerCol });
+        continue;
+      }
       if (r.type === 'ram') {
         if (!gateOpen && (!r.order || r.order.type !== 'gate')) r.setOrder({ type: 'gate' });
         continue;
@@ -379,6 +433,12 @@ class BattleAI {
         }
       }
       const inside = r.y < WALL_Y;
+      // انتظار الأبراج حتى تلتصق إن كانت قريبة
+      if (!entries && towersComing && !ladders && !inside) {
+        const t = mine.find((x) => x.type === 'tower' && x.docked == null);
+        if (t && !r.order) r.setOrder({ type: 'move', x: t.x + (R() - 0.5) * 60, y: t.y + 70, face: up });
+        continue;
+      }
       if (!assault && !inside) {
         if (!r.order && Math.abs(r.y - stageY) > 40) r.setOrder({ type: 'move', x: r.x, y: stageY, face: up });
         continue;
@@ -390,9 +450,8 @@ class BattleAI {
       if (!t && enemies.length && Math.hypot(enemies[0].x - r.x, enemies[0].y - r.y) < 150) t = this.bestTarget(r, enemies);
       if (t) { this.retarget(r, t); continue; }
       if (!entries && ladders && r.ladders && !inside) {
-        const cols = [10, 18, 42, 50];
-        const col = cols[r.id % cols.length];
-        if (!r.order) r.setOrder({ type: 'move', x: (col + 0.5) * TS, y: WALL_Y - 40 });
+        const col = LADDER_COLS[r.id % LADDER_COLS.length];
+        if (!r.order) r.setOrder({ type: 'move', x: (col + 0.5) * TS, y: RAMP_ROW * TS - 30 });
         continue;
       }
       if (!entries && !inside) {
@@ -414,6 +473,13 @@ class BattleAI {
     const down = Math.PI / 2;
     const pc = { x: plaza.x + plaza.w / 2, y: plaza.y + plaza.h / 2 };
     const plazaThreat = intruders.some((e) => Math.hypot(e.x - pc.x, e.y - pc.y) < 200);
+    // نقاط العبور المهدَّدة: الثغرات، الأبراج الملتصقة، والسلالم التي تجمّع عندها العدو
+    const holes = [...breaches];
+    for (const c in map.docked) if (map.docked[c]) holes.push({ x: (+c + 0.5) * TS, y: WALL_Y });
+    if (map.ladders) for (const c of LADDER_COLS) {
+      const x = (c + 0.5) * TS;
+      if (enemies.some((e) => Math.abs(e.x - x) < 60 && e.y > WALL_Y - 10 && e.y < WALL_Y + 90)) holes.push({ x, y: WALL_Y });
+    }
 
     for (const r of mine) {
       if (r.engaged) continue;
@@ -438,9 +504,9 @@ class BattleAI {
         continue;
       }
       // سدّ الثغرات
-      if (breaches.length) {
-        const bp = breaches.reduce((a, p) => (!a || Math.hypot(p.x - r.x, p.y - r.y) < Math.hypot(a.x - r.x, a.y - r.y) ? p : a), null);
-        const gx = bp.x, gy = WALL_Y - 40;
+      if (holes.length) {
+        const bp = holes.reduce((a, p) => (!a || Math.hypot(p.x - r.x, p.y - r.y) < Math.hypot(a.x - r.x, a.y - r.y) ? p : a), null);
+        const gx = bp.x, gy = RAMP_ROW * TS - 28;
         if (Math.hypot(gx - r.x, gy - r.y) > 40 && (!r.order || r.order.type !== 'move')) r.setOrder({ type: 'move', x: gx, y: gy, face: down });
         continue;
       }

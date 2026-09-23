@@ -50,7 +50,7 @@ function showMainMenu() {
   if (!(App.scene instanceof MenuScene)) App.setScene(new MenuScene());
   App.ui.innerHTML = '';
   const hasSave = Game.hasSave();
-  const saved = hasSave ? store.get(SAVE_KEY) : null;
+  const saved = hasSave ? Game.readSlot('auto').meta : null;
   const menu = h('div', { class: 'menu' },
     h('div', { class: 'menu-card' },
       h('div', { class: 'title' },
@@ -59,7 +59,7 @@ function showMainMenu() {
       ),
       h('div', { class: 'menu-btns' },
         hasSave ? h('button', { class: 'btn primary big', onclick: () => continueCampaign() },
-          'متابعة الحملة', h('small', null, `${SCENARIOS[saved.scenario].name} · ${saved.factions[saved.player].name} · ${SEASONS[saved.turn % 4]} ${SCENARIOS[saved.scenario].startYear + Math.floor(saved.turn / 4)}م`)) : null,
+          'متابعة الحملة', h('small', null, `${SCENARIOS[saved.scenario].name} · ${saved.fname} · ${SEASONS[saved.turn % 4]} ${SCENARIOS[saved.scenario].startYear + Math.floor(saved.turn / 4)}م`)) : null,
         h('button', { class: 'btn big' + (hasSave ? '' : ' primary'), onclick: () => newCampaignFlow() }, 'حملة جديدة', h('small', null, 'بناء الجيش، الحصار، الاحتلال، التفاوض')),
         h('div', { class: 'row-btns' },
           h('button', { class: 'btn', onclick: () => quickBattle('field') }, 'معركة سريعة'),
@@ -67,6 +67,7 @@ function showMainMenu() {
           h('button', { class: 'btn', onclick: () => quickBattle('defend') }, 'دفاع عن مدينة'),
         ),
         h('div', { class: 'row-btns' },
+          h('button', { class: 'btn ghost', onclick: () => Panels.saves(null) }, 'تحميل حملة'),
           h('button', { class: 'btn ghost', onclick: () => showGuide() }, 'دليل الحرب'),
           h('button', { class: 'btn ghost', onclick: () => goFullscreen() }, 'ملء الشاشة'),
         ),
@@ -124,7 +125,7 @@ function newCampaignFlow() {
 }
 
 function continueCampaign() {
-  if (!Game.load()) { UI.toast('لا توجد حملة محفوظة'); return; }
+  if (!Game.load('auto')) { UI.toast('لا توجد حملة محفوظة'); return; }
   startCampaign();
 }
 
