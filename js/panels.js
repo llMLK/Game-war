@@ -403,9 +403,11 @@ const Panels = {
     const ruler = Game.isRuler && Game.isRuler(g), heir = Game.isHeir && Game.isHeir(g);
     const own = g.fid === Game.S.player;
     const loyWarn = own && !ruler && g.loy != null && g.loy < 45 && ['army', 'gov', 'pool'].includes(g.status);
-    return h('div', { class: 'gcard' + (ruler ? ' ruler' : '') },
+    const tier = Game.tierOf ? Game.tierOf(g) : null;
+    return h('div', { class: 'gcard' + (ruler ? ' ruler' : '') + (tier ? ' ' + tier.cls : '') },
       h('div', { class: 'gtop' }, h('b', null, ruler ? icon('crown', 'crown-i') : null, g.name, ' ', stars(g.rank)), h('span', { class: 'muted small' }, iv('gold', Game.genSalary(g)), '/دور')),
-      h('div', { class: 'gline' }, traitChip(g), ruler ? h('span', { class: 'tag' }, 'الحاكم') : null, heir ? h('span', { class: 'tag' }, icon('seal'), 'ولي العهد') : null,
+      h('div', { class: 'gline' }, tier ? this.tierChip(tier) : null, traitChip(g), ruler ? h('span', { class: 'tag' }, 'الحاكم') : null, heir ? h('span', { class: 'tag' }, icon('seal'), 'ولي العهد') : null,
+        Game.catOf ? h('button', { class: 'chip', onclick: (e) => { e.stopPropagation(); this.bioDialog(g); } }, icon('book'), 'السيرة') : null,
         loyWarn ? hstat('genloy', g.loy, { label: g.loy < 32 ? 'طامح' : 'ساخط', cls: g.loy < 32 ? 'bad' : 'warn', lines: () => [['الولاء الآن', g.loy], ['يتجه نحو', Game.genLoyTarget(g), 'sum']] }) : null,
         own && !ruler && g.loy != null && g.loy < 60 && ['army', 'gov', 'pool'].includes(g.status) ? h('button', { class: 'chip', onclick: (e) => { e.stopPropagation(); const er = Game.honorGeneral(Game.S.player, g); UI.toast(er || `كرّمتَ ${g.name}: الولاء ${g.loy}`); if (!er && Game.track) Game.track('honor'); Sheets.render(); } }, icon('star'), `كرّمه ${Game.honorCost(g)}`) : null),
       g.trait ? h('p', { class: 'small' }, TRAITS[g.trait].desc) : h('p', { class: 'small muted' }, 'ضابط بلا موهبة خاصة.'),
@@ -422,7 +424,7 @@ const Panels = {
       let close;
       for (const g of pool) {
         const fee = Game.hireFee(g);
-        list.appendChild(h('button', { class: 'gpick', disabled: Game.f(fid).gold < fee, onclick: () => { close(); resolve(g.id); } }, this.genCard(g, h('span', { class: 'fee' }, `تعيين ${fee} مرة واحدة · ثم ${Game.genSalary(g)} كل دور`))));
+        list.appendChild(h('button', { class: 'gpick', disabled: Game.f(fid).gold < fee, onclick: () => { close(); resolve(g.id); } }, this.genCard(g, h('span', { class: 'fee' }, fee ? `تعيين ${fee} مرة واحدة · ثم ${Game.genSalary(g)} كل دور` : `بلا رسوم تعيين (عقده موقّع) · ${Game.genSalary(g)} كل دور`))));
       }
       if (!pool.length) list.appendChild(h('p', { class: 'muted' }, 'لا قادة متاحون في البلاط. يمكنك ترقية ضابط.'));
       close = UI.modal({
@@ -941,7 +943,8 @@ const Panels = {
     if (tab === 'goals' && Game.objectivesOf) { this.goalsTab(scene, body); return; }
     if (tab === 'gens') {
       if (Game.rulerOf) body.appendChild(this.throneBox(scene));
-      const groups = [['army', 'في الميدان'], ['gov', 'حكّام المدن'], ['pool', 'في البلاط (متاحون)'], ['captive', 'أسرى لدى العدو'], ['dead', 'الراحلون']];
+      if (Game.S.rec) body.appendChild(this.recruitBox(scene));
+      const groups = [['army', 'في الميدان'], ['gov', 'حكّام المدن'], ['pool', 'في البلاط (متاحون)'], ['travel', 'في الطريق إليك'], ['captive', 'أسرى لدى العدو'], ['dead', 'الراحلون']];
       for (const [st, name] of groups) {
         const gs = Game.gensOf(P).filter((g) => g.status === st && !(st === 'pool' && g.name.startsWith('الضابط')));
         if (!gs.length) continue;
@@ -952,11 +955,12 @@ const Panels = {
           if (st === 'army') { const a = Game.army(g.army); extra = a ? h('button', { class: 'chip', onclick: () => { scene.openArmy(a); } }, icon('castle'), Game.node(a.node).name, ` · ${a.regs.length} وحدات`) : null; }
           if (st === 'gov') extra = h('div', { class: 'row-btns' }, h('span', { class: 'small' }, icon('castle'), ' ', Game.node(g.city).name), h('button', { class: 'chip', onclick: () => { Game.recallGovernor(g); scene.afterAction(); } }, 'استدعاء'));
           if (st === 'captive') extra = h('p', { class: 'small warn' }, `أسير لدى ${Game.fname(g.captor)}، فديته نحو ${Game.ransomPrice(g)}`);
+          if (st === 'travel') { const d = Game.node(g.dest); extra = h('p', { class: 'small' }, icon('boot'), ` يصل إلى ${d ? d.name : 'عاصمتك'} في الدور ${g.arrive} (بعد ${Math.max(0, g.arrive - Game.S.turn)})`); }
           list.appendChild(this.genCard(g, extra));
         }
         body.appendChild(list);
       }
-      body.appendChild(h('p', { class: 'hint' }, 'يرتقي القادة بالمعارك (★). الرواتب تُدفع لقادة الميدان والحكّام.'));
+      body.appendChild(h('p', { class: 'hint' }, 'النجوم تلخيص لمهارات معلنة: 0 إلى 2 نقاط ★، و3 إلى 5 ★★، و6 فأكثر ★★★. الخبرة من المعارك تمنح نقاط مهارة حسب التخصص، والشهرة من الانتصارات ترفع الدرجة (لون البطاقة) ولا تزيد القوة. الرواتب تُدفع لقادة الميدان والحكّام.'));
     } else if (tab === 'capt') {
       const cs = Game.captivesHeldBy(P);
       if (!cs.length) body.appendChild(h('p', { class: 'hint' }, 'لا أسرى لديك. يقع القادة في الأسر حين تُباد جيوشهم أو يسقط حرسهم.'));
@@ -1569,3 +1573,165 @@ const CRISIS_WHY = {
 Game.openCrisis = (scene, a) => { const c = Game.crisisById(a.crisis); if (c) Panels.openCrisis(scene, c); };
 Game.pendingDecisions = (scene) => Panels.pendingDecisions(scene);
 Game.crisesAt = (id) => Game.visibleCrises(Game.S.player).filter((c) => !c.over && (c.node === id || (c.type === 'plague' && c.v.inf[id]) || (c.type === 'famine' && c.v.region.includes(id)) || (c.type === 'uprising' && c.v.cities.includes(id))));
+
+// ═══════════════ القادة: الدرجات والسيرة والاستقطاب والتفاوض ═══════════════
+Object.assign(Panels, {
+  tierChip(t) {
+    return h('button', { class: 'tier ' + t.cls, onclick: (e) => { e.stopPropagation(); Help.show(e.currentTarget, null, { title: t.name, note: `${t.why} الدرجة شهرة ومكانة، لا تغيّر قوة القائد في المعركة؛ القوة من المهارات المعلنة والسمة.` }); } }, t.name);
+  },
+  skillLine(k) {
+    const parts = [k.coh ? `تماسك +${k.coh * 3} معنويات` : null, k.exe ? `دقة الأوامر +${k.exe * 4}٪` : null, k.res ? `الاحتياط +${k.res * 4} معنويات` : null, k.ret ? `انسحاب منظم، مطاردة −${k.ret * 12}٪` : null].filter(Boolean);
+    return parts.length ? parts.join('، ') : 'بلا مهارات قيادة إضافية بعد';
+  },
+  wikiLink(e) {
+    const url = Game.wikiUrl(e);
+    return url ? h('a', { class: 'linkish', href: url, target: '_blank', rel: 'noopener', onclick: (ev) => ev.stopPropagation() }, e.ar ? 'ويكيبيديا العربية' : 'ويكيبيديا (بالإنجليزية)') : null;
+  },
+  histBlock(e) {
+    if (!e) return h('p', { class: 'small muted' }, 'لا سجل تاريخي لهذا القائد: ضابط أو شخصية ظهرت من أحداث الحملة.');
+    return h('div', { class: 'bio' },
+      h('p', { class: 'small' }, h('span', { class: 'tag' }, LEADER_SRC[e.src] || ''), ' ', e.bio),
+      e.src === 'hist' && e.y && e.y[0] > 0 ? h('p', { class: 'small muted' }, `يظهر مرشحاً بين سنتي ${e.y[0]} و${e.y[1]}م في هذا السيناريو.`) : null,
+      this.wikiLink(e));
+  },
+  bioDialog(g) {
+    const e = Game.catOf(g), t = Game.tierOf(g), k = Game.genSkills(g);
+    UI.modal({
+      title: g.name, icon: 'book', dismissable: true,
+      body: h('div', null,
+        h('div', { class: 'sec-h' }, 'من التاريخ'),
+        this.histBlock(e),
+        h('div', { class: 'sec-h' }, 'في هذه الحملة'),
+        h('p', { class: 'small' }, this.tierChip(t), ' ', stars(g.rank), ' ', this.skillLine(k)),
+        EconUI.lines([
+          ['الخبرة (تنمّي المهارات)', `${g.xp || 0}، النقطة التالية بعد ${Game.xpToNext(g)}`],
+          ['الشهرة (ترفع الدرجة)', g.fame || 0],
+          g.pay != null ? ['أجر العقد', `${g.pay} كل دور${g.retinue ? ` + حرس خاص ${RETINUE.pay}` : ''}`] : ['الراتب المعتاد', Game.genSalary(g)],
+          g.loy != null ? ['الولاء', g.loy] : null,
+        ].filter(Boolean)),
+        h('p', { class: 'hint' }, 'السمة والعيب والولاء والمصير هنا من قواعد اللعبة وأحداث حملتك، لا من المصادر التاريخية.')),
+      buttons: [{ label: 'إغلاق', ghost: true }],
+    });
+  },
+  candCard(e, extra) {
+    const sum = e.sk.reduce((a, b) => a + b, 0);
+    const t = TIERS[e.tier] || TIERS.basic;
+    return h('div', { class: 'gcard ' + t.cls },
+      h('div', { class: 'gtop' }, h('b', null, e.n, ' ', stars(Game.starsFor(sum)))),
+      h('div', { class: 'gline' }, this.tierChip({ ...t, k: e.tier }), traitChip(e)),
+      e.trait ? h('p', { class: 'small' }, TRAITS[e.trait].desc) : null,
+      h('p', { class: 'small muted' }, `${'★'.repeat(Game.starsFor(sum))}: `, this.skillLine(Game.skArr(e.sk))),
+      e.flaw ? h('p', { class: 'small warn' }, FLAWS[e.flaw].desc) : null,
+      this.histBlock(e.local ? null : e),
+      extra || null);
+  },
+
+  recruitBox(scene) {
+    const R0 = Game.S.rec;
+    const box = h('div', { class: 'box recruit-box' });
+    box.appendChild(h('div', { class: 'sec-h' }, icon('helmet'), 'استقطاب القادة', h('span', { class: 'muted' }, `فرص: ${R0.chances}`)));
+    if (R0.chances > 0) {
+      const o = R0.offer;
+      box.appendChild(h('p', { class: 'small' }, o ? `عرض مفتوح منذ الدور ${o.turn}: ${o.keys.join(' و')}. يبقى كما هو حتى تقرر.` : 'لكل فرصة عرض بمرشحَين ثابتين، ولك حق استبدال واحد منهما.'));
+      box.appendChild(ib('helmet', o ? 'افتح العرض' : 'اعرض المرشحَين', { class: 'btn primary', onclick: () => this.recruitOffer(scene) }));
+    } else {
+      box.appendChild(h('p', { class: 'small muted' }, 'لا فرصة متاحة الآن. المال وحده لا يفتح فرصة؛ التقدّم يفتحها:'));
+    }
+    box.appendChild(EconUI.lines(Game.recRoads()));
+    const last = R0.hist.slice(-3).reverse();
+    if (last.length) box.appendChild(h('p', { class: 'small muted' }, 'آخر الفرص: ', last.map((x) => `الدور ${x.turn}: ${x.why}`).join(' · ')));
+    return box;
+  },
+
+  recruitOffer(scene) {
+    const R0 = Game.S.rec;
+    if (!R0 || R0.chances <= 0) { UI.toast('لا فرص استقطاب متاحة الآن'); return; }
+    const o = Game.recOffer();
+    let close;
+    const list = h('div', { class: 'glist' });
+    for (const key of o.keys) {
+      const e = Game.candOf(key);
+      const d = Game.demandParts(e, scene.P).demand;
+      const rej = o.rej[key] || 0;
+      list.appendChild(this.candCard(e, h('div', null,
+        h('p', { class: 'small' }, iv('gold', d), ` يطلب كل دور${rej ? ` · رفض ${rej} عروض` : ''}`),
+        h('div', { class: 'row-btns' },
+          ib('scroll', 'فاوضه', { class: 'btn primary', onclick: () => { close(); this.negotiate(scene, key); } }),
+          !o.replaced && !e.local ? ib('undo', 'استبدله', { class: 'btn', onclick: () => { const er = Game.replaceCand(key); if (er) { UI.toast(er); return; } close(); this.recruitOffer(scene); } }) : null))));
+    }
+    const y = Game.year(), nx = Game.nextStockYear();
+    const scarce = o.histN < 2;
+    close = UI.modal({
+      title: `مرشحان للخدمة (${R0.chances} ${R0.chances === 1 ? 'فرصة' : 'فرص'})`, icon: 'helmet', cls: 'wide',
+      body: h('div', null,
+        h('p', { class: 'hint' }, `العرض ثابت: يبقى المرشحان كما هما إن أغلقت النافذة أو حمّلت اللعبة. ${o.replaced ? 'استخدمت حق الاستبدال في هذا العرض.' : 'لك استبدال مرشح واحد فقط.'}`),
+        scarce ? h('p', { class: 'hint warn' }, `نفد المرشحون التاريخيون المتاحون في سنة ${y}م، فعرضنا ضابطاً محلياً متخيَّلاً مكانهم. ${nx ? `يظهر مرشحون تاريخيون جدد ابتداءً من سنة ${nx}م.` : 'لا مرشحين تاريخيين قادمين في هذا السيناريو.'} يمكنك إبقاء الفرصة إلى ذلك الحين.`) : null,
+        list),
+      buttons: [{ label: 'لاحقاً', sub: 'تبقى الفرصة والعرض', ghost: true, onClick: () => scene.refresh && scene.refresh() }],
+    });
+  },
+
+  negotiate(scene, key) {
+    const P = scene.P, F0 = Game.f(P), e = Game.candOf(key), o = Game.S.rec.offer;
+    if (!e || !o) return;
+    const { demand, parts } = Game.demandParts(e, P);
+    const lo = Math.round(demand * 0.8 * 10) / 10, hi = Math.round(demand * 0.95 * 10) / 10;
+    const maxBonus = Math.max(0, Math.min(Math.floor(F0.gold / 5) * 5, demand * 24));
+    const mk = (min, max, step, val) => [h('input', { type: 'range', min, max, step, value: val }), h('input', { type: 'number', min, max, step, value: val, inputmode: 'numeric', class: 'num' })];
+    const [payR, payN] = mk(Math.max(1, Math.round(demand * 0.5)), Math.round(demand * 2), 1, demand);
+    const [bonR, bonN] = mk(0, maxBonus, 5, 0);
+    const ret = h('input', { type: 'checkbox' });
+    const sites = Game.arrivalSites(P, e);
+    const sel = h('select', null, sites.map((x) => h('option', { value: x.n.id }, `${x.n.name}: يصل بعد ${x.t} ${x.t === 1 ? 'دور' : 'أدوار'}`)));
+    const out = h('div', { class: 'peace-out' });
+    const btn = h('button', { class: 'btn primary' }, 'قدّم العرض');
+    const net0 = Game.economy(P).netGold;
+    const link = (r, n) => { r.addEventListener('input', () => { n.value = r.value; upd(); }); n.addEventListener('input', () => { r.value = n.value; upd(); }); };
+    const upd = () => {
+      const pay = clamp(Math.round(+payN.value || 0), 0, 999), bonus = clamp(Math.round(+bonN.value || 0), 0, maxBonus);
+      const val = Game.offerValue(pay, bonus);
+      const last = o.last[key];
+      const lastVal = last ? Game.offerValue(last.pay, last.bonus) : null;
+      const sal = pay + (ret.checked ? RETINUE.pay : 0);
+      const verdict = val >= hi ? ['good', 'يقبل هذا العرض حتماً.'] : val < lo ? ['warn', 'يرفض هذا العرض حتماً.'] : ['', 'قد يقبل وقد يرفض: حدّه محسوم سلفاً لكنه مخفي عنك، ولا حظ في النتيجة.'];
+      out.innerHTML = '';
+      out.append(
+        h('p', { class: 'lead ' + verdict[0] }, verdict[1]),
+        EconUI.lines([
+          ...parts.map(([k, v]) => [k, v]),
+          ['مطلبه المعلن', `${demand} كل دور`, 'sum'],
+          ['حدّه الأدنى الحقيقي', `بين ${lo} و${hi}`],
+          ['قيمة عرضك', `${Math.round(val * 10) / 10} (الأجر + المكافأة ÷ 12)`, val >= hi ? 'pos' : val < lo ? 'neg' : ''],
+          ['الولاء المتوقع', Game.expectLoy(e, P, pay, bonus)],
+          ['الخزينة بعد المكافأة', Math.floor(F0.gold - bonus), bonus > F0.gold ? 'neg' : ''],
+          ['صافيك كل دور حين يقود أو يحكم', `${net0 - sal} بدل ${net0}`, 'neg'],
+        ]),
+        ...[lastVal != null ? h('p', { class: 'small warn' }, `رفض من قبل ${last.pay} كل دور ومكافأة ${last.bonus}. العرض نفسه أو الأقل منه لا يُعاد.`) : null].filter(Boolean));
+      btn.disabled = (lastVal != null && val <= lastVal) || bonus > F0.gold || !sites.length;
+    };
+    link(payR, payN); link(bonR, bonN); ret.addEventListener('change', upd);
+    let close;
+    btn.onclick = () => {
+      btn.disabled = true;
+      const r = Game.proposeContract(key, { pay: +payN.value, bonus: +bonN.value, retinue: ret.checked, city: sel.value });
+      if (r.err) { UI.toast(r.err); upd(); return; }
+      UI.toast(r.msg, 4200);
+      if (Game.track) Game.track(r.ok ? 'recruit:sign' : 'recruit:reject');
+      close();
+      if (r.ok) scene.afterAction(); else this.recruitOffer(scene);
+    };
+    close = UI.modal({
+      title: `التفاوض مع ${e.n}`, icon: 'scroll', cls: 'wide',
+      body: h('div', null,
+        h('div', { class: 'label' }, 'الأجر كل دور (يُدفع حين يقود جيشاً أو يحكم مدينة)'), h('div', { class: 'amount-row' }, payR, payN),
+        h('div', { class: 'label' }, 'مكافأة التوقيع (مرة واحدة الآن)'), h('div', { class: 'amount-row' }, bonR, bonN),
+        h('label', { class: 'small check-row' }, ret, ` حرس خاص: +${RETINUE.men} رجال حول القائد، +${RETINUE.pay} ذهب كل دور`),
+        h('div', { class: 'label' }, 'يصل إلى'), sel,
+        out,
+        h('p', { class: 'hint' }, 'الأجر الأعلى يرفع الولاء ولا يرفع المهارة. كل رفض يرفع مطلبه 8٪، وبعد ثلاثة رفضات ينسحب وتبقى لك الفرصة.')),
+      buttons: [{ label: 'رجوع', ghost: true, onClick: () => this.recruitOffer(scene) }],
+    });
+    out.parentElement.appendChild(h('div', { class: 'row-btns' }, btn));
+    upd();
+  },
+});

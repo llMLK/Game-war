@@ -1276,7 +1276,9 @@ const Game = {
       if (g.status !== 'army') continue;
       const won = (g.fid === winFid);
       this.gainXp(g, won ? 2 : 1);
+      if (won && this.addFame) this.addFame(g, enc.kind === 'siege' ? 4 : 3);
     }
+    if (winFid === this.S.player && this.recProgress) this.recProgress('win');
     const winners = winner === 0 ? attArmies : defArmies;
     const losers = winner === 0 ? defArmies : attArmies;
     for (const a of [...attArmies, ...defArmies]) { this.spendMp(a, 'battle'); a.regs = a.regs.filter((r) => r.men >= 5); }
@@ -1392,6 +1394,8 @@ const Game = {
     }
     node.owner = fid;
     node.capturedTurn = this.S.turn;
+    if (fid === this.S.player && this.recProgress) this.recProgress('city', node);
+    if (this.addFame) for (const a of armies) this.addFame(this.armyGen(a), node.capital ? 6 : 3);
     node.garrison = [];
     this.fillGarrison(node, false);
     node.stores = Math.min(2, this.storesMax(node));

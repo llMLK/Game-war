@@ -85,6 +85,8 @@ Object.assign(Game, {
     this.f(a).allySince[b] = this.f(b).allySince[a] = this.S.turn;
     this.event('pol', `حلف بين ${this.fname(a)} و${this.fname(b)}.`, { fids: [a, b], imp: 3 });
     this.chronicle('alliance', `${this.fname(a)} و${this.fname(b)} تعقدان حلفاً.`, { fids: [a, b], imp: 2 });
+    const P = this.S.player;
+    if ((a === P || b === P) && this.recProgress) this.recProgress('dip', { kind: 'alliance', fid: a === P ? b : a, label: 'حلف' });
   },
   breakAlliance(a, b, why) {
     this.setStatus(a, b, 'peace', 0);
@@ -106,6 +108,8 @@ Object.assign(Game, {
     this.addRel(a, b, 30);
     this.f(a).truce[b] = this.f(b).truce[a] = Math.max(this.f(a).truce[b] || 0, 12);
     this.event('pol', `مصاهرة سياسية بين بيت ${this.fname(a)} وبيت ${this.fname(b)} توثّق العهد.`, { fids: [a, b], imp: 3 });
+    const P = this.S.player;
+    if ((a === P || b === P) && this.recProgress) this.recProgress('dip', { kind: 'marriage', fid: a === P ? b : a, label: 'مصاهرة' });
   },
   tributeAmount(payer) { return Math.max(20, Math.round(this.economy(payer).gold * 0.15)); },
   addTribute(payer, payee, amount, turns = 8) {

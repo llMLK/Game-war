@@ -193,7 +193,7 @@ const HELP = {
 };
 
 // --- السيناريوهات ---
-// القادة: [الاسم، السمة، العيب، الرتبة]
+// القادة: [الاسم، السمة، العيب، الرتبة]. السيرة والمهارات والدرجة في js/leaders.js، وتُربط بالاسم
 const SCENARIOS = {
   threeKingdoms: {
     id: 'threeKingdoms',
@@ -210,8 +210,7 @@ const SCENARIOS = {
         generals: [
           ['ليو باي', 'merchant', null, 2], ['قوان يو', 'brave', 'arrogant', 3], ['جانغ في', 'brave', 'harsh', 2],
           ['جاو يون', 'cavalier', null, 2], ['جوغه ليانغ', 'elite', null, 3], ['هوانغ جونغ', 'archer', null, 2],
-          ['ما تشاو', 'cavalier', 'reckless', 2], ['وي يان', 'mountaineer', 'arrogant', 1], ['فا جنغ', 'tactician', null, 1],
-          ['جيانغ وي', 'mountaineer', null, 1], ['ما ليانغ', 'logistician', null, 1], ['وانغ بينغ', 'defender', null, 1],
+          ['وي يان', 'mountaineer', 'arrogant', 1], ['ما ليانغ', 'logistician', null, 1],
         ],
       },
       wei: {
@@ -221,7 +220,7 @@ const SCENARIOS = {
           ['تساو تساو', 'tactician', 'harsh', 3], ['شياهو دون', 'brave', 'reckless', 2], ['شياهو يوان', 'swift', 'reckless', 2],
           ['جانغ لياو', 'cavalier', null, 3], ['سيما يي', 'defender', 'disloyal', 2], ['تساو رن', 'defender', null, 2],
           ['شو هوانغ', 'siege', null, 1], ['جانغ خه', 'mountaineer', null, 2], ['تساو تشون', 'elite', null, 1],
-          ['شون يو', 'merchant', null, 1], ['يو جين', 'logistician', 'disloyal', 1], ['دنغ آي', 'mountaineer', 'cautious', 1],
+          ['شون يو', 'merchant', null, 1], ['يو جين', 'logistician', 'disloyal', 1], ['شو تشو', 'brave', null, 1],
         ],
       },
       wu: {
@@ -229,9 +228,9 @@ const SCENARIOS = {
         desc: 'سادة النهر. رماة مهرة وأساطيل. نخبتها: قراصنة الأجراس.',
         generals: [
           ['سون تشوان', 'merchant', 'cautious', 2], ['جو يو', 'naval', null, 3], ['لو منغ', 'tactician', null, 2],
-          ['غان نينغ', 'elite', 'reckless', 2], ['لو شون', 'defender', null, 2], ['تاي شي تسي', 'archer', null, 2],
+          ['غان نينغ', 'elite', 'reckless', 2], ['تشنغ بو', 'defender', null, 2], ['هان دانغ', 'archer', null, 2],
           ['هوانغ غاي', 'naval', null, 1], ['لينغ تونغ', 'brave', null, 1], ['لو سو', 'logistician', null, 1],
-          ['جو تاي', 'defender', null, 1], ['دينغ فنغ', 'swift', null, 1], ['جو هوان', 'siege', 'arrogant', 1],
+          ['جو تاي', 'defender', null, 1], ['جيانغ تشين', 'naval', null, 1], ['جو هوان', 'siege', 'arrogant', 1],
         ],
       },
     },
@@ -305,8 +304,8 @@ const SCENARIOS = {
         generals: [
           ['مسلمة بن عبد الملك', 'siege', null, 3], ['العباس بن الوليد', 'cavalier', null, 2], ['الجراح الحكمي', 'brave', 'reckless', 2],
           ['محمد بن مروان', 'defender', null, 2], ['عمر بن هبيرة', 'naval', null, 1], ['سعيد الحرشي', 'swift', 'harsh', 2],
-          ['مروان بن محمد', 'tactician', null, 1], ['قتيبة بن مسلم', 'desert', 'arrogant', 2], ['خالد القسري', 'merchant', 'greedy', 1],
-          ['سليمان بن معاذ', 'archer', null, 1], ['يزيد بن المهلب', 'logistician', 'disloyal', 2], ['هشام بن عبد الملك', 'elite', 'cautious', 1],
+          ['مروان بن محمد', 'tactician', null, 1], ['بشر بن الوليد', 'archer', null, 1], ['خالد القسري', 'merchant', 'greedy', 1],
+          ['سليمان بن معاذ', 'defender', null, 1], ['يزيد بن المهلب', 'logistician', 'disloyal', 2], ['هشام بن عبد الملك', 'elite', 'cautious', 1],
         ],
       },
       byzantine: {
@@ -314,23 +313,23 @@ const SCENARIOS = {
         desc: 'مدن منيعة وأساطيل ودبلوماسية ماكرة. نخبتها: الكاتافراكت.',
         generals: [
           ['ليون الإيساوري', 'defender', null, 3], ['أرتاباسدوس', 'cavalier', 'disloyal', 2], ['سيسينيوس', 'brave', null, 1],
-          ['ثيودوسيوس', 'merchant', 'cautious', 1], ['قسطنطين', 'tactician', 'harsh', 1], ['بردانيس', 'archer', null, 1],
-          ['نقيطاس', 'swift', null, 1], ['كالينيكوس', 'siege', null, 1], ['أبسيمار', 'naval', 'greedy', 2],
-          ['مانويل', 'elite', null, 2], ['ثيوفانيس', 'logistician', null, 1], ['بطرس', 'mountaineer', null, 1],
+          ['ثيودوسيوس', 'merchant', 'cautious', 1], ['باسيل أونوماغولوس', 'logistician', null, 1], ['نقيطاس', 'swift', null, 1],
+          ['مانويل', 'elite', null, 2], ['بطرس', 'mountaineer', null, 1], ['ثيوفيلاكتوس', 'siege', null, 1],
+          ['يوحنا', 'archer', null, 1], ['ميخائيل', 'naval', 'greedy', 1],
         ],
       },
       khazar: {
         name: 'الخزر', color: '#2f7f7a', personality: { aggr: 1.3, honor: 0.8, prefs: { spear: 1, sword: 1, archer: 1, cavalry: 2, horsearcher: 4, catapult: 0.3 } },
         desc: 'سهوب وخيّالة رماة لا يُلحق بهم. نخبتها: خيّالة الطرخان.',
         generals: [
-          ['بارجيك', 'cavalier', 'reckless', 2], ['آلب طرخان', 'archer', null, 2], ['هزار طرخان', 'brave', null, 1],
-          ['بولان', 'merchant', null, 2], ['عبديا', 'elite', null, 1], ['قاطون', 'swift', 'harsh', 1],
-          ['تون يابغو', 'tactician', 'arrogant', 1], ['قرلغ', 'mountaineer', null, 1], ['ساروخ', 'logistician', null, 1],
+          ['بارجيك', 'cavalier', 'reckless', 2], ['آلب طرخان', 'archer', null, 2], ['هزر طرخان', 'brave', null, 1],
+          ['بولان', 'merchant', null, 2], ['قاطون', 'swift', 'harsh', 1], ['قوتلوغ', 'elite', null, 1],
+          ['تونغا', 'tactician', 'arrogant', 1], ['قرلغ', 'mountaineer', null, 1], ['ساروخ', 'logistician', null, 1],
           ['باغاتور', 'desert', null, 1],
         ],
       },
     },
-    neutralGenerals: [['أشوط الأرمني', 'defender', null, 1], ['غوارام الكرجي', 'mountaineer', null, 1], ['سمبات', 'cavalier', null, 1], ['حسّان التدمري', 'desert', null, 1]],
+    neutralGenerals: [['سمبات الباغراتي', 'cavalier', null, 1], ['غوارام الكرجي', 'mountaineer', null, 1], ['حسّان التدمري', 'desert', null, 1]],
     nodes: [
       { id: 'constantinople', name: 'القسطنطينية', x: 130, y: 120, owner: 'byzantine', pop: 40000, walls: 4, capital: true, terrain: 'coast' },
       { id: 'nicaea', name: 'نيقية', x: 210, y: 200, owner: 'byzantine', pop: 16000, walls: 2, terrain: 'hills' },
@@ -372,7 +371,7 @@ const SCENARIOS = {
       { owner: 'byzantine', node: 'caesarea', gen: 'أرتاباسدوس', regs: ['spear', 'spear', 'archer', 'cavalry'] },
       { owner: 'khazar', node: 'atil', gen: 'بارجيك', regs: ['spear', 'horsearcher', 'horsearcher', 'horsearcher', 'cavalry', 'cavalry'] },
       { owner: 'khazar', node: 'derbent', gen: 'آلب طرخان', regs: ['spear', 'archer', 'horsearcher', 'horsearcher'] },
-      { owner: 'neutral', node: 'dvin', gen: 'أشوط الأرمني', regs: ['spear', 'archer', 'sword'] },
+      { owner: 'neutral', node: 'dvin', gen: 'سمبات الباغراتي', regs: ['spear', 'archer', 'sword'] },
     ],
     seas: [
       [[180, 0], [760, 0], [760, 40], [700, 100], [640, 115], [520, 110], [440, 120], [330, 130], [240, 110], [185, 70]],

@@ -169,6 +169,7 @@ Object.assign(Game, {
     this.addRel(t, by, 20);
     this.event('pol', `${T.name} تخضع لـ${this.fname(by)} وتصبح تابعة لها.`, { fids: [t, by], imp: 3 });
     this.chronicle('vassal', `${T.name} تصبح تابعة لـ${this.fname(by)}.`, { fids: [t, by], imp: 3 });
+    if (by === this.S.player && this.recProgress) this.recProgress('dip', { kind: 'vassal', fid: t, label: 'تبعية' });
     if (t === this.S.player) this.alert('crit', `أصبحت تابعاً لـ${this.fname(by)}: جزية وحروبها حروبك`, { icon: 'seal', win: 'diplo' });
     this.validate();
   },

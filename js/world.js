@@ -26,10 +26,9 @@ const WORLD_DATA = {
     ],
     migrants: [{ key: 'qiang', name: 'التشيانغ', people: 'قبائل التشيانغ', color: '#7d5a44', from: 'هضاب الغرب', gates: ['wuwei', 'tianshui', 'hanzhong'], leader: ['يو فو لوو', 'mountaineer', null, 2], units: { cavalry: 3, horsearcher: 2, spear: 2 } }],
     uprisings: { def: ['بقايا العمائم الصفراء', 'جانغ يان'], shu: ['أتباع طريق الأرزات الخمسة', 'جانغ شيو'] },
-    stars: [['جونغ هوي', 'tactician', 'arrogant'], ['لو كانغ', 'defender', null], ['يانغ هو', 'merchant', null], ['وين يانغ', 'brave', 'reckless'], ['دو يو', 'siege', null], ['شو شنغ', 'naval', null]],
     mercs: [
-      { name: 'عصابات بايبو', leader: 'هان شيان', trait: 'swift', units: { sword: 3, spear: 2, archer: 2 } },
-      { name: 'قراصنة البحيرة', leader: 'جانغ باو', trait: 'naval', units: { sword: 3, archer: 3, spear: 1 } },
+      { name: 'عصابات بايبو', leader: 'تشين دا', trait: 'swift', units: { sword: 3, spear: 2, archer: 2 } },
+      { name: 'قراصنة البحيرة', leader: 'لوو هاي', trait: 'naval', units: { sword: 3, archer: 3, spear: 1 } },
     ],
     routes: [
       { key: 'silk', name: 'طريق الحرير', path: ['wuwei', 'tianshui', 'changan', 'luoyang', 'xuchang'] },
@@ -39,12 +38,12 @@ const WORLD_DATA = {
   },
   umayyad: {
     plague: 'الطاعون',
-    rulers: { umayyad: ['سليمان بن عبد الملك', 41, 'merchant', 'greedy', 2], byzantine: ['ثيودوسيوس', 55], khazar: ['الخاقان بيهار', 44, 'cavalier', null, 2] },
+    rulers: { umayyad: ['سليمان بن عبد الملك', 41, 'merchant', 'greedy', 2], byzantine: ['ثيودوسيوس', 55], khazar: ['بارجيك', 40, 'cavalier', 'reckless', 2] },
     hordes: [
       {
         key: 'turgesh', name: 'الترغش', people: 'الترك الترغش', color: '#8b5a2b', from: 'ما وراء النهر', dir: 'الشرق', away: 'بلاد الصين',
         gates: [['kufa', 'mosul'], ['dvin', 'mosul']],
-        leaders: [['سولوك أبو مزاحم', 'cavalier', null, 3], ['كورصول', 'swift', 'reckless', 2], ['بغا طرخان', 'archer', null, 2]],
+        leaders: [['سولوك أبو مزاحم', 'cavalier', null, 3], ['كورصول', 'swift', 'reckless', 2], ['يلدوز طرخان', 'archer', null, 2]],
         beyond: ['إمارات الصغد', 'حصون خراسان', 'مدن فرغانة'],
         units: { horsearcher: 5, cavalry: 3, spear: 1 },
       },
@@ -58,17 +57,16 @@ const WORLD_DATA = {
       {
         key: 'pecheneg', name: 'البجناك', people: 'قبائل البجناك', color: '#7a6040', from: 'سهوب الشمال', dir: 'الشمال', away: 'الغرب',
         gates: [['atil', 'balanjar'], ['cherson']],
-        leaders: [['كوريا خان', 'swift', 'harsh', 2], ['تيراخ', 'archer', null, 2]],
+        leaders: [['قتلو خان', 'swift', 'harsh', 2], ['باياندور', 'archer', null, 2]],
         beyond: ['مراعي الأوغوز', 'قرى الفولغا'],
         units: { horsearcher: 6, cavalry: 2, spear: 1 },
       },
     ],
     migrants: [{ key: 'slavs', name: 'الصقالبة', people: 'قبائل الصقالبة', color: '#6f6a4a', from: 'ما وراء الدانوب', gates: ['constantinople', 'nicaea', 'cherson'], leader: ['بوريسلاف', 'brave', null, 2], units: { spear: 3, sword: 2, archer: 2 } }],
-    uprisings: { def: ['ثورة المحرومين', 'زعيم مجهول'], umayyad: ['ثورة الخوارج', 'بهلول بن بشر'], byzantine: ['فتنة الأيقونات', 'الراهب كوزماس'], khazar: ['انتفاضة العشائر', 'تارخان يولدوز'] },
-    stars: [['عبد الله البطال', 'brave', null], ['نصر بن سيار', 'defender', null], ['أسد بن عبد الله', 'cavalier', 'harsh'], ['الحارث بن سريج', 'swift', 'disloyal'], ['قسطنطين الأرمني', 'tactician', null], ['بشر بن الوليد', 'archer', null]],
+    uprisings: { def: ['ثورة المحرومين', 'زعيم مجهول'], umayyad: ['ثورة الخوارج', 'بهلول بن بشر'], byzantine: ['فتنة الأيقونات', 'كوزماس'], khazar: ['انتفاضة العشائر', 'تارخان يولدوز'] },
     mercs: [
-      { name: 'مرتزقة الديلم', leader: 'ماكان الديلمي', trait: 'mountaineer', units: { spear: 3, sword: 3, archer: 1 } },
-      { name: 'فرسان الأرمن', leader: 'سمبات الباغراتي', trait: 'cavalier', units: { cavalry: 4, spear: 2 } },
+      { name: 'مرتزقة الديلم', leader: 'شهريار الديلمي', trait: 'mountaineer', units: { spear: 3, sword: 3, archer: 1 } },
+      { name: 'فرسان الأرمن', leader: 'غريغور الأرمني', trait: 'cavalier', units: { cavalry: 4, spear: 2 } },
     ],
     routes: [
       { key: 'silk', name: 'طريق الحرير', path: ['kufa', 'mosul', 'raqqa', 'aleppo', 'antioch', 'tarsus'] },
@@ -782,12 +780,15 @@ CRISES.horde = {
     const gates = hd.gates[gi].filter((id) => Game.node(id));
     if (!gates.length) return false;
     const regs = clamp(Math.round(Game.avgMajorRegs() * (0.95 + R() * 0.4)), 14, 32);
+    // لا يعود قائد سبق ظهوره (حياً أو ميتاً): إن نفدت الأسماء يقودهم خليفة متخيَّل
+    const freeL = hd.leaders.filter((l) => !Game.nameTaken(l[0]));
+    const lead = freeL.length ? pick(freeL) : [`خليفة ${hd.leaders[0][0]}`, ...hd.leaders[0].slice(1)];
     c.v = {
       key: hd.key, name: hd.name, people: hd.people, color: hd.color, from: hd.from, dir: hd.dir, away: hd.away, gates,
-      leader: pick(hd.leaders), subs: hd.leaders, beyond: pick(hd.beyond), units: hd.units, regs, men: regs * 38,
+      leader: lead, subs: freeL, beyond: pick(hd.beyond), units: hd.units, regs, men: regs * 38,
       paid: [], refused: [], stalled: {}, reask: [], redirect: null, ally: null, targets: [], fid: null,
     };
-    c.v.subs = hd.leaders.filter((l) => l !== c.v.leader);
+    c.v.subs = freeL.filter((l) => l !== c.v.leader);
     c.node = gates[0];
   },
   stages: [
@@ -1112,6 +1113,7 @@ CRISES.migration = {
     const gates = md.gates.filter((id) => Game.node(id) && Game.node(id).owner !== 'neutral' && WX.alive(Game.node(id).owner));
     if (!gates.length) return false;
     c.v = { ...md, gate: gates[0], asked: [], regs: clamp(Math.round(Game.avgMajorRegs() * 0.4), 6, 14) };
+    if (Game.nameTaken(md.leader[0])) c.v.leader = [`ابن ${md.leader[0]}`, ...md.leader.slice(1)];
     c.node = gates[0];
     c.fids = [Game.node(gates[0]).owner];
   },
@@ -2095,13 +2097,15 @@ CRISES.star = {
     if (merc) {
       const m = pick(wd.mercs);
       if (Game.S.crises.some((x) => !x.over && x.type === 'star' && x.v.name === m.name)) return false;
+      if (Game.nameTaken && Game.nameTaken(m.leader)) return false;
       c.v = { merc: true, name: m.name, leader: m.leader, trait: m.trait, units: m.units, bids: {}, regs: 6, home: home.id };
     } else {
-      const used = new Set(Object.values(Game.S.gens).map((g) => g.name));
-      const free = (wd.stars || []).filter((s) => !used.has(s[0]));
+      // النجوم الصاعدة من المخزون التاريخي نفسه، فلا يظهر قائد مرتين ولا يعود من مات
+      const busy = new Set(Game.S.crises.filter((x) => !x.over && x.type === 'star' && !x.v.merc).map((x) => x.v.name));
+      const free = Game.eligible ? Game.eligible(null).filter((e) => e.star && !busy.has(e.n)) : [];
       if (!free.length) return false;
       const s = pick(free);
-      c.v = { merc: false, name: s[0], trait: s[1], flaw: s[2], bids: {}, home: home.id };
+      c.v = { merc: false, name: s.n, trait: s.trait, flaw: s.flaw, bids: {}, home: home.id };
     }
     c.node = home.id;
     c.fids = [];

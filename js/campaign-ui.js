@@ -610,6 +610,8 @@ class CampaignScene {
     if (a.win === 'diplo') { this.openDiplo(); return; }
     if (a.win === 'captives') { this.openKingdom('capt'); return; }
     if (a.win === 'route') { this.openRoute(); return; }
+    if (a.win === 'recruit') { Panels.recruitOffer(this); return; }
+    if (a.win === 'kingdom') { this.openKingdom('gens'); return; }
     if (a.win === 'crisis' && Game.openCrisis) { Game.openCrisis(this, a); return; }
     if (!n) return;
     if (a.win === 'siege' && Game.besiegers(n.id).length) this.openSiege(n);
