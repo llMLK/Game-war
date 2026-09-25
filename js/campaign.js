@@ -694,31 +694,37 @@ const Game = {
     }
     return Math.round(t);
   },
+  // صيانة مباني المدينة كل دور
+  worksUpkeep(n) { let t = 0; for (const k in BUILDINGS) t += BUILDINGS[k].upkeep ? BUILDINGS[k].upkeep(n[k] || 0) : 0; return t; },
+  // الجيش خارج الأرض الصديقة أو يحاصر: تموين الحملة يرفع كلفته ثلثاً
+  onCampaign(a) { const n = this.node(a.node); return !!a.siege || !this.friendly(n.owner, a.fid); },
   economy(fid) {
-    let gold = 0, food = 0, upkeep = 0, eat = 0, salaries = 0, overhead = 0;
+    let gold = 0, food = 0, upkeep = 0, eat = 0, salaries = 0, overhead = 0, works = 0, field = 0;
     const f = this.f(fid);
-    for (const n of this.nodesOf(fid)) { gold += this.cityIncome(n); food += this.cityFood(n); }
+    for (const n of this.nodesOf(fid)) { gold += this.cityIncome(n); food += this.cityFood(n); works += this.worksUpkeep(n); }
     const armies = this.armiesOf(fid);
     for (const a of armies) {
       const g = this.armyGen(a);
       if (g) salaries += this.genSalary(g);
-      for (const r of a.regs) upkeep += (UNITS[r.type].upkeep || 0) * (r.merc ? 1.8 : 1);
+      const camp = this.onCampaign(a);
+      for (const r of a.regs) { const u = (UNITS[r.type].upkeep || 0) * (r.merc ? 1.8 : 1); upkeep += u; if (camp) field += u * 0.35; }
       eat += this.armyEat(a);
     }
     const cities = this.nodesOf(fid).length;
     overhead = Math.max(0, armies.length - Math.max(2, cities)) * 10;
     if (!f.isPlayer && fid !== 'neutral') gold = Math.round(gold * DIFFS[this.S.difficulty].aiIncome);
     // الغزاة يعيشون على النهب: لا رواتب ولا مؤن
-    if (f.horde) { upkeep = 0; eat = 0; salaries = 0; overhead = 0; }
+    if (f.horde) { upkeep = 0; eat = 0; salaries = 0; overhead = 0; works = 0; field = 0; }
     const route = this.routeIncome ? this.routeIncome(fid) : 0;
     const trade = Math.round((this.tradeIncome(fid) + route) * (1 + (this.policyMod ? this.policyMod(fid, 'trade') : 0)));
     for (const g of this.gensOf(fid)) if (g.status === 'gov') salaries += this.genSalary(g);
     let tribute = 0;
     for (const t of this.S.tributes) { if (t.payee === fid) tribute += t.amount; if (t.payer === fid) tribute -= t.amount; }
     upkeep = Math.round(upkeep);
+    field = Math.round(field);
     eat = Math.round(eat);
-    const netGold = gold + trade + tribute - upkeep - salaries - overhead;
-    return { gold, trade, route, tribute, upkeep, salaries, overhead, food, eat, netGold, netFood: food - eat };
+    const netGold = gold + trade + tribute - upkeep - field - salaries - overhead - works;
+    return { gold, trade, route, tribute, upkeep, field, works, salaries, overhead, food, eat, netGold, netFood: food - eat };
   },
 
   // ------------------، التجنيد والبناء -------------------

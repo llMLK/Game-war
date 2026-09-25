@@ -15,7 +15,7 @@ Object.assign(Game, {
   econSnap(fid, n) {
     const e = this.economy(fid);
     return {
-      net: e.netGold, city: this.cityIncome(n), potential: this.incomeModel(n, { ignoreSiege: true, ignoreUnrest: true }).total,
+      net: e.netGold, works: this.worksUpkeep(n), city: this.cityIncome(n), potential: this.incomeModel(n, { ignoreSiege: true, ignoreUnrest: true }).total,
       trade: e.trade, food: e.netFood, cityFood: this.cityFood(n), mpCap: this.mpCap(n), mpRegen: this.mpRegen(n),
       supply: this.supplyCap(n, fid), stores: this.storesMax(n), growth: 0.4 + (n.farm || 0) * 0.4,
     };
@@ -46,6 +46,7 @@ Object.assign(Game, {
     }
     if (b === 'granary') { lines.push(['مؤن الحصار القصوى', `${before.stores} ← ${after.stores} أدوار`, 'pos']); lines.push(['سعة الإمداد', `${before.supply} ← ${after.supply}`, 'pos']); }
     if (b === 'walls') lines.push(['مؤن الحصار القصوى', `${before.stores} ← ${after.stores} أدوار`, 'pos']);
+    if (after.works !== before.works) lines.push(['صيانة المدينة كل دور', `${before.works} ← ${after.works}`, 'neg']);
     return {
       b, lvl, next: lvl + 1, cost, time: 'يكتمل فوراً (بناء واحد في المدينة كل دور)',
       gold, goldLater: blockedNow ? goldLater : gold, blockedNow, food: after.food - before.food,
@@ -79,6 +80,8 @@ Object.assign(Game, {
       e.tribute ? [e.tribute > 0 ? 'جزية تقبضها' : 'جزية تدفعها', signed(e.tribute), e.tribute > 0 ? 'pos' : 'neg'] : null,
       ['صيانة الوحدات' + (merc ? ` (منها ${merc} زيادة المرتزقة)` : ''), '−' + e.upkeep, 'neg'],
       ['رواتب القادة' + (govSal ? ` (منها ${govSal} للحكّام)` : ''), '−' + e.salaries, 'neg'],
+      e.field ? ['تموين الحملات خارج أرضك وفي الحصار (+35٪)', '−' + e.field, 'neg'] : null,
+      e.works ? ['صيانة المباني (أسوار، مخازن، إسطبلات، موانئ، طرق)', '−' + e.works, 'neg'] : null,
       e.overhead ? [`أعباء ${Math.round(e.overhead / 10)} جيوش زائدة عن عدد مدنك`, '−' + e.overhead, 'neg'] : null,
       ['الصافي كل دور', signed(e.netGold), 'sum'],
       ['الرصيد الآن', String(f.gold), ''],
@@ -122,7 +125,7 @@ const EconUI = {
         ]),
         e.fx.length ? h('ul', { class: 'steps small' }, e.fx.map((t) => h('li', null, t))) : null,
         blockNote ? h('p', { class: 'hint warn' }, blockNote) : null,
-        h('p', { class: 'hint' }, 'المباني بلا صيانة. الأرقام محسوبة من حالة المدينة الآن بالمعادلة نفسها التي تنهي الدور.'),
+        h('p', { class: 'hint' }, 'صافي الذهب بعد الصيانة. الأرقام محسوبة من حالة المدينة الآن بالمعادلة نفسها التي تنهي الدور.'),
       ),
       buttons: [
         { label: err || `ابنِ (${e.cost})`, primary: true, disabled: !!err, onClick: () => { const r = Game.build(P, n, b); if (!r && Game.track) Game.track('build'); UI.toast(r || `بُني ${B.name} في ${n.name}`); scene.afterAction(n); } },
