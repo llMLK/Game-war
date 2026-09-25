@@ -116,6 +116,7 @@ const Sheets = {
     if (!this.host) return;
     const w = this.current();
     this.root.classList.toggle('has-sheet', !!w);
+    if (!w) this.root.classList.remove('sheet-tall');
     if (!w) { this.host.hidden = true; this.host.innerHTML = ''; }
     else {
       const oldBody = this.host.querySelector('.sheet-body');
@@ -125,8 +126,14 @@ const Sheets = {
       this.host.innerHTML = '';
       this.host.dataset.key = w.key;
       this.host.hidden = false;
+      // الوضع العمودي: النافذة ثلاث درجات (الرأس فقط، نصف، طويلة) بمقبض يُسحب أو يُلمس
+      w.size = w.size || 'half';
+      this.host.classList.toggle('tall', w.size === 'tall');
+      this.host.classList.toggle('peek', w.size === 'peek');
+      this.root.classList.toggle('sheet-tall', w.size === 'tall');
       const body = h('div', { class: 'sheet-body' });
       this.host.append(
+        this.grab(w),
         h('div', { class: 'sheet-head' },
           h('span', { class: 'sh-ic', style: { color: s.color || 'var(--bronze-hi)' } }, icon(s.icon || 'info')),
           h('div', { class: 'sh-t' }, h('h3', null, s.title()), s.sub ? h('div', { class: 'sub' }, s.sub()) : null),
@@ -141,6 +148,24 @@ const Sheets = {
       body.scrollTop = w.scroll || 0;
     }
     this.renderDock();
+  },
+
+  grab(w) {
+    const order = ['peek', 'half', 'tall'];
+    const set = (sz) => { w.size = sz; this.render(); };
+    const el = h('button', { class: 'sheet-grab', 'aria-label': 'تكبير النافذة أو تصغيرها', title: 'اسحب أو المس لتغيير الحجم' });
+    let y0 = null, moved = false;
+    el.addEventListener('pointerdown', (e) => { y0 = e.clientY; moved = false; el.setPointerCapture(e.pointerId); });
+    el.addEventListener('pointermove', (e) => { if (y0 != null && Math.abs(e.clientY - y0) > 12) moved = true; });
+    el.addEventListener('pointerup', (e) => {
+      if (y0 == null) return;
+      const dy = e.clientY - y0; y0 = null;
+      const i = order.indexOf(w.size);
+      if (!moved) { set(w.size === 'tall' ? 'half' : w.size === 'peek' ? 'half' : 'tall'); return; }
+      if (dy < -30) set(order[Math.min(2, i + 1)]);
+      else if (dy > 30) { if (i === 0) this.minimize(w.key); else set(order[i - 1]); }
+    });
+    return el;
   },
 
   renderDock() {

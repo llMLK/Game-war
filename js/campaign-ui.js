@@ -41,21 +41,29 @@ class CampaignScene {
     c.maxZ = Math.max(3.2, cover * 4);
     if (keep) { c.z = clamp(oz, c.minZ, c.maxZ); c.x = ox; c.y = oy; c.clamp(); return; }
     const cap = Game.nodesOf(this.P).find((n) => n.capital) || Game.nodesOf(this.P)[0];
-    c.z = clamp(cover * 1.55, c.minZ, c.maxZ);
+    // عمودياً الخريطة تملأ الطول أصلاً، فنبدأ أبعد لنرى أكثر
+    c.z = clamp(cover * (App.H > App.W ? 1.05 : 1.55), c.minZ, c.maxZ);
     if (cap) { c.x = cap.x; c.y = cap.y; }
     c.clamp();
   }
 
   // تحريك الكاميرا نحو نقطة، مع مراعاة النافذة الجانبية
   flyTo(x, y, zoom) {
-    const sheetOpen = !!Sheets.current() && App.W > App.H;
-    const sw = sheetOpen ? Math.min(356, Math.max(272, App.W * 0.37)) + 16 : 0;
+    // أفقياً تفتح النافذة على الجانب فنزيح الهدف يساراً، وعمودياً تفتح من الأسفل فنرفع الهدف فوقها
+    const portrait = App.H > App.W, cur = Sheets.current();
+    const sw = cur && !portrait ? Math.min(356, Math.max(272, App.W * 0.37)) + 16 : 0;
+    const sh = cur && portrait ? App.H * (cur.size === 'tall' ? 0.8 : cur.size === 'peek' ? 0.12 : 0.56) : 0;
     const z = zoom ? clamp(zoom, this.cam.minZ, this.cam.maxZ) : this.cam.z;
-    this.fly = { x: x + sw / 2 / z, y, z, t: 0 };
+    this.fly = { x: x + sw / 2 / z, y: y + sh / 2 / z, z, t: 0 };
   }
 
   update(dt) {
     this.t += dt;
+    // هامش النافذة المفتوحة: أسفل الشاشة عمودياً، ويمينها أفقياً
+    const host = Sheets.host && !Sheets.host.hidden ? Sheets.host : null;
+    const portrait = App.H > App.W;
+    const pb = host && portrait ? host.offsetHeight : 0, pr = host && !portrait ? host.offsetWidth + 16 : 0;
+    if (pb !== (this.cam.padBottom || 0) || pr !== (this.cam.padRight || 0)) { this.cam.padBottom = pb; this.cam.padRight = pr; if (!this.fly) this.cam.clamp(); }
     if (this.fly) {
       const c = this.cam, f = this.fly;
       f.t += dt;
@@ -154,11 +162,18 @@ class CampaignScene {
     this.hits = [];
     this.badges = {};
     for (const m of marks) if (m.node) (this.badges[m.node] = this.badges[m.node] || []).push(m);
-    for (const n of S.nodes) {
+    // مستوى التفصيل: من بعيد تظهر أسماء الممالك الكبيرة، وتُخفى أسماء المدن المتزاحمة (تبقى قابلة للمس)
+    const far = cam.z < cam.minZ * 1.3;
+    if (far) this.realmLabels(ctx, cam);
+    const placed = [];
+    const prio = (n) => (n.capital ? 1e6 : 0) + (n.owner === this.P ? 5e5 : 0) + (this.siegeInfo[n.id] ? 4e5 : 0) + n.pop;
+    for (const n of [...S.nodes].sort((a, b) => prio(b) - prio(a))) {
       const s = cam.toScreen(n.x, n.y);
       const R = art.rad(n) * cam.z;
       this.hits.push({ kind: 'node', n, x: s.x, y: s.y, r: Math.max(20, R + 4) });
-      this.namePlate(ctx, n, s.x, s.y + R + 9);
+      const box = [s.x - 38, s.y + R + 1, s.x + 38, s.y + R + 18];
+      const clash = far && placed.some((b) => b[0] < box[2] && box[0] < b[2] && b[1] < box[3] && box[1] < b[3]);
+      if (!clash) { placed.push(box); this.namePlate(ctx, n, s.x, s.y + R + 9); }
       const si = this.siegeInfo[n.id];
       if (si) this.siegePlate(ctx, n, si, s.x, s.y - R - 22);
       if (reach[n.id] && this.selArmy) {
@@ -266,6 +281,27 @@ class CampaignScene {
     ctx.beginPath();
     ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r); ctx.lineTo(x + w, y + h2 - r); ctx.quadraticCurveTo(x + w, y + h2, x + w - r, y + h2);
     ctx.lineTo(x + r, y + h2); ctx.quadraticCurveTo(x, y + h2, x, y + h2 - r); ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.closePath();
+  }
+
+  // أسماء الممالك فوق أراضيها حين تكون الخريطة بعيدة
+  realmLabels(ctx, cam) {
+    const k = clamp((cam.minZ * 1.3 - cam.z) / (cam.minZ * 0.3), 0, 1);
+    if (k <= 0) return;
+    ctx.save();
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    for (const fid of Game.aliveMajors()) {
+      const ns = Game.nodesOf(fid);
+      if (ns.length < 2) continue;
+      const wsum = ns.reduce((t, n) => t + n.pop, 0);
+      const cx = ns.reduce((t, n) => t + n.x * n.pop, 0) / wsum, cy = ns.reduce((t, n) => t + n.y * n.pop, 0) / wsum;
+      const p = cam.toScreen(cx, cy);
+      const size = clamp(14 + ns.length * 1.6, 16, 30);
+      ctx.font = `700 ${size}px "Noto Naskh Arabic", Tahoma, sans-serif`;
+      ctx.globalAlpha = 0.42 * k;
+      ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(245,235,210,.8)'; ctx.strokeText(Game.fname(fid), p.x, p.y - 30);
+      ctx.fillStyle = isLight(Game.f(fid).color) ? '#5a4526' : Game.f(fid).color; ctx.fillText(Game.fname(fid), p.x, p.y - 30);
+    }
+    ctx.restore();
   }
 
   namePlate(ctx, n, x, y) {
@@ -448,9 +484,20 @@ class CampaignScene {
   }
 
   // --- النوافذ ---
-  openCity(n) { this.selNode = n; Sheets.open(Panels.citySpec(this, n)); this.refresh(); }
-  openArmy(a) { this.selNode = Game.node(a.node); Sheets.open(Panels.armySpec(this, a)); this.refresh(); }
-  openSiege(n) { this.selNode = n; Sheets.open(Panels.siegeSpec(this, n)); this.refresh(); }
+  openCity(n) { this.selNode = n; Sheets.open(Panels.citySpec(this, n)); this.keepVisible(n); this.refresh(); }
+  openArmy(a) { this.selNode = Game.node(a.node); Sheets.open(Panels.armySpec(this, a)); this.keepVisible(this.selNode); this.refresh(); }
+  openSiege(n) { this.selNode = n; Sheets.open(Panels.siegeSpec(this, n)); this.keepVisible(n); this.refresh(); }
+  // المدينة المختارة لا تختفي خلف النافذة: عمودياً فوقها، وأفقياً إلى يسارها
+  keepVisible(n) {
+    if (!n || this.fly) return;
+    const s = this.cam.toScreen(n.x, n.y), cur = Sheets.current();
+    if (!cur) return;
+    const portrait = App.H > App.W;
+    // الهامش يُحدَّث فوراً ليسمح بالتحريك قبل الإطار التالي
+    if (portrait) this.cam.padBottom = App.H * (cur.size === 'tall' ? 0.8 : 0.56); else this.cam.padRight = Math.min(356, Math.max(272, App.W * 0.37)) + 16;
+    const hidden = portrait ? s.y > App.H * 0.4 : s.x > App.W - Math.min(356, Math.max(272, App.W * 0.37)) - 30;
+    if (hidden) this.flyTo(n.x, n.y);
+  }
   openDiplo(focus) { Sheets.open(Panels.diploSpec(this, focus)); this.refresh(); }
   openKingdom(tab) { Sheets.open(Panels.kingdomSpec(this, tab)); this.refresh(); }
   openChron(tab) { Sheets.open(Panels.chronSpec(this, tab)); this.refresh(); }

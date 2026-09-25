@@ -76,7 +76,7 @@ function showMainMenu() {
           h('button', { class: 'btn ghost', onclick: () => goFullscreen() }, 'ملء الشاشة'),
         ),
       ),
-      h('p', { class: 'rotate-hint' }, 'أدر الهاتف أفقياً لأفضل تجربة'),
+      h('p', { class: 'rotate-hint' }, 'تعمل اللعبة عمودياً وأفقياً، والوضع الأفقي يعرض خريطة أوسع'),
     ),
   );
   App.ui.appendChild(menu);

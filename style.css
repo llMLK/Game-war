@@ -485,11 +485,22 @@ button:disabled { opacity: 0.42; cursor: default; }
 
 @media (orientation: portrait) {
   :root { --sheet-w: 100%; }
-  .sheet { top: auto; left: 0; right: 0; bottom: 0; width: auto; max-height: 56%; border-radius: 16px 16px 0 0; padding-bottom: var(--safe-b); }
+  .sheet { top: auto; left: 0; right: 0; bottom: 0; width: auto; max-height: 56%; border-radius: 16px 16px 0 0; padding-bottom: var(--safe-b); transition: max-height .18s ease; }
+  .sheet.tall { height: calc(100% - 84px - var(--safe-t)); max-height: none; }
+  .sheet-tall .alerts { display: none; }
+  .sheet.peek .sheet-body { display: none; }
   .has-sheet .dock { display: none; }
   .hud-res { max-width: calc(100% - 16px); }
-  .hud-btns { top: calc(40px + var(--safe-t)); }
-  .alerts { top: calc(80px + var(--safe-t)); width: min(300px, 70vw); }
+  /* أزرار الممالك والمملكة والسجل والقائمة في شريط سفلي قرب الإبهام، بجوار إنهاء الدور */
+  .hud-btns { top: auto; left: auto; bottom: calc(8px + var(--safe-b)); right: calc(8px + var(--safe-r)); }
+  .has-sheet .hud-btns { display: none; }
+  .dock { bottom: calc(58px + var(--safe-b)); left: calc(8px + var(--safe-l)); }
+  .alerts { top: calc(76px + var(--safe-t)); width: min(320px, calc(100vw - 16px)); }
+}
+.sheet-grab { display: none; }
+@media (orientation: portrait) {
+  .sheet-grab { display: block; width: 100%; height: 20px; min-height: 20px; border: 0; background: none; padding: 0; position: relative; touch-action: none; cursor: grab; }
+  .sheet-grab::before { content: ''; position: absolute; left: 50%; top: 7px; width: 46px; height: 5px; margin-left: -23px; border-radius: 3px; background: rgba(229,193,115,.55); }
 }
 @media (max-width: 700px) and (orientation: landscape) {
   .hud-pill.date span.season { display: none; }
