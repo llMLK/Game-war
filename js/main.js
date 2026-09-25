@@ -42,6 +42,7 @@ class MenuScene {
     for (const e of this.sc.edges) {
       const A = this.nodes.find((n) => n.id === e[0]), B = this.nodes.find((n) => n.id === e[1]);
       ctx.setLineDash(e[2] === 'water' ? [2, 4] : [3.5, 3]); ctx.strokeStyle = 'rgba(95,65,35,.6)'; ctx.lineWidth = 1.4;
+      if (e[3]) { CampaignScene.prototype.smoothPath(ctx, [[A.x, A.y], ...e[3], [B.x, B.y]]); ctx.stroke(); continue; }
       ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
     }
     ctx.setLineDash([]);
@@ -58,7 +59,7 @@ function showMainMenu() {
     h('div', { class: 'menu-card' },
       h('div', { class: 'title' },
         h('h1', null, 'سيوف الممالك'),
-        h('p', null, 'حرب استراتيجية في العصور القديمة — الخطة تهزم العدد'),
+        h('p', null, 'حرب استراتيجية في العصور القديمة، الخطة تهزم العدد'),
       ),
       h('div', { class: 'menu-btns' },
         hasSave ? h('button', { class: 'btn primary big', onclick: () => continueCampaign() },

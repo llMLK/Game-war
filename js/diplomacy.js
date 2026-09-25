@@ -3,8 +3,6 @@
 
 const SPY = {
   scout: { name: 'استطلاع', cost: 60, catch: 0.1, desc: 'معلومات دقيقة عن المملكة لـ8 أدوار' },
-  incite: { name: 'تحريض', cost: 130, catch: 0.3, desc: 'يخفض ولاء أضعف مدنهم بشدة' },
-  sabotage: { name: 'تخريب', cost: 110, catch: 0.25, desc: 'يحرق مؤن مدينة حدودية ويضعف حاميتها' },
 };
 
 Object.assign(Game, {
@@ -51,8 +49,8 @@ Object.assign(Game, {
       const B = this.f(b);
       B.grievance[a] = (B.grievance[a] || 0) + 2;
     }
-    this.event('pol', `${A.name} تعلن الحرب على ${this.fname(b)}${treachery ? ' ناقضةً العهد' : ''}${why ? ' — ' + why : ''}.`, { fids: [a, b], imp: 3 });
-    if (b === this.S.player) this.alert('crit', `${A.name} تعلن الحرب عليك${why ? ' — ' + why : ''}`, { icon: 'swords', win: 'diplo', key: 'war:' + a });
+    this.event('pol', `${A.name} تعلن الحرب على ${this.fname(b)}${treachery ? ' ناقضةً العهد' : ''}${why ? '، ' + why : ''}.`, { fids: [a, b], imp: 3 });
+    if (b === this.S.player) this.alert('crit', `${A.name} تعلن الحرب عليك${why ? '، ' + why : ''}`, { icon: 'swords', win: 'diplo', key: 'war:' + a });
     if (this.chronicle) this.chronicle('war', `${A.name} تعلن الحرب على ${this.fname(b)}${treachery ? ' ناقضةً العهد' : ''}.`, { fids: [a, b], imp: treachery ? 3 : 2 });
     // حلفاء المعتدى عليه يلبّون النداء
     for (const c of this.aliveMajors()) {
@@ -91,9 +89,9 @@ Object.assign(Game, {
   breakAlliance(a, b, why) {
     this.setStatus(a, b, 'peace', 0);
     this.addRel(a, b, -20);
-    this.event('pol', `انتهى الحلف بين ${this.fname(a)} و${this.fname(b)}${why ? ' — ' + why : ''}.`, { fids: [a, b], imp: 3 });
-    this.chronicle('betray', `انفضّ الحلف بين ${this.fname(a)} و${this.fname(b)}${why ? ' — ' + why : ''}.`, { fids: [a, b], imp: 2 });
-    if (b === this.S.player) this.alert('imp', `${this.fname(a)} تفضّ حلفها معك${why ? ' — ' + why : ''}`, { icon: 'dagger', win: 'diplo' });
+    this.event('pol', `انتهى الحلف بين ${this.fname(a)} و${this.fname(b)}${why ? '، ' + why : ''}.`, { fids: [a, b], imp: 3 });
+    this.chronicle('betray', `انفضّ الحلف بين ${this.fname(a)} و${this.fname(b)}${why ? '، ' + why : ''}.`, { fids: [a, b], imp: 2 });
+    if (b === this.S.player) this.alert('imp', `${this.fname(a)} تفضّ حلفها معك${why ? '، ' + why : ''}`, { icon: 'dagger', win: 'diplo' });
     this.validate();
   },
   setTrade(a, b, on) {
@@ -121,7 +119,7 @@ Object.assign(Game, {
     this.event('pol', `${this.fname(a)} تموّل ${this.fname(b)} بـ${amount} ذهباً.`, { fids: [a, b], imp: 1 });
   },
 
-  // ——— الذكاء في تقييم العروض ———
+  // --- الذكاء في تقييم العروض ---
   honor(fid) { return this.pers(fid).honor; },
   aiWillAcceptPeace(ai, other, tribute = 0) {
     const A = this.f(ai);
@@ -136,6 +134,7 @@ Object.assign(Game, {
     const dom = this.dominant();
     if (dom === other) s -= 25;
     else if (dom && dom !== ai) s += 20;
+    if (this.f(other).isPlayer || this.f(ai).isPlayer) return this.peaceTerms(ai, other, tribute).ok;
     return s + (R() - 0.5) * 14 > 4;
   },
   commonEnemy(a, b) { return this.aliveMajors().some((c) => c !== a && c !== b && this.atWar(a, c) && this.atWar(b, c)); },
@@ -163,7 +162,7 @@ Object.assign(Game, {
     return ratio > 1.7 || (ratio > 1.3 && wars >= 1);
   },
 
-  // ——— الهيمنة والاستخبارات ———
+  // --- الهيمنة والاستخبارات ---
   dominant() {
     const alive = this.aliveMajors();
     if (alive.length < 3) return null;
@@ -195,53 +194,34 @@ Object.assign(Game, {
     return { text: lo === hi ? '~' + fmt(lo) : `${fmt(lo)}–${fmt(hi)}`, lvl };
   },
 
-  // ——— التجسس ———
-  spyTargetCity(by, target, kind) {
-    const nodes = this.nodesOf(target);
-    const near = nodes.filter((n) => this.adjAll(n.id).some((x) => this.node(x).owner === by));
-    const list = near.length ? near : nodes;
-    if (!list.length) return null;
-    if (kind === 'incite') return list.reduce((a, n) => (n.loyalty < a.loyalty ? n : a));
-    return list.find((n) => this.besiegers(n.id).some((b) => b.fid === by)) || list.reduce((a, n) => (n.walls > a.walls ? n : a));
-  },
+  // --- التجسس ---
+  // الاستطلاع على مستوى المملكة؛ العمليات على المدن في statecraft.js. هذه الواجهة القديمة للذكاء
   canSpy(by, target, kind) {
-    if (this.f(by).gold < SPY[kind].cost) return 'الذهب لا يكفي';
+    if (kind !== 'scout') return this.spyTargets(by, target).some((t) => t.ok) ? null : 'لا هدف مناسب';
+    if (this.f(by).gold < SPY.scout.cost) return `الذهب لا يكفي (${SPY.scout.cost})`;
     if ((this.f(by).spyTurn || -1) === this.S.turn) return 'مهمة تجسس واحدة كل دور';
-    if (kind !== 'scout' && !this.spyTargetCity(by, target, kind)) return 'لا هدف مناسب';
+    if ((this.f(by).intel[target] || 0) > 2) return `معلوماتك عنها دقيقة حتى ${this.f(by).intel[target]} أدوار`;
     return null;
   },
   spy(by, target, kind) {
-    const err = this.canSpy(by, target, kind);
-    if (err) return { err };
-    const B = this.f(by), T = this.f(target);
-    B.gold -= SPY[kind].cost;
-    B.spyTurn = this.S.turn;
-    let text = '';
-    if (kind === 'scout') { B.intel[target] = 8; text = `جواسيسك في بلاط ${T.name}: معلومات دقيقة لـ8 أدوار.`; }
-    else if (kind === 'incite') {
-      const n = this.spyTargetCity(by, target, kind);
-      n.loyalty = Math.max(0, n.loyalty - 25);
-      text = `حرّض عملاؤك أهل ${n.name} (الولاء الآن ${n.loyalty}).`;
-      if (target === this.S.player) this.alert('imp', `محرّضون يثيرون أهل ${n.name} (الولاء ${n.loyalty})`, { node: n.id, icon: 'torch' });
-    } else {
-      const n = this.spyTargetCity(by, target, kind);
-      n.stores = Math.max(-1, n.stores - 3);
-      for (const r of n.garrison) r.men = Math.round(r.men * 0.7);
-      text = `أحرق عملاؤك مخازن ${n.name} وأضعفوا حاميتها.`;
-      if (target === this.S.player) this.alert('imp', `حريق مريب في مخازن ${n.name}`, { node: n.id, icon: 'fire' });
+    if (kind === 'scout') {
+      const err = this.canSpy(by, target, kind);
+      if (err) return { err };
+      const B = this.f(by);
+      B.gold -= SPY.scout.cost; B.spyTurn = this.S.turn;
+      B.intel[target] = 8;
+      return { ok: true, text: `جواسيسك في بلاط ${this.fname(target)}: معلومات دقيقة لـ8 أدوار.` };
     }
-    const caught = R() < SPY[kind].catch;
-    if (caught) {
-      this.addRel(by, target, -20);
-      B.rep = Math.max(0, B.rep - 5);
-      if (T.grievance) T.grievance[by] = (T.grievance[by] || 0) + 1;
-      this.event('pol', `قُبض على جواسيس ${B.name} في أرض ${T.name}!`, { fids: [by, target], imp: 2 });
-      text += ' لكن جاسوساً قُبض عليه — العلاقة تضررت.';
-    }
-    return { ok: true, caught, text };
+    // الذكاء يختار المدينة: الأضعف ولاءً للتحريض، والمحاصَرة أو الأقوى للتخريب
+    const ts = this.spyTargets(by, target).filter((t) => t.ok).map((t) => t.n);
+    if (!ts.length) return { err: 'لا هدف مناسب' };
+    let n, k;
+    if (kind === 'incite') { n = ts.slice().sort((a, b) => a.loyalty - b.loyalty)[0]; k = 'incite'; }
+    else { n = ts.find((x) => this.besiegers(x.id).some((b) => b.fid === by)) || ts.slice().sort((a, b) => b.walls - a.walls || b.pop - a.pop)[0]; k = this.besiegers(n.id).some((b) => b.fid === by) ? (n.stores > 0 ? 'stores' : 'garrison') : 'market'; }
+    return this.spyOp(by, target, n.id, k);
   },
 
-  // ——— مرور الزمن ———
+  // --- مرور الزمن ---
   relBaseline(a, b) {
     const st = this.status(a, b);
     let base = st === 'war' ? -35 : st === 'alliance' ? 35 : 5;

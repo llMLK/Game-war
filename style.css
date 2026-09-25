@@ -1,4 +1,4 @@
-/* سيوف الممالك — واجهة مصممة للجوال أولاً: الخريطة أولاً، الواجهة خفيفة وواضحة */
+/* سيوف الممالك، واجهة مصممة للجوال أولاً: الخريطة أولاً، الواجهة خفيفة وواضحة */
 :root {
   color-scheme: dark;
   --ink: #17120d;
@@ -42,11 +42,11 @@ html, body {
 #ui > * { pointer-events: none; }
 #ui button, #ui .sheet, #ui .menu-card, #ui .b-cards, #ui .b-cmds, #ui .b-deploy, #ui .b-top, #ui .dock, #ui .alerts, #ui .bs-panel, #ui .bs-top { pointer-events: auto; }
 
-/* ——— الأيقونات ——— */
+/* --- الأيقونات --- */
 .ico { width: 1.15em; height: 1.15em; flex: none; vertical-align: -0.2em; }
 button .ico { pointer-events: none; }
 
-/* ——— الأزرار: مظهر صغير، مساحة لمس مريحة ——— */
+/* --- الأزرار: مظهر صغير، مساحة لمس مريحة --- */
 button { font-family: inherit; color: inherit; cursor: pointer; position: relative; }
 button::after { content: ''; position: absolute; inset: -5px; }
 button:focus-visible { outline: 2px solid var(--bronze-hi); outline-offset: 2px; }
@@ -122,7 +122,7 @@ button:disabled { opacity: 0.42; cursor: default; }
   font-size: 13px; text-align: center; z-index: 90; pointer-events: none; box-shadow: 0 6px 24px rgba(0,0,0,.4);
 }
 
-/* ——— النوافذ الحوارية ——— */
+/* --- النوافذ الحوارية --- */
 .modal-layer {
   position: fixed; inset: 0; z-index: 50; background: rgba(8, 6, 4, .55);
   display: grid; place-items: center;
@@ -144,7 +144,7 @@ button:disabled { opacity: 0.42; cursor: default; }
 .steps { padding-inline-start: 18px; margin: 6px 0; }
 .steps li { margin: 3px 0; }
 
-/* ——— الشرح السياقي ——— */
+/* --- الشرح السياقي --- */
 .pop {
   position: fixed; z-index: 95; max-width: min(280px, calc(100vw - 16px)); padding: 8px 10px 6px;
   background: rgba(20, 15, 10, .9); border: 1px solid var(--line); border-radius: 10px; font-size: 12.3px; line-height: 1.45;
@@ -177,7 +177,7 @@ button:disabled { opacity: 0.42; cursor: default; }
 .hstat.bad { border-color: rgba(255,143,122,.5); background: rgba(163,48,42,.15); }
 .kv { display: flex; flex-wrap: wrap; gap: 5px; }
 
-/* ——— القائمة الرئيسية ——— */
+/* --- القائمة الرئيسية --- */
 .menu {
   position: absolute; inset: 0; display: flex; overflow: auto;
   padding: calc(10px + var(--safe-t)) calc(14px + var(--safe-r)) calc(10px + var(--safe-b)) calc(14px + var(--safe-l));
@@ -212,7 +212,7 @@ button:disabled { opacity: 0.42; cursor: default; }
 .pick span { font-size: 11.8px; color: var(--muted); }
 .pick.on { border-color: var(--bronze-hi); background: #4b3418; box-shadow: 0 0 0 1px var(--bronze-hi) inset; }
 
-/* ——— الحملة: واجهة فوق الخريطة ——— */
+/* --- الحملة: واجهة فوق الخريطة --- */
 .camp-ui { position: absolute; inset: 0; }
 .hud-res {
   position: absolute; top: calc(6px + var(--safe-t)); right: calc(8px + var(--safe-r));
@@ -310,7 +310,7 @@ button:disabled { opacity: 0.42; cursor: default; }
 .al-x { width: 24px; border: 0; background: none; color: var(--muted); display: grid; place-items: center; padding: 0; }
 .al-x .ico { width: 11px; height: 11px; }
 
-/* ——— محتوى النوافذ ——— */
+/* --- محتوى النوافذ --- */
 .section { display: grid; gap: 6px; align-content: start; }
 .section > h4, .sec-h { margin: 0; font-family: var(--display); font-size: 14px; color: var(--bronze-hi); display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
 .sec-h .ico { width: 15px; height: 15px; }
@@ -503,7 +503,7 @@ button:disabled { opacity: 0.42; cursor: default; }
   * { transition: none !important; animation: none !important; }
 }
 
-/* ——— المعركة بالقيادة ——— */
+/* --- المعركة بالقيادة --- */
 .bs-ui { position: absolute; inset: 0; }
 .bs-top {
   position: absolute; top: calc(4px + var(--safe-t)); left: calc(8px + var(--safe-l)); right: calc(8px + var(--safe-r));
@@ -588,3 +588,32 @@ button:disabled { opacity: 0.42; cursor: default; }
 .goal p { margin: 0; }
 .choice button.on { border-color: var(--bronze-hi); background: #3d2c16; opacity: 1; }
 pre.dev { direction: ltr; text-align: left; font-size: 11px; max-height: 60vh; overflow: auto; white-space: pre-wrap; }
+
+/* --- الإصدار الرابع: وضوح الاقتصاد --- */
+.hud-pill small .per { font-size: 9.5px; opacity: .75; margin-inline-start: 1px; }
+.hud-pill .turn-no { font-family: var(--display); color: var(--parch); font-size: 12px; margin-inline-end: 4px; white-space: nowrap; }
+.ubtn.blocked { opacity: .7; }
+table.res.roi { font-size: 12px; }
+table.res.roi td:first-child { text-align: start; }
+table.res.roi tr.dim { opacity: .55; }
+.linkish { background: none; border: 0; padding: 0; color: var(--parch); font: inherit; font-weight: 600; text-decoration: underline dotted; text-underline-offset: 3px; }
+.ubtn.picked { border-color: var(--bronze-hi); box-shadow: 0 0 0 2px var(--bronze-hi) inset; background: #4b3418; }
+.recruit-pv .stepper { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+.recruit-pv .stepper b { min-width: 24px; text-align: center; font-size: 16px; }
+.step { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--line); background: rgba(40,30,21,.95); display: inline-grid; place-items: center; }
+.undo-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 6px; }
+.alert.more.closeall { display: flex; align-items: center; gap: 4px; justify-content: center; }
+.alert.more.closeall .ico { width: 13px; height: 13px; }
+.log-item.news { text-align: start; border: 0; border-inline-start: 3px solid rgba(196,154,69,.35); width: 100%; color: inherit; font: inherit; font-size: 13px; }
+.log-item.news.crit { border-color: #c0392b; }
+.log-item.news.imp { border-color: #e3b64a; }
+.spy-list { display: grid; gap: 10px; }
+.spy-city { padding: 8px; border-radius: 10px; border: 1px solid rgba(196,154,69,.25); background: rgba(255,240,200,.03); display: grid; gap: 6px; }
+.spy-city.dim { opacity: .6; }
+.spy-city .sc-h { display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline; }
+.choice.compact > button { padding: 6px 8px; }
+.choice.compact > button span { font-size: 11.5px; }
+.amount-row { display: grid; grid-template-columns: 1fr 90px; gap: 8px; align-items: center; margin: 8px 0; }
+.amount-row input[type=range] { width: 100%; accent-color: var(--bronze-hi); touch-action: pan-x; }
+.amount-row .num { width: 100%; min-height: 36px; border-radius: 8px; border: 1px solid var(--line); background: rgba(0,0,0,.3); color: var(--parch); text-align: center; font: inherit; font-size: 15px; }
+.peace-out .lead.good { color: var(--good); }

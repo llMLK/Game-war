@@ -42,7 +42,7 @@ const UI = {
   anyModal() { return !!document.querySelector('.modal-layer'); },
 };
 
-// ——————————————— النوافذ الجانبية والشريط السفلي ———————————————
+// --------------- النوافذ الجانبية والشريط السفلي ---------------
 // كل نافذة: { key, icon, color, title(), sub(), status(), alert(), render(body), valid(), onClose(), onMin() }
 // المفتوحة واحدة فقط. المصغّرة تبقى بطاقة في الشريط حتى تُغلق صراحة.
 const Sheets = {
@@ -163,7 +163,7 @@ const Sheets = {
   },
 };
 
-// ——————————————— التلميحات السياقية ———————————————
+// --------------- التلميحات السياقية ---------------
 const Help = {
   el: null,
   show(anchor, key, extra = {}) {
@@ -213,7 +213,7 @@ function meter(v, max = 100, color) {
   return h('span', { class: 'meter' }, h('i', { style: { width: pct + '%', background: c } }));
 }
 
-// ——————————————— التنبيهات العسكرية ———————————————
+// --------------- التنبيهات العسكرية ---------------
 const ALERT_LV = { crit: { name: 'حرج', icon: 'warning', rank: 3 }, imp: { name: 'مهم', icon: 'bell', rank: 2 }, info: { name: 'معلومة', icon: 'info', rank: 1 } };
 const AlertsUI = {
   el: null, scene: null, open: false,
@@ -224,6 +224,9 @@ const AlertsUI = {
     this.el.innerHTML = '';
     if (!list.length) return;
     const show = this.open ? list : list.slice(0, 3);
+    // إغلاق الأخبار دفعة واحدة: لا ينفّذ قراراً ولا يقبل عرضاً، والقرارات ذات المهلة تبقى
+    const closable = list.filter((a) => !Game.alertKeeps(a));
+    if (closable.length >= 2) this.el.appendChild(h('button', { class: 'alert more closeall', onclick: () => { for (const a of closable) Game.dismissAlert(a.id); this.open = false; this.render(); if (this.scene) this.scene.refresh(); } }, icon('close'), `أغلق ${closable.length} أخبار`, h('small', null, ' (تبقى في السجل)')));
     for (const a of show) {
       this.el.appendChild(h('div', { class: 'alert ' + a.level + (a.seen ? ' seen' : '') },
         h('button', { class: 'al-main', onclick: () => { a.seen = true; this.scene.focusAlert(a); this.render(); } },

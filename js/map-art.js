@@ -20,7 +20,7 @@ class MapArt {
     this.terr.width = MW * 2; this.terr.height = MH * 2;
   }
 
-  // ——— التخطيط الثابت لكل مدينة ———
+  // --- التخطيط الثابت لكل مدينة ---
   edgesOf(id) {
     const out = [];
     for (const e of this.sc.edges) {
@@ -47,7 +47,7 @@ class MapArt {
   tier(n) { return n.capital || n.pop >= 26000 ? 3 : n.pop >= 15000 ? 2 : n.pop >= 10000 ? 1 : 0; }
   rad(n) { return [12.5, 15, 17.5, 20.5][this.tier(n)] + (n.capital ? 1.5 : 0) + Math.min(n.walls || 0, 4) * 0.9; }
 
-  // ——————————— الخلفية المرسومة ———————————
+  // ----------- الخلفية المرسومة -----------
   buildBg() {
     const sc = this.sc, K = 2.5;
     const cv = document.createElement('canvas');
@@ -244,7 +244,7 @@ class MapArt {
     g.restore();
   }
 
-  // ——————————— الأقاليم والحدود ———————————
+  // ----------- الأقاليم والحدود -----------
   // nodes: [{id,x,y,owner}]
   renderTerritory(nodes) {
     const sig = nodes.map((n) => n.owner).join(',');
@@ -329,7 +329,7 @@ class MapArt {
     g.setTransform(1, 0, 0, 1, 0, 0);
   }
 
-  // ——————————— رسم المستوطنة (مخزّنة) ———————————
+  // ----------- رسم المستوطنة (مخزّنة) -----------
   spriteKey(n, ruined) {
     return [n.id, this.tier(n), n.walls, n.market || 0, n.farm || 0, n.granary || 0, n.barracks || 0, n.port || 0, n.capital ? 1 : 0, ruined ? 1 : 0].join('|');
   }
@@ -576,7 +576,7 @@ class MapArt {
     for (const [x, y] of [[-s, -s], [s, -s], [-s, s], [s, s]]) this.towerAt(g, x, y, 1.9, 4);
   }
 
-  // ——————————— الرسم في كل إطار ———————————
+  // ----------- الرسم في كل إطار -----------
   // n: عقدة الحالة (مع الحقول الديناميكية). fx: { siege, scars, t }
   drawNode(ctx, n, o) {
     const ruined = !!(o.scars && o.scars.some((s) => s.kind === 'sack' && o.age(s) <= 4));

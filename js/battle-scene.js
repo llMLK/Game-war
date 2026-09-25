@@ -1,5 +1,5 @@
 'use strict';
-// مشهد المعركة: خريطة حرب تكتيكية — الاستطلاع، الخطة، التشكيل، المراحل والقرارات، ثم التحليل
+// مشهد المعركة: خريطة حرب تكتيكية، الاستطلاع، الخطة، التشكيل، المراحل والقرارات، ثم التحليل
 
 const BW = 1000, BH = 600;
 const SX_OURS = { L: 250, C: 500, R: 750 };
@@ -65,7 +65,7 @@ class BattleScene {
     this.free = { cx: (App.W - pw) / 2, w: App.W - pw, top: top + 6 };
   }
 
-  // ——————————— الرسم المسبق لأرض المعركة ———————————
+  // ----------- الرسم المسبق لأرض المعركة -----------
   renderBg() {
     const K = 2, cv = document.createElement('canvas');
     cv.width = BW * K; cv.height = BH * K;
@@ -155,7 +155,7 @@ class BattleScene {
     return cv;
   }
 
-  // ——————————— مواقع الوحدات ———————————
+  // ----------- مواقع الوحدات -----------
   sx(side, key) { return side === this.A ? SX_OURS[key] : SX_THEIRS[key]; }
   dir(side) { return side === this.A ? 1 : -1; }
   layoutUnits(snap) {
@@ -216,7 +216,7 @@ class BattleScene {
     if (snap) { p.x = x; p.y = y; }
   }
 
-  // ——————————— الواجهة العلوية ———————————
+  // ----------- الواجهة العلوية -----------
   renderTop() {
     const sim = this.sim;
     this.top.innerHTML = '';
@@ -241,7 +241,7 @@ class BattleScene {
     return lo === hi ? '~' + lo : `${lo}–${hi}`;
   }
 
-  // ——————————— المرحلة ١: الاستطلاع ———————————
+  // ----------- المرحلة ١: الاستطلاع -----------
   showIntel() {
     this.stage = 'intel';
     const sim = this.sim, A = this.A, E = this.E;
@@ -277,7 +277,7 @@ class BattleScene {
     );
   }
 
-  // ——————————— المرحلة ٢: الخطة ———————————
+  // ----------- المرحلة ٢: الخطة -----------
   showPlan() {
     this.stage = 'plan';
     const sim = this.sim, A = this.A;
@@ -307,7 +307,7 @@ class BattleScene {
     );
   }
 
-  // ——————————— المرحلة ٣: التشكيل ———————————
+  // ----------- المرحلة ٣: التشكيل -----------
   showFormation() {
     this.stage = 'form';
     const sim = this.sim, A = this.A;
@@ -343,7 +343,7 @@ class BattleScene {
     requestAnimationFrame(() => this.fit());
   }
 
-  // ——————————— المعركة ———————————
+  // ----------- المعركة -----------
   startBattle() {
     const sim = this.sim;
     if (!this.A.plan) sim.autoFormation(this.A, this.planPick);
@@ -456,7 +456,7 @@ class BattleScene {
     const box = h('div', { class: 'choice' });
     for (const o of ev.options) {
       box.appendChild(h('button', { disabled: o.dis, onclick: () => { this.sim.choose(ev, o.k); this.layoutUnits(false); this.renderTop(); this.newLines(); if (this.sim.over) { this.afterEnd(); return; } done(); } },
-        h('b', null, icon(o.icon || 'chevL'), o.label), h('span', null, o.desc, o.risk && o.risk !== '—' ? h('span', { class: 'risk' }, ' — ' + o.risk) : null)));
+        h('b', null, icon(o.icon || 'chevL'), o.label), h('span', null, o.desc, o.risk && o.risk !== 'لا خطر' ? h('span', { class: 'risk' }, ' الخطر: ' + o.risk) : null)));
     }
     this.setPanel(h('div', { class: 'bs-h ev' }, icon('warning'), h('b', null, ev.title)), h('p', { class: 'lead' }, ev.text), box);
   }
@@ -493,7 +493,7 @@ class BattleScene {
   }
   finishNow(kind) { clearTimeout(this.timer); this.onEnd(kind === 'cancel' ? 'cancel' : this.sim.result()); }
 
-  // ——————————— المؤثرات ———————————
+  // ----------- المؤثرات -----------
   consumeCues() {
     for (const c of this.sim.cues) {
       const sideOf = (i) => this.sim.sides[i];
@@ -540,7 +540,7 @@ class BattleScene {
     }
   }
 
-  // ——————————— الرسم ———————————
+  // ----------- الرسم -----------
   render(ctx) {
     const d = App.dpr, cam = this.cam;
     ctx.setTransform(1, 0, 0, 1, 0, 0);

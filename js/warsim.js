@@ -55,7 +55,7 @@ const WS_VS = {
 const FLANK_TERRAIN = { plains: 1.25, desert: 1.15, coast: 1, river: 0.8, hills: 0.85, forest: 0.6, mountains: 0.3 };
 const CHARGE_TERRAIN = { plains: 1.25, desert: 1.15, coast: 1.05, river: 0.8, hills: 0.9, forest: 0.6, mountains: 0.5 };
 
-// ——————————————— الخطط ———————————————
+// --------------- الخطط ---------------
 // كل خطة تغيّر سلوك المحاكاة، لا مجرد نسبة مئوية
 const PLANS = {
   balanced: { name: 'متوازنة', icon: 'scales', desc: 'تقدّم منظم واحتياط حاضر. لا نقاط ضعف واضحة ولا مفاجآت.', good: 'حين لا تعرف العدو جيداً', bad: 'قد تضيع فرصة الحسم' },
@@ -101,7 +101,7 @@ class WarSim {
     this.siegeSetup();
   }
 
-  // ——————————— الإعداد ———————————
+  // ----------- الإعداد -----------
   makeSide(s, i) {
     const side = {
       i, fid: s.fid, name: s.name, color: s.color, player: !!s.player, ai: s.ai == null ? 0.6 : s.ai,
@@ -185,7 +185,7 @@ class WarSim {
     return a;
   }
 
-  // ——————————— التشكيل التلقائي حسب الخطة ———————————
+  // ----------- التشكيل التلقائي حسب الخطة -----------
   autoFormation(side, plan) {
     side.plan = plan;
     const us = side.units.filter((u) => u.men > 0);
@@ -262,7 +262,7 @@ class WarSim {
     if (plan === 'attrition') for (const u of us) if (u.missile) u.ammo += 3;
   }
 
-  // ——————————— المعنويات الأولى ———————————
+  // ----------- المعنويات الأولى -----------
   initMorale(side) {
     let m = 68 + side.mood;
     const g = side.cmd;
@@ -283,7 +283,7 @@ class WarSim {
     side.morale0 = m;
   }
 
-  // ——————————— التشغيل ———————————
+  // ----------- التشغيل -----------
   begin() {
     for (const s of this.sides) {
       if (!s.plan) this.autoFormation(s, this.aiPlan(s));
@@ -359,7 +359,7 @@ class WarSim {
     return best;
   }
 
-  // ——— قوة الالتحام ———
+  // --- قوة الالتحام ---
   unitMelee(u) {
     const hpF = u.hp / 10;
     return u.men * (u.atk + u.def * 0.6) * hpF * (1 + 0.1 * (u.exp || 0));
@@ -443,7 +443,7 @@ class WarSim {
     return m;
   }
 
-  // ——————————— خطوة (نبضة) ———————————
+  // ----------- خطوة (نبضة) -----------
   step() {
     if (this.over) return;
     this.cues = [];
@@ -514,7 +514,7 @@ class WarSim {
     return w ? t / w : 0;
   }
 
-  // ——— السهام ———
+  // --- السهام ---
   volleys(ph) {
     for (const s of this.sides) {
       const foe = s.foe;
@@ -581,7 +581,7 @@ class WarSim {
     return dealt;
   }
 
-  // ——— الانقضاض الأول ———
+  // --- الانقضاض الأول ---
   charges() {
     for (const s of this.sides) {
       const foe = s.foe;
@@ -621,7 +621,7 @@ class WarSim {
     }
   }
 
-  // ——— الالتحام ———
+  // --- الالتحام ---
   melee(ph) {
     const k0 = { approach: 0.05, contact: 0.085, main: 0.1, crisis: 0.13, collapse: 0.12 }[ph];
     const [A, B] = this.sides;
@@ -747,7 +747,7 @@ class WarSim {
     }
   }
 
-  // ——— مناورات خاصة ———
+  // --- مناورات خاصة ---
   execQuality(side, key, order) {
     const g = this.genOf(side, key) || side.cmd;
     let p = 0.72 + (g ? 0.05 * (g.rank - 1) : -0.05);
@@ -828,7 +828,7 @@ class WarSim {
     this.cue({ t: 'retreat', side: s.i, from: 'C' });
     if (ex.q === 'fail' || ex.q === 'disobey') {
       s.sec.C.morale -= 22;
-      this.line(s, `التقهقر المصطنع خرج عن السيطرة — القلب لدى ${s.name} يتراجع فعلاً!`, s.player ? 'bad' : 'good');
+      this.line(s, `التقهقر المصطنع خرج عن السيطرة: القلب لدى ${s.name} يتراجع فعلاً!`, s.player ? 'bad' : 'good');
       this.decisions.push({ side: s.i, kind: 'feintFail', text: 'التقهقر المصطنع تحوّل إلى تراجع حقيقي', weight: 4 });
       this.moment(foe, 'انهيار خدعة التقهقر', 4, 'feint');
       return;
@@ -845,7 +845,7 @@ class WarSim {
       this.cue({ t: 'ambush', side: s.i });
     } else {
       s.sec.C.morale -= 2; s.sec.C.front += 0.15;
-      this.line(s, `${foe.name} لم تبتلع الطُّعم${t === 'tactician' ? ' — قائدها الداهية كشف الخدعة' : ''}. خسر القلب لدى ${s.name} أرضاً.`, s.player ? 'bad' : 'good');
+      this.line(s, `${foe.name} لم تبتلع الطُّعم${t === 'tactician' ? '، فقائدها الداهية كشف الخدعة' : ''}. خسر القلب لدى ${s.name} أرضاً.`, s.player ? 'bad' : 'good');
       this.decisions.push({ side: s.i, kind: 'feintIgnored', text: 'خدعة التقهقر لم تنطلِ على العدو', weight: 1.5 });
     }
   }
@@ -910,7 +910,7 @@ class WarSim {
     }
   }
 
-  // ——— الحصار ———
+  // --- الحصار ---
   addBreach(key, v, how) {
     const def = this.sides[1];
     const sec = def.sec[key];
@@ -1019,7 +1019,7 @@ class WarSim {
     this.line(s, `حُمل ${s.cmd.name} إلى المؤخرة.`, '');
   }
 
-  // أزمة وسط المرحلة: جناح يترنح أو قائد جريح — الذكاء يقرر فوراً، واللاعب يُسأل
+  // أزمة وسط المرحلة: جناح يترنح أو قائد جريح، الذكاء يقرر فوراً، واللاعب يُسأل
   interrupts() {
     this.queue = this.queue || [];
     for (const s of this.sides) {
@@ -1122,7 +1122,7 @@ class WarSim {
     this.line(null, `${W.name} تنتصر.`, W.player ? 'win' : 'lose', 'end');
   }
 
-  // ——— الاحتياط ———
+  // --- الاحتياط ---
   commitReserve(s, key, why) {
     const res = this.secUnits(s, 'Res').filter((u) => u.role !== 'engine' && !(u.hunter && !s.huntDone));
     if (!res.length) return false;
@@ -1145,11 +1145,11 @@ class WarSim {
     s.orderly = true;
     const ex = this.execQuality(s, 'C', 'withdraw');
     if (ex.q === 'fail' || ex.q === 'disobey') { s.orderly = false; this.line(s, 'الانسحاب يتحول إلى فوضى!', s.player ? 'bad' : 'good'); }
-    else this.line(s, `${s.name} تنسحب بانتظام${ex.q === 'excellent' ? ' — تراجع محكم يحفظ الرجال' : ''}.`, '');
+    else this.line(s, `${s.name} تنسحب بانتظام${ex.q === 'excellent' ? '، تراجعاً محكماً يحفظ الرجال' : ''}.`, '');
     this.finish(s.foe.i, 'withdraw');
   }
 
-  // ——————————— الأحداث التكتيكية ———————————
+  // ----------- الأحداث التكتيكية -----------
   findEvent(s) {
     const foe = s.foe;
     const next = WS_PHASES[this.phase + 1] ? WS_PHASES[this.phase + 1].key : null;
@@ -1241,7 +1241,7 @@ class WarSim {
         ev.title = 'قائد العدو مكشوف';
         ev.text = `${foe.cmd.name} يقاتل في المقدمة مع حرسه.`;
         opt('hunt', 'أرسل فرساناً لاصطياده', 'target', 'إن سقط اهتزّ جيشه كله.', 'قد تُباد فرقة الصيد.');
-        opt('ignore', 'تجاهله', 'close', 'تبقى الصفوف كما هي.', '—');
+        opt('ignore', 'تجاهله', 'close', 'تبقى الصفوف كما هي.', 'لا خطر');
         break;
       case 'ammo':
         s.ammoAsked = true;
@@ -1254,14 +1254,14 @@ class WarSim {
       case 'pursuit':
         s.pursueAsked = true;
         ev.title = 'العدو ينهار';
-        ev.text = `صفوف ${foe.name} تتفكك. المطاردة تحصد الكثير — وقد تكون فخاً.`;
+        ev.text = `صفوف ${foe.name} تتفكك. المطاردة تحصد الكثير، وقد تكون فخاً.`;
         opt('pursue', 'طارد بالفرسان', 'charge', 'قتلى وأسرى أكثر.', 'كمين محتمل إن بقي لديهم احتياط.');
         opt('hold', 'اثبت في الميدان', 'shield', 'نصر آمن.', 'ينجو كثير منهم.');
         break;
       case 'feintWarn':
         s.feintAsked = true;
         ev.title = 'العدو يتراجع فجأة؟';
-        ev.text = `قلب ${foe.name} يبدو وكأنه ينسحب${this.cmdTrait(s, 'tactician') ? ' — قائدك الداهية يشك في خدعة' : ''}.`;
+        ev.text = `قلب ${foe.name} يبدو وكأنه ينسحب${this.cmdTrait(s, 'tactician') ? '، وقائدك الداهية يشك في خدعة' : ''}.`;
         opt('caution', 'لا تلاحق: اثبتوا', 'shield', 'لن تقع في فخ إن كان خدعة.', 'قد تضيع فرصة إن كان انسحاباً حقيقياً.');
         opt('chase', 'لاحقوهم!', 'charge', 'إن كان انهياراً حقيقياً فهو النصر.', 'إن كانت خدعة فهو الكمين.');
         break;
@@ -1465,7 +1465,7 @@ class WarSim {
     }
   }
 
-  // ——————————— خطة الذكاء ———————————
+  // ----------- خطة الذكاء -----------
   aiPlan(s) {
     const opts = this.availablePlans(s);
     if (!opts.length) return this.kind === 'siege' ? (s.att ? 'escalade' : 'walls') : 'balanced';
@@ -1510,7 +1510,7 @@ class WarSim {
     return Object.entries(sc).sort((a, b) => b[1] - a[1])[0][0];
   }
 
-  // ——————————— تشغيل آلي كامل (للحسم السريع ومعارك الذكاء) ———————————
+  // ----------- تشغيل آلي كامل (للحسم السريع ومعارك الذكاء) -----------
   runAuto() {
     this.begin();
     let guard = 0;
@@ -1529,7 +1529,7 @@ class WarSim {
     return this.result();
   }
 
-  // ——————————— النتيجة للحملة ———————————
+  // ----------- النتيجة للحملة -----------
   result() {
     const fates = {};
     for (const s of this.sides) {
@@ -1554,7 +1554,7 @@ class WarSim {
     };
   }
 
-  // ——————————— التحليل والقصة ———————————
+  // ----------- التحليل والقصة -----------
   report() {
     const S = this.sides;
     if (this.winner == null) return null;
@@ -1655,7 +1655,7 @@ const BattleReport = {
     return { won, text: t, sub: won ? `على ${rep.loserName}` : `أمام ${rep.winnerName}` };
   },
   render(rep, P, o = {}) {
-    if (!rep) return h('p', null, '—');
+    if (!rep) return h('p', null, 'لا تقرير');
     const me = P != null ? this.mine(rep, P) : null;
     const headTxt = me ? `${me.text} ${me.sub}` : `${rep.verdict}: ${rep.winnerName}`;
     return h('div', { class: 'breport' },

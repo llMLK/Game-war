@@ -1,5 +1,5 @@
 'use strict';
-// نوافذ الحملة: المدينة، الجيش، الحصار، الممالك، المملكة، السجل — ونوافذ القرار
+// نوافذ الحملة: المدينة، الجيش، الحصار، الممالك، المملكة، السجل، ونوافذ القرار
 
 const TERRAIN_TIPS = {
   plains: 'أرض مكشوفة: الخيالة في أفضل حالاتها، والرماة بلا غطاء.',
@@ -13,7 +13,7 @@ const TERRAIN_TIPS = {
 const STATUS_NAME = { war: 'حرب', peace: 'سلام', alliance: 'حلف', vassal: 'تابع', overlord: 'متبوع' };
 const WALL_NAMES = ['بلا أسوار', 'سياج خشبي', 'أسوار حجرية', 'قلعة', 'قلعة عظمى'];
 
-// ——— عناصر صغيرة مشتركة ———
+// --- عناصر صغيرة مشتركة ---
 function dotEl(color) { return h('i', { class: 'dot', style: { background: color } }); }
 function stars(n) { return n > 0 ? h('span', { class: 'gstar' }, '★'.repeat(n)) : null; }
 function traitChip(g) {
@@ -31,10 +31,10 @@ function unitHelp(e, r) {
     note: d.desc + (r.merc ? ' (مرتزقة)' : ''),
   });
 }
-function uchip(r, onX) {
+function uchip(r, onX, onTap) {
   const d = UNITS[r.type];
   const low = r.men < d.men * 0.5;
-  return h('button', { class: 'uchip' + (r.merc ? ' merc' : '') + (d.unique ? ' elite' : '') + (low ? ' low' : ''), onclick: (e) => { e.stopPropagation(); unitHelp(e, r); } },
+  return h('button', { class: 'uchip' + (r.merc ? ' merc' : '') + (d.unique ? ' elite' : '') + (low ? ' low' : ''), onclick: (e) => { e.stopPropagation(); if (onTap) onTap(); else unitHelp(e, r); } },
     icon(UNIT_ICON[r.type] || d.icon), h('b', null, r.men), r.exp ? h('span', { class: 'st' }, '★'.repeat(r.exp)) : null,
     onX ? h('span', { class: 'x', title: 'تسريح', onclick: (e) => { e.stopPropagation(); onX(); } }, icon('close')) : null,
   );
@@ -59,7 +59,7 @@ function powerCompare(enc, P) {
   const mineAtt = enc.attFid === P;
   const my = mineAtt ? pa : pd, en = mineAtt ? pd : pa;
   const ratio = my / Math.max(1, en);
-  const verdict = ratio > 2.2 ? 'تفوّق ساحق' : ratio > 1.4 ? 'أفضلية واضحة' : ratio > 0.85 ? 'متكافئة — الخطة ستحسمها' : ratio > 0.55 ? 'العدو أقوى — تحتاج خطة ذكية' : 'العدو أقوى بكثير';
+  const verdict = ratio > 2.2 ? 'تفوّق ساحق' : ratio > 1.4 ? 'أفضلية واضحة' : ratio > 0.85 ? 'متكافئة: الخطة ستحسمها' : ratio > 0.55 ? 'العدو أقوى: تحتاج خطة ذكية' : 'العدو أقوى بكثير';
   const pct = 100 * my / (my + en || 1);
   return h('div', { class: 'compare' },
     h('div', { class: 'cbar' }, h('i', { style: { width: pct + '%' } })),
@@ -95,13 +95,18 @@ const Panels = {
     const intel = own ? 3 : Game.intelLevel(P, n.owner);
     const gMen = Game.menOf(n.garrison);
     const bs = Game.besiegers(n.id);
-    // ——— الأرقام المهمة فقط، والتفصيل عند الضغط ———
+    // --- الأرقام المهمة فقط، والتفصيل عند الضغط ---
     const kv = h('div', { class: 'kv' });
     if (own || intel >= 2) {
       const lt = own ? Game.loyaltyTarget(n) : null;
       kv.appendChild(hstat('loyalty', n.loyalty, {
         meter: n.loyalty, cls: n.loyalty < 30 ? 'bad' : n.loyalty < 45 ? 'warn' : '',
-        lines: lt ? () => [...lt.parts.map(([k, v]) => [k, signed(v), v > 0 ? 'pos' : v < 0 ? 'neg' : '']), ['يتجه نحو', lt.target, 'sum']] : null,
+        lines: lt ? () => {
+          const step = clamp(lt.target - n.loyalty, -5, Game.merchantAt(n) || Game.governorOf(n, 'merchant') ? 7 : 4);
+          return [...lt.parts.map(([k, v]) => [k, signed(v) + ' نقطة', v > 0 ? 'pos' : v < 0 ? 'neg' : '']), ['يتجه نحو', lt.target, 'sum'],
+            ['التغير في الدور القادم', step ? signed(step) + ' نقطة' : 'مستقر', step > 0 ? 'pos' : step < 0 ? 'neg' : ''],
+            ['أثره على دخل المدينة', `تحصل على ${Math.round(Game.loyaltyIncomeFactor(n.loyalty) * 100)}٪`, '']];
+        } : null,
       }));
     }
     if (own) {
@@ -117,7 +122,7 @@ const Panels = {
       }));
     } else if (intel >= 1) kv.appendChild(hstat('pop', n.pop.toLocaleString('en')));
     body.appendChild(kv);
-    // ——— التحذيرات ———
+    // --- التحذيرات ---
     if (bs.length) {
       const sf = bs[0].fid;
       body.appendChild(h('button', { class: 'box siege', onclick: () => scene.openSiege(n) },
@@ -134,7 +139,7 @@ const Panels = {
     if (Game.crisesAt) for (const c of Game.crisesAt(n.id)) body.appendChild(h('button', { class: 'box crisis', onclick: () => this.openCrisis(scene, c) }, h('div', { class: 'sec-h' }, icon(CRISES[c.type].icon), Game.crisisTitle(c), h('span', { class: 'muted' }, c.ask[P] ? 'قرار مطلوب' : Game.crisisStatus(c)))));
 
     if (!own) { this.foreignCity(scene, n, body, intel); return; }
-    // ——— أقسام المدينة ———
+    // --- أقسام المدينة ---
     scene.cityTab = scene.cityTab || {};
     const armies = Game.armiesAt(n.id).filter((a) => !a.siege);
     let tab = scene.cityTab[n.id] || (armies.some((a) => a.fid === P) ? 'armies' : 'build');
@@ -154,7 +159,7 @@ const Panels = {
   foreignCity(scene, n, body, intel) {
     const P = scene.P;
     if (intel >= 2 && n.garrison.length) body.appendChild(h('div', { class: 'section' }, h('div', { class: 'sec-h' }, icon('shield'), 'الحامية'), h('div', { class: 'units' }, n.garrison.map((r) => uchip(r)))));
-    else if (intel < 2) body.appendChild(h('p', { class: 'hint' }, icon('eye'), ' التفاصيل مجهولة — التجارة أو الجواسيس تكشف المزيد.'));
+    else if (intel < 2) body.appendChild(h('p', { class: 'hint' }, icon('eye'), ' التفاصيل مجهولة، التجارة أو الجواسيس تكشف المزيد.'));
     for (const a of Game.armiesAt(n.id).filter((x) => !x.siege)) body.appendChild(this.foreignArmy(a));
     const near = Game.armiesOf(P).filter((a) => a.mp > 0 && Game.reach(a)[n.id]);
     if (near.length) {
@@ -168,7 +173,7 @@ const Panels = {
     const g = Game.armyGen(a);
     const sel = scene.selArmy === a;
     return h('div', { class: 'acard own' + (sel ? ' sel' : '') },
-      h('div', { class: 'ah' }, icon('banner'), h('b', null, g ? g.name : '—'), stars(g && g.rank), h('span', { class: 'sp' }), h('span', { class: 'muted small' }, `${Game.armyMen(a)} رجل`)),
+      h('div', { class: 'ah' }, icon('banner'), h('b', null, g ? g.name : 'بلا قائد'), stars(g && g.rank), h('span', { class: 'sp' }), h('span', { class: 'muted small' }, `${Game.armyMen(a)} رجل`)),
       h('div', { class: 'gline' }, traitChip(g), mpPips(a), moodTag(a), a.siege ? h('span', { class: 'tag bad' }, icon('tent'), 'يحاصر') : null),
       a.regs.length ? unitSummary(a.regs) : h('span', { class: 'hint' }, 'القائد وحرسه فقط'),
       h('div', { class: 'row-btns' },
@@ -223,11 +228,20 @@ const Panels = {
     if (ov > 0) kv.appendChild(hstat('supply', `${Game.stackAt(n, a.fid)}/${Game.supplyCap(n, a.fid)}`, { cls: 'bad' }));
     body.appendChild(kv);
     const units = h('div', { class: 'units' });
-    const canDisband = !a.siege && n.owner === P;
-    a.regs.forEach((r, i) => units.appendChild(uchip(r, canDisband ? () => this.confirmDisband(scene, a, i) : null)));
-    if (!a.regs.length) units.appendChild(h('span', { class: 'hint' }, 'القائد وحرسه فقط — جنّد وحدات أو انقلها إليه.'));
+    a.regs.forEach((r, i) => {
+      units.appendChild(uchip(r, () => this.confirmDisband(scene, a, i), () => this.unitActions(scene, a, i)));
+    });
+    if (!a.regs.length) units.appendChild(h('span', { class: 'hint' }, 'القائد وحرسه فقط. جنّد وحدات أو انقلها إليه.'));
     body.appendChild(units);
+    if (a.regs.length) body.appendChild(h('p', { class: 'hint small' }, 'اضغط أي وحدة لتسريحها أو إعادة تسليحها.'));
     const others = Game.armiesAt(a.node).filter((o) => o !== a && o.fid === P && !!o.siege === !!a.siege);
+    const cons = Game.consolidatePlan(a);
+    const terr = Game.canTrain(a);
+    const ops = h('div', { class: 'row-btns' },
+      a.regs.length && n.owner === P && !a.siege ? ib('star', terr ? `تدريب: ${terr}` : `تدريب (${Game.trainCost(a)})`, { class: 'btn', disabled: !!terr, title: 'دور كامل بلا حركة: نصف نجمة خبرة لكل وحدة', onclick: () => { const e = Game.train(a); UI.toast(e || 'يتدرّب الجيش هذا الدور: نصف نجمة خبرة لكل وحدة'); scene.afterAction(n); } }) : null,
+      cons.length ? ib('plus', `ضمّ البقايا: ${cons.map((c) => `${c.idx.length}←${c.into} ${UNITS[c.type].name}`).join('، ')} (يوفّر ${cons.reduce((t, c) => t + c.save, 0)}/دور)`, { class: 'btn', onclick: () => this.confirmConsolidate(scene, a, cons) }) : null,
+    );
+    if (ops.children.length) body.appendChild(ops);
     body.appendChild(h('div', { class: 'row-btns' },
       ib('boot', scene.selArmy === a ? 'اختر الوجهة على الخريطة' : a.mp <= 0 ? 'لا حركة متبقية' : 'تحريك', {
         class: 'btn primary' + (scene.selArmy === a ? ' on' : ''), disabled: a.mp <= 0 || !a.regs.length,
@@ -239,22 +253,62 @@ const Panels = {
       !a.regs.length ? ib('close', 'إعفاء القائد', { class: 'btn ghost', onclick: () => { Game.dismissGeneral(a); scene.afterAction(n); } }) : null,
       Game.canAppoint && !a.siege && n.owner === P && g && !a.regs.length ? ib('seal', 'تعيينه حاكماً', { class: 'btn', onclick: () => { const e = Game.appointGovernor(g, n); UI.toast(e || `${g.name} حاكماً على ${n.name}`); scene.afterAction(n); } }) : null,
     ));
-    if (n.barracks && n.owner === P && !a.siege) body.appendChild(h('p', { class: 'hint' }, icon('horseshoe'), ' الجيوش المقيمة هنا دون حركة تتدرّب تلقائياً وتكسب خبرة.'));
+    if (n.barracks && n.owner === P && !a.siege) body.appendChild(h('p', { class: 'hint' }, icon('horseshoe'), Game.besieger(n.id) ? ' المدينة محاصرة: لا تدريب تلقائي، لكن التدريب بأمر وإعادة التسليح ممكنان من ورشها.' : ' الجيوش المقيمة هنا دون حركة تتدرّب تلقائياً ببطء (ربع نجمة كل دور)، والتدريب بأمر أسرع.'));
   },
 
   confirmDisband(scene, a, i) {
     const r = a.regs[i];
+    const n = Game.node(a.node);
+    const back = Game.disbandRefund(a, r);
+    const why = r.merc ? 'المرتزقة يرحلون ولا يعود منهم أحد.' : a.siege || n.owner !== a.fid ? 'الجيش خارج مدنك: الرجال يعودون إلى قراهم ولا يُسترد منهم شيء.' : back < Math.round(r.men * 0.7) ? `المدينة قريبة من حدها الأقصى، فلا يعود إلا ${back}.` : `يعود 70٪ من الرجال إلى القوى البشرية في ${n.name}.`;
     UI.modal({
-      title: 'تسريح الوحدة؟', icon: 'close',
-      body: h('p', null, `${UNITS[r.type].name} (${r.men} رجل) — يوفّر ${Math.round(UNITS[r.type].upkeep * (r.merc ? 1.8 : 1))} ذهباً كل دور.${r.merc ? '' : ' يعود معظم الرجال إلى القوى البشرية للمدينة.'}`),
+      title: 'تسريح نهائي؟', icon: 'close',
+      body: h('div', null,
+        EconUI.lines([
+          ['الوحدة', `${UNITS[r.type].name} · ${r.men} رجل${r.exp ? ' · خبرة ' + '★'.repeat(r.exp) : ''}`],
+          ['رجال الجيش', `${Game.armyMen(a)} ← ${Game.armyMen(a) - r.men}`],
+          ['الصيانة', `توفّر ${Math.round(UNITS[r.type].upkeep * (r.merc ? 1.8 : 1))} كل دور`, 'pos'],
+          ['خانات الجيش', `${a.regs.length}/${MAX_REGS} ← ${a.regs.length - 1}/${MAX_REGS}`],
+          ['يعود إلى القوى البشرية', back ? `${back} رجل` : 'لا شيء', back ? 'pos' : ''],
+        ]),
+        h('p', { class: 'hint' }, why, ' الخبرة تضيع مع الوحدة.'),
+      ),
       buttons: [
-        { label: 'سرّح', danger: true, onClick: () => { Game.disband(a, i); scene.afterAction(Game.node(a.node)); } },
+        { label: 'سرّح نهائياً', danger: true, onClick: () => { Game.disband(a, i); if (Game.track) Game.track('disband'); scene.afterAction(n); } },
         { label: 'إلغاء' },
       ],
     });
   },
+  confirmConsolidate(scene, a, plans) {
+    UI.modal({
+      title: 'ضمّ البقايا', icon: 'plus',
+      body: h('div', null,
+        EconUI.lines(plans.flatMap((p) => [[UNITS[p.type].name, `${p.idx.length} وحدات ناقصة (${p.men} رجل) ← ${p.into}`], ['توفير الصيانة', `${p.save} كل دور`, 'pos']])),
+        h('p', { class: 'hint' }, 'الرجال أنفسهم في وحدات أقل: لا رجال جدد، والخبرة متوسط الوحدات مقرّباً للأسفل، والحركة كما هي.')),
+      buttons: [{ label: 'اضمم', primary: true, onClick: () => { const e = Game.consolidate(a); UI.toast(e || 'ضُمّت البقايا'); scene.afterAction(Game.node(a.node)); } }, { label: 'إلغاء' }],
+    });
+  },
+  // أفعال الوحدة: التفاصيل، إعادة التسليح، التسريح
+  unitActions(scene, a, i) {
+    const r = a.regs[i], d = UNITS[r.type];
+    const opts = Game.rearmOptions(a, i);
+    UI.modal({
+      title: `${d.name} · ${r.men} رجل`, icon: UNIT_ICON[r.type] || 'swords',
+      body: h('div', null,
+        EconUI.lines([['الهجوم / الدفاع', `${d.atk} / ${d.def}`], d.missile ? ['الرمي', d.missile] : null, d.charge ? ['الانقضاض', d.charge] : null, ['الخبرة', r.exp ? '★'.repeat(r.exp) : 'بلا'], ['الصيانة', `${Math.round(d.upkeep * (r.merc ? 1.8 : 1))} كل دور`], r.merc ? ['النوع', 'مرتزقة'] : null]),
+        h('p', { class: 'small' }, d.desc),
+        opts.length ? h('div', { class: 'sec-h' }, icon('hammer'), 'إعادة التسليح بمعدات المدينة') : null,
+        opts.length ? h('p', { class: 'hint' }, 'الخيل من إسطبلات المدينة والسلاح من ورشها، فتصح حتى تحت الحصار. تأخذ دوراً كاملاً بلا حركة، وتفقد الوحدة نجمة خبرة لأن السلاح جديد عليها.') : null,
+      ),
+      buttons: [
+        ...opts.map((o) => { const err = Game.canRearm(a, i, o.to); return { label: `إلى ${UNITS[o.to].name} (${o.cost})`, sub: err || (o.extra ? `${o.men} رجل، ويعود ${o.extra} إلى المدينة` : `${o.men} رجل`), disabled: !!err, onClick: () => { const e = Game.rearm(a, i, o.to); UI.toast(e || `أُعيد تسليحها: ${UNITS[o.to].name}`); scene.afterAction(Game.node(a.node)); } }; }),
+        { label: 'تسريح…', danger: true, onClick: () => this.confirmDisband(scene, a, i) },
+        { label: 'إغلاق', ghost: true },
+      ],
+    });
+  },
 
-  // ——— تقسيم الجيش ———
+  // --- تقسيم الجيش ---
   splitDialog(scene, a) {
     const P = scene.P;
     const picks = a.regs.map((r) => ({ men: 0, max: r.men }));
@@ -309,7 +363,7 @@ const Panels = {
             const na = res.army;
             if (Game.track) Game.track('split');
             scene.afterAction(Game.node(na.node));
-            if (dest.kind === 'new' && na.mp > 0) { scene.startMove(na); UI.toast('القوة الجديدة جاهزة — اختر وجهتها أو ألغِ لتبقى هنا'); }
+            if (dest.kind === 'new' && na.mp > 0) { scene.startMove(na); UI.toast('القوة الجديدة جاهزة، اختر وجهتها أو ألغِ لتبقى هنا'); }
           },
         },
         { label: 'إلغاء' },
@@ -328,7 +382,7 @@ const Panels = {
     });
   },
 
-  // ——— اختيار قائد ———
+  // --- اختيار قائد ---
   genCard(g, extra) {
     const ruler = Game.isRuler && Game.isRuler(g), heir = Game.isHeir && Game.isHeir(g);
     const own = g.fid === Game.S.player;
@@ -351,21 +405,21 @@ const Panels = {
       let close;
       for (const g of pool) {
         const fee = Game.hireFee(g);
-        list.appendChild(h('button', { class: 'gpick', disabled: Game.f(fid).gold < fee, onclick: () => { close(); resolve(g.id); } }, this.genCard(g, h('span', { class: 'fee' }, 'تعيين ', icon('gold'), fee))));
+        list.appendChild(h('button', { class: 'gpick', disabled: Game.f(fid).gold < fee, onclick: () => { close(); resolve(g.id); } }, this.genCard(g, h('span', { class: 'fee' }, `تعيين ${fee} مرة واحدة · ثم ${Game.genSalary(g)} كل دور`))));
       }
       if (!pool.length) list.appendChild(h('p', { class: 'muted' }, 'لا قادة متاحون في البلاط. يمكنك ترقية ضابط.'));
       close = UI.modal({
         title: opts.title || 'اختر قائداً', icon: 'helmet', cls: 'wide',
         body: h('div', null, h('p', { class: 'hint' }, 'كل قائد يغيّر نظاماً مختلفاً: الحركة، الحصار، الاقتصاد، الإمداد، أو القتال. اختر حسب المهمة.'), list),
         buttons: [
-          opts.allowOfficer !== false ? { label: 'ترقية ضابط', sub: '40 ذهباً', disabled: Game.f(fid).gold < 40, onClick: () => resolve('officer') } : null,
+          opts.allowOfficer !== false ? { label: 'ترقية ضابط', sub: '40 مرة واحدة · ثم 8 كل دور', disabled: Game.f(fid).gold < 40, onClick: () => resolve('officer') } : null,
           { label: 'إلغاء', onClick: () => resolve(null) },
         ],
       });
     });
   },
 
-  // ——— التجنيد ———
+  // --- التجنيد ---
   recruitSection(scene, n) {
     const P = scene.P;
     const armies = Game.armiesOfAt(P, n.id).filter((a) => a.regs.length < MAX_REGS);
@@ -385,13 +439,17 @@ const Panels = {
     }, icon('plus'), 'تعيين قائد'));
     sec.append(h('div', { class: 'label' }, 'الوحدات الجديدة تنضم إلى:'), who);
     sec.appendChild(h('div', { class: 'kv' }, hstat('manpower', Math.floor(n.manpower), { label: 'رجال متاحون' })));
+    if (Game.besieger(n.id)) sec.appendChild(h('p', { class: 'hint warn' }, icon('tent'), ' المدينة محاصرة: تجنّد من رجالها وورشها فقط. لا مرتزقة من الخارج، ولا تتجدد القوى البشرية حتى يُرفع الحصار.'));
+    // الضغط يختار ويعرض؛ التنفيذ بزر مستقل يذكر العدد والكلفة
+    const pickKey = 'rec:' + n.id;
+    const sel = scene.recPick && scene.recPick.key === pickKey ? scene.recPick : null;
     const grid = h('div', { class: 'ugrid' });
     for (const t of Game.recruitableTypes(P, n)) {
       const d = UNITS[t];
       const err = Game.canRecruit(P, n, t, scene.recruitTo, false);
       grid.appendChild(h('button', {
-        class: 'ubtn' + (d.unique ? ' elite' : ''), disabled: !!err, title: err || d.desc,
-        onclick: () => { const e = Game.recruit(P, n, t, scene.recruitTo); if (!e && Game.track) Game.track('recruit'); UI.toast(e || `جُنّدت ${d.name}`); scene.afterAction(n); },
+        class: 'ubtn' + (d.unique ? ' elite' : '') + (err ? ' blocked' : '') + (sel && sel.type === t && !sel.merc ? ' picked' : ''), title: err || d.desc,
+        onclick: () => { scene.recPick = { key: pickKey, type: t, merc: false, count: 1 }; Sheets.render(); },
       },
         icon(UNIT_ICON[t]), h('span', { class: 'nm' }, d.name), h('span', { class: 'cost' }, icon('gold'), d.cost, ' ', icon('men'), d.men),
         err && err !== 'الذهب لا يكفي' ? h('span', { class: 'why' }, err) : null,
@@ -400,26 +458,73 @@ const Panels = {
     sec.appendChild(grid);
     const mercs = Game.f(P).mercs;
     if (mercs.length) {
-      sec.appendChild(h('div', { class: 'label' }, 'مرتزقة: بلا قوى بشرية، مخضرمون، تُجنَّد حتى في المدن المضطربة، وكلفتهم ضعف تقريباً'));
+      sec.appendChild(h('div', { class: 'label' }, 'مرتزقة: بلا قوى بشرية، مخضرمون، تُجنَّد حتى في المدن المضطربة، وصيانتهم ضعف تقريباً'));
       const mg = h('div', { class: 'ugrid' });
       mercs.forEach((m, i) => {
         const d = UNITS[m.type];
         const err = Game.canRecruit(P, n, m.type, scene.recruitTo, true);
-        mg.appendChild(h('button', { class: 'ubtn merc', disabled: !!err, title: err || '', onclick: () => { const e = Game.hireMerc(P, n, i, scene.recruitTo); if (!e && Game.track) Game.track('merc'); UI.toast(e || `انضم مرتزقة ${d.name}`); scene.afterAction(n); } },
-          icon(UNIT_ICON[m.type]), h('span', { class: 'nm' }, d.name, ' ', '★'.repeat(m.exp)), h('span', { class: 'cost' }, icon('gold'), Game.recruitCost(m.type, true))));
+        mg.appendChild(h('button', { class: 'ubtn merc' + (err ? ' blocked' : '') + (sel && sel.merc && sel.idx === i ? ' picked' : ''), title: err || '', onclick: () => { scene.recPick = { key: pickKey, type: m.type, merc: true, idx: i, count: 1 }; Sheets.render(); } },
+          icon(UNIT_ICON[m.type]), h('span', { class: 'nm' }, d.name, ' ', '★'.repeat(m.exp)), h('span', { class: 'cost' }, icon('gold'), Game.recruitCost(m.type, true)),
+          err && err !== 'الذهب لا يكفي' ? h('span', { class: 'why' }, err) : null));
       });
       sec.appendChild(mg);
+    }
+    if (sel) sec.appendChild(this.recruitConfirm(scene, n, sel));
+    const und = Game.undoable(P).filter((x) => x.node === n.id);
+    if (und.length) {
+      sec.appendChild(h('div', { class: 'undo-row' }, h('span', { class: 'small muted' }, 'تجنيد هذا الدور، قابل للتراجع ما دام لم يتحرك أو يقاتل:'),
+        und.slice(-4).map((x) => h('button', { class: 'chip', onclick: () => { const e = Game.undoRecruit(P, x.rid); UI.toast(e || `أُلغي تجنيد ${UNITS[x.type].name}: عاد ${x.cost} ذهباً و${x.men} رجل`); scene.afterAction(n); } }, icon('undo'), `ألغِ ${UNITS[x.type].name}`))));
     }
     sec.appendChild(h('details', { class: 'hint' }, h('summary', null, 'ما الذي يهزم ماذا؟'),
       [...RECRUITABLE, UNIQUE_OF[P]].filter(Boolean).map((t) => h('p', null, h('b', null, UNITS[t].name + ': '), UNITS[t].desc))));
     return sec;
   },
 
-  // ——— التطوير ———
+  // معاينة التجنيد وتأكيده
+  recruitConfirm(scene, n, sel) {
+    const P = scene.P, d = UNITS[sel.type];
+    const a = Game.targetArmy(P, n, scene.recruitTo);
+    const cost = Game.recruitCost(sel.type, sel.merc);
+    const upkeep = Math.round((d.upkeep || 0) * (sel.merc ? 1.8 : 1));
+    const slots = a ? MAX_REGS - a.regs.length : 0;
+    const maxN = sel.merc ? Math.min(1, slots) : Math.max(0, Math.min(slots, Math.floor(n.manpower / d.men), Math.floor(Game.f(P).gold / cost)));
+    const count = clamp(sel.count || 1, 1, Math.max(1, maxN));
+    const err = Game.canRecruit(P, n, sel.type, scene.recruitTo, sel.merc);
+    const pv = Game.commitPreview(P, cost * count, upkeep * count);
+    const box = h('div', { class: 'box decide recruit-pv' },
+      h('div', { class: 'sec-h' }, icon(UNIT_ICON[sel.type]), sel.merc ? `مرتزقة ${d.name}` : d.name, h('span', { class: 'muted' }, a ? `إلى ${Game.armyGen(a).name} (${a.regs.length}/${MAX_REGS})` : '')),
+      h('p', { class: 'small' }, d.desc),
+      !sel.merc && maxN > 1 ? h('div', { class: 'stepper' },
+        h('button', { class: 'step', disabled: count <= 1, onclick: () => { sel.count = count - 1; Sheets.render(); } }, icon('minus')),
+        h('b', null, count),
+        h('button', { class: 'step', disabled: count >= maxN, onclick: () => { sel.count = count + 1; Sheets.render(); } }, icon('plus')),
+        h('span', { class: 'muted small' }, `حتى ${maxN}`)) : null,
+      EconUI.lines([
+        ['الكلفة الآن (مرة واحدة)', `${cost * count} ذهباً`],
+        ['الصيانة (كل دور)', `${upkeep * count} ذهباً`],
+        sel.merc ? ['القوى البشرية', 'لا تحتاج'] : ['من القوى البشرية', `${d.men * count} من ${Math.floor(n.manpower)}`],
+        ...EconUI.commitLines(pv),
+      ]),
+      h('div', { class: 'row-btns' },
+        ib('men', err ? err : `جنّد ${count > 1 ? count + ' وحدات' : 'وحدة'} (${cost * count})`, {
+          class: 'btn primary', disabled: !!err || !maxN, onclick: (e) => {
+            e.currentTarget.disabled = true;
+            if (sel.merc) { const r = Game.hireMerc(P, n, sel.idx, scene.recruitTo); UI.toast(r || `انضم مرتزقة ${d.name}`); if (!r && Game.track) Game.track('merc'); }
+            else { const r = Game.recruitMany(P, n, sel.type, scene.recruitTo, count); UI.toast(r.done ? `جُنّدت ${r.done} ${d.name}` : r.err); if (r.done && Game.track) Game.track('recruit'); }
+            scene.recPick = null; scene.afterAction(n);
+          },
+        }),
+        h('button', { class: 'btn ghost', onclick: () => { scene.recPick = null; Sheets.render(); } }, 'إلغاء الاختيار')),
+    );
+    requestAnimationFrame(() => { if (box.isConnected) box.scrollIntoView({ block: 'nearest' }); });
+    return box;
+  },
+
+  // --- التطوير ---
   buildSection(scene, n) {
     const P = scene.P;
     const sec = h('div', { class: 'section' });
-    if (Game.devFocus && Game.devFocus(P) !== 'manual') sec.appendChild(h('p', { class: 'hint' }, icon('scroll'), ` التطوير التلقائي مفعّل (${DEV_FOCUS[Game.devFocus(P)].name}) — يمكنك البناء يدوياً أيضاً.`));
+    if (Game.devFocus && Game.devFocus(P) !== 'manual') sec.appendChild(h('p', { class: 'hint' }, icon('scroll'), ` التطوير التلقائي مفعّل (${DEV_FOCUS[Game.devFocus(P)].name})، يمكنك البناء يدوياً أيضاً.`));
     const grid = h('div', { class: 'bgrid' });
     for (const k of Object.keys(BUILDINGS)) {
       const B = BUILDINGS[k], lvl = n[k] || 0;
@@ -427,8 +532,8 @@ const Panels = {
       const err = Game.canBuild(P, n, k);
       const done = lvl >= B.max;
       grid.appendChild(h('button', {
-        class: 'ubtn' + (done ? ' done' : ''), disabled: !!err, title: err || B.desc,
-        onclick: () => { const e = Game.build(P, n, k); if (!e && Game.track) Game.track('build'); UI.toast(e || `بُني ${B.name}`); scene.afterAction(n); },
+        class: 'ubtn' + (done ? ' done' : '') + (err && !done ? ' blocked' : ''), disabled: done, title: err || B.desc,
+        onclick: () => EconUI.buildPreview(scene, n, k),
       },
         icon(B.icon), h('span', { class: 'nm' }, B.name), h('span', { class: 'lvl' }, [...Array(B.max)].map((_, i) => h('i', { class: i < lvl ? 'on' : '' }))),
         done ? h('span', { class: 'lv' }, 'مكتمل') : h('span', { class: 'cost' }, icon('gold'), B.cost(lvl)),
@@ -439,7 +544,8 @@ const Panels = {
     grid.appendChild(h('button', { class: 'ubtn', disabled: !!ferr, title: ferr || '', onclick: () => { const e = Game.festival(P, n); if (!e && Game.track) Game.track('festival'); UI.toast(e || 'أقيمت الاحتفالات'); scene.afterAction(n); } },
       icon('lantern'), h('span', { class: 'nm' }, 'احتفالات'), h('span', { class: 'lv' }, '+20 ولاء'), h('span', { class: 'cost' }, icon('gold'), Game.festivalCost(n))));
     sec.appendChild(grid);
-    sec.appendChild(h('details', { class: 'hint' }, h('summary', null, 'ماذا يفعل كل مبنى؟'), Object.values(BUILDINGS).map((B) => h('p', null, h('b', null, B.name + ': '), B.desc))));
+    sec.appendChild(h('div', { class: 'row-btns' }, ib('coins', 'قارن فرص التطوير في كل المدن', { class: 'btn', onclick: () => EconUI.investTable(scene) })));
+    sec.appendChild(h('p', { class: 'hint' }, 'اضغط أي مبنى لترى أثره قبل البناء: الدخل قبل وبعد، والاسترداد.'));
     return sec;
   },
 
@@ -501,7 +607,7 @@ const Panels = {
       const lead = bs.find((b) => b.fid === P && b.mp > 0);
       body.appendChild(h('div', { class: 'row-btns' },
         ib('swords', !canBreach ? 'اقتحام (بعد دور)' : !lead ? 'استنفدت الجيوش حركتها' : 'اقتحام', { class: 'btn primary', disabled: !lead || !canBreach, onclick: async () => { await scene.runEnc(Game.makeEnc('assault', Game.besiegers(n.id).filter((b) => b.fid === P), n.id)); scene.afterAction(n); } }),
-        ib('talk', 'عرض الأمان', { class: 'btn', disabled: n.parley === Game.S.turn, onclick: () => this.offerTerms(scene, n) }),
+        (() => { const e0 = Game.makeEnc('assault', bs.filter((b) => b.fid === P), n.id); const lock = Game.surrenderLock(e0); const o = Game.surrenderOdds(e0); return ib('talk', lock ? 'طلب التسليم مؤجل' : `اطلب تسليم المدينة (نحو ${Math.round(o.p * 100)}٪)`, { class: 'btn', disabled: !!lock, title: lock || '', onclick: () => this.offerTerms(scene, n) }); })(),
         ib('retreat', 'رفع الحصار', { class: 'btn ghost', onclick: () => { for (const b of Game.besiegers(n.id).filter((x) => x.fid === P)) { Game.retreatHome(b, [], null, b.siege.from); b.mp = 0; } UI.toast('رُفع الحصار'); scene.afterAction(n); } }),
       ));
       body.appendChild(h('p', { class: 'hint' }, 'كل دور حصار تنقص مؤنهم وتكتمل معداتك. أرسل جيوشاً أخرى إلى هنا لتنضم للحصار.'));
@@ -522,7 +628,7 @@ const Panels = {
     return UI.ask({
       title: `أسوار ${n.name}`, icon: 'castle',
       body: h('div', null,
-        h('p', null, `${WALL_NAMES[Math.min(4, n.walls)]} — ${Game.fname(n.owner)}. ${eqNow ? 'مهندسك جاهز بالمعدات فوراً.' : ''}`),
+        h('p', null, `${WALL_NAMES[Math.min(4, n.walls)]} · ${Game.fname(n.owner)}. ${eqNow ? 'مهندسك جاهز بالمعدات فوراً.' : ''}`),
         h('ul', { class: 'steps small' },
           h('li', null, h('b', null, 'التجويع: '), `مؤنهم ${Math.max(0, n.stores)} أدوار ثم المجاعة. بطيء لكنه بلا خسائر تقريباً.`),
           h('li', null, h('b', null, 'الكبش والسلالم: '), 'بعد دور. البرج بعد دورين: معبر آمن فوق السور.'),
@@ -555,22 +661,30 @@ const Panels = {
     scene.afterAction(n);
   },
   offerTerms(scene, n) {
-    n.parley = Game.S.turn;
     const P = scene.P;
     const enc = Game.makeEnc('assault', Game.besiegers(n.id).filter((b) => b.fid === P), n.id);
-    const { pa, pd } = Game.encPower(enc);
-    const ratio = pa / Math.max(1, pd);
-    let p = clamp(0.08 + (ratio - 1) * 0.2 + (n.stores <= 0 ? 0.35 : n.stores <= 1 ? 0.15 : 0) + Game.siegeTurns(n, P) * 0.05 - (n.capital ? 0.15 : 0) + (Game.f(P).rep - 50) / 200, 0, 0.85);
-    if (Game.f(n.owner) && Game.f(n.owner).vendetta && Game.f(n.owner).vendetta[P] > 0) p *= 0.3;
-    if (Game.track) Game.track('parley');
-    if (R() < p) {
-      UI.toast(`${n.name} تقبل الأمان وتفتح أبوابها! حاميتها تغادر بممر آمن.`);
-      scene.busy = true;
-      Game.surrenderAccepted(enc, 'surrender').then(() => { scene.busy = false; scene.afterAction(n); });
-    } else {
-      UI.toast(`رفض أهل ${n.name} الاستسلام. جرّب حين يشتدّ الجوع.`);
-      scene.afterAction(n);
-    }
+    const o = Game.surrenderOdds(enc);
+    const lock = Game.surrenderLock(enc);
+    UI.modal({
+      title: `طلب تسليم ${n.name}`, icon: 'talk',
+      body: h('div', null,
+        h('p', null, 'رسول إلى حامية المدينة: تُسلَّم المدينة وتخرج الحامية بسلاحها بممر آمن. هذا تسليم مدينة واحدة، أما استسلام المملكة كلها فبفرض التبعية من نافذة الممالك.'),
+        EconUI.lines([...o.parts.map(([k, v]) => [k, typeof v === 'number' ? signed(v) + '٪' : v, typeof v === 'number' ? (v > 0 ? 'pos' : 'neg') : '']), ['فرصة القبول', `نحو ${Math.round(o.p * 100)}٪`, 'sum']]),
+        h('p', { class: 'hint' }, lock || 'رمية واحدة: إن رفضوا لا يُعاد الطلب قبل الدور التالي بدورين، إلا إن جاعوا أو زادت قوتك الربع أو سقطت لهم مدينة.'),
+      ),
+      buttons: [
+        { label: 'أرسل الرسول', primary: true, disabled: !!lock || o.p <= 0, onClick: () => {
+          if (Game.track) Game.track('parley');
+          const r = Game.demandSurrender(enc);
+          if (r.ok) {
+            UI.toast(`${n.name} تقبل الأمان وتفتح أبوابها. حاميتها تغادر بممر آمن.`);
+            scene.busy = true;
+            Game.surrenderAccepted(enc, 'surrender').then(() => { scene.busy = false; scene.afterAction(n); });
+          } else { UI.toast(`رفض أهل ${n.name}. ${Game.surrenderLock(enc) || ''}`, 5000); scene.afterAction(n); }
+        } },
+        { label: 'إلغاء', ghost: true },
+      ],
+    });
   },
 
   confirmWarAttack(fid) {
@@ -590,7 +704,7 @@ const Panels = {
       title: 'إعلان حرب', icon: 'swords',
       body: h('div', null,
         h('p', { class: 'lead warn' }, `هذا الهجوم سينهي حالة ${STATUS_NAME[st] || 'السلام'} ويبدأ حرباً مع ${Game.fname(fid)}.`),
-        cons.length ? h('ul', { class: 'steps' }, cons.map((c) => h('li', null, c))) : h('p', { class: 'muted' }, 'لا معاهدة قائمة — العواقب محدودة.'),
+        cons.length ? h('ul', { class: 'steps' }, cons.map((c) => h('li', null, c))) : h('p', { class: 'muted' }, 'لا معاهدة قائمة، فالعواقب محدودة.'),
       ),
       buttons: [{ label: 'أعلن الحرب وهاجم', value: true, danger: true }, { label: 'تراجع', value: false }],
     });
@@ -657,18 +771,18 @@ const Panels = {
     const st = Game.status(P, id);
     const rel = Game.rel(P, id);
     const tr = Game.treaty(P, id);
-    const act = (ic, label, fn, dis, cls = '') => h('button', { class: 'chip ' + cls, disabled: dis, onclick: () => { fn(); if (Game.track) Game.track('diplo'); redo(); } }, icon(ic), label);
+    // أزرار نصية بلا أيقونات: الاسم وحده يكفي هنا
+    const act = (ic, label, fn, dis, cls = '') => h('button', { class: 'chip ' + cls, disabled: dis, onclick: () => { fn(); if (Game.track) Game.track('diplo'); redo(); } }, label);
     const box = h('div', { class: 'acts' });
     box.append = (...k) => { for (const x of k) if (x) box.appendChild(x); };
     if (st === 'war') {
       box.append(
-        act('dove', 'عرض الصلح', () => this.proposePeace(id, 0)),
-        act('gold', 'صلح + 150', () => this.proposePeace(id, 150), myF.gold < 150),
-        act('scales', 'صلح + جزية منهم', () => {
-          if (Game.aiWillPayTribute(id, P) && Game.aiWillAcceptPeace(id, P, 60)) { Game.makePeace(P, id, 8); Game.addTribute(id, P, Game.tributeAmount(id), 6); UI.toast(`${f.name} تقبل الصلح وتدفع الجزية`); }
-          else { Game.addRel(P, id, -3); UI.toast(`${f.name} ترفض — ما زالت قوية`); }
+        act('dove', 'تفاوض على الصلح…', () => this.peaceDialog(scene, id)),
+        act('scales', 'صلح وجزية سنوية منهم', () => {
+          if (Game.aiWillPayTribute(id, P) && Game.peaceTerms(id, P, -60).ok) { Game.makePeace(P, id, 8); Game.addTribute(id, P, Game.tributeAmount(id), 6); UI.toast(`${f.name} تقبل الصلح وتدفع الجزية`); }
+          else { Game.addRel(P, id, -3); UI.toast(`${f.name} ترفض: ما زالت ترى نفسها قوية`); }
         }),
-        Game.demandVassal ? act('seal', 'فرض التبعية', () => { const r = Game.demandVassal(P, id); UI.toast(r.ok ? `${f.name} تقبل أن تكون تابعة لك` : r.why); }) : null,
+        Game.demandVassal ? act('seal', 'استسلام المملكة: فرض التبعية', () => { const r = Game.demandVassal(P, id); UI.toast(r.ok ? `${f.name} تقبل أن تكون تابعة لك` : r.why); }) : null,
       );
     } else {
       box.append(act('gold', 'هدية 100', () => { myF.gold -= 100; f.gold += 100; Game.addRel(P, id, 14 * (1 - Math.max(0, rel) / 150)); UI.toast(`${f.name} تقبل هديتك`); }, myF.gold < 100));
@@ -688,32 +802,103 @@ const Panels = {
         if (Game.aiWillPayTribute(id, P)) { Game.addTribute(id, P, Game.tributeAmount(id), 8); UI.toast(`${f.name} تقبل دفع الجزية`); }
         else { Game.addRel(P, id, -20); Game.event('pol', `${f.name} ترفض دفع الجزية لـ${myF.name}.`, { fids: [P, id], imp: 2 }); UI.toast(`${f.name} ترفض بازدراء`); }
       }));
-      box.append(h('button', { class: 'chip warn', onclick: () => this.confirmWarAttack(id).then((ok) => { if (ok) { Game.declareWar(P, id, 'بقرار منك'); redo(); } }) }, icon('swords'), 'إعلان الحرب'));
+      box.append(h('button', { class: 'chip warn', onclick: () => this.confirmWarAttack(id).then((ok) => { if (ok) { Game.declareWar(P, id, 'بقرار منك'); redo(); } }) }, 'إعلان الحرب'));
     }
-    if (Game.isVassalOf && Game.isVassalOf(P, id)) box.append(h('button', { class: 'chip warn', onclick: () => { Game.freeVassal(P, 'إعلان الاستقلال'); UI.toast('أعلنت استقلالك — إنها الحرب'); redo(); } }, icon('flag'), 'إعلان الاستقلال'));
+    if (Game.isVassalOf && Game.isVassalOf(P, id)) box.append(h('button', { class: 'chip warn', onclick: () => { Game.freeVassal(P, 'إعلان الاستقلال'); UI.toast('أعلنت استقلالك: إنها الحرب'); redo(); } }, 'إعلان الاستقلال'));
     if (Game.isVassalOf && Game.isVassalOf(id, P)) box.append(h('span', { class: 'lbl' }, `تابعة لك: تدفع ${Math.max(0, Math.round(Game.economy(id).gold * 0.15))} كل دور`));
     if (myF.allyCall && myF.allyCall.enemy === id && !Game.atWar(P, id)) {
       box.append(act('bell', 'لبِّ نداء الحليف', () => { Game.declareWar(P, id, 'نصرةً لحليفها'); Game.addRel(P, myF.allyCall.ally, 15); myF.allyCall = null; }, false, 'on'));
     }
-    box.append(h('span', { class: 'lbl' }, 'الجواسيس — مهمة واحدة كل دور'));
-    for (const [k, sp] of Object.entries(SPY)) {
-      const err = Game.canSpy(P, id, k);
-      box.append(h('button', { class: 'chip', disabled: !!err, title: err || sp.desc, onclick: () => { const r = Game.spy(P, id, k); if (Game.track && !r.err) Game.track('spy'); UI.toast(r.err || r.text); redo(); } }, icon(k === 'scout' ? 'eye' : k === 'incite' ? 'torch' : 'dagger'), `${sp.name} ${sp.cost}`));
-    }
+    box.append(h('span', { class: 'lbl' }, 'الجواسيس: مهمة واحدة كل دور'));
+    const serr = Game.canSpy(P, id, 'scout');
+    box.append(h('button', { class: 'chip', disabled: !!serr, title: serr || SPY.scout.desc, onclick: () => { const r = Game.spy(P, id, 'scout'); if (Game.track && !r.err) Game.track('spy'); UI.toast(r.err || r.text); redo(); } }, `استطلاع البلاط (${SPY.scout.cost})`));
+    box.append(h('button', { class: 'chip', onclick: () => this.spyDialog(scene, id) }, 'عمليات في مدنها…'));
     return box;
   },
 
-  proposePeace(id, tribute) {
-    const P = Game.S.player, f = Game.f(id);
-    if (Game.aiWillAcceptPeace(id, P, tribute)) {
-      if (tribute) { Game.f(P).gold -= tribute; f.gold += tribute; }
-      Game.makePeace(P, id, 8);
-      UI.toast(`${f.name} تقبل الصلح`);
-    } else {
-      Game.addRel(P, id, -3);
-      UI.toast(f.vendetta && f.vendetta[P] > 0 ? `${f.name} ترفض — دم قائدها بينكما` : `${f.name} ترفض الصلح — ${tribute ? 'لا يكفيها الذهب' : 'ما زالت ترى النصر ممكناً'}`);
+  // عمليات الجواسيس: المدينة يختارها اللاعب، والأثر والمدة والفرصة معلنة
+  spyDialog(scene, id) {
+    const P = scene.P, f = Game.f(id);
+    let close = null;
+    const list = h('div', { class: 'spy-list' });
+    for (const t of Game.spyTargets(P, id)) {
+      const n = t.n;
+      const active = (n.ops || []).filter((o) => o.until >= Game.S.turn && o.by === P).map((o) => `${SPY_OPS[o.k].name} حتى الدور ${o.until + 1}`);
+      const row = h('div', { class: 'spy-city' + (t.ok ? '' : ' dim') },
+        h('div', { class: 'sc-h' }, dotEl(f.color), h('b', null, n.name), h('span', { class: 'muted small' }, `${t.why} · الولاء ${Game.intelLevel(P, id) >= 2 || t.ok ? n.loyalty : '؟'}`), active.length ? h('span', { class: 'tag warn' }, active.join('، ')) : null));
+      if (t.ok) {
+        const ops = h('div', { class: 'choice compact' });
+        for (const [k, op] of Object.entries(SPY_OPS)) {
+          const err = Game.canSpyOp(P, id, n.id, k);
+          const ch = Game.spyChance(P, n, k);
+          ops.appendChild(h('button', { disabled: !!err, title: err || '', onclick: () => { const r = Game.spyOp(P, id, n.id, k); UI.toast(r.err || r.text, 5000); if (close) close(); scene.afterAction(n); } },
+            h('b', null, op.name, h('span', { class: 'cost' }, iv('gold', op.cost))),
+            h('span', null, `${op.what(Game.spyMagnitude(n, k))}. النجاح نحو ${Math.round(ch.p * 100)}٪ (${ch.parts.map(([a, v]) => `${a} ${a === 'الأساس' ? v : signed(v)}`).join('، ')}). الانكشاف نحو ${Math.round(op.catch * 100)}٪ ويزيد عند الفشل.`),
+            err ? h('span', { class: 'risk' }, err) : null));
+        }
+        row.appendChild(ops);
+      }
+      list.appendChild(row);
     }
+    close = UI.modal({
+      title: `عمليات في ${f.name}`, icon: 'eye', cls: 'wide',
+      body: h('div', null, h('p', { class: 'hint' }, 'اختر المدينة والعملية. النجاح يغيّر حال المدينة فعلاً وينتهي أثره في موعده، والعملية نفسها لا تتكرر على المدينة قبل انتهائها. الانكشاف وحده يضر علاقتك وسمعتك.'), list),
+      buttons: [{ label: 'إغلاق', ghost: true }],
+    });
   },
+
+  // التفاوض على الصلح: المبلغ واتجاهه يحددهما اللاعب، والرد ثابت بأسبابه
+  peaceDialog(scene, id) {
+    const P = scene.P, f = Game.f(id), me = Game.f(P);
+    const lvl = Game.intelLevel(P, id);
+    let dir = 'pay', amt = 0, close = null;
+    const maxPay = Math.max(0, Math.floor(me.gold / 10) * 10);
+    const maxAsk = Math.max(0, Math.floor(Math.max(0, f.gold) / 10) * 10);
+    const out = h('div', { class: 'peace-out' });
+    const range = h('input', { type: 'range', min: 0, max: maxPay, step: 10, value: 0 });
+    const num = h('input', { type: 'number', min: 0, max: maxPay, step: 10, value: 0, inputmode: 'numeric', class: 'num' });
+    const btn = h('button', { class: 'btn primary' }, 'أرسل العرض');
+    const upd = () => {
+      const max = dir === 'pay' ? maxPay : maxAsk;
+      range.max = max; num.max = max;
+      amt = clamp(Math.round(+num.value || 0), 0, max);
+      const signedAmt = dir === 'pay' ? amt : -amt;
+      const t = Game.peaceTerms(id, P, signedAmt);
+      out.innerHTML = '';
+      const verdict = t.ok ? 'تقبل هذا العرض' : t.hard ? 'ترفض أي صلح الآن' : 'ترفض هذا العرض';
+      out.append(...[
+        h('p', { class: 'lead ' + (t.ok ? 'good' : 'warn') }, `${f.name} ${verdict}.`),
+        t.parts && lvl >= 2 ? EconUI.lines([...t.parts.map(([k, v]) => [k, signed(v), v > 0 ? 'pos' : 'neg']), ['المطلوب للقبول', `أكثر من ${t.need}`, 'sum'], ['حسابك الآن', Math.round(t.score), t.ok ? 'pos' : 'neg']]) : t.parts ? h('p', { class: 'hint' }, 'معرفتك بها تقديرية: الأسباب الدقيقة مجهولة. التجارة أو الاستطلاع يكشفانها.') : null,
+        !t.hard && !t.ok && dir === 'pay' && t.minPay != null ? h('p', { class: 'small' }, lvl >= 2 ? `أقل مبلغ تقبله الآن: ${t.minPay} ذهباً${t.minPay > maxPay ? ' (أكثر مما تملك)' : ''}.` : `تحتاج مبلغاً أكبر، ربما بين ${Math.round(t.minPay * 0.7 / 10) * 10} و${Math.round(t.minPay * 1.3 / 10) * 10}.`) : null,
+        !t.hard && t.ok && dir === 'ask' && lvl >= 2 && t.maxAsk != null ? h('p', { class: 'small' }, `أقصى ما قد تدفعه الآن نحو ${Math.min(t.maxAsk, maxAsk)}.`) : null,
+        t.why && t.why.length ? h('ul', { class: 'steps small' }, t.why.map((w) => h('li', null, w))) : null,
+      ].filter(Boolean));
+      btn.disabled = !t.ok || (dir === 'pay' && amt > me.gold);
+      btn.textContent = dir === 'pay' ? (amt ? `صالح وادفع ${amt}` : 'صالح بلا مال') : `صالح واقبض ${amt}`;
+    };
+    const setDir = (d) => { dir = d; num.value = 0; range.value = 0; seg.querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.d === d)); upd(); };
+    const seg = h('div', { class: 'seg' }, h('button', { class: 'on', 'data-d': 'pay', onclick: () => setDir('pay') }, 'تدفع أنت'), h('button', { 'data-d': 'ask', onclick: () => setDir('ask') }, 'تطلب منها'));
+    range.addEventListener('input', () => { num.value = range.value; upd(); });
+    num.addEventListener('input', () => { range.value = num.value; upd(); });
+    btn.onclick = () => {
+      btn.disabled = true;
+      const r = Game.offerPeace(P, id, dir === 'pay' ? amt : -amt);
+      if (Game.track) Game.track('diplo:peace');
+      UI.toast(r.ok ? `${f.name} تقبل الصلح` : `${f.name} ترفض: ${(r.why || [])[0] || 'العرض لا يكفي'}`);
+      if (close) close();
+      scene.afterAction();
+    };
+    close = UI.modal({
+      title: `الصلح مع ${f.name}`, icon: 'dove',
+      body: h('div', null, seg, h('div', { class: 'amount-row' }, range, num), out,
+        h('p', { class: 'hint' }, 'الرد محسوب من حال الحرب الآن، لا بالحظ: العرض نفسه يلقى الجواب نفسه. المال يرجّح القبول ولا يمحو الثأر.')),
+      buttons: [{ label: 'إغلاق', ghost: true }],
+    });
+    close.box = out.parentElement;
+    out.parentElement.appendChild(h('div', { class: 'row-btns' }, btn));
+    upd();
+  },
+
 
   // ═══════════════ المملكة ═══════════════
   kingdomSpec(scene, tab) {
@@ -749,7 +934,7 @@ const Panels = {
           let extra = null;
           if (st === 'army') { const a = Game.army(g.army); extra = a ? h('button', { class: 'chip', onclick: () => { scene.openArmy(a); } }, icon('castle'), Game.node(a.node).name, ` · ${a.regs.length} وحدات`) : null; }
           if (st === 'gov') extra = h('div', { class: 'row-btns' }, h('span', { class: 'small' }, icon('castle'), ' ', Game.node(g.city).name), h('button', { class: 'chip', onclick: () => { Game.recallGovernor(g); scene.afterAction(); } }, 'استدعاء'));
-          if (st === 'captive') extra = h('p', { class: 'small warn' }, `أسير لدى ${Game.fname(g.captor)} — فديته نحو ${Game.ransomPrice(g)}`);
+          if (st === 'captive') extra = h('p', { class: 'small warn' }, `أسير لدى ${Game.fname(g.captor)}، فديته نحو ${Game.ransomPrice(g)}`);
           list.appendChild(this.genCard(g, extra));
         }
         body.appendChild(list);
@@ -765,12 +950,13 @@ const Panels = {
       for (const [k, tx] of Object.entries(TAXES)) row.appendChild(h('button', { class: 'chip' + (F.tax === k ? ' on' : ''), onclick: () => { F.tax = k; if (Game.track) Game.track('policy'); scene.refresh(); } }, `${tx.name}: دخل ×${tx.income}، ولاء ${signed(tx.loyalty)}`));
       body.appendChild(row);
       if (Game.devFocus) this.policyExtras(scene, body);
-      const e = Game.economy(P);
-      body.appendChild(h('div', { class: 'sec-h' }, icon('gold'), 'الخزينة كل دور'));
-      body.appendChild(h('div', { class: 'pop-lines' },
-        [['دخل المدن', '+' + e.gold, 'pos'], ['التجارة', '+' + (e.trade - (e.route || 0)), 'pos'], ['طريق القوافل', '+' + (e.route || 0), 'pos'], ['الجزية', signed(e.tribute), e.tribute >= 0 ? 'pos' : 'neg'], ['صيانة الوحدات', '−' + e.upkeep, 'neg'], ['رواتب القادة', '−' + e.salaries, 'neg'], ['جيوش زائدة عن مدنك', '−' + e.overhead, 'neg'], ['الصافي', signed(e.netGold), 'sum']]
-          .map(([k, v, c]) => h('div', { class: 'pl ' + c }, h('span', null, k), h('bdi', null, v)))));
-      body.appendChild(h('p', { class: 'hint' }, 'كل جيش زائد عن عدد مدنك يكلّف 10 إدارة. الممالك الواسعة تعاني الفساد وضعف ولاء المدن البعيدة.'));
+      body.appendChild(h('div', { class: 'sec-h' }, icon('gold'), 'الخزينة'));
+      body.appendChild(EconUI.lines(Game.treasuryLines(P)));
+      const cities = Game.nodesOf(P).length;
+      body.appendChild(h('p', { class: 'hint' }, cities > 8
+        ? `الهدر الإداري: مملكتك ${cities} مدن، فتضيع ${Math.round(Math.min(0.4, 0.03 * (cities - 8)) * 100)}٪ من دخل كل مدينة (3٪ لكل مدينة بعد الثامنة). الحاكم المقيم يخفّضه للنصف في مدينته، والتابعون لا يُحسبون.`
+        : 'كل جيش زائد عن عدد مدنك يكلّف 10 كل دور. بعد المدينة الثامنة يبدأ هدر إداري يخفض دخل كل المدن.'));
+      body.appendChild(h('div', { class: 'row-btns' }, ib('coins', 'فرص التطوير', { class: 'btn', onclick: () => EconUI.investTable(scene) }), Game.S.route ? ib('camel', 'طريق القوافل', { class: 'btn', onclick: () => scene.openRoute() }) : null));
     }
   },
 
@@ -843,8 +1029,16 @@ const Panels = {
     const P = scene.P;
     const tab = scene.chronTab || 'realm';
     const seg = h('div', { class: 'seg' });
-    for (const [k, ic, name] of [['realm', 'crown', 'مملكتي'], ['world', 'map', 'العالم'], ['log', 'scroll', 'الأحداث']]) seg.appendChild(h('button', { class: k === tab ? 'on' : '', onclick: () => { scene.chronTab = k; Sheets.render(); } }, icon(ic), name));
+    for (const [k, ic, name] of [['realm', 'crown', 'مملكتي'], ['world', 'map', 'العالم'], ['news', 'bell', 'الأخبار'], ['log', 'scroll', 'الأحداث']]) seg.appendChild(h('button', { class: k === tab ? 'on' : '', onclick: () => { scene.chronTab = k; Sheets.render(); } }, icon(ic), name));
     body.appendChild(seg);
+    if (tab === 'news') {
+      const box = h('div', { class: 'log' });
+      for (const e of Game.alertHistory().slice(0, 80)) box.appendChild(h('button', { class: `log-item news ${e.level}`, onclick: () => { const n = e.node && Game.node(e.node); if (n) { scene.flyTo(n.x, n.y); scene.openCity(n); } } }, h('span', { class: 'muted small' }, `الدور ${e.turn + 1} · `), e.text));
+      if (!box.children.length) box.appendChild(h('p', { class: 'hint' }, 'لا أخبار بعد.'));
+      body.appendChild(h('p', { class: 'hint' }, 'كل التنبيهات التي وصلتك، حتى المغلقة منها. إغلاق الأخبار لا يتخذ أي قرار.'));
+      body.appendChild(box);
+      return;
+    }
     if (tab === 'log') {
       const logs = Game.S.log.slice(-160).filter((e) => Game.eventVisible(e)).reverse();
       const box = h('div', { class: 'log' });
@@ -860,7 +1054,7 @@ const Panels = {
         body.appendChild(h('div', { class: 'crisis-list' }, cs.map((c) => h('button', { class: 'crisis-row' + (c.ask[P] ? ' ask' : '') + (c.over ? ' over' : ''), onclick: () => this.openCrisis(scene, c) },
           icon(CRISES[c.type].icon), h('b', null, Game.crisisTitle(c)), h('span', { class: 'muted small' }, c.ask[P] ? 'قرار مطلوب' : Game.crisisStatus(c))))));
       }
-      if (Game.S.route) body.appendChild(h('p', { class: 'small' }, hstat('route', `${Game.S.route.name} ${Game.S.route.dead ? '(منقطع)' : Math.round(Game.routeHealth() * 100) + '٪'}`, { icon: 'camel', label: '' })));
+      if (Game.S.route) body.appendChild(h('div', { class: 'row-btns' }, hstat('route', `${Game.S.route.name} ${Game.S.route.dead ? '(متوقف)' : Math.round(Game.routeHealth() * 100) + '٪'}`, { icon: 'camel', label: '' }), ib('camel', 'تفاصيل الطريق', { class: 'chip', onclick: () => scene.openRoute() })));
     }
     const list = (Game.S.chron || []).filter((e) => (tab === 'realm' ? e.fids.includes(P) : e.imp >= 2)).slice().reverse();
     const box = h('div', { class: 'chron' });
@@ -883,6 +1077,60 @@ const Panels = {
     const a = Game.analytics();
     UI.modal({ title: 'تحليلات المطوّر', icon: 'info', cls: 'wide', body: h('pre', { class: 'dev' }, JSON.stringify(a, null, 1)), buttons: [{ label: 'إغلاق', primary: true }] });
   },
+  // ═══════════════ طريق القوافل ═══════════════
+  routeSpec(scene) {
+    return {
+      key: 'route', icon: 'camel', color: '#b8862a',
+      title: () => (Game.S.route ? Game.S.route.name : 'طريق القوافل'),
+      short: () => 'القوافل',
+      sub: () => { const r = Game.S.route; return r ? [r.dead ? 'متوقف' : `سالك ${Math.round(Game.routeHealth() * 100)}٪`, ' · ', 'دخلك ', Game.routeIncome(scene.P), '/دور'] : []; },
+      status: () => { const r = Game.S.route; return !r ? '' : r.dead ? 'متوقف' : `${Math.round(Game.routeHealth() * 100)}٪`; },
+      alert: () => { const r = Game.S.route; return r && (r.dead || Game.routeHealth() < 0.5) && r.path.some((id) => Game.node(id).owner === scene.P) ? 'imp' : false; },
+      valid: () => !!Game.S.route,
+      render: (body) => this.routeBody(scene, body),
+    };
+  },
+  routeBody(scene, body) {
+    const P = scene.P, r = Game.S.route;
+    if (!r) { body.appendChild(h('p', { class: 'hint' }, 'لا طريق قوافل في هذه الحملة.')); return; }
+    const mine = r.path.filter((id) => Game.node(id).owner === P);
+    const now = Game.routeIncome(P), full = Game.routeIncome(P, true);
+    body.appendChild(h('p', { class: 'lead small' }, 'طريق تجارة دائم وليس رحلة واحدة: كل مدينة تملكها عليه تكسب ذهباً في كل دور ما دام الطريق سالكاً. الحروب والحصار والحجر تقطع مقاطعه.'));
+    const race = Game.S.crises.find((c) => !c.over && c.type === 'route');
+    body.appendChild(EconUI.lines([
+      ['الحالة', r.dead ? `متوقف منذ الدور ${(r.deadSince != null ? r.deadSince : Game.S.turn) + 1}` : Game.routeRamp() < 1 ? `القوافل تعود بنصف حجمها حتى الدور ${r.rampUntil + 1}` : `سالك ${Math.round(Game.routeHealth() * 100)}٪`, r.dead ? 'neg' : ''],
+      ['مدنك على الطريق', mine.length ? mine.map((id) => Game.node(id).name).join('، ') : 'لا شيء'],
+      ['دخلك منه الآن', `${now} كل دور`, now ? 'pos' : ''],
+      ['دخلك لو كان سالكاً كله', `${full} كل دور`, ''],
+    ]));
+    body.appendChild(h('div', { class: 'sec-h' }, icon('road'), 'المقاطع'));
+    const segs = h('div', { class: 'crisis-list' });
+    for (let i = 0; i < r.path.length - 1; i++) {
+      const a = r.path[i], b = r.path[i + 1], A = Game.node(a), B = Game.node(b);
+      const bl = Game.routeBlock(a, b), det = Game.routeDetour(a, b);
+      const down = r.down && r.down[a + '|' + b];
+      const opts = bl && !r.dead ? Game.routeDetourOptions(a, b) : [];
+      const val = Game.routeSegValue(a, b);
+      segs.appendChild(h('div', { class: 'crisis-row seg' + (bl && !val ? ' ask' : '') },
+        icon(bl ? (val ? 'road' : 'close') : 'check'), h('b', null, `${A.name} ← ${B.name}`),
+        h('span', { class: 'muted small' }, bl ? `${bl.why}${down ? ` منذ الدور ${down.since + 1}` : ''}${det ? ` · تحويلة عبر ${Game.node(det.via).name} حتى الدور ${det.until + 1}` : ''}` : 'سالك'),
+        bl && !det ? h('span', { class: 'small' }, `العلاج: ${bl.fix}`) : null,
+        opts.length && mine.length && !det ? h('div', { class: 'row-btns' }, opts.slice(0, 2).map((via) => h('button', { class: 'chip', disabled: Game.f(P).gold < Game.routeDetourCost(), onclick: () => { const e = Game.setRouteDetour(P, a, b, via); UI.toast(e || `القوافل تمر عبر ${Game.node(via).name} ستة أدوار`); scene.afterAction(); } }, icon('camel'), `حوّلها عبر ${Game.node(via).name} (${Game.routeDetourCost()})`))) : null,
+      ));
+    }
+    body.appendChild(segs);
+    if (r.dead) {
+      const err = Game.canResumeRoute(P);
+      body.appendChild(h('div', { class: 'box decide' },
+        h('div', { class: 'sec-h' }, icon('camel'), 'استئناف القوافل'),
+        h('p', { class: 'small' }, race ? 'التجار يتسابقون على طريق بديل: الاستثمار في نافذة الحدث يرجّح الطريق الذي تريده. الطريق المقطوع لا يُختار.' : 'إن بقيت المقاطع سالكة دورين تعود القوافل وحدها، بنصف حجمها ثلاثة أدوار.'),
+        h('div', { class: 'row-btns' },
+          ib('gold', err && err !== 'الذهب لا يكفي' ? err : `موّل العودة الآن (${Game.routeResumeCost()})`, { class: 'btn', disabled: !!err, onclick: () => { const e = Game.resumeRoute(P); UI.toast(e || 'عادت القوافل إلى الطريق'); scene.afterAction(); } }),
+          race ? ib('warning', 'نافذة السباق', { class: 'btn', onclick: () => this.openCrisis(scene, race) }) : null)));
+    }
+    body.appendChild(h('p', { class: 'hint' }, 'التحويلة تكلّف 120 وتُبقي المقطع مفتوحاً بأربعة أخماس دخله ستة أدوار، إن وُجدت مدينة سالكة بين طرفيه. القافلة المنقطعة لا تعود بلا ثمن.'));
+  },
+
   // ═══════════════ الأهداف والفصول ═══════════════
   goalsTab(scene, body) {
     const P = scene.P;
@@ -894,11 +1142,11 @@ const Panels = {
       body.appendChild(h('div', { class: 'goal' + (o.done ? ' done' : '') },
         h('div', { class: 'gh' }, icon(o.icon), h('b', null, o.name), h('span', { class: 'sp' }), h('bdi', { class: 'muted small' }, `${o.have}/${o.need}`)),
         h('span', { class: 'bar' }, h('i', { style: { width: pct + '%' } })),
-        h('p', { class: 'small' }, o.desc, o.sub ? ` — ${o.sub}` : '', o.hold ? ` (متتالية: ${o.hold})` : ''),
+        h('p', { class: 'small' }, o.desc, o.sub ? `، ${o.sub}` : '', o.hold ? ` (متتالية: ${o.hold})` : ''),
         o.nodes ? h('div', { class: 'row-btns wrap' }, o.nodes.map((id) => { const n = Game.node(id); return h('button', { class: 'chip' + (n.owner === P ? ' on' : ''), onclick: () => scene.flyTo(n.x, n.y) }, dotEl(Game.f(n.owner).color), n.name); })) : null));
     }
     const vs = Game.vassalsOf(P);
-    if (vs.length) body.appendChild(h('p', { class: 'hint' }, icon('seal'), ' تابعوك: ', vs.map((v) => Game.fname(v)).join('، '), ' — يدفعون 15٪ من دخلهم ويقاتلون في حروبك.'));
+    if (vs.length) body.appendChild(h('p', { class: 'hint' }, icon('seal'), ' تابعوك: ', vs.map((v) => Game.fname(v)).join('، '), '، يدفعون 15٪ من دخلهم ويقاتلون في حروبك.'));
   },
   policyExtras(scene, body) {
     const P = scene.P, F = Game.f(P);
@@ -939,7 +1187,7 @@ const Panels = {
   optBtn(o, onPick) {
     return h('button', { disabled: o.dis, title: o.why || '', onclick: onPick },
       h('b', null, icon(o.icon || 'chevL'), o.label, o.gold ? h('span', { class: 'cost' }, iv('gold', o.gold)) : null, o.food ? h('span', { class: 'cost' }, iv('food', o.food)) : null),
-      h('span', null, o.desc || '', o.risk ? h('span', { class: 'risk' }, ' — ' + o.risk) : null, o.why ? h('span', { class: 'risk' }, ` (${o.why})`) : null));
+      h('span', null, o.desc || '', o.risk ? h('span', { class: 'risk' }, ' الخطر: ' + o.risk) : null, o.why ? h('span', { class: 'risk' }, ` (${o.why})`) : null));
   },
   crisisBody(scene, c, body) {
     const P = scene.P;
@@ -1070,17 +1318,17 @@ const Panels = {
   intro(scene) {
     const f = Game.f(scene.P);
     UI.modal({
-      title: `${Game.sc.name} — ${f.name}`, icon: 'flag',
+      title: `${Game.sc.name} · ${f.name}`, icon: 'flag',
       body: h('div', null,
         h('p', { class: 'lead' }, Game.sc.intro),
         h('ul', { class: 'steps' },
           h('li', null, 'اضغط راية جيشك ثم مدينة مضيئة للتحرك. الرقم فوقها كلفة الحركة.'),
           h('li', null, 'اضغط أي رقم في النوافذ لتعرف ما يعنيه وما يرفعه ويخفضه.'),
-          h('li', null, 'صغّر النوافذ بزر (—) فتبقى بطاقة في الشريط السفلي تعود إليها متى شئت.'),
-          h('li', null, 'التنبيهات العسكرية تظهر يساراً — اضغطها لتنتقل إلى الحدث.'),
+          h('li', null, 'صغّر النوافذ بزر التصغير فتبقى بطاقة في الشريط السفلي تعود إليها متى شئت.'),
+          h('li', null, 'التنبيهات العسكرية تظهر يساراً، اضغطها لتنتقل إلى الحدث.'),
           h('li', null, 'التاريخ لا ينتظرك: أزمات كبرى تلوح في الأفق، وعلاماتها تسبقها.'),
         ),
-        Game.objectivesOf ? h('p', { class: 'hint' }, 'أهدافك تجدها في نافذة المملكة — النصر ليس بالضرورة احتلال الخريطة كلها.') : null,
+        Game.objectivesOf ? h('p', { class: 'hint' }, 'أهدافك تجدها في نافذة المملكة، النصر ليس بالضرورة احتلال الخريطة كلها.') : null,
       ),
       buttons: [{ label: 'إلى الحرب', primary: true }],
     });
@@ -1114,7 +1362,7 @@ const Panels = {
       ransom: p.gen ? `${f.name} تعرض إطلاق قائدك ${p.gen.name} مقابل فدية ${p.price} ذهباً.` : '',
       exchange: p.gen ? `${f.name} تعرض تبادل قائدك ${p.gen.name} بقائدها ${p.theirs.name} الأسير عندك.` : '',
       surrender: p.node ? `${f.name} تعرض على أهل ${p.node.name} الجائعين الأمان: تُسلَّم المدينة وتخرج حاميتك وجيشك بممر آمن.` : '',
-      vassal: `${f.name} تطالبك بالخضوع: تصبح تابعاً لها، تدفع جزية وتقاتل في حروبها — أو تواجه جيوشها.`,
+      vassal: `${f.name} تطالبك بالخضوع: تصبح تابعاً لها، تدفع جزية وتقاتل في حروبها، أو تواجه جيوشها.`,
     }[p.kind];
     const payLabel = { tribute: 'ادفع', ransom: 'ادفع الفدية', surrender: 'سلّم المدينة', vassal: 'اخضع' }[p.kind] || 'اقبل';
     const cant = (p.kind === 'tribute' && Game.f(P).gold < p.amount) || (p.kind === 'ransom' && Game.f(P).gold < p.price);
@@ -1217,25 +1465,30 @@ const Panels = {
     const P = Game.S.player;
     const cost = Game.bribeCost(enc);
     const back = () => this.encounter(scene, enc).then(resolve);
+    const o = Game.surrenderOdds(enc);
+    const lock = Game.surrenderLock(enc);
+    const city = enc.type === 'assault';
     UI.modal({
       title: 'التفاوض', icon: 'talk',
       body: h('div', null,
-        h('p', null, enc.type === 'assault' ? 'أرسل رسولاً إلى المدينة:' : 'أرسل رسولاً إلى جيش العدو:'),
+        h('p', null, city ? 'أرسل رسولاً إلى المدينة:' : 'أرسل رسولاً إلى جيش العدو:'),
         h('ul', { class: 'steps' },
-          h('li', null, h('b', null, 'طلب الاستسلام: '), 'ينجح إن كان جيشك أقوى بكثير أو المدينة جائعة، وتساعده سمعتك.'),
+          h('li', null, h('b', null, city ? 'طلب تسليم المدينة: ' : 'طلب الانسحاب: '), lock || `فرصة القبول نحو ${Math.round(o.p * 100)}٪. رمية واحدة، وبعد الرفض يُؤجَّل الطلب.`),
           h('li', null, h('b', null, `شراء الولاء (${cost}): `), 'الشجعان والصامدون يرفضون غالباً، والطمّاعون يقبلون.'),
         ),
       ),
       buttons: [
         {
-          label: 'طلب الاستسلام', primary: true, onClick: async () => {
+          label: city ? 'اطلب التسليم' : 'اطلب الانسحاب', primary: true, disabled: !!lock || o.p <= 0, onClick: async () => {
             if (Game.track) Game.track('parley');
-            if (Game.tryDemandSurrender(enc)) { UI.toast('قبلوا الاستسلام!'); await Game.surrenderAccepted(enc, 'surrender'); resolve('settled'); }
-            else { Game.addRel(P, enc.defFid, -3); UI.toast('رفضوا بإباء — لا مفرّ من القتال'); back(); }
+            const r = Game.demandSurrender(enc);
+            if (r.ok) { UI.toast('قبلوا!'); await Game.surrenderAccepted(enc, 'surrender'); resolve('settled'); }
+            else { Game.addRel(P, enc.defFid, -3); UI.toast('رفضوا بإباء: لا مفرّ من القتال الآن'); back(); }
           },
         },
         {
-          label: `رشوة ${cost}`, icon: 'gold', disabled: Game.f(P).gold < cost, onClick: async () => {
+          label: `رشوة ${cost}`, icon: 'gold', disabled: Game.f(P).gold < cost || enc.bribed, onClick: async () => {
+            enc.bribed = true;
             if (Game.tryBribe(enc)) { Game.f(P).gold -= cost; UI.toast('نجحت الرشوة!'); await Game.surrenderAccepted(enc, 'surrender'); resolve('settled'); }
             else { Game.f(P).gold -= Math.round(cost * 0.3); UI.toast('خدعوا رسولك وأخذوا بعض الذهب!'); back(); }
           },
@@ -1265,13 +1518,13 @@ const CRISIS_WHY = {
   horde: 'جيش من السهوب يقترب على مراحل. كل مرحلة فرصة: تجسس، تحصّن، ادفع، أو وجّهه نحو غيرك.',
   migration: 'قوم يبحثون عن أرض: رجال وخيل لمن يؤويهم، وسيف لمن يردّهم.',
   plague: 'العدوى تنتقل على الطرق ومع الجيوش. الحجر يوقفها لكنه يقطع الدخل والتجارة.',
-  famine: 'الحقول تجف: المدن تجوع والولاء ينهار. المخازن والتجارة تنقذ الموقف — والجار الجائع ضعيف.',
+  famine: 'الحقول تجف: المدن تجوع والولاء ينهار. المخازن والتجارة تنقذ الموقف، والجار الجائع ضعيف.',
   succession: 'العرش يهتز. الوريث وولاء القادة الكبار يحددان ما سيحدث.',
   rebel: 'قائد يطمح إلى أكثر من القيادة. كل مرحلة تقربه من التمرد بجيشه ومدنه.',
   coalition: 'الممالك تتحالف ضد الأقوى: تنازل، أو مال، أو حرب على أكثر من جبهة.',
   freecity: 'مدينة غنية تريد حكماً ذاتياً: دخل أقل وولاء أكبر، أو خطر الاستقلال.',
   uprising: 'دعوة تنتشر في المدن الساخطة: العطاء، أو القمع، أو استمالة الزعيم.',
-  star: 'موهبة نادرة تبحث عن سيد. من يدفع أكثر يكسبها — ومن لا يدفع قد يواجهها.',
+  star: 'موهبة نادرة تبحث عن سيد. من يدفع أكثر يكسبها، ومن لا يدفع قد يواجهها.',
   route: 'القوافل تبحث عن طريق. من يستثمر يربح ذهب التجارة لسنوات.',
 };
 Game.openCrisis = (scene, a) => { const c = Game.crisisById(a.crisis); if (c) Panels.openCrisis(scene, c); };

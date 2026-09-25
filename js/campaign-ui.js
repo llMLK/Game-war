@@ -67,7 +67,7 @@ class CampaignScene {
     }
   }
 
-  // ——— الرسم ———
+  // --- الرسم ---
   render(ctx) {
     const S = Game.S, d = App.dpr, cam = this.cam, art = this.art, t = this.t;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -87,7 +87,7 @@ class CampaignScene {
     // الطرق
     ctx.lineCap = 'round';
     for (const e of Game.sc.edges) {
-      const [a, b, kind = 'road'] = e;
+      const [a, b, kind = 'road', via] = e;
       const A = Game.node(a), B = Game.node(b);
       const hl = onPath.has(a + '|' + b);
       const paved = (A.roads || B.roads);
@@ -95,6 +95,8 @@ class CampaignScene {
       if (kind === 'water') {
         const open = A.port || B.port;
         ctx.setLineDash([2, 4]); ctx.strokeStyle = hl ? 'rgba(190,235,255,.95)' : open ? 'rgba(30,70,100,.85)' : 'rgba(40,80,110,.45)'; ctx.lineWidth = hl ? 2.6 : open ? 1.8 : 1.2;
+        // الطرق البحرية الطويلة تتبع البحر، فلا تبدو كأنها تصل مدناً على اليابسة
+        if (via && via.length) { this.smoothPath(ctx, [[A.x, A.y], ...via, [B.x, B.y]]); ctx.stroke(); continue; }
       } else if (kind === 'pass') {
         ctx.strokeStyle = hl ? 'rgba(255,215,110,.95)' : 'rgba(95,55,30,.8)'; ctx.lineWidth = hl ? 3 : 2; ctx.setLineDash([6, 2.5, 1.5, 2.5]);
       } else if (paved) {
@@ -146,7 +148,7 @@ class CampaignScene {
       ctx.beginPath(); ctx.arc(n.x, n.y, R + 5, 0, TAU); ctx.stroke(); ctx.setLineDash([]);
     }
 
-    // ——— بمقاس الشاشة ———
+    // --- بمقاس الشاشة ---
     ctx.setTransform(d, 0, 0, d, 0, 0);
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     this.hits = [];
@@ -173,18 +175,27 @@ class CampaignScene {
     }
     for (const n of S.nodes) this.drawArmiesAt(ctx, n);
     for (const m of marks) if (m.kind === 'threat') this.threatMarker(ctx, m);
+    // مقاطع طريق القوافل قابلة للمس (أضعف أولوية من المدن والجيوش)
+    const route = S.route;
+    if (route) for (let i = 0; i < route.path.length - 1; i++) {
+      const A = Game.node(route.path[i]), B = Game.node(route.path[i + 1]);
+      if (!A || !B) continue;
+      const p = cam.toScreen((A.x + B.x) / 2, (A.y + B.y) / 2);
+      this.hits.push({ kind: 'route', x: p.x, y: p.y, r: 14 });
+    }
   }
 
-  // ——— طريق القوافل: شريط ذهبي وقوافل تتحرك، وأحمر متقطع حيث انقطع ———
+  // --- طريق القوافل: شريط ذهبي وقوافل تتحرك، وأحمر متقطع حيث انقطع ---
   drawRoute(ctx) {
     const r = Game.S.route;
     if (!r || r.path.length < 2) return;
     for (let i = 0; i < r.path.length - 1; i++) {
       const A = Game.node(r.path[i]), B = Game.node(r.path[i + 1]);
       if (!A || !B) continue;
-      const ok = !r.dead && Game.routeSegOk(A.id, B.id);
+      const val = r.dead ? 0 : Game.routeSegValue(A.id, B.id);
+      const ok = val > 0;
       ctx.lineCap = 'round';
-      ctx.setLineDash(ok ? [] : [5, 6]);
+      ctx.setLineDash(val >= 1 ? [] : ok ? [9, 4] : [5, 6]);
       ctx.strokeStyle = ok ? 'rgba(214,168,62,.42)' : 'rgba(160,60,40,.38)';
       ctx.lineWidth = ok ? 6.5 : 4;
       ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
@@ -198,7 +209,7 @@ class CampaignScene {
     }
   }
 
-  // ——— آثار الأزمات على الأرض ———
+  // --- آثار الأزمات على الأرض ---
   drawCrisisWorld(ctx, marks) {
     for (const m of marks) {
       if (m.kind === 'threat') {
@@ -240,6 +251,15 @@ class CampaignScene {
     drawIcon(ctx, m.icon || 'horse', x + w / 2 - 11, y, 12, '#ffd9a0');
     ctx.fillStyle = '#fff0d8'; ctx.fillText(m.label, x - 6, y + 0.5);
     this.hits.push({ kind: 'crisis', c: m.c, x, y, r: Math.max(16, w / 2) });
+  }
+
+  smoothPath(ctx, pts) {
+    ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+    for (let i = 1; i < pts.length - 1; i++) {
+      const mx = (pts[i][0] + pts[i + 1][0]) / 2, my = (pts[i][1] + pts[i + 1][1]) / 2;
+      ctx.quadraticCurveTo(pts[i][0], pts[i][1], mx, my);
+    }
+    const L = pts[pts.length - 1]; ctx.lineTo(L[0], L[1]);
   }
 
   rrect(ctx, x, y, w, h2, r) {
@@ -386,20 +406,28 @@ class CampaignScene {
     ctx.globalAlpha = 1;
   }
 
-  // ——— اللمس ———
+  // --- اللمس ---
   onTap(w, p) {
     if (this.busy) return;
     Help.hide();
-    const score = (h2) => h2.d - (h2.kind === 'army' ? 8 : h2.kind === 'siege' ? 4 : h2.kind === 'crisis' ? 3 : 0);
-    const hits = (this.hits || []).map((h2) => ({ ...h2, d: Math.hypot(h2.x - p.x, h2.y - p.y) })).filter((h2) => h2.d < h2.r && !(this.selArmy && h2.kind === 'crisis')).sort((a, b) => score(a) - score(b));
+    const score = (h2) => h2.d - (h2.kind === 'army' ? 8 : h2.kind === 'siege' ? 4 : h2.kind === 'crisis' ? 3 : h2.kind === 'route' ? -10 : 0);
+    const hits = (this.hits || []).map((h2) => ({ ...h2, d: Math.hypot(h2.x - p.x, h2.y - p.y) })).filter((h2) => h2.d < h2.r && !(this.selArmy && (h2.kind === 'crisis' || h2.kind === 'route'))).sort((a, b) => score(a) - score(b));
     const hit = hits[0];
     if (hit && hit.kind === 'crisis') { Panels.openCrisis(this, hit.c); return; }
+    if (hit && hit.kind === 'route') { this.openRoute(); return; }
     // وضع اختيار الوجهة
     if (this.selArmy && hit) {
       const n = hit.kind === 'army' ? Game.node(hit.a.node) : hit.n;
       const isOwnHere = hit.kind === 'army' && hit.a.fid === this.P;
       if (n.id !== this.selArmy.node && !isOwnHere && this.reach && this.reach[n.id]) { this.tryMove(this.selArmy, n); return; }
+      // وجهة غير ممكنة: السبب المحدد أولاً، واللمسة الثانية تفتح المدينة
+      if (n.id !== this.selArmy.node && !isOwnHere && hit.kind !== 'siege' && this.lastBlocked !== n.id) {
+        this.lastBlocked = n.id;
+        UI.toast(Game.moveBlocker(this.selArmy, n.id), 4500);
+        return;
+      }
     }
+    this.lastBlocked = null;
     if (!hit) {
       if (this.selArmy) { this.cancelMove(); return; }
       if (!Sheets.dismissCurrent()) this.selNode = null;
@@ -419,15 +447,16 @@ class CampaignScene {
     this.openCity(n);
   }
 
-  // ——— النوافذ ———
+  // --- النوافذ ---
   openCity(n) { this.selNode = n; Sheets.open(Panels.citySpec(this, n)); this.refresh(); }
   openArmy(a) { this.selNode = Game.node(a.node); Sheets.open(Panels.armySpec(this, a)); this.refresh(); }
   openSiege(n) { this.selNode = n; Sheets.open(Panels.siegeSpec(this, n)); this.refresh(); }
   openDiplo(focus) { Sheets.open(Panels.diploSpec(this, focus)); this.refresh(); }
   openKingdom(tab) { Sheets.open(Panels.kingdomSpec(this, tab)); this.refresh(); }
   openChron(tab) { Sheets.open(Panels.chronSpec(this, tab)); this.refresh(); }
+  openRoute() { Sheets.open(Panels.routeSpec(this)); this.refresh(); }
 
-  // ——— الحركة ———
+  // --- الحركة ---
   // اختيار جيش: بطاقة نشطة في الشريط السفلي والخريطة كاملة للاختيار
   startMove(a) {
     this.selArmy = a;
@@ -441,7 +470,7 @@ class CampaignScene {
     const w = Sheets.get(key);
     if (w && !had) w.auto = true;
     this.refresh();
-    if (!this.moveHint) { this.moveHint = true; UI.toast('اختر مدينة مضيئة — الرقم فوقها كلفة الحركة'); }
+    if (!this.moveHint) { this.moveHint = true; UI.toast('اختر مدينة مضيئة، الرقم فوقها كلفة الحركة'); }
   }
   cancelMove(silent) {
     const a = this.selArmy;
@@ -509,7 +538,7 @@ class CampaignScene {
     Panels.captivePrompts(this);
   }
 
-  // ——— الواجهة العلوية ———
+  // --- الواجهة العلوية ---
   buildHud() {
     this.hud = {};
     const pill = (cls, key, extra) => h('button', { class: 'hud-pill ' + cls, onclick: (e) => this.hudHelp(e.currentTarget, key, extra) });
@@ -533,15 +562,11 @@ class CampaignScene {
   hudHelp(el, key) {
     const P = this.P, e = Game.economy(P), f = Game.f(P);
     if (key === 'gold') {
-      Help.show(el, 'gold', {
-        value: `${f.gold} (${signed(e.netGold)})`,
-        lines: [['دخل المدن', '+' + e.gold, 'pos'], e.trade ? ['التجارة', '+' + e.trade, 'pos'] : null, e.tribute ? ['الجزية', signed(e.tribute), e.tribute > 0 ? 'pos' : 'neg'] : null,
-          ['صيانة الوحدات', '−' + e.upkeep, 'neg'], ['رواتب القادة', '−' + e.salaries, 'neg'], e.overhead ? ['جيوش زائدة عن مدنك', '−' + e.overhead, 'neg'] : null, ['الصافي', signed(e.netGold), 'sum']].filter(Boolean),
-      });
+      Help.show(el, 'gold', { title: 'الخزينة', value: `${f.gold} الآن`, lines: Game.treasuryLines(P) });
     } else if (key === 'food') {
-      Help.show(el, 'food', { value: `${f.food} (${signed(e.netFood)})`, lines: [['إنتاج المدن', '+' + e.food, 'pos'], ['أكل الجيوش', '−' + e.eat, 'neg'], ['الصافي', signed(e.netFood), 'sum']] });
+      Help.show(el, 'food', { value: `${f.food} الآن`, lines: [['إنتاج المدن', '+' + e.food, 'pos'], ['أكل الجيوش', '−' + e.eat, 'neg'], ['الصافي كل دور', signed(e.netFood), 'sum'], ['المخزون بعد نهاية الدور', Math.min(400, Math.max(0, f.food + e.netFood)), ''], ['الحد الأقصى للمخزون', 400, '']] });
     } else if (key === 'date') {
-      Help.show(el, null, { title: `${Game.season()} ${Game.year()}م`, value: `الدور ${Game.S.turn + 1}`, note: Game.isWinter() ? 'الشتاء: الممرات والجبال أصعب، والإمداد أقل، والجيوش تأكل أكثر.' : Game.S.turn % 4 === 2 ? 'الشتاء قادم في الدور التالي: الممرات ستغلق تقريباً.' : 'كل دور فصل من السنة.' });
+      Help.show(el, null, { title: `الدور ${Game.S.turn + 1}`, value: `${Game.season()} ${Game.year()}م`, note: Game.isWinter() ? 'الشتاء: الممرات والجبال أصعب، والإمداد أقل، والجيوش تأكل أكثر.' : Game.S.turn % 4 === 2 ? 'الشتاء قادم في الدور التالي: الممرات ستغلق تقريباً.' : 'كل دور فصل من السنة.' });
     }
   }
 
@@ -550,11 +575,11 @@ class CampaignScene {
     const P = this.P, f = Game.f(P), e = Game.economy(P);
     this.hud.fac.innerHTML = '';
     this.hud.fac.append(h('i', { style: { background: f.color } }), f.name);
-    const res = (el, ic, v, net) => { el.innerHTML = ''; el.append(icon(ic), h('bdi', null, v), h('small', { class: net < 0 ? 'neg' : '' }, h('bdi', null, signed(net)))); };
+    const res = (el, ic, v, net) => { el.innerHTML = ''; el.append(icon(ic), h('bdi', null, v), h('small', { class: net < 0 ? 'neg' : '' }, h('bdi', null, signed(net)), h('span', { class: 'per' }, '/دور'))); };
     res(this.hud.gold, 'gold', f.gold, e.netGold);
     res(this.hud.food, 'food', f.food, e.netFood);
     this.hud.date.innerHTML = '';
-    this.hud.date.append(icon(Game.isWinter() ? 'snow' : 'sun'), h('span', { class: 'season' }, Game.season() + ' '), h('bdi', null, Game.year() + 'م'));
+    this.hud.date.append(h('b', { class: 'turn-no' }, 'الدور ', h('bdi', null, Game.S.turn + 1)), icon(Game.isWinter() ? 'snow' : 'sun'), h('span', { class: 'season' }, Game.season() + ' '), h('bdi', null, Game.year() + 'م'));
     if (Game.chapter) {
       const ch = Game.chapter();
       this.hud.chap.hidden = !ch;
@@ -584,6 +609,7 @@ class CampaignScene {
     const n = a.node ? Game.node(a.node) : null;
     if (a.win === 'diplo') { this.openDiplo(); return; }
     if (a.win === 'captives') { this.openKingdom('capt'); return; }
+    if (a.win === 'route') { this.openRoute(); return; }
     if (a.win === 'crisis' && Game.openCrisis) { Game.openCrisis(this, a); return; }
     if (!n) return;
     if (a.win === 'siege' && Game.besiegers(n.id).length) this.openSiege(n);
@@ -591,7 +617,7 @@ class CampaignScene {
     this.flyTo(n.x, n.y, Math.max(this.cam.z, this.cam.minZ * 1.6));
   }
 
-  // ——— نهاية الدور ———
+  // --- نهاية الدور ---
   async endTurn() {
     if (this.busy || Game.S.over) return;
     this.busy = true;
@@ -631,7 +657,7 @@ class CampaignScene {
   }
 }
 
-// ——— خطافات الحملة التي تحتاج اللاعب ———
+// --- خطافات الحملة التي تحتاج اللاعب ---
 function installHooks(scene) {
   Game.hooks.notify = (msg) => { Game.alert('info', msg); AlertsUI.render(); };
   Game.hooks.proposal = (p) => Panels.proposal(p);
