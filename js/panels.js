@@ -202,7 +202,8 @@ const Panels = {
     return h('div', { class: 'acard' },
       h('div', { class: 'ah' }, dotEl(Game.f(a.fid).color), h('b', null, lvl >= 1 && g ? g.name : 'قائد مجهول'), lvl >= 1 ? stars(g && g.rank) : null, h('span', { class: 'sp' }), h('span', { class: 'muted small' }, Game.fname(a.fid))),
       lvl >= 1 ? h('div', { class: 'gline' }, traitChip(g), a.siege ? h('span', { class: 'tag bad' }, icon('tent'), 'يحاصر') : null) : null,
-      lvl >= 2 ? h('div', { class: 'units' }, a.regs.map((r) => uchip(r))) : h('p', { class: 'hint' }, `نحو ${Game.estimate(P, a.fid, men).text} رجل`),
+      lvl >= 2 || Game.knowsArmy(P, a) ? h('div', { class: 'units' }, a.regs.map((r) => uchip(r))) : h('p', { class: 'hint' }, `نحو ${Game.estimate(P, a.fid, men).text} رجل`),
+      Game.knowsArmy(P, a) ? h('p', { class: 'small intel-rep' }, icon('eye'), rich(' تقرير عملائك: ' + Game.armyIntelText(P, a))) : null,
     );
   },
 
@@ -809,13 +810,10 @@ const Panels = {
     const box = h('div', { class: 'acts' });
     box.append = (...k) => { for (const x of k) if (x) box.appendChild(x); };
     if (st === 'war') {
+      const ws = Game.warScore(P, id);
       box.append(
-        act('dove', 'عرض الصلح', () => this.proposePeace(id, 0)),
-        act('gold', 'صلح + 150', () => this.proposePeace(id, 150), myF.gold < 150),
-        act('scales', 'صلح + جزية منهم', () => {
-          if (Game.aiWillPayTribute(id, P) && Game.aiWillAcceptPeace(id, P, 60)) { Game.makePeace(P, id, 8); Game.addTribute(id, P, Game.tributeAmount(id), 6); UI.toast(`${f.name} تقبل الصلح وتدفع الجزية`); }
-          else { Game.addRel(P, id, -3); UI.toast(`${f.name} ترفض — ما زالت قوية`); }
-        }),
+        h('span', { class: 'tag ' + (ws.score > 10 ? 'good' : ws.score < -10 ? 'bad' : '') }, icon('scales'), `ميزان الحرب ${signed(ws.score)}`),
+        act('dove', 'مفاوضات الصلح', () => this.peaceDialog(scene, id), !!Game.envoyWait(P, id), '', 'أرسلت رسولاً هذا الدور'),
         Game.demandVassal ? act('seal', 'فرض التبعية', () => { const r = Game.demandVassal(P, id); UI.toast(r.ok ? `${f.name} تقبل أن تكون تابعة لك` : r.why); }) : null,
       );
     } else {
@@ -825,6 +823,9 @@ const Panels = {
         else { UI.toast(`${f.name} ترفض الحلف (تحتاج علاقة أفضل أو عدواً مشتركاً)`); Game.addRel(P, id, -2); }
       }));
       if (st === 'alliance') {
+        const cw = Game.commonWars(P, id);
+        box.append(act('treaty', 'تنسيق الحرب', () => this.coordDialog(scene, id), !cw.length, '', 'لا عدو مشترك بينكما الآن'));
+        if (cw.length) box.appendChild(this.contribBox(P, id));
         box.append(act('coins', 'تمويل 150', () => { Game.subsidy(P, id, 150); UI.toast('وصلت الأموال'); }, myF.gold < 150));
         box.append(h('button', { class: 'chip warn', onclick: () => UI.ask({ title: 'فضّ الحلف؟', icon: 'close', body: h('div', null, h('p', { class: 'lead warn' }, `ينتهي الحلف مع ${f.name} ولا يعود بضغطة زر.`), h('ul', { class: 'steps' }, h('li', null, 'العلاقة −20 فوراً.'), h('li', null, 'تفقد معرفتها الدقيقة بجيوشها، ولن تنجدك في حروبك.'), h('li', null, 'لا ضرر بسمعتك ما دمت لم تهاجمها.'))),
           buttons: [{ label: 'فضّ الحلف', danger: true, value: true }, { label: 'تراجع', value: false }] }).then((ok) => { if (ok) { Game.breakAlliance(P, id, 'بقرار منك'); UI.toast('انتهى الحلف'); redo(); } }) }, icon('close'), 'فضّ الحلف'));
@@ -844,11 +845,7 @@ const Panels = {
     if (myF.allyCall && myF.allyCall.enemy === id && !Game.atWar(P, id)) {
       box.append(act('bell', 'لبِّ نداء الحليف', () => { Game.declareWar(P, id, 'نصرةً لحليفها'); Game.addRel(P, myF.allyCall.ally, 15); myF.allyCall = null; }, false, 'on'));
     }
-    box.append(h('span', { class: 'lbl' }, 'الجواسيس — مهمة واحدة كل دور'));
-    for (const [k, sp] of Object.entries(SPY)) {
-      const err = Game.canSpy(P, id, k);
-      box.append(h('button', { class: 'chip', disabled: !!err, title: err || sp.desc, onclick: () => { const r = Game.spy(P, id, k); if (Game.track && !r.err) Game.track('spy'); UI.toast(r.err || r.text); redo(); } }, icon(k === 'scout' ? 'eye' : k === 'incite' ? 'torch' : 'dagger'), `${sp.name} ${sp.cost}`));
-    }
+    box.append(act('eye', 'عمليات سرية', () => this.spyDialog(scene, id), (myF.spyTurn || -1) === Game.S.turn, '', 'مهمة تجسس واحدة كل دور'));
     return box;
   },
 

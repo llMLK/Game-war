@@ -712,3 +712,19 @@ details.mem summary { cursor: pointer; color: var(--bronze-hi); }
 .br-list { margin: 0; padding-inline-start: 18px; display: grid; gap: 2px; font-size: 12.6px; line-height: 1.5; }
 .br-list.good li::marker { color: var(--good); }
 .br-list.bad li::marker { color: var(--bad); }
+/* ——— الدبلوماسية والتجسس ——— */
+.peace-live { display: grid; gap: 4px; }
+.range-ends { display: flex; justify-content: space-between; }
+.cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.coord-list, .spy-list { display: grid; gap: 5px; max-height: 42vh; overflow: auto; }
+.coord-row { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: center; padding: 6px 8px; border-radius: 10px; background: rgba(255,240,200,.04); border: 1px solid var(--line-soft); }
+.coord-row p { grid-column: 1; margin: 0; }
+.coord-row .chip { grid-column: 2; grid-row: 1 / span 2; }
+.coord-row.off { opacity: .8; }
+.spy-row { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; text-align: start; padding: 6px 9px; border-radius: 10px; border: 1px solid var(--line-soft); background: rgba(40,30,21,.9); min-height: 38px; }
+.spy-row b { margin-inline-end: auto; }
+.spy-row.on { border-color: var(--bronze-hi); background: #4b3418; }
+.intel-rep { color: var(--info); margin: 2px 0 0; }
+.sel { background: rgba(40,30,21,.95); color: var(--text); border: 1px solid var(--line); border-radius: 8px; min-height: 32px; padding: 2px 8px; font: inherit; }
+.pl .v.pos { color: var(--good); }
+.pl .v.neg { color: var(--bad); }

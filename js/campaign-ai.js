@@ -165,15 +165,13 @@ const CampaignAI = {
         const wt = f.warTurns[g] || 0;
         const tired = wt > 4 && (pw < pg * 0.75 || (f.lostRecently || 0) >= 1 || wars.length >= 2 || (wt > 12 && R() < 0.2));
         if (tired && R() < 0.35 && !(f.vendetta[g] > 0)) {
-          const tribute = pw < pg * 0.55 ? Math.min(Math.max(0, f.gold), 150) : 0;
+          // المبلغ من ميزان الحرب: الخاسر يعرض أن يدفع، والرابح المتعب يطلب ثمن الصلح
+          const offer = Game.aiPeaceOffer(fid, g);
           if (G.isPlayer) {
-            const ok = Game.hooks.proposal ? await Game.hooks.proposal({ from: fid, kind: 'peace', tribute }) : false;
-            if (ok) { if (tribute) { f.gold -= tribute; G.gold += tribute; } Game.makePeace(fid, g, 8); }
+            const ok = Game.hooks.proposal ? await Game.hooks.proposal({ from: fid, kind: 'peace', offer }) : false;
+            if (ok && !(offer.payer === g && offer.gold > G.gold)) Game.settlePeace(fid, g, offer);
             else Game.addRel(fid, g, -5);
-          } else if (Game.aiWillAcceptPeace(g, fid, tribute)) {
-            if (tribute) { f.gold -= tribute; G.gold += tribute; }
-            Game.makePeace(fid, g, 8);
-          }
+          } else if (R() < Game.peaceChance(g, fid, offer).p) Game.settlePeace(fid, g, offer);
           acted++;
         }
         continue;
@@ -265,9 +263,13 @@ const CampaignAI = {
     }
     this.build(fid);
     // التجسس والتخريب على الهدف
-    if (f.gold > 800 && f.goals && Game.atWar(fid, f.goals.owner) && f.goals.owner !== 'neutral' && R() < 0.3) {
-      const kind = Game.besiegers(f.goals.target).some((b) => b.fid === fid) ? 'sabotage' : 'incite';
-      Game.spy(fid, f.goals.owner, kind);
+    // العملية تُختار من الحال: تخريب المدينة المحاصرة، أو استطلاع مملكة مجهولة، أو معرفة جيش يقترب، أو تحريض
+    if (f.gold > 350 && f.goals && Game.atWar(fid, f.goals.owner) && f.goals.owner !== 'neutral' && R() < 0.3) {
+      const foe = f.goals.owner;
+      const threat = Game.armiesOf(foe).find((a) => Game.nodesOf(fid).some((n) => Game.hops(n.id, a.node, 2) <= 1) && !Game.knowsArmy(fid, a));
+      const op = Game.besiegers(f.goals.target).some((b) => b.fid === fid) ? 'sabotage' : Game.intelLevel(fid, foe) < 2 && Game.spyNet(fid, foe) < 1 ? 'scout' : threat ? 'military' : R() < 0.5 ? 'incite' : 'sabotage';
+      if (op === 'military') Game.spyOp(fid, foe, 'military', threat.id);
+      else Game.spy(fid, foe, op);
     }
   },
 
@@ -537,7 +539,8 @@ const CampaignAI = {
           let comb = pow;
           for (const o of this.fieldArmies(fid)) if (o !== a && !o.siege && o.mp > 0 && Game.reach(o)[n.id]) comb += Game.armyPower(o) * 0.6;
           const ratio = (n.walls ? comb : pow) / Math.max(1, def);
-          const need = (n.walls ? 0.9 : 1.3) / pers.aggr;
+          // هدف طلبه الحليف: يُقبل بميزان أقل ليحاول فعلاً
+          const need = (n.walls ? 0.9 : 1.3) / pers.aggr * (goal && goal.id === n.id && f.goals.coord ? 0.7 : 1);
           let risk = homeAtRisk;
           if (risk) {
             let other = 0;
