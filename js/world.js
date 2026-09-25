@@ -347,18 +347,35 @@ Object.assign(Game, {
     this.S.route = r ? { key: r.key, name: r.name, path: r.path.filter((id) => this.node(id)), bad: 0, dead: false } : null;
   },
   routeDef(key) { return (this.wd().routes || []).find((r) => r.key === key) || null; },
-  routeSegOk(a, b) {
+  // حالة مقطع من طريق القوافل مع سببه وعلاجه. القوافل تعود وحدها حين يزول السبب
+  routeSegState(a, b) {
     const A = this.node(a), B = this.node(b);
-    if (!A || !B) return false;
-    if (this.besiegers(a).length || this.besiegers(b).length) return false;
-    if (A.owner !== B.owner && this.atWar(A.owner, B.owner) && !(A.owner === 'neutral' && B.owner === 'neutral')) return false;
-    for (const c of this.S.crises) {
-      if (c.over) continue;
-      if (c.type === 'plague' && (c.v.quar[a] || c.v.quar[b])) return false;
-      if (c.type === 'horde' && c.v.blockRoute && c.v.region && (c.v.region.includes(a) || c.v.region.includes(b))) return false;
+    if (!A || !B) return { ok: false, cause: 'gone', text: 'مقطع مفقود' };
+    const r = this.S.route;
+    if (r && r.dead) return { ok: false, cause: 'collapse', text: 'الطريق كله منقطع: التجار يبحثون عن بديل', fix: 'حدث تاريخي: لا يُستأنف هذا الطريق. تابع سباق الطريق الجديد في أحداث العالم واستثمر فيه.', story: true };
+    for (const n of [A, B]) {
+      const bs = this.besiegers(n.id);
+      if (bs.length) return { ok: false, cause: 'siege', node: n.id, text: `الطريق تحت الحصار عند ${n.name}`, fix: `تعود القوافل وحدها حين يُرفع حصار ${this.fname(bs[0].fid)} عن ${n.name}.`, auto: true };
     }
-    return true;
+    if (A.owner !== B.owner && this.atWar(A.owner, B.owner) && !(A.owner === 'neutral' && B.owner === 'neutral')) {
+      return { ok: false, cause: 'war', text: `حرب بين ${this.fname(A.owner)} و${this.fname(B.owner)} تقطع ما بين ${A.name} و${B.name}`, fix: A.owner === 'neutral' || B.owner === 'neutral' ? `افتح ${A.owner === 'neutral' ? A.name : B.name} المستقلة، أو اترك التجار يلتفّون حين تهدأ الحرب.` : `الصلح بين ${this.fname(A.owner)} و${this.fname(B.owner)} يعيد القوافل تلقائياً.`, auto: true };
+    }
+    for (const c of this.S.crises || []) {
+      if (c.over) continue;
+      if (c.type === 'plague' && (c.v.quar[a] || c.v.quar[b])) { const q = c.v.quar[a] ? A : B; return { ok: false, cause: 'plague', node: q.id, text: `حجر صحي في ${q.name}`, fix: `تعود القوافل برفع الحجر الصحي عن ${q.name} من نافذة الوباء، لكن العدوى قد تنتقل معها.`, auto: true }; }
+      if (c.type === 'horde' && c.v.blockRoute && c.v.region && (c.v.region.includes(a) || c.v.region.includes(b))) return { ok: false, cause: 'event', text: `زحف ${c.v.name} على الطريق`, fix: 'حدث تاريخي لا تستطيع منعه: تعود القوافل حين يرحل الغزاة عن المنطقة.', auto: true, story: true };
+    }
+    // قطاع الطرق: مدينة ساخطة بلا جيش يحفظ الأمن
+    for (const n of [A, B]) {
+      if (n.owner === 'neutral') continue;
+      const guarded = this.armiesOfAt(n.owner, n.id).length > 0 || (r && r.escort && r.escort[n.id] >= this.S.turn);
+      if (!guarded && (n.loyalty < 30 || (n.unrest > 0 && n.loyalty < 45))) {
+        return { ok: false, cause: 'bandits', node: n.id, text: `قطاع طرق حول ${n.name}`, fix: `جيش مقيم في ${n.name} أو ولاء فوق 30 يطرد اللصوص، أو ادفع حراسة للقوافل.`, auto: true, escort: n.owner === this.S.player };
+      }
+    }
+    return { ok: true };
   },
+  routeSegOk(a, b) { return this.routeSegState(a, b).ok; },
   routeHealth() {
     const r = this.S.route;
     if (!r || r.dead || r.path.length < 2) return 0;
@@ -366,17 +383,55 @@ Object.assign(Game, {
     for (let i = 0; i < r.path.length - 1; i++) if (this.routeSegOk(r.path[i], r.path[i + 1])) ok++;
     return ok / (r.path.length - 1);
   },
+  // قيمة المدينة على الطريق حين تمر بها القوافل كلها
+  routeCityBase(n) { return 7 + 3 * n.market + 4 * n.roads + 5 * (n.port || 0); },
+  // القوافل تسير في المقاطع المفتوحة المتصلة؛ المدينة تأخذ من الطريق بقدر ما يتصل بها منه
+  routeReach(i) {
+    const r = this.S.route, L = r.path.length - 1;
+    let lo = i, hi = i;
+    while (lo > 0 && this.routeSegOk(r.path[lo - 1], r.path[lo])) lo--;
+    while (hi < L && this.routeSegOk(r.path[hi], r.path[hi + 1])) hi++;
+    return (hi - lo) / Math.max(1, L);
+  },
+  routeCityIncome(n) {
+    const r = this.S.route;
+    if (!r || r.dead) return { now: 0, full: 0 };
+    const i = r.path.indexOf(n.id);
+    if (i < 0) return { now: 0, full: 0 };
+    const full = this.routeCityBase(n);
+    if (this.besieger(n.id)) return { now: 0, full };
+    return { now: Math.round(full * this.routeReach(i)), full };
+  },
   routeIncome(fid) {
     const r = this.S.route;
     if (!r || r.dead) return 0;
-    const hp = this.routeHealth();
     let t = 0;
-    for (const id of r.path) {
-      const n = this.node(id);
-      if (n.owner !== fid || this.besieger(id)) continue;
-      t += 7 + 3 * n.market + 4 * n.roads + 5 * (n.port || 0);
-    }
-    return Math.round(t * hp);
+    for (const id of r.path) { const n = this.node(id); if (n.owner === fid) t += this.routeCityIncome(n).now; }
+    return t;
+  },
+  // حالة الطريق للعرض: المقاطع المتوقفة وأسبابها وخسارة اللاعب
+  routeStatus(fid) {
+    const r = this.S.route;
+    if (!r) return null;
+    const segs = [];
+    for (let i = 0; i < r.path.length - 1; i++) segs.push({ a: r.path[i], b: r.path[i + 1], ...this.routeSegState(r.path[i], r.path[i + 1]) });
+    let now = 0, full = 0;
+    for (const id of r.path) { const n = this.node(id); if (n.owner !== fid) continue; const c = this.routeCityIncome(n); now += c.now; full += c.full; }
+    const stopped = segs.filter((x) => !x.ok);
+    return { name: r.name, dead: !!r.dead, segs, stopped, now, full, loss: full - now, state: r.dead ? 'بانتظار طريق جديد' : stopped.length ? (stopped.length === segs.length ? 'متوقفة' : 'متوقفة جزئياً') : 'نشطة' };
+  },
+  escortCost(n) { return 50 + Math.round(n.pop / 1000); },
+  // حراسة القوافل حول مدينة لأربعة أدوار
+  escortRoute(fid, nodeId) {
+    const r = this.S.route, n = this.node(nodeId);
+    if (!r || !n || n.owner !== fid) return 'ليست مدينتك';
+    const cost = this.escortCost(n);
+    if (this.f(fid).gold < cost) return `الذهب لا يكفي (${cost})`;
+    this.f(fid).gold -= cost;
+    r.escort = r.escort || {};
+    r.escort[nodeId] = this.S.turn + 3;
+    this.event('eco', `${this.fname(fid)} تستأجر حراساً للقوافل حول ${n.name}.`, { fids: [fid], node: nodeId, imp: 1 });
+    return null;
   },
 
   // ——————————————————— محرك الأزمات ———————————————————
@@ -541,6 +596,25 @@ Object.assign(Game, {
     this.ambitionScan();
     // طريق القوافل
     const r = S.route;
+    // تنبيه اللاعب حين تتوقف القوافل في مقطع يمس مدنه أو تعود، مع السبب
+    if (r && !r.dead) {
+      const prev = r.stops || {};
+      const cur = {};
+      for (let i = 0; i < r.path.length - 1; i++) {
+        const a = r.path[i], b = r.path[i + 1];
+        const st = this.routeSegState(a, b);
+        if (st.ok) continue;
+        cur[a + '|' + b] = st.cause;
+        const mine = this.node(a).owner === P || this.node(b).owner === P;
+        if (mine && prev[a + '|' + b] !== st.cause) this.alert('imp', `توقفت القوافل بين ${this.node(a).name} و${this.node(b).name}: ${st.text}`, { icon: 'camel', win: 'route', node: st.node || a, key: 'route:' + a + b });
+      }
+      for (const k of Object.keys(prev)) {
+        if (cur[k]) continue;
+        const [a, b] = k.split('|');
+        if (this.node(a) && this.node(b) && (this.node(a).owner === P || this.node(b).owner === P)) this.alert('info', `عادت القوافل بين ${this.node(a).name} و${this.node(b).name}`, { icon: 'camel', win: 'route', key: 'route:' + a + b });
+      }
+      r.stops = cur;
+    }
     if (r && !r.dead) {
       const hp = this.routeHealth();
       r.bad = hp < 0.5 ? (r.bad || 0) + 1 : 0;

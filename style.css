@@ -617,3 +617,22 @@ pre.dev { direction: ltr; text-align: left; font-size: 11px; max-height: 60vh; o
 @media (max-width: 520px) { .inv-row { grid-template-columns: 1fr auto auto; } .inv-row > span:nth-child(4), .inv-row > span:nth-child(5) { grid-column: span 1; } }
 .alerts .al-row { display: flex; gap: 6px; flex-wrap: wrap; }
 .alerts .al-row .alert.more { display: inline-flex; align-items: center; gap: 4px; }
+
+/* ——— القوافل ——— */
+.route-segs { display: grid; gap: 5px; }
+.rseg { border: 1px solid var(--line-soft); border-radius: 9px; padding: 6px 8px; background: rgba(255,240,200,.04); display: grid; gap: 4px; }
+.rseg.stop { border-color: rgba(255,143,122,.45); background: rgba(163,48,42,.1); }
+.rseg.mine { box-shadow: inset 3px 0 0 var(--bronze); }
+.rs-h { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.rs-h .ico { width: 15px; height: 15px; }
+.box.route-line { display: flex; align-items: center; gap: 8px; padding: 6px 9px; text-align: start; color: var(--text); font: inherit; font-size: 12.5px; }
+.box.route-line .ico { width: 17px; height: 17px; color: #d6a83e; }
+.box.route-line.warn { border-color: rgba(231,163,95,.6); }
+.good { color: var(--good); } .bad { color: var(--bad); }
+
+/* ——— التجهيز والاستسلام ——— */
+.rq-list { display: grid; gap: 6px; }
+.rq-row { border: 1px solid var(--line-soft); border-radius: 9px; padding: 6px 8px; display: grid; gap: 3px; }
+.rq-row .ico { width: 15px; height: 15px; vertical-align: -3px; }
+.surr { display: inline-flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+.surr .btn small { display: block; font-size: 11px; opacity: .85; }

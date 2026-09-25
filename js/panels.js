@@ -125,6 +125,14 @@ const Panels = {
     const gov = Game.governorAt(n);
     if (gov) body.appendChild(h('p', { class: 'hint' }, icon('seal'), ` الحاكم: ${gov.name} `, traitChip(gov)));
     if (n.charter) body.appendChild(h('p', { class: 'hint' }, icon('scroll'), ' مدينة ذات ميثاق حر: ولاء أعلى ودخل أقل.'));
+    if (Game.S.route && Game.S.route.path.includes(n.id)) {
+      const rc = Game.routeCityIncome(n), rst = Game.routeStatus(P);
+      const i = Game.S.route.path.indexOf(n.id);
+      const near = rst.segs.filter((g) => g.a === n.id || g.b === n.id).find((g) => !g.ok);
+      body.appendChild(h('button', { class: 'box route-line' + (rc.now < rc.full ? ' warn' : ''), onclick: () => this.openRoute(scene) }, icon('camel'),
+        h('span', null, rich(`${Game.S.route.name}: ${Game.S.route.dead ? 'منقطع' : rc.now < rc.full ? `متوقفة جزئياً${near ? ' (' + near.text + ')' : ''}` : 'القوافل نشطة'}${n.owner === P ? ` · ${rc.now} من ${rc.full} كل دور` : ''}`)), h('span', { class: 'muted small' }, 'التفاصيل')));
+      void i;
+    }
     if (Game.crisesAt) for (const c of Game.crisesAt(n.id)) body.appendChild(h('button', { class: 'box crisis', onclick: () => this.openCrisis(scene, c) }, h('div', { class: 'sec-h' }, icon(CRISES[c.type].icon), Game.crisisTitle(c), h('span', { class: 'muted' }, c.ask[P] ? 'قرار مطلوب' : Game.crisisStatus(c)))));
 
     if (!own) { this.foreignCity(scene, n, body, intel); return; }
@@ -166,7 +174,7 @@ const Panels = {
       h('div', { class: 'gline' }, traitChip(g), mpPips(a), moodTag(a), a.siege ? h('span', { class: 'tag bad' }, icon('tent'), 'يحاصر') : null),
       a.regs.length ? unitSummary(a.regs) : h('span', { class: 'hint' }, 'القائد وحرسه فقط'),
       h('div', { class: 'row-btns' },
-        ib('boot', a.mp > 0 && a.regs.length ? 'تحريك' : 'لا حركة', { class: 'btn primary', disabled: a.mp <= 0 || !a.regs.length, onclick: () => scene.startMove(a) }),
+        actBtn([icon('boot'), h('span', null, 'تحريك')], { cls: 'btn primary', err: !a.regs.length ? 'الجيش بلا وحدات: جنّد أو انقل إليه وحدات أولاً' : a.mp <= 0 ? 'استنفد الجيش نقاط حركته هذا الدور، وتتجدد في الدور التالي' : null, onClick: () => scene.startMove(a) }),
         ib('expand', 'التفاصيل', { class: 'btn', onclick: () => scene.openArmy(a) }),
       ),
     );
@@ -225,12 +233,13 @@ const Panels = {
     body.appendChild(units);
     const others = Game.armiesAt(a.node).filter((o) => o !== a && o.fid === P && !!o.siege === !!a.siege);
     body.appendChild(h('div', { class: 'row-btns' },
-      ib('boot', scene.selArmy === a ? 'اختر الوجهة على الخريطة' : a.mp <= 0 ? 'لا حركة متبقية' : 'تحريك', {
-        class: 'btn primary' + (scene.selArmy === a ? ' on' : ''), disabled: a.mp <= 0 || !a.regs.length,
-        onclick: () => { if (scene.selArmy === a) { Sheets.minimize('army:' + a.id); } else scene.startMove(a); },
+      actBtn([icon('boot'), h('span', null, scene.selArmy === a ? 'اختر الوجهة على الخريطة' : 'تحريك')], {
+        cls: 'btn primary' + (scene.selArmy === a ? ' on' : ''), err: !a.regs.length ? 'الجيش بلا وحدات: جنّد أو انقل إليه وحدات أولاً' : a.mp <= 0 ? 'استنفد الجيش نقاط حركته هذا الدور، وتتجدد في الدور التالي' : null,
+        onClick: () => { if (scene.selArmy === a) { Sheets.minimize('army:' + a.id); } else scene.startMove(a); },
       }),
       a.siege ? ib('tent', 'نافذة الحصار', { class: 'btn', onclick: () => scene.openSiege(n) }) : null,
       a.regs.length ? ib('men', 'تقسيم / نقل', { class: 'btn', onclick: () => this.splitDialog(scene, a) }) : null,
+      a.regs.some((r) => REEQUIP[r.type]) ? ib('hammer', 'تجهيز', { class: 'btn', onclick: () => this.reequipDialog(scene, a) }) : null,
       others.length ? ib('plus', 'دمج', { class: 'btn', onclick: () => this.mergeDialog(scene, a, others) }) : null,
       !a.regs.length ? ib('close', 'إعفاء القائد', { class: 'btn ghost', onclick: () => { Game.dismissGeneral(a); scene.afterAction(n); } }) : null,
       Game.canAppoint && !a.siege && n.owner === P && g && !a.regs.length ? ib('seal', 'تعيينه حاكماً', { class: 'btn', onclick: () => { const e = Game.appointGovernor(g, n); UI.toast(e || `${g.name} حاكماً على ${n.name}`); scene.afterAction(n); } }) : null,
@@ -238,6 +247,29 @@ const Panels = {
     if (n.barracks && n.owner === P && !a.siege) body.appendChild(h('p', { class: 'hint' }, icon('horseshoe'), ' الجيوش المقيمة هنا دون حركة تتدرّب تلقائياً وتكسب خبرة.'));
   },
 
+  // تجهيز الوحدات: تسليح رجال موجودين، لا تجنيد رجال جدد
+  reequipDialog(scene, a) {
+    const n = Game.node(a.node);
+    const rows = [];
+    a.regs.forEach((r, i) => {
+      for (const o of Game.reequipOptions(a, r)) {
+        rows.push(h('div', { class: 'rq-row' },
+          h('div', null, icon(UNIT_ICON[r.type]), h('b', null, rich(`${UNITS[r.type].name} ${r.men}`)), ' ← ', icon(UNIT_ICON[o.to]), h('b', null, rich(`${UNITS[o.to].name} ${o.newMen}`))),
+          h('p', { class: 'small muted' }, rich(`${o.why}. الكلفة ${o.cost} ذهباً. الصيانة ${signed(o.upk)} كل دور.${o.back ? ` يعود ${o.back} رجلاً إلى رجال المدينة.` : ''} الخبرة تنقص درجة لإعادة التدريب.`)),
+          actBtn([icon('hammer'), 'جهّز'], { cls: 'chip on', err: o.err, onClick: () => { const e = Game.reequip(a, i, o.to); UI.toast(e || `جُهّزت الوحدة: ${UNITS[o.to].name}`); if (!e) { close(); scene.afterAction(n); } } }),
+        ));
+      }
+    });
+    const sieged = !!Game.besieger(n.id);
+    const close = UI.modal({
+      title: `تجهيز جيش ${Game.gname(Game.armyGen(a))}`, icon: 'hammer', cls: 'wide',
+      body: h('div', null,
+        sieged ? h('p', { class: 'hint' }, `${n.name} محاصرة: التجهيز ممكن لأن المعدات والخيل داخل الأسوار. ما يمنعه الحصار هو المرتزقة القادمون من الخارج.`) : null,
+        h('p', { class: 'hint' }, 'التجهيز يسلّح رجالاً موجودين بسلاح أفضل، ولا يأخذ رجالاً جدداً. الفرسان أقل عدداً من المشاة، فيعود الفائض إلى رجال المدينة.'),
+        rows.length ? h('div', { class: 'rq-list' }, rows) : h('p', null, 'لا وحدات يمكن تجهيزها هنا.')),
+      buttons: [{ label: 'إغلاق' }], dismissable: true,
+    });
+  },
   confirmDisband(scene, a, i) {
     const r = a.regs[i];
     UI.modal({
@@ -318,7 +350,7 @@ const Panels = {
       title: 'دمج الجيوش', icon: 'plus',
       body: h('p', null, 'انقل كل وحدات هذا الجيش إلى قائد آخر هنا (حتى 8 وحدات). يعود القائد الحالي إلى البلاط إن فرغ جيشه.'),
       buttons: [
-        ...others.map((o) => ({ label: `إلى ${Game.armyGen(o).name} (${o.regs.length}/8)`, disabled: o.regs.length >= MAX_REGS, onClick: () => { const e = Game.mergeInto(a, o); if (e) UI.toast(e); scene.afterAction(Game.node(o.node)); } })),
+        ...others.map((o) => ({ label: `إلى ${Game.armyGen(o).name} (${o.regs.length}/8)`, disabled: o.regs.length >= MAX_REGS, why: 'جيش هذا القائد مكتمل (8 وحدات)', onClick: () => { const e = Game.mergeInto(a, o); if (e) UI.toast(e); scene.afterAction(Game.node(o.node)); } })),
         { label: 'إلغاء' },
       ],
     });
@@ -354,7 +386,7 @@ const Panels = {
         title: opts.title || 'اختر قائداً', icon: 'helmet', cls: 'wide',
         body: h('div', null, h('p', { class: 'hint' }, 'كل قائد يغيّر نظاماً مختلفاً: الحركة، الحصار، الاقتصاد، الإمداد، أو القتال. اختر حسب المهمة.'), list),
         buttons: [
-          opts.allowOfficer !== false ? { label: 'ترقية ضابط', sub: '40 ذهباً', disabled: Game.f(fid).gold < 40, onClick: () => resolve('officer') } : null,
+          opts.allowOfficer !== false ? { label: 'ترقية ضابط', sub: '40 ذهباً', disabled: Game.f(fid).gold < 40, why: 'الذهب لا يكفي (40)', onClick: () => resolve('officer') } : null,
           { label: 'إلغاء', onClick: () => resolve(null) },
         ],
       });
@@ -485,6 +517,43 @@ const Panels = {
     });
   },
 
+  // ═══════════════ طريق القوافل ═══════════════
+  routeSpec(scene) {
+    return {
+      key: 'route', icon: 'camel', color: '#c79a3e',
+      title: () => (Game.S.route ? Game.S.route.name : 'طريق القوافل'), short: () => 'القوافل',
+      sub: () => { const st = Game.routeStatus(scene.P); return st ? [st.state, ' · ', `دخلك ${st.now} من ${st.full}`] : []; },
+      status: () => { const st = Game.routeStatus(scene.P); return st ? st.state : ''; },
+      alert: () => { const st = Game.routeStatus(scene.P); return st && st.loss > 0 ? 'imp' : false; },
+      render: (body) => this.routeBody(scene, body),
+    };
+  },
+  routeBody(scene, body) {
+    const P = scene.P;
+    const st = Game.routeStatus(P);
+    if (!st) { body.appendChild(h('p', { class: 'hint' }, 'لا طريق قوافل في هذا العصر.')); return; }
+    body.appendChild(h('p', { class: 'hint' }, HELP.route.what));
+    body.appendChild(h('div', { class: 'kv' },
+      hstat('route', st.state, { icon: 'camel', label: 'الحالة' }),
+      hstat('gold', rich(`${st.now} من ${st.full}`), { label: 'دخلك منها كل دور', title: 'دخلك من القوافل', note: () => (st.full ? `المدن التي تملكها على الطريق تكسب ${st.full} ذهباً كل دور حين تمر القوافل كلها. ${st.loss ? `التوقف يكلّفك ${st.loss} كل دور الآن.` : 'لا خسارة الآن.'}` : 'لا تملك مدناً على هذا الطريق. الاستيلاء على مدنه يجلب دخله.') }),
+    ));
+    if (st.dead) body.appendChild(h('p', { class: 'hint warn' }, 'انقطع هذا الطريق كله في حدث تاريخي. لا يُستأنف؛ التجار يختارون طريقاً جديداً من سباق الطريق في أحداث العالم.'));
+    const list = h('div', { class: 'route-segs' });
+    for (const g of st.segs) {
+      const A = Game.node(g.a), B = Game.node(g.b);
+      const mine = A.owner === P || B.owner === P;
+      const esc = g.escort && g.node && Game.node(g.node).owner === P;
+      list.appendChild(h('div', { class: 'rseg' + (g.ok ? ' ok' : ' stop') + (mine ? ' mine' : '') },
+        h('div', { class: 'rs-h' }, icon(g.ok ? 'camel' : 'close'), h('b', null, `${A.name} ← ${B.name}`), h('span', { class: g.ok ? 'good small' : 'bad small' }, g.ok ? 'نشطة' : 'متوقفة: ' + g.text)),
+        g.ok ? null : h('p', { class: 'small' }, g.story ? h('b', null, 'حدث تاريخي. ') : null, g.fix),
+        esc ? actBtn([icon('shield'), `استئناف القافلة: حراسة ${Game.escortCost(Game.node(g.node))} ذهباً لأربعة أدوار`], { cls: 'chip on', err: Game.f(P).gold < Game.escortCost(Game.node(g.node)) ? 'الذهب لا يكفي' : null, onClick: () => { const e = Game.escortRoute(P, g.node); UI.toast(e || 'الحراس يرافقون القوافل الآن'); scene.afterAction(); Sheets.render(); } }) : null,
+      ));
+    }
+    body.appendChild(list);
+    body.appendChild(h('p', { class: 'hint' }, 'كل مدينة على الطريق تكسب بقدر ما يتصل بها من الطريق المفتوح. الأسواق والطرق المعبّدة والموانئ ترفع نصيبها.'));
+  },
+  openRoute(scene) { Sheets.open(this.routeSpec(scene)); scene.refresh(); },
+
   // ═══════════════ الحصار ═══════════════
   siegeSpec(scene, n) {
     const P = scene.P;
@@ -543,7 +612,7 @@ const Panels = {
       const lead = bs.find((b) => b.fid === P && b.mp > 0);
       body.appendChild(h('div', { class: 'row-btns' },
         ib('swords', !canBreach ? 'اقتحام (بعد دور)' : !lead ? 'استنفدت الجيوش حركتها' : 'اقتحام', { class: 'btn primary', disabled: !lead || !canBreach, onclick: async () => { await scene.runEnc(Game.makeEnc('assault', Game.besiegers(n.id).filter((b) => b.fid === P), n.id)); scene.afterAction(n); } }),
-        ib('talk', 'عرض الأمان', { class: 'btn', disabled: n.parley === Game.S.turn, onclick: () => this.offerTerms(scene, n) }),
+        this.surrenderButton(scene, n),
         ib('retreat', 'رفع الحصار', { class: 'btn ghost', onclick: () => { for (const b of Game.besiegers(n.id).filter((x) => x.fid === P)) { Game.retreatHome(b, [], null, b.siege.from); b.mp = 0; } UI.toast('رُفع الحصار'); scene.afterAction(n); } }),
       ));
       body.appendChild(h('p', { class: 'hint' }, 'كل دور حصار تنقص مؤنهم وتكتمل معداتك. أرسل جيوشاً أخرى إلى هنا لتنضم للحصار.'));
@@ -594,6 +663,28 @@ const Panels = {
       Game.event('pol', `${Game.fname(sFid)} تقبل فدية ${cost} ذهباً وترفع الحصار عن ${n.name}.`, { fids: [P, sFid], imp: 2 });
       UI.toast(`قبل ${Game.fname(sFid)} الفدية ورفع الحصار`);
     } else UI.toast(`رفض ${Game.fname(sFid)} الفدية!`);
+    scene.afterAction(n);
+  },
+  // طلب الاستسلام: الزر لا يختفي، والاحتمال ظاهر قبل الإرسال، وسبب الانتظار مكتوب بعد الرفض
+  surrenderButton(scene, n) {
+    const P = scene.P;
+    const err = Game.canDemandSurrender(n, P);
+    const od = Game.surrenderOdds(n, P);
+    return h('div', { class: 'surr' },
+      actBtn([icon('talk'), h('span', null, 'اطلب الاستسلام'), h('small', null, `القبول: ${od.band}`)], { cls: 'btn', err, onClick: () => this.demandSurrender(scene, n) }),
+      h('button', { class: 'chip', onclick: (e) => Help.explain(e.currentTarget, { icon: 'talk', title: 'احتمال قبول الاستسلام', value: od.band, state: 'يتغير مع طول الحصار والمؤن والخسائر والمعنويات والنجدة والثغرات وموت القائد.', from: od.factors.map(([k, v]) => [k, v > 0 ? 'يرفع' : 'يخفض', v > 0 ? 'pos' : 'neg']), note: err || 'القرار ثابت لهذا الدور: التكرار لا يغيّر الجواب. بعد الرفض تنتظر دورين.' }) }, icon('info'), 'لماذا؟'),
+    );
+  },
+  async demandSurrender(scene, n) {
+    const P = scene.P;
+    const r = Game.demandSurrender(n, P);
+    if (r.err) { UI.toast(r.err); return; }
+    if (Game.track) Game.track('parley');
+    if (r.ok) {
+      UI.toast(`${n.name} تقبل الاستسلام وتفتح أبوابها!`);
+      scene.busy = true;
+      try { await Game.surrenderAccepted(Game.makeEnc('assault', Game.besiegers(n.id).filter((b) => b.fid === P), n.id), 'surrender'); } finally { scene.busy = false; }
+    } else UI.toast(`رفض أهل ${n.name} الطلب. يمكن تقديم طلب جديد بعد دورين.`);
     scene.afterAction(n);
   },
   offerTerms(scene, n) {
@@ -699,7 +790,7 @@ const Panels = {
     const st = Game.status(P, id);
     const rel = Game.rel(P, id);
     const tr = Game.treaty(P, id);
-    const act = (ic, label, fn, dis, cls = '') => h('button', { class: 'chip ' + cls, disabled: dis, onclick: () => { fn(); if (Game.track) Game.track('diplo'); redo(); } }, icon(ic), label);
+    const act = (ic, label, fn, dis, cls = '', why) => actBtn([icon(ic), label], { cls: 'chip ' + cls, err: dis ? (why || 'الذهب لا يكفي') : null, onClick: () => { fn(); if (Game.track) Game.track('diplo'); redo(); } });
     const box = h('div', { class: 'acts' });
     box.append = (...k) => { for (const x of k) if (x) box.appendChild(x); };
     if (st === 'war') {
@@ -720,7 +811,8 @@ const Panels = {
       }));
       if (st === 'alliance') {
         box.append(act('coins', 'تمويل 150', () => { Game.subsidy(P, id, 150); UI.toast('وصلت الأموال'); }, myF.gold < 150));
-        box.append(act('close', 'فضّ الحلف', () => { Game.breakAlliance(P, id, 'بقرار منك'); UI.toast('انتهى الحلف'); }, false, 'warn'));
+        box.append(h('button', { class: 'chip warn', onclick: () => UI.ask({ title: 'فضّ الحلف؟', icon: 'close', body: h('div', null, h('p', { class: 'lead warn' }, `ينتهي الحلف مع ${f.name} ولا يعود بضغطة زر.`), h('ul', { class: 'steps' }, h('li', null, 'العلاقة −20 فوراً.'), h('li', null, 'تفقد معرفتها الدقيقة بجيوشها، ولن تنجدك في حروبك.'), h('li', null, 'لا ضرر بسمعتك ما دمت لم تهاجمها.'))),
+          buttons: [{ label: 'فضّ الحلف', danger: true, value: true }, { label: 'تراجع', value: false }] }).then((ok) => { if (ok) { Game.breakAlliance(P, id, 'بقرار منك'); UI.toast('انتهى الحلف'); redo(); } }) }, icon('close'), 'فضّ الحلف'));
       }
       box.append(tr.trade
         ? act('camel', 'إيقاف التجارة', () => Game.setTrade(P, id, false))
@@ -909,7 +1001,7 @@ const Panels = {
         body.appendChild(h('div', { class: 'crisis-list' }, cs.map((c) => h('button', { class: 'crisis-row' + (c.ask[P] ? ' ask' : '') + (c.over ? ' over' : ''), onclick: () => this.openCrisis(scene, c) },
           icon(CRISES[c.type].icon), h('b', null, Game.crisisTitle(c)), h('span', { class: 'muted small' }, c.ask[P] ? 'قرار مطلوب' : Game.crisisStatus(c))))));
       }
-      if (Game.S.route) body.appendChild(h('p', { class: 'small' }, hstat('route', `${Game.S.route.name} ${Game.S.route.dead ? '(منقطع)' : Math.round(Game.routeHealth() * 100) + '٪'}`, { icon: 'camel', label: '' })));
+      if (Game.S.route) { const rst = Game.routeStatus(P); body.appendChild(h('button', { class: 'box route-line' + (rst.stopped.length ? ' warn' : ''), onclick: () => this.openRoute(scene) }, icon('camel'), h('span', null, `${rst.name}: ${rst.state}`), h('span', { class: 'muted small' }, 'التفاصيل'))); }
     }
     const list = (Game.S.chron || []).filter((e) => (tab === 'realm' ? e.fids.includes(P) : e.imp >= 2)).slice().reverse();
     const box = h('div', { class: 'chron' });
@@ -930,6 +1022,7 @@ const Panels = {
 
   devReport() {
     const a = Game.analytics();
+    a.paths = Game.pathDiagnostics();
     UI.modal({ title: 'تحليلات المطوّر', icon: 'info', cls: 'wide', body: h('pre', { class: 'dev' }, JSON.stringify(a, null, 1)), buttons: [{ label: 'إغلاق', primary: true }] });
   },
   // ═══════════════ الأهداف والفصول ═══════════════
@@ -960,7 +1053,7 @@ const Panels = {
     const er = h('div', { class: 'choice' });
     for (const [k, d] of Object.entries(EDICTS)) {
       const on = Game.edictOf(P) === k;
-      er.appendChild(h('button', { class: on ? 'on' : '', disabled: on, onclick: () => { const e = Game.setEdict(P, k); UI.toast(e || `صدر مرسوم «${d.name}»`); if (!e && Game.track) Game.track('policy'); scene.refresh(); Sheets.render(); } },
+      er.appendChild(h('button', { class: on ? 'on' : '', onclick: () => { if (on) { UI.toast('هذا المرسوم نافذ الآن'); return; } const e = Game.setEdict(P, k); UI.toast(e || `صدر مرسوم «${d.name}»`); if (!e && Game.track) Game.track('policy'); scene.refresh(); Sheets.render(); } },
         h('b', null, icon(d.icon), d.name, on ? h('span', { class: 'cost' }, 'نافذ') : h('span', { class: 'cost' }, iv('gold', 100))), h('span', null, d.desc)));
     }
     body.appendChild(er);
@@ -986,7 +1079,7 @@ const Panels = {
     if (n) scene.flyTo(n.x, n.y);
   },
   optBtn(o, onPick) {
-    return h('button', { disabled: o.dis, title: o.why || '', onclick: onPick },
+    return h('button', { class: o.dis ? 'off' : '', title: o.why || '', onclick: (e) => { if (o.dis) { Help.explain(e.currentTarget, { icon: 'info', title: 'غير متاح الآن', state: 'لا يمكنك اختيار هذا الآن لأن ' + String(o.why || 'الشروط لم تكتمل').replace(/\.$/, '') + '.' }); return; } onPick(e); } },
       h('b', null, icon(o.icon || 'chevL'), o.label, o.gold ? h('span', { class: 'cost' }, iv('gold', o.gold)) : null, o.food ? h('span', { class: 'cost' }, iv('food', o.food)) : null),
       h('span', null, o.desc || '', o.risk ? h('span', { class: 'risk' }, ' — ' + o.risk) : null, o.why ? h('span', { class: 'risk' }, ` (${o.why})`) : null));
   },
@@ -1183,7 +1276,7 @@ const Panels = {
     return UI.ask({
       title: 'رسول من ' + f.name, icon: 'treaty',
       body: h('div', null, h('p', { class: 'lead' }, text), p.kind === 'tribute' ? h('p', { class: 'hint' }, 'الرفض قد يعني الحرب. القبول يستنزف خزينتك لكنه يشتري الوقت.') : null),
-      buttons: [{ label: payLabel, value: true, primary: true, disabled: cant }, { label: 'ارفض', value: false }],
+      buttons: [{ label: payLabel, value: true, primary: true, disabled: cant, why: 'الذهب لا يكفي' }, { label: 'ارفض', value: false }],
     });
   },
 
@@ -1290,10 +1383,15 @@ const Panels = {
       ),
       buttons: [
         {
-          label: 'طلب الاستسلام', primary: true, onClick: async () => {
+          label: 'طلب الاستسلام', primary: true, disabled: !!enc.demanded || (enc.type === 'assault' && !!Game.canDemandSurrender(Game.node(enc.node), P) && Game.besiegers(enc.node).some((b) => b.fid === P)),
+          why: enc.demanded ? 'رفضوا الطلب في هذه المواجهة: الجواب لن يتغير اليوم' : Game.canDemandSurrender(Game.node(enc.node), P),
+          onClick: async () => {
             if (Game.track) Game.track('parley');
-            if (Game.tryDemandSurrender(enc)) { UI.toast('قبلوا الاستسلام!'); await Game.surrenderAccepted(enc, 'surrender'); resolve('settled'); }
-            else { Game.addRel(P, enc.defFid, -3); UI.toast('رفضوا بإباء — لا مفرّ من القتال'); back(); }
+            const n = Game.node(enc.node);
+            const sieging = enc.type === 'assault' && Game.besiegers(n.id).some((b) => b.fid === P);
+            const ok = sieging ? Game.demandSurrender(n, P).ok : Game.tryDemandSurrender(enc);
+            if (ok) { UI.toast('قبلوا الاستسلام!'); await Game.surrenderAccepted(enc, 'surrender'); resolve('settled'); }
+            else { enc.demanded = true; Game.addRel(P, enc.defFid, -3); UI.toast(sieging ? 'رفضوا الطلب. يمكن تقديم طلب جديد بعد دورين.' : 'رفضوا بإباء: لا مفرّ من القتال أو التراجع.'); back(); }
           },
         },
         {

@@ -794,7 +794,8 @@ const Game = {
   canRecruit(fid, node, type, armyId, merc) {
     const d = UNITS[type];
     if (node.owner !== fid) return 'ليست مدينتك';
-    if (this.besieger(node.id)) return 'المدينة محاصرة';
+    // الحصار يقطع الطريق على المرتزقة القادمين من الخارج، ولا يمنع تسليح رجال المدينة الذين في الداخل
+    if (merc && this.besieger(node.id)) return 'المرتزقة يأتون من خارج الأسوار، والحصار يقطع طريقهم';
     if (!merc) {
       if (node.unrest > 0) return `غير مستقرة (${node.unrest} أدوار) — المرتزقة فقط`;
       if (node.loyalty < 30) return 'الولاء منخفض جداً';
@@ -1487,7 +1488,8 @@ const Game = {
     if (s.defGens.some((g) => g.trait === 'brave' || g.trait === 'defender')) p *= 0.5;
     if (enc.kind === 'siege') { if (s.node.stores <= 0) p += 0.3; p += this.siegeTurns(s.node, enc.attFid) * 0.05; }
     p += (this.f(enc.attFid).rep - 50) / 250;
-    return R() < clamp(p, 0, 0.9);
+    // الجواب ثابت لنفس المواجهة في نفس الدور: لا فائدة من التكرار
+    return rng(hashStr(enc.node + ':' + enc.attFid + ':' + this.S.turn + ':dem'))() < clamp(p, 0, 0.9);
   },
   bribeCost(enc) {
     const s = this.encSides(enc);

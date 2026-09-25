@@ -279,3 +279,10 @@ function xstat(key, value, build, o = {}) {
     onclick: (e) => { e.stopPropagation(); Help.explain(e.currentTarget, build()); },
   }, icon(o.icon || H.icon || 'info'), o.label ? h('span', { class: 'hk' }, o.label) : null, h('bdi', { class: 'hv' }, value), o.meter != null ? meter(o.meter, o.meterMax || 100) : null);
 }
+// شرح عند نقطة على الشاشة (مثل مدينة على الخريطة)
+Help.explainAt = function (x, y, obj) {
+  const a = h('div', { style: { position: 'fixed', left: x + 'px', top: y + 'px', width: '1px', height: '1px' } });
+  document.body.appendChild(a);
+  this.explain(a, obj);
+  a.remove();
+};

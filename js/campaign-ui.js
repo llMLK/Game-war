@@ -141,6 +141,12 @@ class CampaignScene {
       ctx.strokeStyle = `rgba(255,215,110,${0.55 + p * 0.45})`; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.arc(n.x, n.y, R + 7 + p * 2, 0, TAU); ctx.stroke();
     }
+    if (this.blockHint && this.blockHint.node && this.t < this.blockHint.until) {
+      const n = Game.node(this.blockHint.node), R = art.rad(n);
+      const p2 = 0.5 + 0.5 * Math.sin(t * 8);
+      ctx.strokeStyle = `rgba(200,50,35,${0.6 + p2 * 0.4})`; ctx.lineWidth = 2.6; ctx.setLineDash([5, 3]);
+      ctx.beginPath(); ctx.arc(n.x, n.y, R + 9 + p2 * 2, 0, TAU); ctx.stroke(); ctx.setLineDash([]);
+    }
     if (this.selNode && Sheets.current()) {
       const n = this.selNode, R = art.rad(n);
       ctx.strokeStyle = 'rgba(255,227,138,.9)'; ctx.lineWidth = 1.4; ctx.setLineDash([4, 3]);
@@ -174,10 +180,21 @@ class CampaignScene {
     }
     for (const n of S.nodes) this.drawArmiesAt(ctx, n);
     for (const m of marks) if (m.kind === 'threat') this.threatMarker(ctx, m);
+    // علامات القوافل: المقطع المتوقف علامة حمراء تفتح أسبابه، والنشط تفتحه لمسة على الجمال
+    for (const rm of this.routeMarks || []) {
+      const sp = cam.toScreen(rm.x, rm.y);
+      if (!rm.ok) {
+        ctx.fillStyle = 'rgba(250,236,210,.95)'; ctx.beginPath(); ctx.arc(sp.x, sp.y, 9, 0, TAU); ctx.fill();
+        ctx.strokeStyle = '#a0301e'; ctx.lineWidth = 1.6; ctx.stroke();
+        drawIcon(ctx, 'close', sp.x, sp.y, 10, '#a0301e');
+      }
+      this.hits.push({ kind: 'route', x: sp.x, y: sp.y, r: rm.ok ? 12 : 16 });
+    }
   }
 
   // ——— طريق القوافل: شريط ذهبي وقوافل تتحرك، وأحمر متقطع حيث انقطع ———
   drawRoute(ctx) {
+    this.routeMarks = [];
     const r = Game.S.route;
     if (!r || r.path.length < 2) return;
     for (let i = 0; i < r.path.length - 1; i++) {
@@ -190,6 +207,7 @@ class CampaignScene {
       ctx.lineWidth = ok ? 6.5 : 4;
       ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
       ctx.setLineDash([]);
+      (this.routeMarks = this.routeMarks || []).push({ x: (A.x + B.x) / 2, y: (A.y + B.y) / 2, ok });
       if (!ok) continue;
       const len = Math.hypot(B.x - A.x, B.y - A.y) || 1;
       for (let k = 0; k < 2; k++) {
@@ -391,15 +409,25 @@ class CampaignScene {
   onTap(w, p) {
     if (this.busy) return;
     Help.hide();
-    const score = (h2) => h2.d - (h2.kind === 'army' ? 8 : h2.kind === 'siege' ? 4 : h2.kind === 'crisis' ? 3 : 0);
-    const hits = (this.hits || []).map((h2) => ({ ...h2, d: Math.hypot(h2.x - p.x, h2.y - p.y) })).filter((h2) => h2.d < h2.r && !(this.selArmy && h2.kind === 'crisis')).sort((a, b) => score(a) - score(b));
+    const score = (h2) => h2.d - (h2.kind === 'army' ? 8 : h2.kind === 'siege' ? 4 : h2.kind === 'crisis' ? 3 : h2.kind === 'route' ? -6 : 0);
+    const hits = (this.hits || []).map((h2) => ({ ...h2, d: Math.hypot(h2.x - p.x, h2.y - p.y) })).filter((h2) => h2.d < h2.r && !(this.selArmy && (h2.kind === 'crisis' || h2.kind === 'route'))).sort((a, b) => score(a) - score(b));
     const hit = hits[0];
     if (hit && hit.kind === 'crisis') { Panels.openCrisis(this, hit.c); return; }
+    if (hit && hit.kind === 'route' && !this.selArmy) { Panels.openRoute(this); return; }
     // وضع اختيار الوجهة
     if (this.selArmy && hit) {
       const n = hit.kind === 'army' ? Game.node(hit.a.node) : hit.n;
       const isOwnHere = hit.kind === 'army' && hit.a.fid === this.P;
       if (n.id !== this.selArmy.node && !isOwnHere && this.reach && this.reach[n.id]) { this.tryMove(this.selArmy, n); return; }
+      // وجهة غير ممكنة: قل لماذا، وأبقِ اختيار الوجهة قائماً
+      if (n.id !== this.selArmy.node && !isOwnHere) {
+        const w = Game.whyNot(this.selArmy, n.id);
+        if (w) {
+          this.blockHint = { node: w.node || null, until: this.t + 2.5 };
+          Help.explainAt(p.x, p.y, { icon: 'boot', title: `لا يصل إلى ${n.name} الآن`, state: w.msg, note: 'اختر مدينة مضيئة، أو اضغط الخريطة الفارغة لإلغاء الحركة.' });
+          return;
+        }
+      }
     }
     if (!hit) {
       if (this.selArmy) { this.cancelMove(); return; }
@@ -584,6 +612,7 @@ class CampaignScene {
   focusAlert(a) {
     const n = a.node ? Game.node(a.node) : null;
     if (a.win === 'diplo') { this.openDiplo(); return; }
+    if (a.win === 'route') { Panels.openRoute(this); return; }
     if (a.win === 'captives') { this.openKingdom('capt'); return; }
     if (a.win === 'crisis' && Game.openCrisis) { Game.openCrisis(this, a); return; }
     if (!n) return;

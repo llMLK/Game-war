@@ -455,7 +455,7 @@ class BattleScene {
     this.stage = 'event';
     const box = h('div', { class: 'choice' });
     for (const o of ev.options) {
-      box.appendChild(h('button', { disabled: o.dis, onclick: () => { this.sim.choose(ev, o.k); this.layoutUnits(false); this.renderTop(); this.newLines(); if (this.sim.over) { this.afterEnd(); return; } done(); } },
+      box.appendChild(h('button', { class: o.dis ? 'off' : '', onclick: (e) => { if (o.dis) { Help.explain(e.currentTarget, { icon: 'info', title: 'غير متاح', state: o.why || 'لا احتياط متبقٍ لهذا الأمر.' }); return; } this.sim.choose(ev, o.k); this.layoutUnits(false); this.renderTop(); this.newLines(); if (this.sim.over) { this.afterEnd(); return; } done(); } },
         h('b', null, icon(o.icon || 'chevL'), o.label), h('span', null, o.desc, o.risk && o.risk !== '—' ? h('span', { class: 'risk' }, ' — ' + o.risk) : null)));
     }
     this.setPanel(h('div', { class: 'bs-h ev' }, icon('warning'), h('b', null, ev.title)), h('p', { class: 'lead' }, ev.text), box);
