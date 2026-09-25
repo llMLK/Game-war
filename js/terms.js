@@ -16,7 +16,7 @@ const TERMS = {
 const AMAN_TURNS = 12, AMAN_LEVY = 4, SACK_TURNS = 12, AUTONOMY_KEEP = 12, PACT_TURNS = 8;
 
 Object.assign(Game, {
-  // ------------------، آثار الشروط المحفوظة -------------------
+  // ------------------ آثار الشروط المحفوظة -------------------
   termsOf(n) { return n && n.terms && n.terms.by === n.owner ? n.terms : null; },
   termsIncome(n) { const t = this.termsOf(n); return t && t.control === 'autonomy' ? 0.5 : 1; },
   termsLoyalty(n) {
@@ -69,7 +69,7 @@ Object.assign(Game, {
   },
 });
 
-// ------------------، الأهداف المشتركة مع الحلفاء -------------------
+// ------------------ الأهداف المشتركة مع الحلفاء -------------------
 Object.assign(Game, {
   pactsOf(fid) { return (this.S.pacts || []).filter((p) => p.status === 'active' && (p.a === fid || p.b === fid)); },
   pactFor(ally) { return (this.S.pacts || []).find((p) => p.status === 'active' && p.b === ally) || null; },
@@ -194,7 +194,7 @@ Object.assign(Game, {
   },
 });
 
-// ------------------، الربط -------------------
+// ------------------ الربط -------------------
 (() => {
   // الحليف يتخذ الهدف المشترك غايةً لجيوشه ما دام قائماً
   const pg = CampaignAI.planGoals;

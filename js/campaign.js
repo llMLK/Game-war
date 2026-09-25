@@ -23,7 +23,7 @@ const Game = {
   S: null,
   hooks: {},
 
-  // ------------------، الإنشاء -------------------
+  // ------------------ الإنشاء -------------------
   newGame(scId, player, diff) {
     const sc = SCENARIOS[scId];
     const S = {
@@ -83,7 +83,7 @@ const Game = {
     };
   },
 
-  // ------------------، الحفظ والتحميل -------------------
+  // ------------------ الحفظ والتحميل -------------------
   save(slot = 'auto') {
     if (!this.S) return false;
     const f = this.f(this.S.player);
@@ -179,7 +179,7 @@ const Game = {
     if (this.initWorld) this.initWorld();
   },
 
-  // ------------------، مساعدات -------------------
+  // ------------------ مساعدات -------------------
   get sc() { return SCENARIOS[this.S.scenario]; },
   f(id) { return this.S.factions[id]; },
   node(id) { return this.S.nodes.find((n) => n.id === id); },
@@ -222,7 +222,7 @@ const Game = {
   menOf(list) { return list.reduce((t, r) => t + r.men, 0); },
   armyMen(a) { const g = this.armyGen(a); return this.menOf(a.regs) + (g ? this.genMen(g) : 0); },
 
-  // ------------------، سجل الأحداث -------------------
+  // ------------------ سجل الأحداث -------------------
   event(cat, text, o = {}) {
     const S = this.S;
     if (S.log.slice(-12).some((e) => e.turn === S.turn && e.text === text)) return;
@@ -243,7 +243,7 @@ const Game = {
     return e.imp >= 2 && e.fids.some((id) => id !== 'neutral' && this.f(id) && this.intelLevel(P, id) >= 1);
   },
 
-  // ------------------، التنبيهات العسكرية -------------------
+  // ------------------ التنبيهات العسكرية -------------------
   // level: crit | imp | info، للّاعب فقط. key يمنع التكرار ويستبدل القديم
   alert(level, text, o = {}) {
     const S = this.S;
@@ -333,7 +333,7 @@ const Game = {
   },
   scarsAt(node, maxAge = 6) { return (this.S.scars || []).filter((x) => x.node === node && this.S.turn - x.turn <= maxAge); },
 
-  // ------------------، القادة -------------------
+  // ------------------ القادة -------------------
   addGeneral(fid, name, trait, flaw, rank = 1) {
     const g = { id: 'g' + this.S.nextId++, name, fid, orig: fid, trait: trait || null, flaw: flaw || null, rank: rank || 1, xp: RANK_XP[rank || 1], status: 'pool', army: null, captor: null, since: this.S.turn, vendetta: null };
     this.S.gens[g.id] = g;
@@ -370,7 +370,7 @@ const Game = {
     }
   },
 
-  // ------------------، الجيوش -------------------
+  // ------------------ الجيوش -------------------
   newReg(type, men, extra) { return { type, men: men == null ? UNITS[type].men : men, exp: 0, ...(extra || {}) }; },
 
   createArmy(fid, nodeId, genId) {
@@ -476,7 +476,7 @@ const Game = {
     return null;
   },
 
-  // ------------------، القوة -------------------
+  // ------------------ القوة -------------------
   regPower(r) {
     const d = UNITS[r.type];
     return r.men * d.hp * (d.atk + d.def + (d.missile || 0) * 1.5 + (d.charge || 0) * 0.3) * (1 + 0.1 * (r.exp || 0)) / 100;
@@ -495,7 +495,7 @@ const Game = {
     return p + Math.max(0, this.f(fid).gold) / 10;
   },
 
-  // ------------------، الحامية والقوى البشرية -------------------
+  // ------------------ الحامية والقوى البشرية -------------------
   // الحامية تكبر مع السكان والأسوار، المدن لا تسقط بلا جيش كبير أو حصار طويل
   garrisonTarget(n) {
     const out = [];
@@ -540,7 +540,7 @@ const Game = {
   },
   manpowerOf(fid) { return this.nodesOf(fid).reduce((t, n) => t + Math.floor(n.manpower), 0); },
 
-  // ------------------، الإمداد والازدحام -------------------
+  // ------------------ الإمداد والازدحام -------------------
   supplyCap(n, fid) {
     let c;
     if (this.friendly(n.owner, fid)) c = 8 + n.farm * 2 + n.granary * 3 + Math.floor(n.pop / 10000);
@@ -559,7 +559,7 @@ const Game = {
   },
   overstack(n, fid) { return Math.max(0, this.stackAt(n, fid) - this.supplyCap(n, fid)); },
 
-  // ------------------، الاقتصاد -------------------
+  // ------------------ الاقتصاد -------------------
   merchantAt(n) { return this.armiesOfAt(n.owner, n.id).some((a) => this.hasTrait(a, 'merchant')); },
   cityIncome(n) { return this.incomeModel(n).total; },
   // نسبة الولاء إلى الدخل: الولاء 100 = 100٪، والولاء 0 = 40٪
@@ -735,7 +735,7 @@ const Game = {
     return { gold, trade, route, tribute, upkeep, field, works, salaries, overhead, food, eat, netGold, netFood: food - eat };
   },
 
-  // ------------------، التجنيد والبناء -------------------
+  // ------------------ التجنيد والبناء -------------------
   recruitableTypes(fid, node) {
     const list = [...RECRUITABLE];
     const u = UNIQUE_OF[fid];
@@ -878,7 +878,7 @@ const Game = {
     return null;
   },
 
-  // ------------------، الحركة -------------------
+  // ------------------ الحركة -------------------
   edgeCost(a, from, to, kind) {
     const g = this.armyGen(a);
     const tr = g && g.trait;
@@ -1051,7 +1051,7 @@ const Game = {
     }
   },
 
-  // ------------------، المواجهات -------------------
+  // ------------------ المواجهات -------------------
   effWalls(n) { return n.walls; },
   siegeTurns(n, fid) { return Math.max(0, ...this.besiegers(n.id).filter((b) => b.fid === fid).map((b) => b.siege.turns)); },
   siegeEquip(n, fid) {
@@ -1392,7 +1392,7 @@ const Game = {
     return false;
   },
 
-  // ------------------، سقوط المدن -------------------
+  // ------------------ سقوط المدن -------------------
   async capture(node, fid, how, armies = []) {
     const old = node.owner;
     // مصير المدافعين يُحسب ويُحفظ: الجيوش والحامية
@@ -1514,7 +1514,7 @@ const Game = {
     }
   },
 
-  // ------------------، سلامة الحالة -------------------
+  // ------------------ سلامة الحالة -------------------
   // تُستدعى بعد كل تغيير مهم لضمان ألا يبقى جيش في حالة غير معرّفة
   validate() {
     const S = this.S;
@@ -1550,7 +1550,7 @@ const Game = {
     this.checkElimination();
   },
 
-  // ------------------، التفاوض في المواجهة -------------------
+  // ------------------ التفاوض في المواجهة -------------------
   // طلب التسليم: احتمال معلن، رمية مثبتة بالدور، ومهلة بعد الرفض (statecraft.js)
   tryDemandSurrender(enc) { return this.demandSurrender(enc).ok; },
   bribeCost(enc) {
@@ -1580,7 +1580,7 @@ const Game = {
     this.validate();
   },
 
-  // ------------------، الأسرى -------------------
+  // ------------------ الأسرى -------------------
   ransomPrice(g) { return 100 + 90 * g.rank + (g.trait ? 30 : 0); },
   releaseCaptive(g, by) {
     g.status = this.f(g.fid) && this.f(g.fid).alive ? 'pool' : 'exiled';
@@ -1653,7 +1653,7 @@ const Game = {
     if (victim === this.S.player) this.alert('crit', `${B.name} أعدمت قائدك ${g.name}${avenger ? `، ${avenger.name} يطلب الثأر` : ''}`, { icon: 'skull' });
   },
 
-  // ------------------، نهاية الجولة -------------------
+  // ------------------ نهاية الجولة -------------------
   endRound() {
     const S = this.S;
     const notes = [];

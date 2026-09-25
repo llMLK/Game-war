@@ -132,7 +132,7 @@ Object.assign(Game, {
     return { aggr: p.aggr * (1 + ((f && f.ambition) || 0)), honor: p.honor, prefs: p.prefs || {} };
   },
 
-  // ------------------، التهيئة -------------------
+  // ------------------ التهيئة -------------------
   initWorld() {
     const S = this.S;
     S.crises = S.crises || [];
@@ -150,7 +150,7 @@ Object.assign(Game, {
     return clamp(74 - (g.flaw === 'disloyal' ? 24 : 0) - (g.flaw === 'arrogant' ? 8 : 0) - (g.rank - 1) * 5 + Math.round((R() - 0.5) * 14), 18, 95);
   },
 
-  // ------------------، الحكّام والعرش -------------------
+  // ------------------ الحكّام والعرش -------------------
   initRuler(fid) {
     const f = this.f(fid);
     const d = (this.wd().rulers || {})[fid];
@@ -228,7 +228,7 @@ Object.assign(Game, {
     return { heir, rivals, noHeir, old };
   },
 
-  // ------------------، ولاء القادة -------------------
+  // ------------------ ولاء القادة -------------------
   genLoyTarget(g) {
     const f = this.f(g.fid);
     if (!f || this.isRuler(g)) return 100;
@@ -270,7 +270,7 @@ Object.assign(Game, {
     }
   },
 
-  // ------------------، الممالك الناشئة -------------------
+  // ------------------ الممالك الناشئة -------------------
   spawnFaction(o) {
     const S = this.S;
     const id = (o.key || 'x') + S.nextId++;
@@ -331,7 +331,7 @@ Object.assign(Game, {
     return nid;
   },
 
-  // ------------------، طريق القوافل -------------------
+  // ------------------ طريق القوافل -------------------
   initRoute() {
     const r = (this.wd().routes || [])[0];
     this.S.route = r ? { key: r.key, name: r.name, path: r.path.filter((id) => this.node(id)), bad: 0, dead: false } : null;
@@ -442,7 +442,7 @@ Object.assign(Game, {
     if (r.detours) for (const k in r.detours) if (r.detours[k].until < this.S.turn) delete r.detours[k];
   },
 
-  // ------------------، محرك الأزمات -------------------
+  // ------------------ محرك الأزمات -------------------
   crisisStart(type, o = {}) {
     const def = CRISES[type];
     if (!def) return null;
@@ -562,14 +562,14 @@ Object.assign(Game, {
     return out;
   },
 
-  // ------------------، القوة التقديرية -------------------
+  // ------------------ القوة التقديرية -------------------
   avgMajorRegs() {
     const ms = this.aliveMajors().filter((id) => !this.f(id).kind);
     if (!ms.length) return 20;
     return ms.reduce((t, id) => t + this.armiesOf(id).reduce((s, a) => s + a.regs.length, 0), 0) / ms.length;
   },
 
-  // ------------------، دورة العالم -------------------
+  // ------------------ دورة العالم -------------------
   async worldTick() {
     const S = this.S;
     this.initWorld();
@@ -662,7 +662,7 @@ Object.assign(Game, {
     }
   },
 
-  // ------------------، مخرج الحملة -------------------
+  // ------------------ مخرج الحملة -------------------
   // يراقب الإيقاع: الهدوء الطويل، الهيمنة، الاقتصاد المتخم، التكرار، جمود الممالك.
   // لا يغش: يختار أزمة معقولة تاريخياً من الأنظمة القائمة، ولا يخلق جيوشاً بجانب اللاعب.
   director() {
@@ -729,7 +729,7 @@ Object.assign(Game, {
     return out;
   },
 
-  // ------------------، القياس الداخلي (للمطوّر) -------------------
+  // ------------------ القياس الداخلي (للمطوّر) -------------------
   track(kind) {
     const st = this.S && this.S.stats;
     if (!st) return;

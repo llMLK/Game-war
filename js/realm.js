@@ -37,7 +37,7 @@ const CHAPTERS = [
 ];
 
 Object.assign(Game, {
-  // ------------------، الأهداف والنصر -------------------
+  // ------------------ الأهداف والنصر -------------------
   objectivesOf(fid) {
     const S = this.S;
     S.obj = S.obj || {};
@@ -113,7 +113,7 @@ Object.assign(Game, {
     }
   },
 
-  // ------------------، فصول الحملة -------------------
+  // ------------------ فصول الحملة -------------------
   chapter() {
     const S = this.S, P = S.player;
     if (!S || !this.f(P)) return null;
@@ -148,7 +148,7 @@ Object.assign(Game, {
     S.inCrisis = cr;
   },
 
-  // ------------------، التابعون -------------------
+  // ------------------ التابعون -------------------
   isVassalOf(a, b) { const A = this.f(a); return !!(A && A.alive && A.overlord === b); },
   vassalLabel(P, id) { return this.isVassalOf(id, P) ? 'تابعة لك' : this.isVassalOf(P, id) ? 'متبوعتك' : null; },
   vassalsOf(fid) { return this.aliveMajors().filter((id) => this.isVassalOf(id, fid)); },
@@ -228,7 +228,7 @@ Object.assign(Game, {
     }
   },
 
-  // ------------------، الحكّام -------------------
+  // ------------------ الحكّام -------------------
   canAppoint: true,
   appointGovernor(g, n) {
     if (!g || n.owner !== g.fid) return 'ليست مدينتك';
@@ -249,7 +249,7 @@ Object.assign(Game, {
     }
   },
 
-  // ------------------، السياسة العامة -------------------
+  // ------------------ السياسة العامة -------------------
   devFocus(fid) { return (this.f(fid) && this.f(fid).dev) || 'manual'; },
   edictOf(fid) { return (this.f(fid) && this.f(fid).edict) || 'none'; },
   setEdict(fid, k) {
@@ -295,7 +295,7 @@ Object.assign(Game, {
     }
   },
 
-  // ------------------، قيمة الخسارة: الثأر -------------------
+  // ------------------ قيمة الخسارة: الثأر -------------------
   avengerTick() {
     for (const g of Object.values(this.S.gens)) {
       if (!g.vendetta || g.status !== 'pool' || g.avenging) continue;
@@ -314,7 +314,7 @@ Object.assign(Game, {
     }
   },
 
-  // ------------------، تحليلات المطوّر (لا تظهر للاعب) -------------------
+  // ------------------ تحليلات المطوّر (لا تظهر للاعب) -------------------
   // تكشف الأدوار الميتة والتكرار والجمود واللولب والاقتصاد المتخم
   analytics() {
     const S = this.S, P = S.player, st = S.stats || { hist: [], acts: {} };
@@ -339,7 +339,7 @@ Object.assign(Game, {
     };
   },
 
-  // ------------------، دورة المملكة -------------------
+  // ------------------ دورة المملكة -------------------
   async realmTick() {
     this.govTick();
     this.vassalTick();

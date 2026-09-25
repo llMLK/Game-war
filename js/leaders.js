@@ -178,7 +178,7 @@ const LEADERS = {
   ],
 };
 
-// ------------------، منطق القادة -------------------
+// ------------------ منطق القادة -------------------
 Object.assign(Game, {
   cat() { return (this.S && LEADERS[this.S.scenario]) || []; },
   catFind(name) { return name ? this.cat().find((e) => e.n === name || (e.alias || []).includes(name)) || null : null; },
@@ -269,7 +269,7 @@ Object.assign(Game, {
   // من وقّع عقداً دفع مكافأة توقيعه، فلا رسوم تعيين عليه حين يقود جيشاً
   hireFee(g) { if (g.pay != null) return 0; return g.name.startsWith('الضابط') ? 40 : 50 + 40 * g.rank; },
 
-  // ------------------، المخزون والفرص -------------------
+  // ------------------ المخزون والفرص -------------------
   initLeaders(fresh) {
     const S = this.S;
     if (!S.seed) S.seed = fresh ? (Math.random() * 1e9) >>> 0 : hashStr(S.scenario + ':' + S.player + ':' + S.turn);
@@ -397,7 +397,7 @@ Object.assign(Game, {
     return null;
   },
 
-  // ------------------، التفاوض -------------------
+  // ------------------ التفاوض -------------------
   // المطلب: الكفاءة والتخصص والمكانة، ثم الظروف (سمعة المملكة، حروبها، هوى المرشح). الحد الأدنى الحقيقي ثابت لكل مرشح
   candGen(e) { return { name: e.n, trait: e.trait, flaw: e.flaw, skills: this.skArr(e.sk), tier0: e.tier, fame: 0, rank: this.starsFor(e.sk.reduce((a, b) => a + b, 0)) }; },
   demandParts(e, fid) {
@@ -476,7 +476,7 @@ Object.assign(Game, {
     return { ok: true, g, T, msg: `${e.n} وقّع العقد. يصل إلى ${site.name} في الدور ${S.turn + T}.` };
   },
 
-  // ------------------، كل دور -------------------
+  // ------------------ كل دور -------------------
   leadersTick() {
     const S = this.S;
     if (!S.rec) return;

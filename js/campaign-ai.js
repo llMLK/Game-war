@@ -114,7 +114,7 @@ const CampaignAI = {
     Game.validate();
   },
 
-  // ------، الأهداف -------
+  // ------ الأهداف -------
   planGoals(fid) {
     const f = Game.f(fid), pers = this.pers(fid);
     const mine = Game.nodesOf(fid);
@@ -149,7 +149,7 @@ const CampaignAI = {
     f.goals = best ? { target: best.id, owner: best.owner, score: bs, since: Game.S.turn, kind: f.claims.includes(best.id) ? 'reclaim' : Game.defendersOf(best).length ? 'expand' : 'opportunity', myPow } : null;
   },
 
-  // ------، الدبلوماسية -------
+  // ------ الدبلوماسية -------
   async diplomacy(fid) {
     const f = Game.f(fid), pers = this.pers(fid);
     const pw = Game.factionPower(fid);
@@ -250,7 +250,7 @@ const CampaignAI = {
     }
   },
 
-  // ------، الاقتصاد -------
+  // ------ الاقتصاد -------
   economy(fid) {
     const f = Game.f(fid);
     const nodes = Game.nodesOf(fid);
@@ -300,7 +300,7 @@ const CampaignAI = {
     if (best && f.gold > 1200) this.build(fid);
   },
 
-  // ------، القادة والأسرى -------
+  // ------ القادة والأسرى -------
   pickGeneral(fid, role) {
     const pool = Game.poolOf(fid).filter((g) => !g.name.startsWith('الضابط'));
     if (!pool.length) return null;
@@ -357,7 +357,7 @@ const CampaignAI = {
     }
   },
 
-  // ------، التجنيد -------
+  // ------ التجنيد -------
   pickUnit(fid, n, army) {
     const w = { ...this.pers(fid).prefs };
     for (const t of Object.keys(w)) if (UNITS[t].needs === 'barracks' && !n.barracks) delete w[t];
@@ -439,7 +439,7 @@ const CampaignAI = {
     }
   },
 
-  // ------، الجيوش -------
+  // ------ الجيوش -------
   async military(fid) {
     const f = Game.f(fid);
     const pers = this.pers(fid);
