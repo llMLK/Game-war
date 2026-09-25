@@ -214,7 +214,8 @@ const Panels = {
     const n = Game.node(a.node);
     body.appendChild(h('div', { class: 'acard own' },
       h('div', { class: 'ah' }, icon('helmet'), h('b', null, g ? g.name : 'بلا قائد'), stars(g && g.rank), h('span', { class: 'sp' }), h('span', { class: 'muted small' }, `${a.regs.length}/${MAX_REGS} وحدات`)),
-      h('div', { class: 'gline' }, traitChip(g), g && g.vendetta ? h('span', { class: 'tag bad' }, icon('drop'), 'يطلب الثأر') : null),
+      h('div', { class: 'gline' }, traitChip(g), g && g.vendetta ? h('span', { class: 'tag bad' }, icon('drop'), 'يطلب الثأر') : null, g && !Game.isOfficer(g) ? h('button', { class: 'chip', onclick: () => this.cmdProfile(g) }, icon('helmet'), 'ملف القائد') : null),
+      (() => { const v = g && Voices.current(g); return v ? h('div', { class: 'quote' }, h('p', null, '«', v.text, '»'), h('span', { class: 'muted small' }, v.why)) : null; })(),
     ));
     const kv = h('div', { class: 'kv' },
       xstat('morale', a.mood ? { shaken: 'مهزوز', confident: 'واثق', hungry: 'جائع' }[a.mood.k] : 'ثابتة', () => Explain.armyMorale(a), { cls: a.mood && a.mood.k !== 'confident' ? 'warn' : '' }),
@@ -935,7 +936,7 @@ const Panels = {
           h('li', null, h('b', null, 'إطلاق السراح: '), 'علاقة وسمعة أفضل، لكنه يعود ليقاتلك.'),
           alive ? h('li', null, h('b', null, `فدية (${price}): `), 'قد تدفع مملكته إن كان ثميناً.') : null,
           mineHeld.length ? h('li', null, h('b', null, 'تبادل: '), `مقابل ${mineHeld[0].name} الأسير عندهم.`) : null,
-          h('li', null, h('b', null, `ضمّه (${chance}٪): `), 'إن رفض يبقى أسيراً.'),
+          h('li', null, h('b', null, `ضمّه (${chance}٪): `), Game.cmdRoom(P) <= 0 && !Game.isOfficer(g) ? 'مجلس الحرب ممتلئ: لا مقعد له الآن.' : 'إن رفض يبقى أسيراً. يشغل مقعداً في مجلس الحرب.'),
           h('li', null, h('b', null, 'النفي: '), 'يختفي من الحرب دون دم.'),
           h('li', { class: 'warn' }, h('b', null, 'الإعدام: '), 'يزول خطره نهائياً، لكن: −15 سمعة، ثأر وعداوة، غضب حلفائها، وقد ينهض ابنه يطلب الانتقام.'),
         ),
@@ -1359,6 +1360,7 @@ const Panels = {
         body: h('div', null,
           lead ? h('p', { class: 'lead warn' }, lead) : null,
           h('p', { class: 'terrain-tip' }, icon(TERRAIN[terr].icon), h('span', null, h('b', null, TERRAIN[terr].name + ': '), TERRAIN_TIPS[terr])),
+          (() => { const mg = (attacking ? s.attGens : s.defGens)[0]; const adv = mg && Voices.prebattle(mg, enc, P); return adv ? h('div', { class: 'quote adv' }, Portrait.el(mg, 40), h('div', null, h('p', null, h('b', null, mg.name + ': '), '«', adv.text, '»'), h('span', { class: 'muted small' }, 'رأيه مبني على: ', adv.why))) : null; })(),
           info.length ? h('p', { class: 'hint' }, info.join(' · ')) : null,
           h('div', { class: 'enc-sides' },
             sideBox(attacking ? 'جيشك' : Game.fname(enc.attFid), enc.attFid, s.attRegs, s.attGens),
@@ -1419,6 +1421,13 @@ const Panels = {
       title: me ? `${me.text} ${me.sub}` : mine ? 'نصر' : 'هزيمة', icon: mine ? 'laurel' : 'crownbroken', cls: (mine ? 'win' : 'lose') + (out.report ? ' wide' : ''),
       body: h('div', null,
         me ? BattleReport.render(out.report, side, { head: false }) : h('p', { class: 'lead' }, mine ? 'حُسمت المعركة لصالحك.' : 'دارت الدائرة على جيشك.'),
+        (() => {
+          if (mine || !out.report) return null;
+          const gs = (side === 0 ? enc.att : enc.def).map((id) => Game.army(id)).filter(Boolean).map((a) => Game.armyGen(a)).filter((g) => g && !Game.isOfficer(g));
+          const c = out.report.cas[side], o = out.report.cas[1 - side];
+          const v = gs[0] && Voices.defeat(gs[0], c.men0, c.men0 - c.lost, Game.node(enc.node).name, o.men0 > c.men0 * 1.4);
+          return v ? h('div', { class: 'quote adv' }, Portrait.el(gs[0], 40), h('p', null, h('b', null, gs[0].name + ': '), '«', v.text, '»')) : null;
+        })(),
         lost.length ? h('p', { class: 'warn small' }, lost.join(' · ')) : null),
       buttons: [{ label: 'متابعة', primary: true, onClick: cb }],
     });

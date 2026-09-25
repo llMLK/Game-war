@@ -136,10 +136,11 @@ const BUILDINGS = {
   barracks: { name: 'إسطبلات وورش', icon: 'horseshoe', max: 1, cost: () => 220, desc: 'تتيح الخيالة والمنجنيق، وتدريب الجيوش المقيمة' },
   roads: { name: 'طرق معبّدة', icon: 'road', max: 1, cost: () => 260, desc: 'الحركة من المدينة وإليها أرخص بنقطة، وتجارة أكثر' },
   port: { name: 'ميناء', icon: 'ship', max: 1, cost: () => 280, coastal: true, desc: 'يفتح الطرق المائية لكل جيوشك من هنا، ويزيد التجارة' },
+  diwan: { name: 'ديوان الجند', icon: 'seal', max: 2, cost: (lvl) => [400, 800][lvl], capitalOnly: true, desc: 'مؤسسة عسكرية في العاصمة: مقعد إضافي في مجلس الحرب لكل مستوى، وفرصة استقطاب قائد عند اكتماله' },
 };
 
 // مدة البناء بالأدوار لكل مستوى
-const BUILD_TIME = { walls: [2, 3, 3, 4], market: [1, 2, 2], farm: [1, 2], granary: [1, 2], barracks: 2, roads: 2, port: 2 };
+const BUILD_TIME = { walls: [2, 3, 3, 4], market: [1, 2, 2], farm: [1, 2], granary: [1, 2], barracks: 2, roads: 2, port: 2, diwan: [2, 3] };
 
 const TAXES = {
   low: { name: 'منخفضة', income: 0.7, loyalty: 8 },
@@ -372,7 +373,7 @@ const SCENARIOS = {
       { owner: 'byzantine', node: 'caesarea', gen: 'أرتاباسدوس', regs: ['spear', 'spear', 'archer', 'cavalry'] },
       { owner: 'khazar', node: 'atil', gen: 'بارجيك', regs: ['spear', 'horsearcher', 'horsearcher', 'horsearcher', 'cavalry', 'cavalry'] },
       { owner: 'khazar', node: 'derbent', gen: 'آلب طرخان', regs: ['spear', 'archer', 'horsearcher', 'horsearcher'] },
-      { owner: 'neutral', node: 'dvin', gen: 'أشوط الأرمني', regs: ['spear', 'archer', 'sword'] },
+      { owner: 'neutral', node: 'dvin', gen: 'سمبات الباغراتي', regs: ['spear', 'archer', 'sword'] },
     ],
     seas: [
       [[180, 0], [760, 0], [760, 40], [700, 100], [640, 115], [520, 110], [440, 120], [330, 130], [240, 110], [185, 70]],

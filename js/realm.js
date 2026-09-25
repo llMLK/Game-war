@@ -138,6 +138,7 @@ Object.assign(Game, {
     const prev = S.chap || 0;
     if (st > prev) {
       S.chap = st;
+      if (this.addDraft && prev >= 0 && st > 0) this.addDraft(P, 1, 'ختام فصل من الحملة');
       this.chronicle('chapter', `${CHAPTERS[st].name} — ${CHAPTERS[st].desc}`, { fids: [P], imp: 3 });
       this.alert('info', CHAPTERS[st].name, { icon: 'book' });
     }

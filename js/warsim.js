@@ -1550,6 +1550,7 @@ class WarSim {
       winner: this.winner, reason: this.reason,
       sides: this.sides.map((s) => ({ gens: s.gens.map((g) => g.id).filter(Boolean), units: s.units.map((u) => ({ ref: u.ref, type: u.type, men: Math.max(0, u.men), men0: u.men0, kills: Math.round(u.kills), gen: u.gen })) })),
       fates,
+      wounded: this.sides.filter((s) => s.cmd && s.cmdWounded && s.cmdAlive !== false && s.cmd.id).map((s) => s.cmd.id),
       report: this.report(),
     };
   }

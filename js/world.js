@@ -39,7 +39,7 @@ const WORLD_DATA = {
   },
   umayyad: {
     plague: 'الطاعون',
-    rulers: { umayyad: ['سليمان بن عبد الملك', 41, 'merchant', 'greedy', 2], byzantine: ['ثيودوسيوس', 55], khazar: ['الخاقان بيهار', 44, 'cavalier', null, 2] },
+    rulers: { umayyad: ['سليمان بن عبد الملك', 41, 'merchant', 'greedy', 2], byzantine: ['ثيودوسيوس', 55], khazar: ['خاقان الخزر', 44, 'cavalier', null, 2] },
     hordes: [
       {
         key: 'turgesh', name: 'الترغش', people: 'الترك الترغش', color: '#8b5a2b', from: 'ما وراء النهر', dir: 'الشرق', away: 'بلاد الصين',
@@ -592,6 +592,7 @@ Object.assign(Game, {
     }
     // العرش وولاء القادة
     this.rulerTick();
+    if (this.commanderTick) this.commanderTick();
     this.genLoyTick();
     this.ambitionScan();
     // طريق القوافل
@@ -2099,11 +2100,13 @@ CRISES.star = {
       if (Game.S.crises.some((x) => !x.over && x.type === 'star' && x.v.name === m.name)) return false;
       c.v = { merc: true, name: m.name, leader: m.leader, trait: m.trait, units: m.units, bids: {}, regs: 6, home: home.id };
     } else {
-      const used = new Set(Object.values(Game.S.gens).map((g) => g.name));
-      const free = (wd.stars || []).filter((s) => !used.has(s[0]));
+      // النجم الصاعد مرشح تاريخي في سنوات نشاطه فقط، لا قبل مولده ولا بعد وفاته
+      const used = Game.takenNames();
+      const year = Game.year();
+      const free = Game.catalog().filter((e) => Game.candValid(e, year) && !used.has(e.n) && e.src === 'hist' && e.fame >= 30);
       if (!free.length) return false;
-      const s = pick(free);
-      c.v = { merc: false, name: s[0], trait: s[1], flaw: s[2], bids: {}, home: home.id };
+      const e = pick(free);
+      c.v = { merc: false, name: e.n, trait: e.trait, flaw: e.flaw, bids: {}, home: home.id };
     }
     c.node = home.id;
     c.fids = [];
@@ -2121,6 +2124,7 @@ CRISES.star = {
       let best = null, bs = 0;
       for (const [fid, amt] of Object.entries(v.bids)) {
         if (!WX.alive(fid) || Game.f(fid).gold < amt) continue;
+        if (!v.merc && Game.cmdRoom && Game.cmdRoom(fid) <= 0) continue;
         const s = amt + Game.f(fid).rep * 2 + (v.merc ? 0 : Game.pers(fid).honor * 40);
         if (s > bs) { bs = s; best = fid; }
       }

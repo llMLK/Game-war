@@ -18,7 +18,7 @@ const ECON = {
   // الإدارة تتصاعد: كل مدينة بعد المجانية أغلى من التي قبلها، والبعد عن العاصمة يزيدها
   adminFree: 6, adminBase: 4, adminStep: 2, adminDist: 2, armyOverhead: 12,
   supplyPerUnitHop: 2,
-  fortUpkeep: { walls: [0, 1, 3, 6, 12], barracks: 4, port: 3, granary: 2 },
+  fortUpkeep: { walls: [0, 1, 3, 6, 12], barracks: 4, port: 3, granary: 2, diwan: 6 },
   foodCap: 300, foodSale: 0.5,
 };
 const INIT_DIPLO = {
@@ -45,14 +45,18 @@ const Game = {
     };
     this.S = S;
     const ids = Object.keys(sc.factions);
+    // البلاط في البداية: من سجل القادة (من كان في الخدمة فعلاً سنة البداية)، والبقية مرشحون يظهرون لاحقاً
+    const cat = (typeof CMD_CATALOG !== 'undefined' && CMD_CATALOG[scId]) || null;
     for (const id of ids) {
       const f = sc.factions[id];
       S.factions[id] = this.newFaction(id, f.name, f.color, id === player);
-      for (const [n, t, fl, rk] of f.generals) this.addGeneral(id, n, t, fl, rk);
+      if (cat) { for (const e of cat.filter((x) => x.at === id)) this.addGeneral(id, e.n, e.trait, e.flaw, 1); }
+      else for (const [n, t, fl, rk] of f.generals) this.addGeneral(id, n, t, fl, rk);
     }
     S.factions.neutral = this.newFaction('neutral', NEUTRAL.name, NEUTRAL.color, false);
     S.factions.neutral.neutral = true;
-    for (const [n, t, fl, rk] of sc.neutralGenerals) this.addGeneral('neutral', n, t, fl, rk);
+    if (cat) { for (const e of cat.filter((x) => x.at === 'neutral')) this.addGeneral('neutral', e.n, e.trait, e.flaw, 1); }
+    else for (const [n, t, fl, rk] of sc.neutralGenerals) this.addGeneral('neutral', n, t, fl, rk);
     for (const a of ids) for (const b of ids) {
       if (a === b) continue;
       const A = S.factions[a];
@@ -83,6 +87,8 @@ const Game = {
     this.chronicle('start', `${S.factions[player].name} تبدأ طريقها. ${sc.intro}`, { fids: [player], imp: 3 });
     if (this.initWorld) this.initWorld();
     if (this.tradeGoal) this.tradeGoal(player);
+    // فرصة استقطاب أولى لكل مملكة: ليرى اللاعب النظام من البداية
+    if (this.grantOpp) for (const id of ids) this.grantOpp(id, 'start', 'start');
     this.save();
     return S;
   },
@@ -197,6 +203,7 @@ const Game = {
       if (!a.from) a.from = a.node;
     }
     if (this.initWorld) this.initWorld();
+    if (this.enrichGen) for (const g of Object.values(S.gens)) if (!g.rec) { this.enrichGen(g); if (!this.isOfficer(g) && g.wage == null) g.wage = this.wageDemand(g).total; }
   },
 
   // ——————————————————— مساعدات ———————————————————
@@ -715,12 +722,13 @@ const Game = {
     const armies = this.armiesOf(fid);
     for (const a of armies) {
       const g = this.armyGen(a);
-      if (g) exp.wages += this.genSalary(g);
+      if (g && this.isOfficer && this.isOfficer(g)) exp.wages += this.genSalary(g);
       for (const r of a.regs) exp[r.merc ? 'merc' : 'army'] += this.unitUpkeep(r);
       exp.supply += this.supplyCost(a);
       eat += this.armyEat(a);
     }
-    for (const g of this.gensOf(fid)) if (g.status === 'gov') exp.wages += this.genSalary(g);
+    // كل قائد في الخدمة يُدفع له: في الميدان وفي الحكم كاملاً، وفي البلاط نصفاً
+    for (const g of this.gensOf(fid)) if (this.employed ? this.employed(g) : g.status === 'gov') exp.wages += this.genSalary(g);
     exp.admin = this.adminCosts(fid).reduce((t, x) => t + x.c, 0);
     exp.overhead = Math.max(0, armies.length - Math.max(2, nodes.length)) * ECON.armyOverhead;
     // الغزاة يعيشون على النهب: لا رواتب ولا مؤن ولا إدارة
@@ -852,6 +860,7 @@ const Game = {
     const lvl = node[b] || 0, B = BUILDINGS[b];
     if (node.owner !== fid) return 'ليست مدينتك';
     if (B.coastal && !this.hasWater(node)) return 'لا طريق مائياً من هنا';
+    if (B.capitalOnly && !node.capital) return 'يُبنى في العاصمة فقط';
     if (lvl >= B.max) return 'بلغت الحد الأعلى';
     if (node.work) return `يُبنى الآن ${BUILDINGS[node.work.b].name}: يكتمل بعد ${Math.max(1, node.work.done - this.S.turn)} أدوار`;
     if (this.besieger(node.id)) return 'المدينة محاصرة: لا يصل العمال والمواد';
@@ -885,6 +894,7 @@ const Game = {
       if (w.b === 'walls' || w.b === 'granary') n.stores = Math.max(n.stores, Math.min(this.storesMax(n), n.stores + 2));
       this.event('eco', `اكتمل ${BUILDINGS[w.b].name} ${w.lvl} في ${n.name}.`, { fids: [n.owner], node: n.id, imp: n.owner === this.S.player ? 2 : 1 });
       if (n.owner === this.S.player) this.alert('info', `اكتمل ${BUILDINGS[w.b].name} ${w.lvl} في ${n.name}`, { node: n.id, icon: BUILDINGS[w.b].icon });
+      if (w.b === 'diwan' && this.grantOpp) this.grantOpp(n.owner, 'diwan', 'diwan' + w.lvl);
     }
   },
   storesMax(n) { return 3 + n.walls + n.farm + n.granary * 3; },
@@ -1217,7 +1227,7 @@ const Game = {
         if (g && g.loy != null && !(this.isRuler && this.isRuler(g))) g.loy = clamp(g.loy + (res.winner === si ? 3 : -2), 0, 100);
       }
     }
-    return { winner: res.winner, fates, report: res.report, reason: res.reason };
+    return { winner: res.winner, fates, wounded: res.wounded || [], report: res.report, reason: res.reason };
   },
   autoResolve(enc) {
     const cfg = this.simConfig(enc);
