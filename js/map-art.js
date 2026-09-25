@@ -13,19 +13,14 @@ class MapArt {
     this.K = 5;
     this.terrSig = '';
     this.nodesDef = sc.nodes;
-    // أبعاد الخريطة من السيناريو. الخرائط الكبيرة تُرسم بدقة أقل حتى تبقى ذاكرة الهاتف معقولة
-    this.W = sc.w || MW; this.H = sc.h || MH;
-    this.bgK = Math.min(2.5, Math.sqrt(4.4e6 / (this.W * this.H)));
-    this.terrK = Math.min(2, Math.sqrt(3.5e6 / (this.W * this.H)));
-    this.islands = sc.islands || [];
     this.layout = {};
     for (const n of sc.nodes) this.layout[n.id] = this.nodeLayout(n);
     this.bg = this.buildBg();
     this.terr = document.createElement('canvas');
-    this.terr.width = Math.round(this.W * this.terrK); this.terr.height = Math.round(this.H * this.terrK);
+    this.terr.width = MW * 2; this.terr.height = MH * 2;
   }
 
-  // --- التخطيط الثابت لكل مدينة ---
+  // ——— التخطيط الثابت لكل مدينة ———
   edgesOf(id) {
     const out = [];
     for (const e of this.sc.edges) {
@@ -52,9 +47,9 @@ class MapArt {
   tier(n) { return n.capital || n.pop >= 26000 ? 3 : n.pop >= 15000 ? 2 : n.pop >= 10000 ? 1 : 0; }
   rad(n) { return [12.5, 15, 17.5, 20.5][this.tier(n)] + (n.capital ? 1.5 : 0) + Math.min(n.walls || 0, 4) * 0.9; }
 
-  // ----------- الخلفية المرسومة -----------
+  // ——————————— الخلفية المرسومة ———————————
   buildBg() {
-    const sc = this.sc, K = this.bgK, MW = this.W, MH = this.H;
+    const sc = this.sc, K = 2.5;
     const cv = document.createElement('canvas');
     cv.width = MW * K; cv.height = MH * K;
     const g = cv.getContext('2d');
@@ -68,7 +63,7 @@ class MapArt {
     };
     const edgesXY = sc.edges.filter((e) => (e[2] || 'road') !== 'water').map(([a, b]) => { const A = nodes.find((n) => n.id === a), B = nodes.find((n) => n.id === b); return [A.x, A.y, B.x, B.y]; });
     const nearRoad = (x, y, d) => edgesXY.some(([ax, ay, bx, by]) => segD(x, y, ax, ay, bx, by) < d);
-    const inSea = (x, y) => sc.seas.some((p) => pip(p, x, y)) && !this.islands.some((p) => pip(p, x, y));
+    const inSea = (x, y) => sc.seas.some((p) => pip(p, x, y));
     const inDesert = (x, y) => (sc.deserts || []).some((p) => pip(p, x, y));
     const path = (poly) => { g.beginPath(); poly.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); g.closePath(); };
 
@@ -85,29 +80,23 @@ class MapArt {
       gr.addColorStop(0, tint[n.terrain] || 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
       g.fillStyle = gr; g.fillRect(n.x - rr, n.y - rr, rr * 2, rr * 2);
     }
-    const area = (MW * MH) / 700000;
-    for (let i = 0; i < Math.round(26 * area); i++) {
+    for (let i = 0; i < 26; i++) {
       const x = r() * MW, y = r() * MH, rr = 40 + r() * 90;
       const gr = g.createRadialGradient(x, y, 0, x, y, rr);
       gr.addColorStop(0, r() < 0.55 ? 'rgba(120,150,80,.10)' : 'rgba(150,110,60,.08)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
       g.fillStyle = gr; g.fillRect(x - rr, y - rr, rr * 2, rr * 2);
     }
     // حبيبات الورق
-    // حبيبات الورق: مربّع صغير يتكرر بدل عشرات آلاف النقاط
-    const tile = document.createElement('canvas'); tile.width = tile.height = 200;
-    const tgc = tile.getContext('2d');
-    for (let i = 0; i < 800; i++) { tgc.fillStyle = r() < 0.5 ? 'rgba(90,70,40,.06)' : 'rgba(255,250,230,.07)'; tgc.fillRect(r() * 200, r() * 200, 0.6 + r() * 1.8, 0.6 + r() * 1.8); }
-    g.fillStyle = g.createPattern(tile, 'repeat'); g.fillRect(0, 0, MW, MH);
+    for (let i = 0; i < 14000; i++) {
+      g.fillStyle = r() < 0.5 ? 'rgba(90,70,40,.06)' : 'rgba(255,250,230,.07)';
+      g.fillRect(r() * MW, r() * MH, 0.6 + r() * 1.8, 0.6 + r() * 1.8);
+    }
     // الصحارى
     for (const poly of sc.deserts || []) {
-      // حافة ذائبة: القناع يُرسم صغيراً ثم يُكبَّر فتتلاشى حافته في الأرض بلا خط
-      const f = 12, mk = document.createElement('canvas');
-      mk.width = Math.ceil(MW / f); mk.height = Math.ceil(MH / f);
-      const mg = mk.getContext('2d');
-      mg.scale(1 / f, 1 / f); mg.fillStyle = 'rgba(232,203,140,.6)';
-      mg.beginPath(); poly.forEach(([x, y], i) => (i ? mg.lineTo(x, y) : mg.moveTo(x, y))); mg.closePath(); mg.fill();
-      g.save(); g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high'; g.drawImage(mk, 0, 0, MW, MH); g.restore();
-      g.save(); path(poly); g.clip();
+      // حافة ناعمة للصحراء
+      for (const [lw, al] of [[34, 0.1], [22, 0.12], [12, 0.14]]) { g.strokeStyle = `rgba(232,203,140,${al})`; g.lineWidth = lw; g.lineJoin = 'round'; path(poly); g.stroke(); }
+      g.save(); path(poly);
+      g.fillStyle = 'rgba(232,203,140,.55)'; g.fill(); g.clip();
       for (let i = 0; i < 260; i++) {
         const x = r() * MW, y = r() * MH, w = 6 + r() * 12;
         g.strokeStyle = 'rgba(170,125,65,.35)'; g.lineWidth = 0.9;
@@ -116,12 +105,6 @@ class MapArt {
         g.beginPath(); g.moveTo(x + 1, y + 1.2); g.quadraticCurveTo(x + w / 2, y - w * 0.25, x + w - 1, y + 1.2); g.stroke();
       }
       g.restore();
-    }
-    // شريط رملي على الشاطئ قبل الماء
-    for (const poly of sc.seas) {
-      g.lineJoin = 'round';
-      g.strokeStyle = 'rgba(232,214,166,.9)'; g.lineWidth = 9; path(poly); g.stroke();
-      g.strokeStyle = 'rgba(200,175,120,.5)'; g.lineWidth = 12; g.setLineDash([2, 5]); path(poly); g.stroke(); g.setLineDash([]);
     }
     // البحار: عمق، ضحالة، ساحل مزدوج، أمواج
     for (const poly of sc.seas) {
@@ -139,46 +122,16 @@ class MapArt {
       g.restore();
       g.strokeStyle = 'rgba(45,58,60,.75)'; g.lineWidth = 1.6; path(poly); g.stroke();
     }
-    // الجزر: أرض فوق البحر بشاطئ رملي وخط ساحل
-    for (const poly of this.islands) {
-      g.lineJoin = 'round';
-      g.strokeStyle = 'rgba(150,190,185,.55)'; g.lineWidth = 10; path(poly); g.stroke();
-      g.strokeStyle = 'rgba(232,214,166,.95)'; g.lineWidth = 5; path(poly); g.stroke();
-      g.fillStyle = this.style === 'east' ? '#d4c89c' : '#d4bf8c'; path(poly); g.fill();
-      g.strokeStyle = 'rgba(45,58,60,.7)'; g.lineWidth = 1.3; path(poly); g.stroke();
-    }
-    // الأنهار: مجرى متعرّج ناعم يتسع مع الجريان، وسهل فيضي أخضر على ضفتيه (الأنهار تسقي الزرع وتعيق العبور)
-    const meander = (rv) => {
-      const out = [rv[0]];
-      for (let i = 1; i < rv.length; i++) {
-        const [ax, ay] = rv[i - 1], [bx, by] = rv[i];
-        const dx = bx - ax, dy = by - ay, L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L;
-        const k = Math.max(2, Math.round(L / 22));
-        for (let j = 1; j <= k; j++) {
-          const t = j / k, off = j === k ? 0 : Math.sin(t * Math.PI * 2 + i) * (3 + r() * 3);
-          out.push([ax + dx * t + nx * off, ay + dy * t + ny * off]);
-        }
-      }
-      return out;
-    };
-    const smooth = (pts) => {
-      g.beginPath(); g.moveTo(pts[0][0], pts[0][1]);
-      for (let i = 1; i < pts.length - 1; i++) { const mx = (pts[i][0] + pts[i + 1][0]) / 2, my = (pts[i][1] + pts[i + 1][1]) / 2; g.quadraticCurveTo(pts[i][0], pts[i][1], mx, my); }
-      const e = pts[pts.length - 1]; g.lineTo(e[0], e[1]);
-    };
-    const rivers = sc.rivers.map(meander);
-    g.lineCap = 'round'; g.lineJoin = 'round';
-    for (const rv of rivers) { g.strokeStyle = 'rgba(120,150,80,.16)'; g.lineWidth = 22; smooth(rv); g.stroke(); g.strokeStyle = 'rgba(120,150,80,.14)'; g.lineWidth = 11; smooth(rv); g.stroke(); }
-    for (const rv of rivers) {
-      // عرض متدرج: نقسم المجرى أجزاء يتسع كل منها قليلاً
-      const parts = 6;
+    // الأنهار: تتسع مع الجريان
+    for (const rv of sc.rivers) {
+      g.lineCap = 'round'; g.lineJoin = 'round';
       for (let pass = 0; pass < 3; pass++) {
-        for (let q = 0; q < parts; q++) {
-          const a = Math.floor(q * (rv.length - 1) / parts), b = Math.min(rv.length - 1, Math.floor((q + 1) * (rv.length - 1) / parts) + 1);
-          const w = 1.5 + (q + 0.5) / parts * 3.6;
-          g.strokeStyle = pass === 0 ? 'rgba(55,75,72,.42)' : pass === 1 ? '#7aa3a8' : 'rgba(220,240,238,.38)';
-          g.lineWidth = pass === 0 ? w + 2 : pass === 1 ? w : w * 0.28;
-          smooth(rv.slice(a, b + 1)); g.stroke();
+        for (let i = 1; i < rv.length; i++) {
+          const t = i / rv.length;
+          const w = 1.6 + t * 3.4;
+          g.strokeStyle = pass === 0 ? 'rgba(60,80,80,.45)' : pass === 1 ? '#78a0a6' : 'rgba(210,235,235,.35)';
+          g.lineWidth = pass === 0 ? w + 2.2 : pass === 1 ? w : w * 0.3;
+          g.beginPath(); g.moveTo(rv[i - 1][0], rv[i - 1][1]); g.lineTo(rv[i][0], rv[i][1]); g.stroke();
         }
       }
     }
@@ -191,33 +144,19 @@ class MapArt {
       g.strokeStyle = 'rgba(90,75,45,.55)'; g.lineWidth = 0.7;
       for (let k = 0; k < 4; k++) { const hx = x + s * (0.1 + k * 0.22); g.beginPath(); g.moveTo(hx, y - s * 0.35 + k * 0.1 * s); g.lineTo(hx + s * 0.12, y + s * 0.12); g.stroke(); }
     };
-    // جبال مرسومة: ضوء من الشمال الغربي، وجه مضاء ووجه في الظل، وثلج على القمم العالية فقط
+    // جبال مرسومة
     const peak = (x, y, s) => {
-      const tw = 0.18 * (r() - 0.5) * s, top = [x + tw, y - s], L = [x - s, y + s * 0.6], Rr = [x + s, y + s * 0.6];
-      const mid = [x + tw * 0.4 + s * 0.08, y + s * 0.6];
-      g.fillStyle = 'rgba(60,45,30,.22)';
-      g.beginPath(); g.ellipse(x + s * 0.25, y + s * 0.64, s * 1.2, s * 0.28, 0, 0, TAU); g.fill();
-      g.fillStyle = '#7d6b54';
-      g.beginPath(); g.moveTo(...L); g.lineTo(...top); g.lineTo(...Rr); g.closePath(); g.fill();
-      g.fillStyle = '#b8a688';
-      g.beginPath(); g.moveTo(...L); g.lineTo(...top); g.lineTo(...mid); g.closePath(); g.fill();
-      // أخاديد في وجه الظل
-      g.strokeStyle = 'rgba(55,42,28,.35)'; g.lineWidth = 0.5;
-      for (let k = 1; k <= 2; k++) { g.beginPath(); g.moveTo(top[0] + s * 0.12 * k, top[1] + s * 0.45 * k); g.lineTo(top[0] + s * 0.28 * k, y + s * 0.55); g.stroke(); }
-      if (s > 10.5) {
-        g.fillStyle = 'rgba(248,245,236,.95)';
-        g.beginPath(); g.moveTo(top[0] - s * 0.3, top[1] + s * 0.48); g.lineTo(...top); g.lineTo(top[0] + s * 0.3, top[1] + s * 0.48); g.lineTo(top[0] + s * 0.1, top[1] + s * 0.56); g.lineTo(top[0] - s * 0.05, top[1] + s * 0.44); g.closePath(); g.fill();
-      }
-      g.strokeStyle = 'rgba(50,38,25,.62)'; g.lineWidth = 0.7;
-      g.beginPath(); g.moveTo(...L); g.lineTo(...top); g.lineTo(...Rr); g.stroke();
+      g.fillStyle = 'rgba(60,45,30,.25)';
+      g.beginPath(); g.ellipse(x + s * 0.2, y + s * 0.62, s * 1.15, s * 0.3, 0, 0, TAU); g.fill();
+      g.fillStyle = '#8c7a62';
+      g.beginPath(); g.moveTo(x - s, y + s * 0.6); g.lineTo(x, y - s); g.lineTo(x + s, y + s * 0.6); g.closePath(); g.fill();
+      g.fillStyle = '#b9a88c';
+      g.beginPath(); g.moveTo(x - s, y + s * 0.6); g.lineTo(x, y - s); g.lineTo(x - s * 0.15, y + s * 0.6); g.closePath(); g.fill();
+      g.fillStyle = 'rgba(248,245,236,.92)';
+      g.beginPath(); g.moveTo(x - s * 0.3, y - s * 0.52); g.lineTo(x, y - s); g.lineTo(x + s * 0.3, y - s * 0.52); g.lineTo(x + s * 0.1, y - s * 0.44); g.lineTo(x - s * 0.05, y - s * 0.56); g.closePath(); g.fill();
+      g.strokeStyle = 'rgba(55,42,28,.6)'; g.lineWidth = 0.7;
+      g.beginPath(); g.moveTo(x - s, y + s * 0.6); g.lineTo(x, y - s); g.lineTo(x + s, y + s * 0.6); g.stroke();
     };
-    // كتلة سلسلة جبلية تحت القمم: الأرض ترتفع قبل الصخر
-    const massif = (x, y, w, hgt) => {
-      const gr = g.createRadialGradient(x, y, 2, x, y, w);
-      gr.addColorStop(0, 'rgba(125,105,80,.34)'); gr.addColorStop(0.6, 'rgba(140,120,90,.18)'); gr.addColorStop(1, 'rgba(140,120,90,0)');
-      g.fillStyle = gr; g.beginPath(); g.ellipse(x, y, w, hgt, 0, 0, TAU); g.fill();
-    };
-    for (const [mx, my] of sc.mountains) massif(mx, my + 4, 46, 26);
     // أشجار
     const tree = (x, y, s, kind) => {
       g.fillStyle = 'rgba(40,50,25,.28)';
@@ -261,7 +200,7 @@ class MapArt {
       }
     }
     // غابات مبعثرة
-    for (let c = 0; c < Math.round(10 * area); c++) {
+    for (let c = 0; c < 10; c++) {
       const cx = r() * MW, cy = r() * MH;
       if (inSea(cx, cy) || inDesert(cx, cy) || nearNode(cx, cy, 40)) continue;
       for (let i = 0; i < 14; i++) {
@@ -305,13 +244,13 @@ class MapArt {
     g.restore();
   }
 
-  // ----------- الأقاليم والحدود -----------
+  // ——————————— الأقاليم والحدود ———————————
   // nodes: [{id,x,y,owner}]
   renderTerritory(nodes) {
     const sig = nodes.map((n) => n.owner).join(',');
     if (sig === this.terrSig) return;
     this.terrSig = sig;
-    const C = 4, W = Math.ceil(this.W / C), H = Math.ceil(this.H / C), isl = this.islands;
+    const C = 4, W = MW / C, H = MH / C;
     const cv = this.terr, g = cv.getContext('2d');
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.clearRect(0, 0, cv.width, cv.height);
@@ -322,58 +261,34 @@ class MapArt {
     const tg = tiny.getContext('2d');
     const img = tg.createImageData(W, H);
     const near = new Int16Array(W * H).fill(-1);
-    // الجزء الثابت يُحسب مرة واحدة: اليابسة، وأقرب ست مدن لكل خلية ومسافاتها. بعدها تتغير الملكية وحدها
-    const idSig = nodes.map((n) => n.id).join(',');
-    if (!this.cells || this.cells.sig !== idSig) {
-      const KN = 6, nn = new Int16Array(W * H * KN).fill(-1), nd = new Float32Array(W * H * KN);
-      // قناع البحر يُرسم على لوحة صغيرة بدقة الخلايا ويُقرأ مرة واحدة (أسرع بكثير من اختبار كل خلية)
-      const mc = document.createElement('canvas'); mc.width = W; mc.height = H;
-      const mg = mc.getContext('2d');
-      mg.setTransform(1 / C, 0, 0, 1 / C, 0, 0);
-      const poly = (pts) => { mg.beginPath(); pts.forEach(([px, py], j) => (j ? mg.lineTo(px, py) : mg.moveTo(px, py))); mg.closePath(); };
-      mg.fillStyle = '#000'; for (const p of seas) { poly(p); mg.fill(); }
-      mg.globalCompositeOperation = 'destination-out'; for (const p of isl) { poly(p); mg.fill(); }
-      const sea = mg.getImageData(0, 0, W, H).data;
-      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-        const wx = x * C + C / 2, wy = y * C + C / 2, i = y * W + x;
-        if (sea[i * 4 + 3] > 127) continue;
-        for (let k = 0; k < nodes.length; k++) {
-          const d = (nodes[k].x - wx) ** 2 + (nodes[k].y - wy) ** 2;
-          let j = KN - 1;
-          if (nn[i * KN + j] >= 0 && d >= nd[i * KN + j]) continue;
-          while (j > 0 && (nn[i * KN + j - 1] < 0 || d < nd[i * KN + j - 1])) { nn[i * KN + j] = nn[i * KN + j - 1]; nd[i * KN + j] = nd[i * KN + j - 1]; j--; }
-          nn[i * KN + j] = k; nd[i * KN + j] = d;
-        }
-      }
-      this.cells = { sig: idSig, KN, nn, nd };
-    }
-    const { KN, nn, nd } = this.cells;
-    for (let i = 0; i < W * H; i++) {
-      const a = nn[i * KN], da = nd[i * KN];
-      if (a < 0 || da > 160 * 160) continue;
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const wx = x * C + C / 2, wy = y * C + C / 2;
+      const i = y * W + x;
+      if (seas.some((p) => pip(p, wx, wy))) continue;
+      let a = -1, da = 1e12;
+      for (let k = 0; k < nodes.length; k++) { const n = nodes[k]; const d = (n.x - wx) ** 2 + (n.y - wy) ** 2; if (d < da) { da = d; a = k; } }
+      if (da > 160 * 160) continue;
       near[i] = a;
       const A = nodes[a];
       let dborder = 1e9;
-      for (let k = 1; k < KN; k++) {
-        const b = nn[i * KN + k];
-        if (b < 0) break;
-        const B = nodes[b];
+      for (let k = 0; k < nodes.length; k++) {
+        const B = nodes[k];
         if (B.owner === A.owner) continue;
+        const db = (B.x - wx) ** 2 + (B.y - wy) ** 2;
         const ab = Math.hypot(B.x - A.x, B.y - A.y) || 1;
-        dborder = Math.min(dborder, (nd[i * KN + k] - da) / (2 * ab));
+        dborder = Math.min(dborder, (db - da) / (2 * ab));
       }
       const c = cols[A.owner];
       const fade = clamp(1 - (Math.sqrt(da) - 110) / 50, 0, 1);
       const band = clamp(1 - dborder / 16, 0, 1);
       img.data[i * 4] = c[0]; img.data[i * 4 + 1] = c[1]; img.data[i * 4 + 2] = c[2];
-      // المدن المستقلة بلا لون مملكة تقريباً: أرضها لا تبدو كتلة رمادية
-      img.data[i * 4 + 3] = Math.round((A.owner === 'neutral' ? 8 + band * 22 : 30 + band * 60) * fade);
+      img.data[i * 4 + 3] = Math.round((30 + band * 60) * fade);
     }
     tg.putImageData(img, 0, 0);
     g.imageSmoothingEnabled = true;
     g.drawImage(tiny, 0, 0, cv.width, cv.height);
     // حدود سياسية دقيقة على منصّفات المواقع
-    const K = cv.width / this.W;
+    const K = cv.width / MW;
     g.setTransform(K, 0, 0, K, 0, 0);
     g.lineCap = 'round';
     const seg = (A, B, cx, cy, vertical) => {
@@ -391,17 +306,12 @@ class MapArt {
         p = [x0, (c - nx * x0) / ny]; q = [x1, (c - nx * x1) / ny];
         if (Math.abs(p[1] - cy) > C * 1.2 || Math.abs(q[1] - cy) > C * 1.2) return;
       }
-      // خط رفيع بلون كل مملكة على جانبها وخيط داكن في المنتصف. المدن المستقلة بلا خط ملوّن،
-      // والألوان الفاتحة أخف حتى لا تبدو الحدود سوراً أبيض
-      const L = Math.hypot(nx, ny), ox = nx / L * 0.7, oy = ny / L * 0.7;
-      const side = (o, sx) => {
-        if (o === 'neutral') return;
-        const c = cols[o], light = c[0] * 0.3 + c[1] * 0.59 + c[2] * 0.11 > 170;
-        g.strokeStyle = `rgba(${c.join(',')},${light ? 0.55 : 0.9})`; g.lineWidth = light ? 0.7 : 1;
-        g.beginPath(); g.moveTo(p[0] + sx * ox, p[1] + sx * oy); g.lineTo(q[0] + sx * ox, q[1] + sx * oy); g.stroke();
-      };
-      side(A.owner, -1); side(B.owner, 1);
-      g.strokeStyle = 'rgba(40,28,16,.5)'; g.lineWidth = 0.5;
+      const L = Math.hypot(nx, ny), ox = nx / L * 0.9, oy = ny / L * 0.9;
+      g.strokeStyle = `rgba(${cols[A.owner].join(',')},.95)`; g.lineWidth = 1.2;
+      g.beginPath(); g.moveTo(p[0] - ox, p[1] - oy); g.lineTo(q[0] - ox, q[1] - oy); g.stroke();
+      g.strokeStyle = `rgba(${cols[B.owner].join(',')},.95)`;
+      g.beginPath(); g.moveTo(p[0] + ox, p[1] + oy); g.lineTo(q[0] + ox, q[1] + oy); g.stroke();
+      g.strokeStyle = 'rgba(40,28,16,.6)'; g.lineWidth = 0.6;
       g.beginPath(); g.moveTo(p[0], p[1]); g.lineTo(q[0], q[1]); g.stroke();
     };
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
@@ -419,7 +329,7 @@ class MapArt {
     g.setTransform(1, 0, 0, 1, 0, 0);
   }
 
-  // ----------- رسم المستوطنة (مخزّنة) -----------
+  // ——————————— رسم المستوطنة (مخزّنة) ———————————
   spriteKey(n, ruined) {
     return [n.id, this.tier(n), n.walls, n.market || 0, n.farm || 0, n.granary || 0, n.barracks || 0, n.port || 0, n.capital ? 1 : 0, ruined ? 1 : 0].join('|');
   }
@@ -666,7 +576,7 @@ class MapArt {
     for (const [x, y] of [[-s, -s], [s, -s], [-s, s], [s, s]]) this.towerAt(g, x, y, 1.9, 4);
   }
 
-  // ----------- الرسم في كل إطار -----------
+  // ——————————— الرسم في كل إطار ———————————
   // n: عقدة الحالة (مع الحقول الديناميكية). fx: { siege, scars, t }
   drawNode(ctx, n, o) {
     const ruined = !!(o.scars && o.scars.some((s) => s.kind === 'sack' && o.age(s) <= 4));

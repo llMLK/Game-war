@@ -114,7 +114,7 @@ const CampaignAI = {
     Game.validate();
   },
 
-  // ------ الأهداف -------
+  // ——————— الأهداف ———————
   planGoals(fid) {
     const f = Game.f(fid), pers = this.pers(fid);
     const mine = Game.nodesOf(fid);
@@ -149,7 +149,7 @@ const CampaignAI = {
     f.goals = best ? { target: best.id, owner: best.owner, score: bs, since: Game.S.turn, kind: f.claims.includes(best.id) ? 'reclaim' : Game.defendersOf(best).length ? 'expand' : 'opportunity', myPow } : null;
   },
 
-  // ------ الدبلوماسية -------
+  // ——————— الدبلوماسية ———————
   async diplomacy(fid) {
     const f = Game.f(fid), pers = this.pers(fid);
     const pw = Game.factionPower(fid);
@@ -161,10 +161,7 @@ const CampaignAI = {
       const st = Game.status(fid, g);
       const G = Game.f(g);
       const pg = Game.factionPower(g);
-      // الالتزام بالهدف المشترك: لا صلح مع صاحب المدينة المتفق عليها، ولا فضّ لحلف الشريك
-      const pact = Game.pactFor ? (Game.S.pacts || []).find((p) => p.status === 'active' && (p.b === fid || p.a === fid) && (p.owner === g || p.a === g || p.b === g)) : null;
       if (st === 'war') {
-        if (pact && pact.owner === g) continue;
         const wt = f.warTurns[g] || 0;
         const tired = wt > 4 && (pw < pg * 0.75 || (f.lostRecently || 0) >= 1 || wars.length >= 2 || (wt > 12 && R() < 0.2));
         if (tired && R() < 0.35 && !(f.vendetta[g] > 0)) {
@@ -187,7 +184,7 @@ const CampaignAI = {
       if (st === 'alliance') {
         const since = (f.allySince || {})[g] || 0;
         const useless = !Game.commonEnemy(fid, g) && Game.S.turn - since > 10;
-        if (!pact && (dom === g || (useless && Game.rel(fid, g) < 30)) && R() < 0.2 && (f.truce[g] || 0) <= 0) {
+        if ((dom === g || (useless && Game.rel(fid, g) < 30)) && R() < 0.2 && (f.truce[g] || 0) <= 0) {
           Game.breakAlliance(fid, g, dom === g ? 'خوفاً من تعاظم قوتها' : 'لم يعد للحلف غاية');
           acted++;
           continue;
@@ -250,7 +247,7 @@ const CampaignAI = {
     }
   },
 
-  // ------ الاقتصاد -------
+  // ——————— الاقتصاد ———————
   economy(fid) {
     const f = Game.f(fid);
     const nodes = Game.nodesOf(fid);
@@ -300,7 +297,7 @@ const CampaignAI = {
     if (best && f.gold > 1200) this.build(fid);
   },
 
-  // ------ القادة والأسرى -------
+  // ——————— القادة والأسرى ———————
   pickGeneral(fid, role) {
     const pool = Game.poolOf(fid).filter((g) => !g.name.startsWith('الضابط'));
     if (!pool.length) return null;
@@ -357,7 +354,7 @@ const CampaignAI = {
     }
   },
 
-  // ------ التجنيد -------
+  // ——————— التجنيد ———————
   pickUnit(fid, n, army) {
     const w = { ...this.pers(fid).prefs };
     for (const t of Object.keys(w)) if (UNITS[t].needs === 'barracks' && !n.barracks) delete w[t];
@@ -439,7 +436,7 @@ const CampaignAI = {
     }
   },
 
-  // ------ الجيوش -------
+  // ——————— الجيوش ———————
   async military(fid) {
     const f = Game.f(fid);
     const pers = this.pers(fid);
@@ -464,12 +461,6 @@ const CampaignAI = {
           const prey = Object.keys(reach).map((id) => Game.node(id)).filter((n) => { const pl = Game.planMove(a, n.id); return !pl.err && !pl.needWar && (pl.kind === 'siege' || pl.kind === 'assault'); })
             .sort((x, y) => Game.defensePower(x) - Game.defensePower(y))[0];
           if (prey && Game.defensePower(prey) < pow * 1.2) { await Game.executeMove(a, prey.id); continue; }
-        }
-        // هدف مشترك قريب: حصار جانبي طويل يُرفع ليفي الحليف بوعده، إلا إن كان الاقتحام وشيكاً
-        if (goal && f.goals.kind === 'pact' && here.id !== goal.id && Game.hops(here.id, goal.id, 3) <= 2 && Game.passDist(fid, goal.id) < 99 && here.stores > 1 && !(ratio > 1.4 / pers.aggr && canBreach)) {
-          for (const b of Game.besiegers(here.id).filter((x) => x.fid === fid)) Game.retreatHome(b, [], null, b.siege.from);
-          Game.event('mil', `${f.name} ترفع الحصار عن ${here.name} لتلحق بالهدف المشترك في ${goal.name}.`, { fids: [fid, here.owner], node: here.id, imp: 2 });
-          continue;
         }
         // مدينة جائعة: عرض الأمان قبل الاقتحام
         if (here.stores < 0 && here.parley !== Game.S.turn) {
@@ -546,8 +537,7 @@ const CampaignAI = {
           let comb = pow;
           for (const o of this.fieldArmies(fid)) if (o !== a && !o.siege && o.mp > 0 && Game.reach(o)[n.id]) comb += Game.armyPower(o) * 0.6;
           const ratio = (n.walls ? comb : pow) / Math.max(1, def);
-          // هدف مشترك متفق عليه: يقبل الحليف مخاطرة أكبر قليلاً ليفي بوعده
-          const need = (n.walls ? 0.9 : 1.3) / pers.aggr * (goal && goal.id === n.id && f.goals.kind === 'pact' ? 0.7 : 1);
+          const need = (n.walls ? 0.9 : 1.3) / pers.aggr;
           let risk = homeAtRisk;
           if (risk) {
             let other = 0;
@@ -560,8 +550,6 @@ const CampaignAI = {
           if (ratio >= need && (!risk || ratio > 3)) {
             score = (n.pop / 1000 + (n.capital ? 20 : 0) + (n.owner === 'neutral' ? 4 : 0) + (f.claims.includes(n.id) ? 10 : 0) + (Game.defendersOf(n).length ? 0 : 8)) * Math.min(ratio, 3);
             if (goal && goal.id === n.id) score *= 1.6;
-            // هدف مشترك قائم: الحصارات الجانبية تتأخر حتى يُنجز الوعد
-            else if (goal && f.goals.kind === 'pact' && Game.passDist(fid, goal.id) < 99) score *= 0.35;
           }
         }
         if (score > bestScore) { bestScore = score; best = n; bestPlan = plan; }

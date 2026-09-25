@@ -31,11 +31,9 @@ class Camera {
   clamp() {
     const halfW = App.W / 2 / this.z, halfH = App.H / 2 / this.z;
     // وضع التغطية: الخريطة تملأ الشاشة دائماً بلا حواف سوداء
-    // وتسمح بتجاوز الحافة بقدر النافذة المفتوحة، حتى لا تختفي مدينة الحافة خلفها
     if (this.cover) {
-      const pr = (this.padRight || 0) / this.z, pb = (this.padBottom || 0) / this.z;
-      this.x = this.ww + pr >= halfW * 2 ? clamp(this.x, halfW, this.ww - halfW + pr) : this.ww / 2;
-      this.y = this.wh + pb >= halfH * 2 ? clamp(this.y, halfH, this.wh - halfH + pb) : this.wh / 2;
+      this.x = this.ww >= halfW * 2 ? clamp(this.x, halfW, this.ww - halfW) : this.ww / 2;
+      this.y = this.wh >= halfH * 2 ? clamp(this.y, halfH, this.wh - halfH) : this.wh / 2;
       return;
     }
     const mx = Math.max(0, halfW - this.ww / 2) + 60 / this.z;

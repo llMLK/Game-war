@@ -55,7 +55,7 @@ const WS_VS = {
 const FLANK_TERRAIN = { plains: 1.25, desert: 1.15, coast: 1, river: 0.8, hills: 0.85, forest: 0.6, mountains: 0.3 };
 const CHARGE_TERRAIN = { plains: 1.25, desert: 1.15, coast: 1.05, river: 0.8, hills: 0.9, forest: 0.6, mountains: 0.5 };
 
-// --------------- الخطط ---------------
+// ——————————————— الخطط ———————————————
 // كل خطة تغيّر سلوك المحاكاة، لا مجرد نسبة مئوية
 const PLANS = {
   balanced: { name: 'متوازنة', icon: 'scales', desc: 'تقدّم منظم واحتياط حاضر. لا نقاط ضعف واضحة ولا مفاجآت.', good: 'حين لا تعرف العدو جيداً', bad: 'قد تضيع فرصة الحسم' },
@@ -96,24 +96,20 @@ class WarSim {
     this.track = [];
     this.pending = [];
     this.moments = [];
-    this.breaches = [];
-    this.brokenLog = [];
     this.sides = cfg.sides.map((s, i) => this.makeSide(s, i));
     for (const s of this.sides) s.foe = this.sides[1 - s.i];
     this.siegeSetup();
   }
 
-  // ----------- الإعداد -----------
+  // ——————————— الإعداد ———————————
   makeSide(s, i) {
     const side = {
-      i, fid: s.fid, name: s.name, color: s.color, player: !!s.player, ai: s.ai == null ? 0.6 : s.ai, intent: s.intent || null,
+      i, fid: s.fid, name: s.name, color: s.color, player: !!s.player, ai: s.ai == null ? 0.6 : s.ai,
       att: i === 0, units: [], plan: null, cmdPos: 'center', intel: s.intel == null ? 3 : s.intel,
       gens: (s.gens || []).filter(Boolean).slice().sort((a, b) => b.rank - a.rank),
       mood: s.mood || 0, ledger: {}, killed: 0, men0: 0, withdrew: false, orders: 0, aggr: s.aggr || 1,
     };
-    side.rs = rng(((this.cfg.seed || 7) ^ Math.imul(i + 1, 0x9E3779B1)) >>> 0);
     side.fortune = 0.88 + this.r() * 0.24;
-    side.fat0 = clamp(s.fat || 0, 0, 90);
     side.cmd = side.gens[0] || null;
     side.sub = { L: side.gens[1] || null, R: side.gens[2] || null, C: null };
     let k = 0;
@@ -124,18 +120,16 @@ class WarSim {
     for (const g of side.gens) side.units.push(this.makeUnit(side, 'general', g.men || (12 + 4 * g.rank), 2, null, k++, g));
     side.men0 = side.units.reduce((t, u) => t + u.men, 0);
     side.sec = {};
-    for (const key of [...SECTS, 'Res']) side.sec[key] = { key, stance: 'hold', morale: 70, fat: side.fat0 || 0, front: 0, state: 'ok', flanked: false, breach: 0, wavered: false };
+    for (const key of [...SECTS, 'Res']) side.sec[key] = { key, stance: 'hold', morale: 70, fat: 0, front: 0, state: 'ok', flanked: false, breach: 0, wavered: false };
     return side;
   }
   makeUnit(side, type, men, exp, ref, k, gen) {
     const d = UNITS[type];
-    const u = {
+    return {
       id: side.i + ':' + k, side: side.i, type, role: wsRole(type), men, men0: men, exp, ref, gen: gen || null,
       hp: d.hp, atk: d.atk, def: d.def, missile: d.missile || 0, charge: d.charge || 0, armor: d.armor || 0,
-      ammo: 0, ammo0: 0, sec: 'C', state: 'ok', kills: 0, fordFree: !!d.fordFree,
+      ammo: d.range ? (type === 'catapult' ? 8 : d.cls === 'cav' ? 4 : 5) : 0, sec: 'C', state: 'ok', kills: 0, fordFree: !!d.fordFree,
     };
-    if (d.range) { const full = type === 'catapult' ? 8 : d.cls === 'cav' ? 4 : 5; u.ammo0 = full; u.ammo = Math.round(full * clamp(ref && ref.ammo != null ? ref.ammo : 1, 0, 1)); }
-    return u;
   }
   siegeSetup() {
     if (this.kind !== 'siege') return;
@@ -157,8 +151,6 @@ class WarSim {
   liveMen(side) { return side.units.filter((u) => this.alive(u)).reduce((t, u) => t + u.men, 0); }
   genOf(side, key) { if (key === 'C' || key === 'Res') return side.cmd; return side.sub[key] || null; }
   hasTrait(g, t) { return !!(g && g.trait === t); }
-  // قدرات القائد المعلنة: تماسك، دقة الأوامر، إدارة الاحتياط، الانسحاب المنظم
-  skill(g, k) { return g && g.skills ? g.skills[k] || 0 : 0; }
   cmdTrait(side, t) { return this.hasTrait(side.cmd, t); }
   phaseKey() { return this.phase >= 0 ? WS_PHASES[this.phase].key : 'setup'; }
   secName(key) { return (this.kind === 'siege' ? SECT_SIEGE : SECT_NAME)[key]; }
@@ -193,7 +185,7 @@ class WarSim {
     return a;
   }
 
-  // ----------- التشكيل التلقائي حسب الخطة -----------
+  // ——————————— التشكيل التلقائي حسب الخطة ———————————
   autoFormation(side, plan) {
     side.plan = plan;
     const us = side.units.filter((u) => u.men > 0);
@@ -208,8 +200,6 @@ class WarSim {
     // الاحتياط
     let resCount = rest.length >= 8 ? 2 : rest.length >= 4 ? 1 : 0;
     if (plan === 'escalade' || plan === 'attrition') resCount = Math.max(0, resCount - 1);
-    // الالتفاف يأخذ الفرسان إلى جناح واحد: القلب يحتاج مشاته
-    if (plan === 'flanking') resCount = rest.filter((u) => u.role !== 'cav' && u.role !== 'skirm').length >= 5 ? 1 : 0;
     if (plan === 'depth' || plan === 'sally') resCount = Math.min(Math.max(0, rest.length - 3), resCount + 1);
     // فرقة الصيد: أفضل وحدة فرسان تنتظر في الاحتياط
     if (plan === 'hunt') {
@@ -225,7 +215,7 @@ class WarSim {
     if (plan === 'breakcenter') share = { L: 0.2, C: 0.6, R: 0.2 };
     if (siegeAtt) {
       if (plan === 'storm') share = { L: 0.22, C: 0.56, R: 0.22 };
-      else if (plan === 'towers') { side.towerSector = side.towerSector || (side.rs() < 0.5 ? 'L' : 'R'); share = { L: 0.22, C: 0.22, R: 0.22 }; share[side.towerSector] = 0.56; }
+      else if (plan === 'towers') { side.towerSector = side.towerSector || (this.r() < 0.5 ? 'L' : 'R'); share = { L: 0.22, C: 0.22, R: 0.22 }; share[side.towerSector] = 0.56; }
       else if (plan === 'bombard') share = { L: 0.25, C: 0.5, R: 0.25 };
       else share = { L: 0.33, C: 0.34, R: 0.33 };
     }
@@ -234,7 +224,7 @@ class WarSim {
     const cavs = rest.filter((u) => !u.sec && (u.role === 'cav' || u.role === 'skirm'));
     if (!siegeAtt && !siegeDef) {
       if (plan === 'flanking') {
-        side.flankWing = side.flankWing || (side.rs() < 0.5 ? 'L' : 'R');
+        side.flankWing = side.flankWing || (this.r() < 0.5 ? 'L' : 'R');
         cavs.forEach((u) => { u.sec = side.flankWing; });
       } else {
         let lw = 0, rw = 0;
@@ -272,12 +262,12 @@ class WarSim {
     if (plan === 'attrition') for (const u of us) if (u.missile) u.ammo += 3;
   }
 
-  // ----------- المعنويات الأولى -----------
+  // ——————————— المعنويات الأولى ———————————
   initMorale(side) {
     let m = 68 + side.mood;
     const g = side.cmd;
     if (g) {
-      m += this.skill(g, 'coh') * 3;
+      m += (g.rank - 1) * 3;
       if (g.trait === 'brave') m += 10;
       if (g.trait === 'defender' && this.kind === 'siege' && !side.att) m += 10;
       if (g.trait === 'merchant') m -= 5;
@@ -293,7 +283,7 @@ class WarSim {
     side.morale0 = m;
   }
 
-  // ----------- التشغيل -----------
+  // ——————————— التشغيل ———————————
   begin() {
     for (const s of this.sides) {
       if (!s.plan) this.autoFormation(s, this.aiPlan(s));
@@ -357,8 +347,6 @@ class WarSim {
       if (s.plan === 'feigned') this.resolveFeint(s);
       if (s.plan === 'hunt') this.resolveHunt(s, 0.85);
     }
-    if (key === 'main' || key === 'crisis') for (const k of SECTS) if (s.sec[k].stance === 'flank' && !s.sec[k].flankDone && s.sec[k].state === 'ok') this.resolveFlank(s, k);
-    if (s.focus && s.focus.phase < this.phase) s.focus = null;
     if (key === 'main') {
       if (s.plan === 'hunt' && !s.huntDone) this.resolveHunt(s, 1);
       // الذكاء: زجّ الاحتياط في الهجوم الكاسح وكسر القلب
@@ -371,7 +359,7 @@ class WarSim {
     return best;
   }
 
-  // --- قوة الالتحام ---
+  // ——— قوة الالتحام ———
   unitMelee(u) {
     const hpF = u.hp / 10;
     return u.men * (u.atk + u.def * 0.6) * hpF * (1 + 0.1 * (u.exp || 0));
@@ -405,7 +393,7 @@ class WarSim {
     const ph = this.phaseKey();
     const t = this.terrain;
     m *= 0.55 + 0.45 * clamp(sec.morale, 0, 100) / 100;
-    m *= 1 - clamp(sec.fat, 0, 100) / 260;
+    m *= 1 - clamp(sec.fat, 0, 100) / 230;
     if (kind === 'melee') {
       if (sec.stance === 'advance') m *= 1.08;
       if (sec.stance === 'hold') m *= 0.96;
@@ -450,12 +438,12 @@ class WarSim {
       if (g.trait === 'naval' && t === 'river') m *= 1.1;
       if (g.trait === 'defender' && !side.att && this.kind === 'siege') m *= 1.15;
       if (g.vendetta && g.vendetta === side.foe.fid) m *= 1.06;
+      m *= 1 + 0.03 * (g.rank - 1);
     }
-    // الإرهاق يُحمل من المعارك السابقة في الدور نفسه
     return m;
   }
 
-  // ----------- خطوة (نبضة) -----------
+  // ——————————— خطوة (نبضة) ———————————
   step() {
     if (this.over) return;
     this.cues = [];
@@ -526,7 +514,7 @@ class WarSim {
     return w ? t / w : 0;
   }
 
-  // --- السهام ---
+  // ——— السهام ———
   volleys(ph) {
     for (const s of this.sides) {
       const foe = s.foe;
@@ -545,11 +533,10 @@ class WarSim {
           if (u.ammo === 0 && !u.outWarned) { u.outWarned = true; s.ammoOut = (s.ammoOut || 0) + 1; }
         }
         pow *= this.mods(s, k, 'missile');
-        const tk = s.focus && this.secUnits(foe, s.focus.key).length ? s.focus.key : OPP[k === 'Res' ? 'C' : k];
+        const tk = OPP[k === 'Res' ? 'C' : k];
         const tgt = this.secUnits(foe, tk).length ? tk : SECTS.find((x) => this.secUnits(foe, x).length);
         if (!tgt) continue;
         let kill = pow * 0.022;
-        if (s.focus && tgt === s.focus.key) { kill *= 1.18; for (const u of us) if (u.ammo > 0) u.ammo--; this.led(s, 'focus', 1); }
         // الصفوف الثابتة هدف سهل للمستنزِفين
         if (s.plan === 'attrition' && (foe.plan === 'defensive' || foe.plan === 'highground' || foe.plan === 'walls')) kill *= 1.25;
         if (this.terrain === 'forest') kill *= 0.72;
@@ -594,7 +581,7 @@ class WarSim {
     return dealt;
   }
 
-  // --- الانقضاض الأول ---
+  // ——— الانقضاض الأول ———
   charges() {
     for (const s of this.sides) {
       const foe = s.foe;
@@ -634,7 +621,7 @@ class WarSim {
     }
   }
 
-  // --- الالتحام ---
+  // ——— الالتحام ———
   melee(ph) {
     const k0 = { approach: 0.05, contact: 0.085, main: 0.1, crisis: 0.13, collapse: 0.12 }[ph];
     const [A, B] = this.sides;
@@ -691,7 +678,7 @@ class WarSim {
       const dmul = this.terrain === 'mountains' ? 0.5 : 1;
       const ratio = clamp(pa / Math.max(1, pb), 0.5, 2);
       const crisisK = ph === 'crisis' || ph === 'collapse' ? 1.2 : 1;
-      const fA = dA / Math.max(1, menA) * (1 - 0.06 * this.skill(this.genOf(A, ka), 'coh')), fB = dB / Math.max(1, menB) * (1 - 0.06 * this.skill(this.genOf(B, kb), 'coh'));
+      const fA = dA / Math.max(1, menA), fB = dB / Math.max(1, menB);
       sa.morale -= (Math.max(0, fA - 0.45 * fB) * 150 + fA * 30 + (sa.front < -0.3 ? 3 : 0) + Math.max(0, 1 / ratio - 1) * 4) * crisisK - Math.min(2, this.depth(A, ka) * 0.8 * dmul) + (this.r() - 0.5) * 5;
       sb.morale -= (Math.max(0, fB - 0.45 * fA) * 150 + fB * 30 + (sb.front < -0.3 ? 3 : 0) + Math.max(0, ratio - 1) * 4) * crisisK - Math.min(2, this.depth(B, kb) * 0.8 * dmul) + (this.r() - 0.5) * 5;
       this.cue({ t: 'clash', a: ka, b: kb, n: Math.min(10, 2 + (dA + dB) / 8) });
@@ -760,11 +747,10 @@ class WarSim {
     }
   }
 
-  // --- مناورات خاصة ---
+  // ——— مناورات خاصة ———
   execQuality(side, key, order) {
     const g = this.genOf(side, key) || side.cmd;
-    let p = 0.72 + (g ? 0.04 * this.skill(g, 'exe') : -0.05);
-    if (order === 'withdraw' && g) p += 0.08 * this.skill(g, 'ret');
+    let p = 0.72 + (g ? 0.05 * (g.rank - 1) : -0.05);
     const t = g && g.trait, f = g && g.flaw;
     const T = { hold: { brave: 0.1, defender: 0.2, tactician: 0.1, mountaineer: this.terrain === 'hills' || this.terrain === 'mountains' ? 0.15 : 0 }, withdraw: { defender: 0.1, tactician: 0.15, logistician: 0.1, brave: -0.05 }, flank: { cavalier: 0.2, tactician: 0.15, swift: 0.1, mountaineer: this.terrain === 'hills' || this.terrain === 'mountains' ? 0.15 : 0, desert: this.terrain === 'desert' ? 0.1 : 0 }, charge: { brave: 0.15, cavalier: 0.15 }, pursue: { cavalier: 0.1, swift: 0.15 }, bait: { tactician: 0.25, cavalier: 0.1 }, hunt: { cavalier: 0.15, tactician: 0.1, brave: 0.05 }, siege: { siege: 0.2 } };
     const F = { hold: { reckless: -0.25, cautious: 0.1, greedy: -0.05 }, withdraw: { reckless: -0.3, cautious: 0.1 }, flank: { cautious: -0.1, arrogant: -0.05 }, charge: { reckless: 0.1, cautious: -0.2 }, pursue: { cautious: -0.2, greedy: 0.1 }, bait: { arrogant: -0.2, reckless: -0.15 }, hunt: { cautious: -0.15 }, siege: {} };
@@ -813,11 +799,7 @@ class WarSim {
       sec.flankOk = true;
       foe.sec[tk].flanked = true;
       foe.sec[tk].morale -= 25;
-      // الضربة من الخلف: انقضاض لا تصده الرماح المتجهة إلى الأمام
-      const rear = cav.reduce((t, u) => t + u.men * (u.charge || u.atk * 0.6) * (1 + 0.1 * u.exp), 0) * 0.06 * 1.4 * (CHARGE_TERRAIN[this.terrain] || 1) * (this.hasTrait(this.genOf(s, k), 'cavalier') ? 1.2 : 1);
-      const before = this.secMen(foe, tk);
-      const dealt = this.applyLoss(foe, tk, fp * 0.1 / 14 + rear, 'flank');
-      foe.sec[tk].morale -= dealt / Math.max(1, before) * 70;
+      const dealt = this.applyLoss(foe, tk, fp * 0.1 / 14, 'flank');
       this.led(s, 'flank', dealt + 60);
       sec.stance = 'advance';
       this.line(s, `نجح الالتفاف! فرسان ${s.name} يضربون ${this.secName(tk)} لدى ${foe.name} من الخلف.`, s.player ? 'good' : 'bad');
@@ -846,7 +828,7 @@ class WarSim {
     this.cue({ t: 'retreat', side: s.i, from: 'C' });
     if (ex.q === 'fail' || ex.q === 'disobey') {
       s.sec.C.morale -= 22;
-      this.line(s, `التقهقر المصطنع خرج عن السيطرة: القلب لدى ${s.name} يتراجع فعلاً!`, s.player ? 'bad' : 'good');
+      this.line(s, `التقهقر المصطنع خرج عن السيطرة — القلب لدى ${s.name} يتراجع فعلاً!`, s.player ? 'bad' : 'good');
       this.decisions.push({ side: s.i, kind: 'feintFail', text: 'التقهقر المصطنع تحوّل إلى تراجع حقيقي', weight: 4 });
       this.moment(foe, 'انهيار خدعة التقهقر', 4, 'feint');
       return;
@@ -863,7 +845,7 @@ class WarSim {
       this.cue({ t: 'ambush', side: s.i });
     } else {
       s.sec.C.morale -= 2; s.sec.C.front += 0.15;
-      this.line(s, `${foe.name} لم تبتلع الطُّعم${t === 'tactician' ? '، فقائدها الداهية كشف الخدعة' : ''}. خسر القلب لدى ${s.name} أرضاً.`, s.player ? 'bad' : 'good');
+      this.line(s, `${foe.name} لم تبتلع الطُّعم${t === 'tactician' ? ' — قائدها الداهية كشف الخدعة' : ''}. خسر القلب لدى ${s.name} أرضاً.`, s.player ? 'bad' : 'good');
       this.decisions.push({ side: s.i, kind: 'feintIgnored', text: 'خدعة التقهقر لم تنطلِ على العدو', weight: 1.5 });
     }
   }
@@ -928,14 +910,13 @@ class WarSim {
     }
   }
 
-  // --- الحصار ---
+  // ——— الحصار ———
   addBreach(key, v, how) {
     const def = this.sides[1];
     const sec = def.sec[key];
     if (sec.breach >= 1) return;
     sec.breach = Math.min(1, sec.breach + v);
     if (sec.breach >= 1) {
-      this.breaches.push({ key, how, phase: this.phase });
       const text = how === 'ram' ? 'تحطمت البوابة تحت ضربات الكبش!' : how === 'tower' ? 'برج الحصار يفتح معبراً والمهاجمون يعبرون!' : how === 'catapult' ? `ثغرة في ${this.wallName(key, this.sides[0])} بعد القصف!` : `المهاجمون يعتلون ${this.wallName(key, this.sides[0])}!`;
       this.line(this.sides[0], text, this.sides[0].player ? 'good' : 'bad', 'breach');
       this.moment(this.sides[0], `فتح الثغرة: ${text}`, 7, 'breach');
@@ -1038,7 +1019,7 @@ class WarSim {
     this.line(s, `حُمل ${s.cmd.name} إلى المؤخرة.`, '');
   }
 
-  // أزمة وسط المرحلة: جناح يترنح أو قائد جريح، الذكاء يقرر فوراً، واللاعب يُسأل
+  // أزمة وسط المرحلة: جناح يترنح أو قائد جريح — الذكاء يقرر فوراً، واللاعب يُسأل
   interrupts() {
     this.queue = this.queue || [];
     for (const s of this.sides) {
@@ -1076,7 +1057,6 @@ class WarSim {
     const sec = s.sec[k];
     if (sec.state === 'broken') return;
     sec.state = 'broken';
-    this.brokenLog.push({ side: s.i, key: k, phase: this.phase });
     const foe = s.foe;
     const us = this.secUnits(s, k);
     const cav = this.secUnits(foe, OPP[k]).filter((u) => u.role === 'cav' || u.role === 'skirm').reduce((t, u) => t + u.men, 0);
@@ -1133,7 +1113,6 @@ class WarSim {
       let k = (W.noPursuit || W.plan === 'highground' ? 0.03 : 0.08 + Math.min(0.14, cav / 1200)) * (W.pursueHard ? 1.6 : 1);
       if (this.kind === 'siege' && reason === 'fall') k = 0.2;
       if (L.orderly) k *= 0.35;
-      k *= 1 - 0.12 * this.skill(L.cmd, 'ret');
       let pur = 0;
       for (const u of L.units) { if (u.men <= 0) continue; const l = Math.round(u.men * k); u.men -= l; pur += l; }
       this.led(W, 'pursuit', pur);
@@ -1143,16 +1122,14 @@ class WarSim {
     this.line(null, `${W.name} تنتصر.`, W.player ? 'win' : 'lose', 'end');
   }
 
-  // --- الاحتياط ---
+  // ——— الاحتياط ———
   commitReserve(s, key, why) {
     const res = this.secUnits(s, 'Res').filter((u) => u.role !== 'engine' && !(u.hunter && !s.huntDone));
     if (!res.length) return false;
-    const oldMen = this.secMen(s, key), newMen = res.reduce((t, u) => t + u.men, 0);
     for (const u of res) u.sec = key;
     s.sec[key].had = true;
     if (s.sec[key].state === 'broken') s.sec[key].state = 'ok';
-    s.sec[key].morale = Math.min(100, s.sec[key].morale + 14 + 4 * this.skill(s.cmd, 'res'));
-    s.sec[key].fat = (s.sec[key].fat * oldMen + s.sec.Res.fat * newMen) / Math.max(1, oldMen + newMen);
+    s.sec[key].morale = Math.min(100, s.sec[key].morale + 14);
     if (s.sec[key].state === 'waver') s.sec[key].state = 'ok';
     s.reserveCommit = { phase: this.phase, key, why };
     this.line(s, `${s.name} تدفع باحتياطها إلى ${this.secName(key)}.`, s.player ? 'good' : '');
@@ -1168,11 +1145,11 @@ class WarSim {
     s.orderly = true;
     const ex = this.execQuality(s, 'C', 'withdraw');
     if (ex.q === 'fail' || ex.q === 'disobey') { s.orderly = false; this.line(s, 'الانسحاب يتحول إلى فوضى!', s.player ? 'bad' : 'good'); }
-    else this.line(s, `${s.name} تنسحب بانتظام${ex.q === 'excellent' ? '، تراجعاً محكماً يحفظ الرجال' : ''}.`, '');
+    else this.line(s, `${s.name} تنسحب بانتظام${ex.q === 'excellent' ? ' — تراجع محكم يحفظ الرجال' : ''}.`, '');
     this.finish(s.foe.i, 'withdraw');
   }
 
-  // ----------- الأحداث التكتيكية -----------
+  // ——————————— الأحداث التكتيكية ———————————
   findEvent(s) {
     const foe = s.foe;
     const next = WS_PHASES[this.phase + 1] ? WS_PHASES[this.phase + 1].key : null;
@@ -1183,9 +1160,7 @@ class WarSim {
       // التفاف قادم من العدو
       if (next === 'contact') {
         const k = SECTS.find((x) => foe.sec[x].stance === 'flank' && !foe.sec[x].flankDone && this.secUnits(foe, x).some((u) => u.role === 'cav' || u.role === 'skirm'));
-        // كشف الالتفاف: الكشّافة والمعرفة والقائد الداهية تكشفه، والضباب والغابة تخفيه
-        const spot = clamp(0.3 + 0.12 * Math.min(3, s.intel) + (this.cmdTrait(s, 'tactician') ? 0.2 : 0) + (SECTS.some((x) => this.secUnits(s, x).some((u) => u.role === 'cav' || u.role === 'skirm')) ? 0.1 : 0) - (this.weather === 'fog' ? 0.25 : 0) - (this.terrain === 'forest' ? 0.2 : 0), 0.1, 0.9);
-        if (k && this.r() < spot) cands.push({ id: 'enemyFlank', pri: 8, wing: OPP[k] });
+        if (k && (s.intel >= 1 || this.r() < 0.6)) cands.push({ id: 'enemyFlank', pri: 8, wing: OPP[k] });
       }
       // جناح يترنح
       for (const k of SECTS) {
@@ -1266,7 +1241,7 @@ class WarSim {
         ev.title = 'قائد العدو مكشوف';
         ev.text = `${foe.cmd.name} يقاتل في المقدمة مع حرسه.`;
         opt('hunt', 'أرسل فرساناً لاصطياده', 'target', 'إن سقط اهتزّ جيشه كله.', 'قد تُباد فرقة الصيد.');
-        opt('ignore', 'تجاهله', 'close', 'تبقى الصفوف كما هي.', 'لا خطر');
+        opt('ignore', 'تجاهله', 'close', 'تبقى الصفوف كما هي.', '—');
         break;
       case 'ammo':
         s.ammoAsked = true;
@@ -1279,14 +1254,14 @@ class WarSim {
       case 'pursuit':
         s.pursueAsked = true;
         ev.title = 'العدو ينهار';
-        ev.text = `صفوف ${foe.name} تتفكك. المطاردة تحصد الكثير، وقد تكون فخاً.`;
+        ev.text = `صفوف ${foe.name} تتفكك. المطاردة تحصد الكثير — وقد تكون فخاً.`;
         opt('pursue', 'طارد بالفرسان', 'charge', 'قتلى وأسرى أكثر.', 'كمين محتمل إن بقي لديهم احتياط.');
         opt('hold', 'اثبت في الميدان', 'shield', 'نصر آمن.', 'ينجو كثير منهم.');
         break;
       case 'feintWarn':
         s.feintAsked = true;
         ev.title = 'العدو يتراجع فجأة؟';
-        ev.text = `قلب ${foe.name} يبدو وكأنه ينسحب${this.cmdTrait(s, 'tactician') ? '، وقائدك الداهية يشك في خدعة' : ''}.`;
+        ev.text = `قلب ${foe.name} يبدو وكأنه ينسحب${this.cmdTrait(s, 'tactician') ? ' — قائدك الداهية يشك في خدعة' : ''}.`;
         opt('caution', 'لا تلاحق: اثبتوا', 'shield', 'لن تقع في فخ إن كان خدعة.', 'قد تضيع فرصة إن كان انسحاباً حقيقياً.');
         opt('chase', 'لاحقوهم!', 'charge', 'إن كان انهياراً حقيقياً فهو النصر.', 'إن كانت خدعة فهو الكمين.');
         break;
@@ -1490,7 +1465,7 @@ class WarSim {
     }
   }
 
-  // ----------- خطة الذكاء -----------
+  // ——————————— خطة الذكاء ———————————
   aiPlan(s) {
     const opts = this.availablePlans(s);
     if (!opts.length) return this.kind === 'siege' ? (s.att ? 'escalade' : 'walls') : 'balanced';
@@ -1513,7 +1488,7 @@ class WarSim {
         case 'feigned': v = 0.2 + cav * 1.2 + (foe.cmd && ['reckless', 'arrogant'].includes(foe.cmd.flaw) ? 0.6 : 0) - (foe.cmd && foe.cmd.trait === 'tactician' ? 0.6 : 0); break;
         case 'highground': v = 1.5 + (1 - ratio) * 0.5; break;
         case 'breakcenter': v = 0.4 + shock * 1.6 + (ratio - 1) * 0.8; break;
-        case 'hunt': v = 0.15 + cav * 0.8 + (foe.cmd && (foe.cmd.flaw === 'reckless' || foe.cmd.trait === 'brave') ? 0.3 : 0); break;
+        case 'hunt': v = 0.15 + cav * 0.8 + (foe.cmdPos === 'front' || (foe.cmd && foe.cmd.flaw === 'reckless') ? 0.3 : 0); break;
         case 'storm': v = 1 + (ratio - 1.5) * 0.4; break;
         case 'escalade': v = 0.8 + (ratio - 2) * 0.4 - this.walls * 0.1; break;
         case 'towers': v = 1.25 + this.walls * 0.08; break;
@@ -1524,119 +1499,29 @@ class WarSim {
         case 'depth': v = 0.6 + (this.walls >= 3 ? 0.5 : 0); break;
         case 'sally': v = 0.3 + (this.towerAlive ? 0.4 : 0) + (ratio > 0.7 ? 0.3 : 0); break;
       }
-      // لا يعتمد على خطة العدو إن كانت اختيرت قبله: ترتيب الإعداد لا يغيّر المعركة
-      if (s.att && this.kind === 'field' && (t === 'hills' || t === 'mountains')) {
+      if (s.att && this.kind === 'field' && (t === 'hills' || t === 'mountains') && !s.foe.plan) {
         if (k === 'balanced' || k === 'assault' || k === 'breakcenter') v -= 0.4;
         if (k === 'flanking' || k === 'attrition' || k === 'feigned') v += 0.25;
       }
       v += this.affinity(s, k) * 0.35;
-      v += (s.rs() - 0.5) * (1.1 - s.ai) * 0.8;
-      if (s.intent === 'bold' && ['assault', 'breakcenter', 'flanking', 'storm', 'escalade', 'hunt'].includes(k)) v += 0.35;
-      if (s.intent === 'careful' && ['defensive', 'highground', 'attrition', 'towers', 'bombard', 'walls', 'depth', 'balanced'].includes(k)) v += 0.35;
+      v += (this.r() - 0.5) * (1.1 - s.ai) * 0.8;
       sc[k] = v;
     }
     return Object.entries(sc).sort((a, b) => b[1] - a[1])[0][0];
   }
 
-  // ----------- بطاقات الأوامر بين المراحل -----------
-  // كل أمر يشرح ما يفعله الجنود، ومتى يفيد، وما يحتاجه، وما قد يفشله. لا مورد جديد: الاحتياط والذخيرة والوقت هي القيود
-  availableOrders(s) {
-    const foe = s.foe, siege = this.kind === 'siege';
-    const next = WS_PHASES[this.phase + 1] ? WS_PHASES[this.phase + 1].key : null;
-    const secs = SECTS.filter((k) => this.secUnits(s, k).length);
-    const out = [];
-    const card = (k, o) => out.push({ k, ...o });
-    const light = (k) => this.secUnits(s, k).some((u) => u.role === 'missile' || u.role === 'skirm');
-    const riders = (k) => this.secUnits(s, k).some((u) => u.role === 'cav' || u.role === 'skirm');
-    const res = this.secUnits(s, 'Res').filter((u) => u.role !== 'engine' && !(u.hunter && !s.huntDone));
-    const missiles = s.units.filter((u) => this.alive(u) && u.missile && u.type !== 'catapult');
-    const ammo = missiles.reduce((t, u) => t + u.ammo, 0), ammo0 = missiles.reduce((t, u) => t + (u.ammo0 || 1), 0);
-    if (!siege) card('skirmish', { name: 'المناوشة', icon: 'bow', need: 'sector', targets: secs.filter((k) => light(k) && s.sec[k].stance !== 'skirmish'),
-      what: 'رماة القطاع وخيالته الخفيفة يرمون على دفعات ويتراجعون قبل أن يلتحم بهم العدو.', when: 'حين يكون العدو مشاة بطيئة وأمامك مساحة للتراجع.', req: 'رماة أو خيالة رماة في القطاع، وسهام في الجعاب.', risk: 'تستهلك السهام وتقل مشاركة القطاع في الالتحام. الخيالة المعادية تلحق بهم، والغابة والجبل يضيّقان التراجع.', why: !secs.some(light) ? 'لا رماة ولا خيالة خفيفة في أي قطاع' : ammo <= 0 ? 'نفدت السهام' : null });
-    card('hold', { name: 'تثبيت الصفوف', icon: 'shield', need: 'sector', targets: secs.filter((k) => s.sec[k].stance !== 'hold'),
-      what: 'القطاع يثبت في تشكيل دفاعي ويمتص الهجوم بدل الضغط.', when: 'حين يضغط عليك عدو أقوى، أو تنتظر وصول الاحتياط.', req: 'مشاة في القطاع.', risk: 'خسائر أقل واندفاع أقل: لا تكسب أرضاً ولا تطارد.', why: !secs.length ? 'لا قطاعات' : null });
-    if (!siege) card('advance', { name: 'الضغط إلى الأمام', icon: 'arrowUp', need: 'sector', targets: secs.filter((k) => s.sec[k].stance !== 'advance'),
-      what: 'القطاع يتقدم ويضرب بقوة أكبر.', when: 'حين يترنح خصم هذا القطاع.', req: 'رجال في القطاع.', risk: 'تعب أكبر وخسائر أكثر إن صمد العدو.' });
-    if (!siege && next && next !== 'collapse') card('envelop', { name: 'تطويق الجناح', icon: 'flank', need: 'wing', targets: ['L', 'R'].filter((k) => riders(k) && !s.sec[k].flankDone && s.sec[k].stance !== 'flank' && s.sec[k].state === 'ok'),
-      what: 'فرسان الجناح يدورون حول طرف العدو ليضربوه من الخلف في بداية المرحلة التالية.', when: 'بخيالة كافية في أرض مفتوحة، والعدو بلا احتياط يقظ.', req: 'فرسان أو خيالة في الجناح لم يلتفوا بعد، ووقت مرحلة كاملة.', risk: 'احتياط العدو أو رماحه قد يصدّونهم، والغابة والجبل والساحل تعرقلهم.', why: !['L', 'R'].some((k) => riders(k)) ? 'لا فرسان في الجناحين' : null });
-    card('reserve', { name: 'دفع الاحتياط', icon: 'plus', need: 'sector', targets: secs.concat(SECTS.filter((k) => s.sec[k].had && !secs.includes(k))),
-      what: 'قوات لم تشارك بعد تدخل القطاع المحتاج، فترتفع معنوياته ويخف تعبه.', when: 'حين يترنح قطاع، أو تلوح فرصة لكسر العدو.', req: `احتياط لم يُستخدم${s.cmd && this.skill(s.cmd, 'res') ? `، وقائدك يجيد إدارته (+${4 * this.skill(s.cmd, 'res')} معنويات)` : ''}.`, risk: 'لا يبقى احتياط لأزمة لاحقة ولا لصد التفاف.', why: !res.length ? 'لا احتياط متبقٍ' : null });
-    card('focus', { name: 'تركيز الرمي', icon: 'target', need: 'foe', targets: SECTS.filter((k) => this.secUnits(foe, k).length),
-      what: 'كل الرماة يوجّهون سهامهم إلى قطاع واحد من العدو طوال المرحلة التالية.', when: 'حين يكون في العدو قطاع مكشوف أو مترنح يستحق الحسم.', req: 'رماة وسهام كافية.', risk: 'السهام تنفد أسرع، والقطاعات الأخرى بلا غطاء من الرمي.', why: !missiles.length ? 'لا رماة' : ammo < ammo0 * 0.25 ? 'السهام قليلة جداً' : null });
-    if (s.cmd && s.cmdAlive !== false && !s.rallied && (this.skill(s.cmd, 'coh') >= 1 || ['brave', 'defender'].includes(s.cmd.trait))) card('rally', { name: 'استنهاض القائد', icon: 'banner', need: 'sector', targets: secs.filter((k) => s.sec[k].morale < 60),
-      what: `${s.cmd.name} يمر بين الصفوف ويشد عزيمة القطاع.`, when: 'حين يترنح قطاع ولم يبق احتياط.', req: 'قائد حي بتماسك نجمة على الأقل، أو شجاع أو صامد. مرة واحدة في المعركة.', risk: 'يعرّض القائد لخطر أكبر في المرحلة التالية.', why: !secs.some((k) => s.sec[k].morale < 60) ? 'لا قطاع يحتاجه الآن' : null });
-    card('withdraw', { name: 'انسحاب منظم', icon: 'retreat', need: null, targets: [],
-      what: 'الجيش يفك الاشتباك ومؤخرته تحمي المنسحبين.', when: 'حين تكون الهزيمة قريبة وتريد حفظ الرجال.', req: `قائد يحسن الانسحاب${s.cmd && this.skill(s.cmd, 'ret') ? ` (${s.cmd.name} يجيده)` : ''}.`, risk: 'تُحسب هزيمة، وقد يتحول الانسحاب إلى فوضى إن كان قائدك متهوراً.' });
-    for (const c of out) if (!c.why && c.need && !c.targets.length) c.why = 'لا هدف مناسب الآن';
-    return out;
-  }
-  order(s, k, target) {
-    const sec = target && s.sec[target];
-    s.orders++;
-    this.decisions.push({ side: s.i, kind: 'order:' + k, text: k, phase: this.phase, weight: 0, target });
-    switch (k) {
-      case 'skirmish': case 'hold': case 'advance': sec.stance = k; this.line(s, `${this.secName(target)} لدى ${s.name}: ${STANCES[k].name}.`, ''); break;
-      case 'envelop': sec.stance = 'flank'; sec.flankDone = false; this.line(s, `فرسان ${this.secName(target)} لدى ${s.name} يبدؤون الدوران.`, ''); break;
-      case 'reserve': return this.commitReserve(s, target, 'order');
-      case 'focus': s.focus = { key: target, phase: this.phase + 1 }; this.line(s, `رماة ${s.name} يركزون سهامهم على ${this.secName(target)} لدى ${s.foe.name}.`, ''); this.cue({ t: 'focus', side: s.i, to: target }); break;
-      case 'rally': s.rallied = true; sec.morale = Math.min(100, sec.morale + 12 + 3 * this.skill(s.cmd, 'coh')); if (sec.state === 'waver') sec.state = 'ok'; s.cmdCharge = true; this.line(s, `${s.cmd.name} يستنهض ${this.secName(target)}!`, s.player ? 'good' : ''); this.moment(s, `${s.cmd.name} يستنهض ${this.secName(target)}`, 3, 'rally'); break;
-      case 'withdraw': this.withdraw(s); break;
-    }
-    return true;
-  }
-
-  // ----------- النية في الحسم السريع: الأوامر نفسها التي يملكها القائد، يختارها المحرك -----------
-  decide(s, ev) { return s.player && s.intent ? this.policyChoose(s, ev) : this.aiChoose(s, ev); }
-  policyChoose(s, ev) {
-    const valid = ev.options.filter((o) => !o.dis);
-    const pick = (...ks) => (ks.find((k) => valid.some((o) => o.k === k)) || valid[0].k);
-    const bold = s.intent === 'bold', careful = s.intent === 'careful';
-    switch (ev.id) {
-      case 'enemyFlank': return pick(careful ? 'reserve' : 'delegate', 'reserve', 'archers');
-      case 'wingWaver': return careful ? pick('withdraw', 'reserve', 'hold') : pick('reserve', 'hold');
-      case 'centerWeak': return bold ? pick('charge', 'reserve') : careful ? pick('steady') : pick('reserve', 'steady');
-      case 'cmdExposed': return bold ? 'hunt' : 'ignore';
-      case 'ammo': return pick(careful ? 'back' : 'resupply', 'back');
-      case 'pursuit': return bold ? 'pursue' : 'hold';
-      case 'feintWarn': return bold ? 'chase' : 'caution';
-      case 'wounded': return careful ? 'evac' : pick('stay', 'evac');
-      case 'ram': return pick(bold ? 'push' : 'cover');
-      case 'breach': return pick(bold ? 'pour' : 'secure');
-      case 'towerLost': return careful ? pick('withdraw') : pick('ladders', 'withdraw');
-      case 'sallyChance': return bold ? 'sally' : 'stay';
-      case 'gate': return pick('reserve', 'oil', 'second');
-      case 'wallsLost': return careful ? pick('fallback', 'terms') : pick('counter', 'fallback');
-      default: return this.aiChoose(s, ev);
-    }
-  }
-  // أوامر ما بين المراحل حسب النية (البطاقات نفسها المتاحة للاعب)
-  breakOrders(s) {
-    if (this.over || !s.intent) return;
-    const next = WS_PHASES[this.phase + 1] && WS_PHASES[this.phase + 1].key;
-    const secs = SECTS.filter((k) => this.secUnits(s, k).length);
-    const hasRes = this.secUnits(s, 'Res').some((u) => u.role !== 'engine' && !u.hunter);
-    const weak = secs.slice().sort((x, y) => s.sec[x].morale - s.sec[y].morale)[0];
-    if (s.intent === 'careful' && this.avgMorale(s) < 28 && this.liveMen(s) < this.liveMen(s.foe) * 0.6) { this.order(s, 'withdraw'); return; }
-    if (hasRes && weak && (s.sec[weak].morale < 50 || next === 'crisis')) { this.order(s, 'reserve', s.intent === 'bold' && next !== 'crisis' ? this.weakestFoeFacing(s) : weak); return; }
-    if (s.intent === 'bold' && next === 'main' && this.kind === 'field') for (const k of ['L', 'R']) if (this.secUnits(s, k).some((u) => u.role === 'cav') && !s.sec[k].flankDone && s.sec[k].stance !== 'flank') { this.order(s, 'envelop', k); return; }
-  }
-
-  // ----------- تشغيل آلي كامل (للحسم السريع ومعارك الذكاء) -----------
-  // المحرك نفسه والترتيب نفسه الذي تتبعه شاشة المعركة: الأحداث، ثم أوامر ما بين المراحل، ثم المرحلة التالية
+  // ——————————— تشغيل آلي كامل (للحسم السريع ومعارك الذكاء) ———————————
   runAuto() {
     this.begin();
     let guard = 0;
     while (!this.over && guard++ < 60) {
       this.step();
       let ev;
-      while ((ev = this.takeInterrupt())) { this.choose(ev, this.decide(this.sides[ev.side], ev)); if (this.over) break; }
+      while ((ev = this.takeInterrupt())) this.choose(ev, this.aiChoose(this.sides[ev.side], ev));
       if (this.over) break;
       if (this.phaseDone()) {
         const evs = this.endPhase();
-        for (const e of evs) { if (this.over) break; this.choose(e, this.decide(this.sides[e.side], e)); }
-        if (this.over) break;
-        for (const s of this.sides) if (s.player) this.breakOrders(s);
-        if (this.over) break;
+        for (const e of evs) this.choose(e, this.aiChoose(this.sides[e.side], e));
         this.nextPhase();
       }
     }
@@ -1644,7 +1529,7 @@ class WarSim {
     return this.result();
   }
 
-  // ----------- النتيجة للحملة -----------
+  // ——————————— النتيجة للحملة ———————————
   result() {
     const fates = {};
     for (const s of this.sides) {
@@ -1663,66 +1548,98 @@ class WarSim {
     }
     return {
       winner: this.winner, reason: this.reason,
-      sides: this.sides.map((s) => {
-        const had = SECTS.filter((k) => s.sec[k].had);
-        const fat = had.length ? had.reduce((t, k) => t + s.sec[k].fat, 0) / had.length : s.fat0 || 0;
-        return { gens: s.gens.map((g) => g.id).filter(Boolean), men0: s.men0, menEnd: this.totalMen(s), fat0: s.fat0 || 0, fat, units: s.units.map((u) => ({ ref: u.ref, type: u.type, men: Math.max(0, u.men), men0: u.men0, kills: Math.round(u.kills), gen: u.gen, ammo: u.ammo, ammo0: u.ammo0 })) };
-      }),
+      sides: this.sides.map((s) => ({ gens: s.gens.map((g) => g.id).filter(Boolean), units: s.units.map((u) => ({ ref: u.ref, type: u.type, men: Math.max(0, u.men), men0: u.men0, kills: Math.round(u.kills), gen: u.gen })) })),
       fates,
       report: this.report(),
     };
   }
 
-  // ----------- وقائع المعركة: كل ما تستند إليه الرواية، من سجل المحاكاة لا من الخيال -----------
-  facts() {
-    const S = this.sides, W = S[this.winner], L = S[1 - this.winner];
-    const side = (s) => {
-      const us = s.units.filter((u) => u.men0 > 0);
-      const men0 = s.men0 || 1, menEnd = this.totalMen(s);
-      const share = (roles) => us.filter((u) => roles.includes(u.role)).reduce((t, u) => t + u.men0, 0) / men0;
-      const troops = us.filter((u) => u.role !== 'guard');
-      const tm = troops.reduce((t, u) => t + u.men0, 0) || 1;
-      const had = SECTS.filter((k) => s.sec[k].had);
-      const dec = this.decisions.filter((d) => d.side === s.i);
-      const kinds = new Set(dec.map((d) => d.kind));
-      const mom = this.moments.filter((m) => m.side === s.i);
-      return {
-        i: s.i, name: s.name, att: s.att, plan: s.plan, planName: PLANS[s.plan] ? PLANS[s.plan].name : '',
-        cmd: s.cmd ? { name: s.cmd.name, trait: s.cmd.trait, flaw: s.cmd.flaw, rank: s.cmd.rank, alive: s.cmdAlive !== false, fate: s.cmdFate || null, wounded: !!s.cmdWounded, pos: s.cmdPos, vendetta: s.cmd.vendetta === s.foe.fid } : null,
-        men0, menEnd, loss: (men0 - menEnd) / men0,
-        cav: share(['cav']), skirm: share(['skirm']), missile: share(['missile']), line: share(['line']), shock: share(['shock']), engine: share(['engine']),
-        exp: troops.reduce((t, u) => t + (u.exp || 0) * u.men0, 0) / tm, types: [...new Set(troops.map((u) => u.type))],
-        led: s.ledger, res: s.reserveCommit || null, resLeft: this.secUnits(s, 'Res').filter((u) => u.role !== 'engine').length,
-        withdrew: !!s.withdrew, orderly: !!s.orderly, ammoOut: s.ammoOut || 0, rallied: !!s.rallied, focus: (s.ledger.focus || 0) > 0,
-        fat0: s.fat0 || 0, fatEnd: had.length ? had.reduce((t, k) => t + s.sec[k].fat, 0) / had.length : 0, mor0: s.morale0 || 0, morEnd: this.avgMorale(s), mood: this.cfg.sides[s.i].mood || 0,
-        kinds, mistakes: dec.filter((d) => d.weight > 0).sort((a, b) => b.weight - a.weight), orders: dec.filter((d) => d.kind.startsWith('order:')).map((d) => d.kind.slice(6)),
-        fortune: s.fortune, intent: s.intent, broke: this.brokenLog.filter((b) => b.side === s.i), moments: mom,
-        flankOk: mom.some((m) => m.kind === 'flank'), flankTried: mom.some((m) => m.kind === 'flank') || kinds.has('flankFail'),
-        pursueHard: !!s.pursueHard, pursueTrap: !!s.pursueTrap, huntDone: !!s.huntDone,
-      };
-    };
-    return {
-      kind: this.kind, terrain: this.terrain, weather: this.weather, walls: this.walls, capital: !!this.cfg.capital, stores: this.cfg.stores, place: this.place,
-      reason: this.reason, phase: this.phase, W: side(W), L: side(L), breaches: this.breaches, moments: this.moments, brokenLog: this.brokenLog,
-      towerBurn: this.moments.some((m) => m.kind === 'tower'), ramBurn: this.moments.some((m) => m.kind === 'ram'), equip: this.equip, noMeans: !!this.noMeans,
-      ratio: W.men0 / Math.max(1, L.men0), seed: this.cfg.seed || 0,
-      phName: (i) => (this.kind === 'siege' ? WS_PHASES[clamp(i, 0, 4)].siege : WS_PHASES[clamp(i, 0, 4)].name), secName: (k) => this.secName(k),
-    };
-  }
-
-  // ----------- التحليل والقصة: من وقائع المحاكاة عبر مكتبة الروايات -----------
+  // ——————————— التحليل والقصة ———————————
   report() {
     const S = this.sides;
     if (this.winner == null) return null;
     const W = S[this.winner], L = S[1 - this.winner];
     const lost = (s) => s.men0 - this.totalMen(s);
     const cas = S.map((s) => ({ name: s.name, color: s.color, men0: s.men0, lost: lost(s), pct: Math.round(100 * lost(s) / Math.max(1, s.men0)) }));
-    const F = this.facts();
-    const N = typeof Narr !== 'undefined' ? Narr.compose(F) : { main: `${W.name} انتصر.`, story: '' };
+    const siege = this.kind === 'siege';
+    // سبب النصر الرئيسي
+    const weights = { missile: 1, charge: 1.3, melee: 0.8, flank: 1.6, feint: 1.8, hunt: 1.6, commander: 1.5, breach: 1.4, walls: 1.2, highground: 1.3, reserve: 1.1, pursuit: 0.5, rout: 1, spears: 1.2, sally: 1.4, guard: 1 };
+    const led = Object.entries(W.ledger).map(([k, v]) => [k, v * (weights[k] || 1)]).sort((a, b) => b[1] - a[1]);
+    let key = led.length ? led[0][0] : 'melee';
+    if (key === 'rout' || key === 'pursuit') key = (led.find(([k]) => k !== 'rout' && k !== 'pursuit') || ['melee'])[0];
+    const numbers = W.men0 > L.men0 * 1.45;
+    const phName = (i) => (siege ? WS_PHASES[i].siege : WS_PHASES[i].name);
+    const res = W.reserveCommit;
+    const mainTxt = {
+      missile: `تفوّق رماة ${W.name}: كثير من قتلى ${L.name} سقطوا بالسهام قبل أن يبلغوا الصفوف.`,
+      charge: `انقضاض فرسان ${W.name} في الالتحام الأول كسر صفوف ${L.name}.`,
+      melee: numbers ? `التفوق العددي لـ${W.name} أنهك ${L.name} في الاشتباك.` : `صمود مشاة ${W.name} وتفوقهم في الاشتباك المباشر.`,
+      flank: `نجاح الالتفاف: ضرب ${W.name} جناح ${L.name} من الخلف.`,
+      feint: `التقهقر المصطنع استدرج ${L.name} إلى فخ الفرسان.`,
+      hunt: `فرقة الصيد أصابت قائد ${L.name} فتزلزل جيشه.`,
+      commander: `سقوط قائد ${L.name} زلزل صفوفه.`,
+      breach: `فتح الثغرة حسم الاقتحام.`,
+      walls: `الأسوار صمدت: سقط المهاجمون تحت السهام والحجارة.`,
+      highground: `التمسك بالمرتفع: الصاعدون تعبوا والسهام من فوقهم أبعد.`,
+      reserve: res ? (res.phase >= 2
+        ? `احتفاظ ${W.name} بالاحتياط حتى ${phName(res.phase)} سمح له ${res.why === 'flank' ? 'بإيقاف الالتفاف' : res.why === 'waver' ? 'بإنقاذ الموضع المترنح' : 'بكسر الصفوف في اللحظة الحاسمة'}.`
+        : `الاحتياط الذي زجّه ${W.name} في ${phName(Math.max(0, res.phase))} ${res.why === 'flank' ? 'أوقف الالتفاف' : res.why === 'waver' ? 'أنقذ الموضع المترنح' : 'رجّح كفّته في الاشتباك'}.`) : `الاحتياط الطازج حسم اللحظة الحاسمة.`,
+      spears: `جدار الرماح لدى ${W.name} صدّ فرسان ${L.name}.`,
+      sally: `الخروج المفاجئ أحرق آلات الحصار.`,
+      guard: `حرس القائد ردّ فرقة الصيد.`,
+    }[key] || `${W.name} أدار المعركة أفضل.`;
+    // ميزة التضاريس
+    let terrainTxt = null;
+    for (const [side, k, txt] of this.tnotes || []) {
+      if (side && side !== W) continue;
+      if (k === 'plains' && !(W.ledger.charge > 20 || W.ledger.flank > 50)) continue;
+      if (k === 'forest' && !(L.units.some((u) => u.role === 'cav'))) continue;
+      if (k === 'river' && !(this.sides[1] === W)) continue;
+      terrainTxt = txt; break;
+    }
+    if (!terrainTxt && siege && this.winner === 1) terrainTxt = `أسوار ${this.place} (${['بلا أسوار', 'سياج خشبي', 'أسوار حجرية', 'قلعة', 'قلعة عظمى'][this.walls]}) ضاعفت قوة المدافعين.`;
+    // خطأ الخاسر
+    const mistakes = this.decisions.filter((d) => d.side === L.i && d.weight > 0).sort((a, b) => b.weight - a.weight);
+    let mistake = mistakes.length ? mistakes[0].text : null;
+    if (!mistake) {
+      const counters = { assault: ['defensive', 'highground'], flanking: [], attrition: ['assault', 'flanking'], feigned: [], breakcenter: ['flanking'], hunt: [] };
+      if ((counters[L.plan] || []).includes(W.plan)) mistake = `خطة «${PLANS[L.plan].name}» اصطدمت بخطة «${PLANS[W.plan].name}» المضادة لها.`;
+      else if (L.plan === 'flanking' && (this.terrain === 'forest' || this.terrain === 'mountains')) mistake = 'حاول الالتفاف في أرض لا تسمح بالمناورة.';
+      else if (L.plan === 'attrition' && this.weather === 'rain') mistake = 'اعتمد على السهام تحت المطر.';
+      else if (!this.secUnits(L, 'Res').length && !L.reserveCommit && L.units.length > 4) mistake = 'لم يحتفظ باحتياط.';
+      else if (L.cmdPos === 'front' && L.cmdAlive === false) mistake = 'قاتل قائده في المقدمة فسقط.';
+    }
+    // لحظة التحول
+    let turning = null;
+    let bestSwing = 0, turnPhase = 0;
+    for (let i = 0; i < this.track.length; i++) {
+      const cur = this.track[i], prev = i ? this.track[i - 1] : { m: [S[0].morale0, S[1].morale0] };
+      const sw = (cur.m[this.winner] - cur.m[1 - this.winner]) - (prev.m[this.winner] - prev.m[1 - this.winner]);
+      if (sw > bestSwing) { bestSwing = sw; turnPhase = cur.phase; }
+    }
+    const mom = this.moments.filter((m) => m.side === W.i).sort((a, b) => b.weight - a.weight);
+    const inPhase = mom.find((m) => m.phase === turnPhase) || mom[0];
+    if (inPhase) turning = `${inPhase.text} (${siege ? WS_PHASES[inPhase.phase].siege : WS_PHASES[inPhase.phase].name}).`;
     const verdict = this.reason === 'withdraw' ? 'انسحاب' : this.reason === 'terms' ? 'استسلام' : cas[1 - this.winner].pct - cas[this.winner].pct > 35 ? 'نصر حاسم' : cas[this.winner].pct > 40 ? 'نصر باهظ الثمن' : 'نصر';
-    // حالة الطرفين بعد المعركة: الرجال والمعنويات والإرهاق
-    const after = S.map((s) => ({ name: s.name, men: this.totalMen(s), men0: s.men0, morale: Math.round(this.avgMorale(s)), fat: Math.round(SECTS.filter((k) => s.sec[k].had).reduce((t, k, _i, arr) => t + s.sec[k].fat / arr.length, 0)) }));
-    return { place: this.place, kind: this.kind, terrain: this.terrain, weather: this.weather, winner: W.i, winnerName: W.name, loserName: L.name, verdict, main: N.main, terrainTxt: N.terrain, mistake: N.mistake, noError: N.noError, turning: N.turning, notes: N.notes || [], cas, after, plans: [PLANS[S[0].plan] ? PLANS[S[0].plan].name : '', PLANS[S[1].plan] ? PLANS[S[1].plan].name : ''], story: N.story, narr: N.ids, reason: this.reason };
+    const story = this.story(W, L, cas, turning, mistake);
+    return { place: this.place, kind: this.kind, terrain: this.terrain, weather: this.weather, winner: W.i, winnerName: W.name, loserName: L.name, verdict, main: mainTxt, terrainTxt, mistake, turning, cas, plans: [PLANS[S[0].plan] ? PLANS[S[0].plan].name : '', PLANS[S[1].plan] ? PLANS[S[1].plan].name : ''], story, reason: this.reason };
+  }
+
+  story(W, L, cas, turning, mistake) {
+    const S = this.sides;
+    const [a, d] = S;
+    const gn = (s) => (s.cmd ? s.cmd.name : 'قائد مجهول');
+    const place = this.place ? `عند ${this.place}` : '';
+    const where = this.kind === 'siege' ? `تحت أسوار ${this.place}` : place;
+    const open = this.kind === 'siege'
+      ? `زحف ${gn(a)} بجيش ${a.name} ${where}، وقد اختار «${PLANS[a.plan].name}»، بينما وقف ${gn(d)} على الأسوار بخطة «${PLANS[d.plan].name}».`
+      : `التقى ${gn(a)} على رأس ${a.name} بـ${gn(d)} قائد ${d.name} ${where}${this.weather !== 'clear' ? ' في يوم ' + WEATHER[this.weather].name : ''}. اختار الأول «${PLANS[a.plan].name}»، والثاني «${PLANS[d.plan].name}».`;
+    const top = this.moments.slice().sort((x, y) => y.weight - x.weight).slice(0, 2).sort((x, y) => x.phase - y.phase);
+    const mid = top.map((m) => m.text).join('، ثم ');
+    const endTxt = this.reason === 'terms' ? `وانتهى اليوم باستسلام الحامية.` : this.reason === 'withdraw' ? `وانسحب ${L.name} ليقاتل يوماً آخر.` : this.kind === 'siege' ? (W === a ? `وسقطت المدينة بيد ${a.name}.` : `وارتدّ المهاجمون عن الأسوار.`) : `وانتهى اليوم بنصر ${W.name}.`;
+    const loss = `خسر ${W.name} ${cas[W.i].lost} رجلاً، وخسر ${L.name} ${cas[L.i].lost}.`;
+    const fall = S.filter((s) => s.cmdAlive === false).map((s) => `${s.cmdFate === 'captured' ? 'أُسر' : 'سقط'} ${s.cmd.name}`);
+    return [open, mid ? `كان من أبرز ما جرى: ${mid}.` : '', turning && !mid.includes(turning.replace(/\s*\(.*\)\.$/, '')) ? `وكانت لحظة التحول: ${turning}` : '', mistake ? `أما ${L.name} فقد ${mistake.replace(/\.$/, '')}.` : '', fall.length ? fall.join('، و') + '.' : '', endTxt, loss].filter(Boolean).join(' ');
   }
 }
 
@@ -1738,7 +1655,7 @@ const BattleReport = {
     return { won, text: t, sub: won ? `على ${rep.loserName}` : `أمام ${rep.winnerName}` };
   },
   render(rep, P, o = {}) {
-    if (!rep) return h('p', null, 'لا تقرير');
+    if (!rep) return h('p', null, '—');
     const me = P != null ? this.mine(rep, P) : null;
     const headTxt = me ? `${me.text} ${me.sub}` : `${rep.verdict}: ${rep.winnerName}`;
     return h('div', { class: 'breport' },
@@ -1747,10 +1664,8 @@ const BattleReport = {
       h('div', { class: 'br-lines' },
         h('p', null, icon('star'), h('span', null, h('b', null, 'السبب الرئيسي: '), rep.main)),
         rep.terrainTxt ? h('p', null, icon(TERRAIN[rep.terrain] ? TERRAIN[rep.terrain].icon : 'map'), h('span', null, h('b', null, 'التضاريس: '), rep.terrainTxt)) : null,
-        rep.mistake ? h('p', null, icon('warning'), h('span', null, h('b', null, me && me.won ? 'خطأ العدو: ' : me ? 'خطؤك: ' : `خطأ ${rep.loserName}: `), rep.mistake)) : rep.noError ? h('p', null, icon('info'), h('span', null, h('b', null, 'الخاسر: '), rep.noError)) : null,
+        rep.mistake ? h('p', null, icon('warning'), h('span', null, h('b', null, me && me.won ? 'خطأ العدو: ' : `خطأ ${rep.loserName}: `), rep.mistake)) : null,
         rep.turning ? h('p', null, icon('hourglass'), h('span', null, h('b', null, 'لحظة التحول: '), rep.turning)) : null,
-        (rep.notes || []).map((t) => h('p', { class: 'small' }, icon('scroll'), h('span', null, t))),
-        rep.after ? h('p', { class: 'small muted' }, icon('men'), h('span', null, h('b', null, 'بعد المعركة: '), rep.after.map((a) => `${a.name}: ${a.men} رجل، معنويات ${a.morale}، إرهاق ${a.fat}٪`).join(' · '))) : null,
       ),
       h('details', { class: 'br-story' }, h('summary', null, 'قصة المعركة'), h('p', null, rep.story)),
     );

@@ -1,9 +1,9 @@
 'use strict';
-// العالم الحيّ، «التاريخ يصنع الحرب».
+// العالم الحيّ — «التاريخ يصنع الحرب».
 // أزمات تُنذر بقدومها على مراحل، وقرارات حقيقية للاعب وللممالك، وحكّام يشيخون ويموتون،
 // وقادة لهم طموح، وطريق قوافل يُثري من يحميه، ومخرج للحملة يراقب الإيقاع دون أن يغش.
 
-// --- مادة تاريخية لكل سيناريو ---
+// ——— مادة تاريخية لكل سيناريو ———
 const WORLD_DATA = {
   threeKingdoms: {
     plague: 'الوباء',
@@ -26,9 +26,10 @@ const WORLD_DATA = {
     ],
     migrants: [{ key: 'qiang', name: 'التشيانغ', people: 'قبائل التشيانغ', color: '#7d5a44', from: 'هضاب الغرب', gates: ['wuwei', 'tianshui', 'hanzhong'], leader: ['يو فو لوو', 'mountaineer', null, 2], units: { cavalry: 3, horsearcher: 2, spear: 2 } }],
     uprisings: { def: ['بقايا العمائم الصفراء', 'جانغ يان'], shu: ['أتباع طريق الأرزات الخمسة', 'جانغ شيو'] },
+    stars: [['جونغ هوي', 'tactician', 'arrogant'], ['لو كانغ', 'defender', null], ['يانغ هو', 'merchant', null], ['وين يانغ', 'brave', 'reckless'], ['دو يو', 'siege', null], ['شو شنغ', 'naval', null]],
     mercs: [
-      { name: 'عصابات بايبو', leader: 'تشين دا', trait: 'swift', units: { sword: 3, spear: 2, archer: 2 } },
-      { name: 'قراصنة البحيرة', leader: 'لوو هاي', trait: 'naval', units: { sword: 3, archer: 3, spear: 1 } },
+      { name: 'عصابات بايبو', leader: 'هان شيان', trait: 'swift', units: { sword: 3, spear: 2, archer: 2 } },
+      { name: 'قراصنة البحيرة', leader: 'جانغ باو', trait: 'naval', units: { sword: 3, archer: 3, spear: 1 } },
     ],
     routes: [
       { key: 'silk', name: 'طريق الحرير', path: ['wuwei', 'tianshui', 'changan', 'luoyang', 'xuchang'] },
@@ -38,12 +39,12 @@ const WORLD_DATA = {
   },
   umayyad: {
     plague: 'الطاعون',
-    rulers: { umayyad: ['سليمان بن عبد الملك', 41, 'merchant', 'greedy', 2], byzantine: ['ثيودوسيوس', 55], khazar: ['بارجيك', 40, 'cavalier', 'reckless', 2] },
+    rulers: { umayyad: ['سليمان بن عبد الملك', 41, 'merchant', 'greedy', 2], byzantine: ['ثيودوسيوس', 55], khazar: ['الخاقان بيهار', 44, 'cavalier', null, 2] },
     hordes: [
       {
         key: 'turgesh', name: 'الترغش', people: 'الترك الترغش', color: '#8b5a2b', from: 'ما وراء النهر', dir: 'الشرق', away: 'بلاد الصين',
         gates: [['kufa', 'mosul'], ['dvin', 'mosul']],
-        leaders: [['سولوك أبو مزاحم', 'cavalier', null, 3], ['كورصول', 'swift', 'reckless', 2], ['يلدوز طرخان', 'archer', null, 2]],
+        leaders: [['سولوك أبو مزاحم', 'cavalier', null, 3], ['كورصول', 'swift', 'reckless', 2], ['بغا طرخان', 'archer', null, 2]],
         beyond: ['إمارات الصغد', 'حصون خراسان', 'مدن فرغانة'],
         units: { horsearcher: 5, cavalry: 3, spear: 1 },
       },
@@ -57,16 +58,17 @@ const WORLD_DATA = {
       {
         key: 'pecheneg', name: 'البجناك', people: 'قبائل البجناك', color: '#7a6040', from: 'سهوب الشمال', dir: 'الشمال', away: 'الغرب',
         gates: [['atil', 'balanjar'], ['cherson']],
-        leaders: [['قتلو خان', 'swift', 'harsh', 2], ['باياندور', 'archer', null, 2]],
+        leaders: [['كوريا خان', 'swift', 'harsh', 2], ['تيراخ', 'archer', null, 2]],
         beyond: ['مراعي الأوغوز', 'قرى الفولغا'],
         units: { horsearcher: 6, cavalry: 2, spear: 1 },
       },
     ],
     migrants: [{ key: 'slavs', name: 'الصقالبة', people: 'قبائل الصقالبة', color: '#6f6a4a', from: 'ما وراء الدانوب', gates: ['constantinople', 'nicaea', 'cherson'], leader: ['بوريسلاف', 'brave', null, 2], units: { spear: 3, sword: 2, archer: 2 } }],
-    uprisings: { def: ['ثورة المحرومين', 'زعيم مجهول'], umayyad: ['ثورة الخوارج', 'بهلول بن بشر'], byzantine: ['فتنة الأيقونات', 'كوزماس'], khazar: ['انتفاضة العشائر', 'تارخان يولدوز'] },
+    uprisings: { def: ['ثورة المحرومين', 'زعيم مجهول'], umayyad: ['ثورة الخوارج', 'بهلول بن بشر'], byzantine: ['فتنة الأيقونات', 'الراهب كوزماس'], khazar: ['انتفاضة العشائر', 'تارخان يولدوز'] },
+    stars: [['عبد الله البطال', 'brave', null], ['نصر بن سيار', 'defender', null], ['أسد بن عبد الله', 'cavalier', 'harsh'], ['الحارث بن سريج', 'swift', 'disloyal'], ['قسطنطين الأرمني', 'tactician', null], ['بشر بن الوليد', 'archer', null]],
     mercs: [
-      { name: 'مرتزقة الديلم', leader: 'شهريار الديلمي', trait: 'mountaineer', units: { spear: 3, sword: 3, archer: 1 } },
-      { name: 'فرسان الأرمن', leader: 'غريغور الأرمني', trait: 'cavalier', units: { cavalry: 4, spear: 2 } },
+      { name: 'مرتزقة الديلم', leader: 'ماكان الديلمي', trait: 'mountaineer', units: { spear: 3, sword: 3, archer: 1 } },
+      { name: 'فرسان الأرمن', leader: 'سمبات الباغراتي', trait: 'cavalier', units: { cavalry: 4, spear: 2 } },
     ],
     routes: [
       { key: 'silk', name: 'طريق الحرير', path: ['kufa', 'mosul', 'raqqa', 'aleppo', 'antioch', 'tarsus'] },
@@ -91,7 +93,7 @@ const RULER_FX = {
   arrogant: { genloy: -10, txt: 'ولاء القادة −10' },
 };
 
-// --- أدوات ---
+// ——— أدوات ———
 const WX = {
   near(id, d) {
     const seen = new Set([id]);
@@ -132,7 +134,7 @@ Object.assign(Game, {
     return { aggr: p.aggr * (1 + ((f && f.ambition) || 0)), honor: p.honor, prefs: p.prefs || {} };
   },
 
-  // ------------------ التهيئة -------------------
+  // ——————————————————— التهيئة ———————————————————
   initWorld() {
     const S = this.S;
     S.crises = S.crises || [];
@@ -150,7 +152,7 @@ Object.assign(Game, {
     return clamp(74 - (g.flaw === 'disloyal' ? 24 : 0) - (g.flaw === 'arrogant' ? 8 : 0) - (g.rank - 1) * 5 + Math.round((R() - 0.5) * 14), 18, 95);
   },
 
-  // ------------------ الحكّام والعرش -------------------
+  // ——————————————————— الحكّام والعرش ———————————————————
   initRuler(fid) {
     const f = this.f(fid);
     const d = (this.wd().rulers || {})[fid];
@@ -224,19 +226,18 @@ Object.assign(Game, {
     const how = cause === 'ill' ? 'مات' : cause === 'captive' ? 'خُلع الأسير' : 'سقط';
     this.chronicle('death', `${how} ${old ? old.name : 'الحاكم'} حاكم ${f.name}${cause === 'battle' ? ' في ساحة القتال' : ''}. ${noHeir ? `بلا وريث، فرفع البلاط ${heir.name}.` : `تولّى ${heir.name} العرش.`}`, { fids: [fid], imp: 3 });
     this.event('pol', `${f.name}: ${heir.name} يتولى العرش بعد ${old ? old.name : 'الحاكم'}.`, { fids: [fid], imp: 3 });
-    if (f.isPlayer) this.alert('crit', `${how} ${old ? old.name : 'حاكمك'} و${heir.name} على العرش`, { icon: 'crown', win: 'kingdom' });
+    if (f.isPlayer) this.alert('crit', `${how} ${old ? old.name : 'حاكمك'} — ${heir.name} على العرش`, { icon: 'crown', win: 'kingdom' });
     return { heir, rivals, noHeir, old };
   },
 
-  // ------------------ ولاء القادة -------------------
+  // ——————————————————— ولاء القادة ———————————————————
   genLoyTarget(g) {
     const f = this.f(g.fid);
     if (!f || this.isRuler(g)) return 100;
     let t = 62 + (g.rank === 1 ? 10 : 0) - (g.flaw === 'disloyal' ? 18 : 0) - (g.flaw === 'arrogant' ? 6 : 0);
     t += this.rulerMod(g.fid, 'genloy');
     const size = this.nodesOf(g.fid).length;
-    const free = this.sc.adminFree || 8;
-    if (size > free) t -= (size - free) * 2;
+    if (size > 8) t -= (size - 8) * 2;
     const a = g.army ? this.army(g.army) : null;
     if (g.status === 'gov' && g.city) { const n = this.node(g.city); if (n && n.owner === g.fid && this.capitalDist(n) >= 3) t -= 6; }
     if (a) {
@@ -270,7 +271,7 @@ Object.assign(Game, {
     }
   },
 
-  // ------------------ الممالك الناشئة -------------------
+  // ——————————————————— الممالك الناشئة ———————————————————
   spawnFaction(o) {
     const S = this.S;
     const id = (o.key || 'x') + S.nextId++;
@@ -331,118 +332,45 @@ Object.assign(Game, {
     return nid;
   },
 
-  // ------------------ طريق القوافل -------------------
+  // ——————————————————— طريق القوافل ———————————————————
   initRoute() {
     const r = (this.wd().routes || [])[0];
     this.S.route = r ? { key: r.key, name: r.name, path: r.path.filter((id) => this.node(id)), bad: 0, dead: false } : null;
   },
   routeDef(key) { return (this.wd().routes || []).find((r) => r.key === key) || null; },
-  // حالة مقطع من الطريق: سالك أو مقطوع، والسبب وما يعالجه
-  routeBlock(a, b) {
+  routeSegOk(a, b) {
     const A = this.node(a), B = this.node(b);
-    if (!A || !B) return { why: 'مدينة غير موجودة', fix: '' };
-    for (const x of [A, B]) {
-      const bs = this.besiegers(x.id);
-      if (bs.length) return { k: 'siege', node: x.id, why: `${x.name} محاصرة من ${this.fname(bs[0].fid)}`, fix: `فكّ الحصار عن ${x.name} أو انتظر نهايته` };
-    }
-    if (A.owner !== B.owner && this.atWar(A.owner, B.owner) && !(A.owner === 'neutral' && B.owner === 'neutral')) {
-      return { k: 'war', why: `حرب بين ${this.fname(A.owner)} و${this.fname(B.owner)}`, fix: A.owner === this.S.player || B.owner === this.S.player ? 'الصلح، أو فتح المدينة الأخرى' : 'ينتهي بصلحهما أو بسقوط إحداهما' };
-    }
+    if (!A || !B) return false;
+    if (this.besiegers(a).length || this.besiegers(b).length) return false;
+    if (A.owner !== B.owner && this.atWar(A.owner, B.owner) && !(A.owner === 'neutral' && B.owner === 'neutral')) return false;
     for (const c of this.S.crises) {
       if (c.over) continue;
-      if (c.type === 'plague' && (c.v.quar[a] || c.v.quar[b])) return { k: 'quar', why: `حجر صحي على ${c.v.quar[a] ? A.name : B.name}`, fix: 'رفع الحجر في نافذة الوباء' };
-      if (c.type === 'horde' && c.v.blockRoute && c.v.region && (c.v.region.includes(a) || c.v.region.includes(b))) return { k: 'horde', why: `غزاة ${c.v.name} على الطريق`, fix: 'ينتهي برحيل الغزاة أو هزيمتهم' };
+      if (c.type === 'plague' && (c.v.quar[a] || c.v.quar[b])) return false;
+      if (c.type === 'horde' && c.v.blockRoute && c.v.region && (c.v.region.includes(a) || c.v.region.includes(b))) return false;
     }
-    return null;
+    return true;
   },
-  routeSegOk(a, b) { return !this.routeBlock(a, b); },
-  // قيمة المقطع: 1 سالك، 0.8 عبر تحويلة مدفوعة، 0 مقطوع
-  routeSegValue(a, b) {
-    if (this.routeSegOk(a, b)) return 1;
-    const d = this.routeDetour(a, b);
-    return d && this.routeSegOk(a, d.via) && this.routeSegOk(d.via, b) ? 0.8 : 0;
-  },
-  routeDetour(a, b) { const r = this.S.route; const d = r && r.detours && r.detours[a + '|' + b]; return d && d.until >= this.S.turn ? d : null; },
   routeHealth() {
     const r = this.S.route;
     if (!r || r.dead || r.path.length < 2) return 0;
     let ok = 0;
-    for (let i = 0; i < r.path.length - 1; i++) ok += this.routeSegValue(r.path[i], r.path[i + 1]);
+    for (let i = 0; i < r.path.length - 1; i++) if (this.routeSegOk(r.path[i], r.path[i + 1])) ok++;
     return ok / (r.path.length - 1);
   },
-  // القوافل العائدة بعد انقطاع لا تبلغ حجمها الكامل فوراً
-  routeRamp() { const r = this.S.route; return r && r.rampUntil && this.S.turn < r.rampUntil ? 0.5 : 1; },
-  routeCityValue(n) { return 7 + 3 * n.market + 4 * n.roads + 5 * (n.port || 0); },
-  routeIncome(fid, full) {
+  routeIncome(fid) {
     const r = this.S.route;
-    if (!r || (r.dead && !full)) return 0;
-    const hp = full ? 1 : this.routeHealth() * this.routeRamp();
+    if (!r || r.dead) return 0;
+    const hp = this.routeHealth();
     let t = 0;
     for (const id of r.path) {
       const n = this.node(id);
-      if (!n || n.owner !== fid || (!full && this.besieger(id))) continue;
-      t += this.routeCityValue(n);
+      if (n.owner !== fid || this.besieger(id)) continue;
+      t += 7 + 3 * n.market + 4 * n.roads + 5 * (n.port || 0);
     }
     return Math.round(t * hp);
   },
-  // مدينة بديلة تصل طرفي مقطع مقطوع عبر أرض سالكة
-  routeDetourOptions(a, b) {
-    const out = [];
-    for (const x of this.adjAll(a)) {
-      if (x === b || !this.adjAll(x).includes(b)) continue;
-      if (this.routeSegOk(a, x) && this.routeSegOk(x, b)) out.push(x);
-    }
-    return out;
-  },
-  routeDetourCost() { return 120; },
-  setRouteDetour(fid, a, b, via) {
-    const r = this.S.route, F = this.f(fid);
-    if (!r || r.dead) return 'الطريق متوقف';
-    if (!r.path.some((id) => this.node(id).owner === fid)) return 'لا مدينة لك على الطريق';
-    if (F.gold < this.routeDetourCost()) return 'الذهب لا يكفي';
-    if (!this.routeDetourOptions(a, b).includes(via)) return 'التحويلة غير سالكة';
-    F.gold -= this.routeDetourCost();
-    r.detours = r.detours || {};
-    r.detours[a + '|' + b] = { via, until: this.S.turn + 6, by: fid };
-    this.event('eco', `${F.name} تحوّل القوافل على ${r.name} عبر ${this.node(via).name} لستة أدوار.`, { fids: [fid], node: via, imp: 1 });
-    return null;
-  },
-  // استئناف طريق متوقف بعد زوال أسباب انقطاعه: بكلفة، والقوافل تعود بنصف حجمها ثلاثة أدوار
-  routeResumeCost() { const r = this.S.route; return 150 + 20 * (r ? r.path.length : 0); },
-  canResumeRoute(fid) {
-    const r = this.S.route;
-    if (!r || !r.dead) return 'الطريق يعمل';
-    if (!r.path.some((id) => this.node(id).owner === fid)) return 'لا مدينة لك على الطريق';
-    for (let i = 0; i < r.path.length - 1; i++) { const bl = this.routeBlock(r.path[i], r.path[i + 1]); if (bl) return `ما زال مقطوعاً: ${bl.why}`; }
-    if (this.f(fid).gold < this.routeResumeCost()) return 'الذهب لا يكفي';
-    return null;
-  },
-  resumeRoute(fid) {
-    const err = this.canResumeRoute(fid);
-    if (err) return err;
-    const r = this.S.route;
-    this.f(fid).gold -= this.routeResumeCost();
-    r.dead = false; r.bad = 0; r.rampUntil = this.S.turn + 3; r.deadSince = null;
-    const c = this.S.crises.find((x) => !x.over && x.type === 'route');
-    if (c) { this.cLog(c, `${this.fname(fid)} تموّل حراسة ${r.name} فتعود القوافل إليه.`, { chron: true, imp: 2 }); this.crisisEnd(c, 'resumed'); }
-    this.chronicle('crisis', `عادت القوافل إلى ${r.name} بتمويل ${this.fname(fid)}.`, { fids: [fid], imp: 2, icon: 'camel' });
-    return null;
-  },
-  // تتبّع المقاطع المقطوعة وبداية انقطاعها (للشرح)
-  routeTrack() {
-    const r = this.S.route;
-    if (!r) return;
-    r.down = r.down || {};
-    for (let i = 0; i < r.path.length - 1; i++) {
-      const k = r.path[i] + '|' + r.path[i + 1];
-      const bl = this.routeBlock(r.path[i], r.path[i + 1]);
-      if (bl) { if (!r.down[k] || r.down[k].k !== bl.k) r.down[k] = { since: this.S.turn, k: bl.k }; }
-      else delete r.down[k];
-    }
-    if (r.detours) for (const k in r.detours) if (r.detours[k].until < this.S.turn) delete r.detours[k];
-  },
 
-  // ------------------ محرك الأزمات -------------------
+  // ——————————————————— محرك الأزمات ———————————————————
   crisisStart(type, o = {}) {
     const def = CRISES[type];
     if (!def) return null;
@@ -508,7 +436,7 @@ Object.assign(Game, {
     if (F.isPlayer) { this.S.dir.lastDecision = this.S.turn; if (this.track) this.track('crisis'); }
     return o.k;
   },
-  // أفعال متاحة في أي وقت (مثل الحجر الصحي)، تظهر في نافذة الأزمة
+  // أفعال متاحة في أي وقت (مثل الحجر الصحي) — تظهر في نافذة الأزمة
   crisisActions(c, fid) {
     const def = CRISES[c.type];
     const list = (def.actions ? def.actions.call(def, c, fid) : []) || [];
@@ -562,14 +490,14 @@ Object.assign(Game, {
     return out;
   },
 
-  // ------------------ القوة التقديرية -------------------
+  // ——————————————————— القوة التقديرية ———————————————————
   avgMajorRegs() {
     const ms = this.aliveMajors().filter((id) => !this.f(id).kind);
     if (!ms.length) return 20;
     return ms.reduce((t, id) => t + this.armiesOf(id).reduce((s, a) => s + a.regs.length, 0), 0) / ms.length;
   },
 
-  // ------------------ دورة العالم -------------------
+  // ——————————————————— دورة العالم ———————————————————
   async worldTick() {
     const S = this.S;
     this.initWorld();
@@ -601,21 +529,10 @@ Object.assign(Game, {
     this.ambitionScan();
     // طريق القوافل
     const r = S.route;
-    this.routeTrack();
     if (r && !r.dead) {
       const hp = this.routeHealth();
       r.bad = hp < 0.5 ? (r.bad || 0) + 1 : 0;
       if (r.bad >= 3 && !S.crises.some((c) => !c.over && c.type === 'route')) this.crisisStart('route', { kind: 'collapse' });
-    } else if (r && r.dead && !S.crises.some((c) => !c.over && c.type === 'route')) {
-      // طريق متوقف بلا سباق جارٍ: يعود وحده إن بقي سالكاً دورين، بقوافل أقل في البداية
-      let ok = true;
-      for (let i = 0; i < r.path.length - 1; i++) if (!this.routeSegOk(r.path[i], r.path[i + 1])) ok = false;
-      r.clearTurns = ok ? (r.clearTurns || 0) + 1 : 0;
-      if (r.clearTurns >= 2) {
-        r.dead = false; r.bad = 0; r.clearTurns = 0; r.rampUntil = S.turn + 3; r.deadSince = null;
-        this.chronicle('crisis', `عادت القوافل إلى ${r.name} بعد أن هدأت الطرق.`, { fids: WX.owners(r.path), imp: 2, icon: 'camel' });
-        if (r.path.some((id) => this.node(id).owner === S.player)) this.alert('info', `عادت القوافل إلى ${r.name} (بنصف حجمها ثلاثة أدوار)`, { icon: 'camel', win: 'route' });
-      }
     }
     // المملكة: التابعون، الحكّام، التطوير، الثأر، الفصول، الأهداف
     if (this.realmTick) await this.realmTick();
@@ -662,7 +579,7 @@ Object.assign(Game, {
     }
   },
 
-  // ------------------ مخرج الحملة -------------------
+  // ——————————————————— مخرج الحملة ———————————————————
   // يراقب الإيقاع: الهدوء الطويل، الهيمنة، الاقتصاد المتخم، التكرار، جمود الممالك.
   // لا يغش: يختار أزمة معقولة تاريخياً من الأنظمة القائمة، ولا يخلق جيوشاً بجانب اللاعب.
   director() {
@@ -729,7 +646,7 @@ Object.assign(Game, {
     return out;
   },
 
-  // ------------------ القياس الداخلي (للمطوّر) -------------------
+  // ——————————————————— القياس الداخلي (للمطوّر) ———————————————————
   track(kind) {
     const st = this.S && this.S.stats;
     if (!st) return;
@@ -755,7 +672,7 @@ Object.assign(Game, {
 // كل أزمة: مراحل تُنذر (stages)، قرارات (opts/decide/ai)، أفعال (actions/act)، آثار (mods)، علامات على الخريطة (markers)
 const CRISES = {};
 
-// --- 1) زحف القبائل: شائعات ← لاجئون ← مملكة بعيدة تسقط ← رسول يطلب الجزية ← غزو ← عاصفة ---
+// ——— 1) زحف القبائل: شائعات ← لاجئون ← مملكة بعيدة تسقط ← رسول يطلب الجزية ← غزو ← عاصفة ———
 CRISES.horde = {
   icon: 'horse',
   title(c) { return `زحف ${c.v.name}`; },
@@ -781,15 +698,12 @@ CRISES.horde = {
     const gates = hd.gates[gi].filter((id) => Game.node(id));
     if (!gates.length) return false;
     const regs = clamp(Math.round(Game.avgMajorRegs() * (0.95 + R() * 0.4)), 14, 32);
-    // لا يعود قائد سبق ظهوره (حياً أو ميتاً): إن نفدت الأسماء يقودهم خليفة متخيَّل
-    const freeL = hd.leaders.filter((l) => !Game.nameTaken(l[0]));
-    const lead = freeL.length ? pick(freeL) : [`خليفة ${hd.leaders[0][0]}`, ...hd.leaders[0].slice(1)];
     c.v = {
       key: hd.key, name: hd.name, people: hd.people, color: hd.color, from: hd.from, dir: hd.dir, away: hd.away, gates,
-      leader: lead, subs: freeL, beyond: pick(hd.beyond), units: hd.units, regs, men: regs * 38,
+      leader: pick(hd.leaders), subs: hd.leaders, beyond: pick(hd.beyond), units: hd.units, regs, men: regs * 38,
       paid: [], refused: [], stalled: {}, reask: [], redirect: null, ally: null, targets: [], fid: null,
     };
-    c.v.subs = freeL.filter((l) => l !== c.v.leader);
+    c.v.subs = hd.leaders.filter((l) => l !== c.v.leader);
     c.node = gates[0];
   },
   stages: [
@@ -853,7 +767,7 @@ CRISES.horde = {
       c.fids = [...new Set([...c.fids, ...v.targets])];
       if (!v.targets.length) { c.next = Game.S.turn + 1; return; }
       Game.cLog(c, `رسل ${v.leader[0]} في بلاط ${WX.fnames(v.targets)}: «${v.trib} ذهباً، وإلا فالسيف».`, { chron: true, imp: 3 });
-      for (const fid of v.targets) Game.crisisAsk(c, fid, 'envoy', { turns: 1, urgent: true, def: 'refuse', title: `رسول ${v.leader[0]} يطلب الجزية`, alert: `رسول ${v.name} يطلب ${v.trib} ذهباً، قرّر` });
+      for (const fid of v.targets) Game.crisisAsk(c, fid, 'envoy', { turns: 1, urgent: true, def: 'refuse', title: `رسول ${v.leader[0]} يطلب الجزية`, alert: `رسول ${v.name} يطلب ${v.trib} ذهباً — قرّر` });
       c.next = Game.S.turn + 1;
     },
     function invasion(c) {
@@ -918,7 +832,7 @@ CRISES.horde = {
       for (const f2 of Game.aliveMajors()) c.known[f2] = 2;
       c.node = where[0].id;
       const victim = target === 'neutral' ? 'المدن المستقلة' : Game.fname(target);
-      Game.cLog(c, `${v.people} تعبر الحدود! ${v.leader[0]} يطبق على ${WX.names(where.map((n) => n.id))} (${victim})${v.redirect ? '، وتقول الألسن إن ذهب ' + Game.fname(v.redirect.by) + ' وجّهه' : ''}.`, { chron: true, imp: 3, kind: 'war', icon: 'horse' });
+      Game.cLog(c, `${v.people} تعبر الحدود! ${v.leader[0]} يطبق على ${WX.names(where.map((n) => n.id))} (${victim})${v.redirect ? ' — وتقول الألسن إن ذهب ' + Game.fname(v.redirect.by) + ' وجّهه' : ''}.`, { chron: true, imp: 3, kind: 'war', icon: 'horse' });
       if (target === S.player) Game.alert('crit', `${v.name} تغزو أرضك وتحاصر ${where[0].name}!`, { icon: 'horse', node: where[0].id, win: 'crisis', crisis: c.id, key: 'crisis:' + c.id });
       else if (WX.alive(S.player)) Game.alert('imp', `${v.name} تغزو ${victim}`, { icon: 'horse', node: where[0].id, win: 'crisis', crisis: c.id, key: 'crisis:' + c.id });
       c.next = S.turn + 1;
@@ -1006,7 +920,7 @@ CRISES.horde = {
       const vic = data && data.victim;
       return [
         { k: 'aid', label: `أمدّ ${Game.fname(vic)} بالمال`, icon: 'coins', desc: 'علاقة أفضل كثيراً، والغزاة يُستنزفون عندهم لا عندك.', gold: 150 },
-        { k: 'none', label: 'راقب من بعيد', icon: 'eye', desc: 'قد تكون فرصة لضرب المنشغلين، من نافذة الدبلوماسية.' },
+        { k: 'none', label: 'راقب من بعيد', icon: 'eye', desc: 'قد تكون فرصة لضرب المنشغلين — من نافذة الدبلوماسية.' },
       ];
     }
     return [];
@@ -1084,10 +998,9 @@ CRISES.horde = {
     const gs = known >= 2 ? v.gates : [...v.gates, ...((Game.wd().hordes || []).find((h2) => h2.key === v.key) || { gates: [] }).gates.flat()];
     const pts = gs.map((id) => Game.node(id)).filter(Boolean);
     const cx = pts.reduce((t, n) => t + n.x, 0) / pts.length, cy = pts.reduce((t, n) => t + n.y, 0) / pts.length;
-    const W = Game.sc.w || MW, H = Game.sc.h || MH;
-    const dl = cx, dr = W - cx, dt = cy, db = H - cy;
+    const dl = cx, dr = MW - cx, dt = cy, db = MH - cy;
     const m = Math.min(dl, dr, dt, db);
-    const ex = m === dl ? 0 : m === dr ? W : cx, ey = m === dt ? 0 : m === db ? H : cy;
+    const ex = m === dl ? 0 : m === dr ? MW : cx, ey = m === dt ? 0 : m === db ? MH : cy;
     const prog = [0.12, 0.3, 0.5, 0.62][Math.max(0, c.stage)] || 0.62;
     const x = lerp(ex, cx, prog), y = lerp(ey, cy, prog);
     return [{ kind: 'threat', x, y, tx: cx, ty: cy, color: v.color, icon: 'horse', label: v.revealed || known >= 2 ? `${v.name} ~${fmt(Math.round(v.men / 100) * 100)}` : `${v.name} ؟`, sure: known >= 2 }];
@@ -1097,7 +1010,7 @@ CRISES.horde = {
   },
 };
 
-// --- 2) هجرة قبلية: قوم يطلبون أرضاً، استقرار أو سيف أو توجيه نحو الخصم ---
+// ——— 2) هجرة قبلية: قوم يطلبون أرضاً — استقرار أو سيف أو توجيه نحو الخصم ———
 CRISES.migration = {
   icon: 'banner',
   title(c) { return `هجرة ${c.v.name}`; },
@@ -1115,7 +1028,6 @@ CRISES.migration = {
     const gates = md.gates.filter((id) => Game.node(id) && Game.node(id).owner !== 'neutral' && WX.alive(Game.node(id).owner));
     if (!gates.length) return false;
     c.v = { ...md, gate: gates[0], asked: [], regs: clamp(Math.round(Game.avgMajorRegs() * 0.4), 6, 14) };
-    if (Game.nameTaken(md.leader[0])) c.v.leader = [`ابن ${md.leader[0]}`, ...md.leader.slice(1)];
     c.node = gates[0];
     c.fids = [Game.node(gates[0]).owner];
   },
@@ -1199,7 +1111,7 @@ CRISES.migration = {
   markers(c) { return c.stage < 1 ? [] : [{ kind: 'camp', node: c.v.gate, color: c.v.color, icon: 'banner' }]; },
 };
 
-// --- 3) الطاعون: ينتقل على الطرق ومع الجيوش، حجر أو صدقات أو حرق ---
+// ——— 3) الطاعون: ينتقل على الطرق ومع الجيوش — حجر أو صدقات أو حرق ———
 CRISES.plague = {
   icon: 'skull',
   title(c) { return `${c.v.name} في ${Game.node(c.node).name}`; },
@@ -1315,7 +1227,7 @@ CRISES.plague = {
   markers(c) { return Object.keys(c.v.inf).map((id) => ({ kind: 'plague', node: id, quar: !!c.v.quar[id], icon: 'skull' })); },
 };
 
-// --- 4) الجفاف ثم القحط: إنذار مبكر ← حقول يابسة ← عودة المطر ---
+// ——— 4) الجفاف ثم القحط: إنذار مبكر ← حقول يابسة ← عودة المطر ———
 CRISES.famine = {
   icon: 'drop',
   title(c) { return `قحط في ${Game.node(c.node).name} وما حولها`; },
@@ -1412,7 +1324,7 @@ CRISES.famine = {
   markers(c) { return c.v.region.map((id) => ({ kind: 'famine', node: id, on: c.v.on, icon: 'drop' })); },
 };
 
-// --- 5) العرش: مرض الحاكم ← موته أو أسره ← الوريث ← من ينازعه؟ ---
+// ——— 5) العرش: مرض الحاكم ← موته أو أسره ← الوريث ← من ينازعه؟ ———
 CRISES.succession = {
   icon: 'crown',
   title(c) { return `عرش ${Game.fname(c.v.fid)}`; },
@@ -1432,7 +1344,7 @@ CRISES.succession = {
         v.phase = 'ill';
         Game.cLog(c, `${v.rname} حاكم ${F.name} طريح الفراش، والأطباء لا يبشّرون.`, { chron: true, imp: 2, kind: 'crisis' });
         c.next = Game.S.turn + 2 + (R() < 0.5 ? 1 : 0);
-        if (F.isPlayer) Game.crisisAsk(c, v.fid, 'ill', { turns: 2, def: 'wait', title: `${v.rname} مريض، العرش في خطر` });
+        if (F.isPlayer) Game.crisisAsk(c, v.fid, 'ill', { turns: 2, def: 'wait', title: `${v.rname} مريض — العرش في خطر` });
         return;
       }
       if (v.cause === 'captive') {
@@ -1559,7 +1471,7 @@ CRISES.succession = {
         } else {
           F.gold += Game.ransomPrice(g) * 3;
           c.log.push({ turn: Game.S.turn, text: `${Game.fname(g.captor)} ترفض الفدية!` });
-          if (F.isPlayer) Game.crisisAsk(c, fid, 'captive', { turns: 1, urgent: true, def: 'crown', title: `رُفضت الفدية، ${v.rname} ما زال أسيراً` });
+          if (F.isPlayer) Game.crisisAsk(c, fid, 'captive', { turns: 1, urgent: true, def: 'crown', title: `رُفضت الفدية — ${v.rname} ما زال أسيراً` });
           else this.decide(c, fid, 'captive', 'crown');
         }
       } else if (k === 'crown') {
@@ -1602,7 +1514,7 @@ CRISES.succession = {
   markers(c) { return c.node && Game.node(c.node) && Game.node(c.node).owner === c.v.fid ? [{ kind: 'crown', node: c.node, icon: c.v.phase === 'civil' ? 'crownbroken' : 'crown' }] : []; },
 };
 
-// --- 6) قائد طموح: ولائم ← احتجاز الضرائب ← رسائل مع العدو ← تمرد ---
+// ——— 6) قائد طموح: ولائم ← احتجاز الضرائب ← رسائل مع العدو ← تمرد ———
 CRISES.rebel = {
   icon: 'dagger',
   title(c) { return `طموح ${Game.gname(Game.gen(c.v.gen))}`; },
@@ -1720,7 +1632,7 @@ CRISES.rebel = {
         Game.crisisEnd(c, 'killed');
       } else {
         F.rep = Math.max(0, F.rep - 10);
-        c.log.push({ turn: Game.S.turn, text: `نجا ${g.name} من خنجر مأجور، وعرف من أرسله.` });
+        c.log.push({ turn: Game.S.turn, text: `نجا ${g.name} من خنجر مأجور — وعرف من أرسله.` });
         g.loy = 0;
         c.stage = 2; c.next = Game.S.turn;
       }
@@ -1739,7 +1651,7 @@ CRISES.rebel = {
   markers(c) { return c.node && c.stage < 3 ? [{ kind: 'dagger', node: c.node, icon: 'dagger' }] : []; },
 };
 
-// --- 7) حلف ضد المهيمن: رسل سرية ← حلف ← إنذار ← حرب الحلف ---
+// ——— 7) حلف ضد المهيمن: رسل سرية ← حلف ← إنذار ← حرب الحلف ———
 CRISES.coalition = {
   icon: 'treaty',
   title(c) { return `حلف ضد ${Game.fname(c.v.dom)}`; },
@@ -1890,7 +1802,7 @@ CRISES.coalition = {
   },
 };
 
-// --- 8) مدينة غنية تطالب بميثاق: حكم ذاتي أو قمع أو استقلال ---
+// ——— 8) مدينة غنية تطالب بميثاق: حكم ذاتي أو قمع أو استقلال ———
 CRISES.freecity = {
   icon: 'scroll',
   title(c) { return `مطالب ${Game.node(c.node).name}`; },
@@ -1963,7 +1875,7 @@ CRISES.freecity = {
   markers(c) { return [{ kind: 'scroll', node: c.node, icon: 'scroll' }]; },
 };
 
-// --- 9) دعوة وانتفاضة: داعية ← انتشار ← ثورة ---
+// ——— 9) دعوة وانتفاضة: داعية ← انتشار ← ثورة ———
 CRISES.uprising = {
   icon: 'torch',
   title(c) { return c.v.title; },
@@ -2078,7 +1990,7 @@ CRISES.uprising = {
   markers(c) { return c.v.rfid ? [] : c.v.cities.map((id) => ({ kind: 'torch', node: id, icon: 'torch' })); },
 };
 
-// --- 10) نجم صاعد أو فرقة مرتزقة: من يدفع أكثر؟ ومن لا يدفع يواجهها ---
+// ——— 10) نجم صاعد أو فرقة مرتزقة: من يدفع أكثر؟ ومن لا يدفع يواجهها ———
 CRISES.star = {
   icon: 'star',
   title(c) { return c.v.merc ? c.v.name : `النجم الصاعد ${c.v.name}`; },
@@ -2099,15 +2011,13 @@ CRISES.star = {
     if (merc) {
       const m = pick(wd.mercs);
       if (Game.S.crises.some((x) => !x.over && x.type === 'star' && x.v.name === m.name)) return false;
-      if (Game.nameTaken && Game.nameTaken(m.leader)) return false;
       c.v = { merc: true, name: m.name, leader: m.leader, trait: m.trait, units: m.units, bids: {}, regs: 6, home: home.id };
     } else {
-      // النجوم الصاعدة من المخزون التاريخي نفسه، فلا يظهر قائد مرتين ولا يعود من مات
-      const busy = new Set(Game.S.crises.filter((x) => !x.over && x.type === 'star' && !x.v.merc).map((x) => x.v.name));
-      const free = Game.eligible ? Game.eligible(null).filter((e) => e.star && !busy.has(e.n)) : [];
+      const used = new Set(Object.values(Game.S.gens).map((g) => g.name));
+      const free = (wd.stars || []).filter((s) => !used.has(s[0]));
       if (!free.length) return false;
       const s = pick(free);
-      c.v = { merc: false, name: s.n, trait: s.trait, flaw: s.flaw, bids: {}, home: home.id };
+      c.v = { merc: false, name: s[0], trait: s[1], flaw: s[2], bids: {}, home: home.id };
     }
     c.node = home.id;
     c.fids = [];
@@ -2196,7 +2106,7 @@ CRISES.star = {
   markers(c) { return [{ kind: 'star', node: c.v.home, icon: c.v.merc ? 'coins' : 'star' }]; },
 };
 
-// --- 11) طريق القوافل: انقطاع الطريق أو طريق جديد، المال يشتري المسار ---
+// ——— 11) طريق القوافل: انقطاع الطريق أو طريق جديد — المال يشتري المسار ———
 CRISES.route = {
   icon: 'camel',
   title(c) { return c.v.kind === 'collapse' ? `انقطاع ${c.v.oldName}` : `طريق جديد: ${c.v.alts.map((a) => a.name).join(' أو ')}`; },
@@ -2209,10 +2119,9 @@ CRISES.route = {
   },
   start(c, o) {
     const r = Game.S.route;
-    // عند الانقطاع يبقى الطريق القديم خياراً: إن زال سبب انقطاعه واستُثمر فيه عاد
-    const rs = (Game.wd().routes || []).filter((x) => !r || x.key !== r.key || o.kind === 'collapse');
-    if (!rs.length || (rs.length === 1 && r && rs[0].key === r.key)) return false;
-    c.v = { kind: o.kind || 'shift', oldKey: r ? r.key : null, oldName: r ? r.name : '', alts: rs.map((x) => ({ key: x.key, name: x.name, path: x.path.filter((id) => Game.node(id)), old: !!(r && x.key === r.key) })), bids: {} };
+    const rs = (Game.wd().routes || []).filter((x) => !r || x.key !== r.key);
+    if (!rs.length) return false;
+    c.v = { kind: o.kind || 'shift', oldKey: r ? r.key : null, oldName: r ? r.name : '', alts: rs.map((x) => ({ key: x.key, name: x.name, path: x.path.filter((id) => Game.node(id)) })), bids: {} };
     c.fids = WX.owners(c.v.alts.flatMap((a) => a.path));
     c.node = c.v.alts[0].path[0];
   },
@@ -2223,7 +2132,7 @@ CRISES.route = {
       for (const f of c.fids) c.known[f] = 2;
       if (v.kind === 'collapse') {
         const r = Game.S.route;
-        if (r) { r.dead = true; r.deadSince = Game.S.turn; }
+        if (r) r.dead = true;
         Game.cLog(c, `توقفت القوافل على ${v.oldName}: الطريق لم يعد آمناً. التجار يبحثون عن بديل عبر ${v.alts.map((a) => a.name).join(' أو ')}.`, { chron: true, imp: 3, kind: 'crisis' });
       } else Game.cLog(c, `تجار أغراب يسألون عن طريق جديد عبر ${v.alts.map((a) => a.name).join(' أو ')}. من يمهّد الطريق يربح القوافل.`, { chron: true, imp: 2 });
       for (const f of c.fids) Game.crisisAsk(c, f, 'invest', { turns: 2, def: 'none', title: 'سباق على طريق القوافل' });
@@ -2231,32 +2140,22 @@ CRISES.route = {
     },
     function settle(c) {
       const v = c.v;
-      // الطريق الذي ما زال مقطوعاً لا يُختار
-      const blocked = (a) => a.path.some((id, i) => i < a.path.length - 1 && !Game.routeSegOk(id, a.path[i + 1]));
-      const score = (a) => (blocked(a) ? -1e6 : 0) + a.path.reduce((t, id) => { const n = Game.node(id); return t + (v.bids[n.owner] || 0) / Math.max(1, a.path.filter((x) => Game.node(x).owner === n.owner).length) + 30 * (n.roads + (n.port || 0)) + 10 * n.market; }, 0);
+      const score = (a) => a.path.reduce((t, id) => { const n = Game.node(id); return t + (v.bids[n.owner] || 0) / Math.max(1, a.path.filter((x) => Game.node(x).owner === n.owner).length) + 30 * (n.roads + (n.port || 0)) + 10 * n.market; }, 0);
       const pickA = v.alts.slice().sort((a, b) => score(b) - score(a))[0];
       const old = v.oldKey && Game.routeDef(v.oldKey);
       const keepOld = v.kind === 'shift' && old && score(pickA) < 80;
       if (keepOld) { Game.cLog(c, `بقيت القوافل على ${v.oldName}.`, { fids: c.fids }); Game.crisisEnd(c, 'kept'); return; }
-      if (score(pickA) < 0) { c.next = Game.S.turn + 2; Game.cLog(c, 'كل الطرق ما زالت مقطوعة: التجار ينتظرون.', { fids: c.fids }); return; }
-      if (pickA.old) {
-        const r = Game.S.route;
-        r.dead = false; r.bad = 0; r.rampUntil = Game.S.turn + 3; r.deadSince = null;
-        Game.cLog(c, `عادت القوافل إلى ${pickA.name}، بنصف حجمها في البداية.`, { chron: true, imp: 3, kind: 'crisis' });
-        Game.crisisEnd(c, 'revived');
-        return;
-      }
-      Game.S.route = { key: pickA.key, name: pickA.name, path: pickA.path.slice(), bad: 0, dead: false, rampUntil: Game.S.turn + 2 };
+      Game.S.route = { key: pickA.key, name: pickA.name, path: pickA.path.slice(), bad: 0, dead: false };
       const winners = WX.owners(pickA.path);
       Game.cLog(c, `القوافل تسلك ${pickA.name} الآن. الذهب يتدفق على ${WX.fnames(winners) || 'المدن المستقلة'}.`, { chron: true, imp: 3, kind: 'crisis' });
-      if (winners.includes(Game.S.player)) Game.alert('info', `${pickA.name} يمر بأرضك، دخل القوافل لك`, { icon: 'camel' });
+      if (winners.includes(Game.S.player)) Game.alert('info', `${pickA.name} يمر بأرضك — دخل القوافل لك`, { icon: 'camel' });
       Game.crisisEnd(c, 'settled');
     },
   ],
   opts(c, fid) {
-    const mine = c.v.alts.filter((a) => a.path.some((id) => Game.node(id).owner === fid)).map((a) => (a.old ? 'إحياء ' : '') + a.name);
+    const mine = c.v.alts.filter((a) => a.path.some((id) => Game.node(id).owner === fid)).map((a) => a.name);
     return [
-      { k: 'i250', label: 'استثمر 250', icon: 'gold', desc: `محطات وحراسة على ${mine.join(' و')}. الطريق الذي ما زال مقطوعاً لا يُختار.`, gold: 250, amt: 250 },
+      { k: 'i250', label: 'استثمر 250', icon: 'gold', desc: `محطات وحراسة على ${mine.join(' و')}.`, gold: 250, amt: 250 },
       { k: 'i120', label: 'استثمر 120', icon: 'coins', desc: 'مساهمة متواضعة.', gold: 120, amt: 120 },
       { k: 'none', label: 'لا', icon: 'close', desc: 'الطرق المعبّدة والموانئ على الطريق تحسب لك وحدها.' },
     ];

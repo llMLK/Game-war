@@ -12,7 +12,7 @@ class MenuScene {
     this.art = new MapArt(sc, { colorOf: (o) => cols[o] || NEUTRAL.color });
     const r = rng(hashStr(sc.id + 'menu'));
     this.nodes = sc.nodes.map((n) => ({ ...n, market: n.pop > 15000 ? 1 + (r() < 0.5 ? 1 : 0) : 0, farm: r() < 0.6 ? 1 : 0, granary: n.walls >= 2 ? 1 : 0, barracks: n.capital ? 1 : 0, port: 0 }));
-    this.cam = new Camera(this.art.W, this.art.H);
+    this.cam = new Camera(MW, MH);
     this.cam.cover = true;
     this.t = 0;
     this.path = this.nodes.filter((n) => n.capital);
@@ -20,7 +20,7 @@ class MenuScene {
   enter() { this.fit(); }
   onResize() { this.fit(); }
   fit() {
-    const cover = Math.max(App.W / this.art.W, App.H / this.art.H);
+    const cover = Math.max(App.W / MW, App.H / MH);
     this.cam.minZ = cover; this.cam.maxZ = cover * 4;
     this.cam.z = cover * 1.8;
   }
@@ -37,12 +37,11 @@ class MenuScene {
     ctx.fillStyle = '#2b2217'; ctx.fillRect(0, 0, App.canvas.width, App.canvas.height);
     this.art.renderTerritory(this.nodes);
     this.cam.apply(ctx);
-    ctx.drawImage(this.art.bg, 0, 0, this.art.W, this.art.H);
-    ctx.drawImage(this.art.terr, 0, 0, this.art.W, this.art.H);
+    ctx.drawImage(this.art.bg, 0, 0, MW, MH);
+    ctx.drawImage(this.art.terr, 0, 0, MW, MH);
     for (const e of this.sc.edges) {
       const A = this.nodes.find((n) => n.id === e[0]), B = this.nodes.find((n) => n.id === e[1]);
       ctx.setLineDash(e[2] === 'water' ? [2, 4] : [3.5, 3]); ctx.strokeStyle = 'rgba(95,65,35,.6)'; ctx.lineWidth = 1.4;
-      if (e[3]) { CampaignScene.prototype.smoothPath(ctx, [[A.x, A.y], ...e[3], [B.x, B.y]]); ctx.stroke(); continue; }
       ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
     }
     ctx.setLineDash([]);
@@ -59,7 +58,7 @@ function showMainMenu() {
     h('div', { class: 'menu-card' },
       h('div', { class: 'title' },
         h('h1', null, 'سيوف الممالك'),
-        h('p', null, 'حرب استراتيجية في العصور القديمة، الخطة تهزم العدد'),
+        h('p', null, 'حرب استراتيجية في العصور القديمة — الخطة تهزم العدد'),
       ),
       h('div', { class: 'menu-btns' },
         hasSave ? h('button', { class: 'btn primary big', onclick: () => continueCampaign() },
@@ -76,7 +75,7 @@ function showMainMenu() {
           h('button', { class: 'btn ghost', onclick: () => goFullscreen() }, 'ملء الشاشة'),
         ),
       ),
-      h('p', { class: 'rotate-hint' }, 'تعمل اللعبة عمودياً وأفقياً، والوضع الأفقي يعرض خريطة أوسع'),
+      h('p', { class: 'rotate-hint' }, 'أدر الهاتف أفقياً لأفضل تجربة'),
     ),
   );
   App.ui.appendChild(menu);
@@ -91,8 +90,7 @@ function goFullscreen() {
 }
 
 function newCampaignFlow() {
-  // الحملات الجديدة تبدأ افتراضياً على الخريطة الموسّعة، والسيناريوهات الأخرى متاحة
-  const state = { sc: SCENARIOS.caliphate ? 'caliphate' : 'threeKingdoms', fac: null, diff: 'normal' };
+  const state = { sc: 'threeKingdoms', fac: null, diff: 'normal' };
   const card = h('div', { class: 'menu-card wide' });
   const render = () => {
     card.innerHTML = '';

@@ -23,7 +23,7 @@ const Game = {
   S: null,
   hooks: {},
 
-  // ------------------ الإنشاء -------------------
+  // ——————————————————— الإنشاء ———————————————————
   newGame(scId, player, diff) {
     const sc = SCENARIOS[scId];
     const S = {
@@ -83,7 +83,7 @@ const Game = {
     };
   },
 
-  // ------------------ الحفظ والتحميل -------------------
+  // ——————————————————— الحفظ والتحميل ———————————————————
   save(slot = 'auto') {
     if (!this.S) return false;
     const f = this.f(this.S.player);
@@ -92,16 +92,23 @@ const Game = {
   },
   readSlot(slot) {
     const d = store.get(SAVE_PREFIX + slot);
-    if (d && d.S) return d;
+    if (d && d.S) { d.bad = this.saveProblem(d); return d; }
     if (slot === 'auto') {
       const old = store.get(SAVE_KEY_V1);
       if (old && old.v === 1) return { meta: { scenario: old.scenario, player: old.player, fname: (old.factions[old.player] || {}).name, turn: old.turn, time: 0, over: old.over }, S: old };
     }
     return null;
   },
+  // حفظ لا يمكن تحميله: سيناريو غير موجود في هذا الإصدار، أو حفظ من الإصدار الرابع الذي أُلغي
+  saveProblem(d) {
+    if (!d.meta || !SCENARIOS[d.meta.scenario]) return 'من خريطة لم تعد موجودة في هذا الإصدار';
+    if (d.S.rec !== undefined || d.S.cid !== undefined) return 'من الإصدار الرابع الملغى، وبنيته لا تتوافق مع هذا الإصدار';
+    return null;
+  },
+  deleteSlot(slot) { store.del(SAVE_PREFIX + slot); if (slot === 'auto') store.del(SAVE_KEY_V1); },
   load(slot = 'auto') {
     const d = this.readSlot(slot);
-    if (!d) return null;
+    if (!d || d.bad) return null;
     let S = JSON.parse(JSON.stringify(d.S));
     if (!S.v || S.v === 1) S = this.migrateV1(S);
     this.S = S;
@@ -110,7 +117,7 @@ const Game = {
     return S;
   },
   listSaves() { return SAVE_SLOTS.map((s) => ({ slot: s, data: this.readSlot(s) })); },
-  hasSave() { const d = this.readSlot('auto'); return !!(d && !d.meta.over); },
+  hasSave() { const d = this.readSlot('auto'); return !!(d && !d.bad && !d.meta.over); },
   clearSave() { store.del(SAVE_PREFIX + 'auto'); store.del(SAVE_KEY_V1); },
 
   // ترقية حفظ الإصدار الأول
@@ -179,7 +186,7 @@ const Game = {
     if (this.initWorld) this.initWorld();
   },
 
-  // ------------------ مساعدات -------------------
+  // ——————————————————— مساعدات ———————————————————
   get sc() { return SCENARIOS[this.S.scenario]; },
   f(id) { return this.S.factions[id]; },
   node(id) { return this.S.nodes.find((n) => n.id === id); },
@@ -216,13 +223,13 @@ const Game = {
   year() { return this.sc.startYear + Math.floor(this.S.turn / 4); },
   isWinter() { return this.S.turn % 4 === 3; },
   fname(fid) { return this.f(fid) ? this.f(fid).name : fid; },
-  gname(g) { return g ? g.name : 'بلا قائد'; },
+  gname(g) { return g ? g.name : '—'; },
   hasTrait(a, t) { const g = this.armyGen(a); return !!(g && g.trait === t); },
   hasFlaw(a, t) { const g = this.armyGen(a); return !!(g && g.flaw === t); },
   menOf(list) { return list.reduce((t, r) => t + r.men, 0); },
   armyMen(a) { const g = this.armyGen(a); return this.menOf(a.regs) + (g ? this.genMen(g) : 0); },
 
-  // ------------------ سجل الأحداث -------------------
+  // ——————————————————— سجل الأحداث ———————————————————
   event(cat, text, o = {}) {
     const S = this.S;
     if (S.log.slice(-12).some((e) => e.turn === S.turn && e.text === text)) return;
@@ -243,8 +250,8 @@ const Game = {
     return e.imp >= 2 && e.fids.some((id) => id !== 'neutral' && this.f(id) && this.intelLevel(P, id) >= 1);
   },
 
-  // ------------------ التنبيهات العسكرية -------------------
-  // level: crit | imp | info، للّاعب فقط. key يمنع التكرار ويستبدل القديم
+  // ——————————————————— التنبيهات العسكرية ———————————————————
+  // level: crit | imp | info — للّاعب فقط. key يمنع التكرار ويستبدل القديم
   alert(level, text, o = {}) {
     const S = this.S;
     if (!S || !S.alerts) return;
@@ -256,10 +263,6 @@ const Game = {
     }
     S.alerts.push(a);
     if (S.alerts.length > 40) S.alerts.splice(0, S.alerts.length - 40);
-    S.alertLog = S.alertLog || [];
-    const last = S.alertLog[S.alertLog.length - 1];
-    if (!(last && last.text === text && last.turn === S.turn)) S.alertLog.push({ turn: S.turn, level, text, node: a.node, icon: a.icon });
-    if (S.alertLog.length > 120) S.alertLog.splice(0, S.alertLog.length - 120);
     return a;
   },
   activeAlerts() {
@@ -267,15 +270,7 @@ const Game = {
     const rank = { crit: 3, imp: 2, info: 1 };
     return (S.alerts || []).filter((a) => !a.gone && a.until >= S.turn).sort((x, y) => (rank[y.level] - rank[x.level]) || (y.id - x.id));
   },
-  dismissAlert(id) { const a = (this.S.alerts || []).find((x) => x.id === id); if (a) { a.gone = true; a.seen = true; } },
-  // تنبيه لا يُغلق دفعة واحدة: قرار ينتظرك بمهلة، أو مدينتك تحت الحصار الآن
-  alertKeeps(a) {
-    const c = a.crisis && this.crisisById ? this.crisisById(a.crisis) : null;
-    if (c && !c.over && c.ask && c.ask[this.S.player]) return true;
-    return a.level === 'crit' && a.cond;
-  },
-  // سجل الأخبار: كل تنبيه وصلك، ليبقى مقروءاً بعد إغلاقه
-  alertHistory() { return (this.S.alertLog || []).slice().reverse(); },
+  dismissAlert(id) { const a = (this.S.alerts || []).find((x) => x.id === id); if (a) a.gone = true; },
   // تنبيهات الحالة: تُعاد كل دور ما دام السبب قائماً
   scanAlerts() {
     const S = this.S, P = S.player;
@@ -288,7 +283,7 @@ const Game = {
       if (bs.length) {
         const pw = bs.reduce((t, b) => t + this.armyPower(b), 0);
         const falling = n.stores <= 0 || this.defensePower(n) < pw * 0.45;
-        this.alert(falling ? 'crit' : 'imp', falling ? `${n.name} قد تسقط قريباً: ${n.stores <= 0 ? 'المجاعة بدأت' : 'المحاصِرون أقوى بكثير'}` : `${n.name} محاصرة من ${this.fname(bs[0].fid)} · المؤن ${Math.max(0, n.stores)} أدوار`, { node: n.id, key: 'siege:' + n.id, cond: true, icon: 'tent', win: 'siege' });
+        this.alert(falling ? 'crit' : 'imp', falling ? `${n.name} قد تسقط قريباً — ${n.stores <= 0 ? 'المجاعة بدأت' : 'المحاصِرون أقوى بكثير'}` : `${n.name} محاصرة من ${this.fname(bs[0].fid)} · المؤن ${Math.max(0, n.stores)} أدوار`, { node: n.id, key: 'siege:' + n.id, cond: true, icon: 'tent', win: 'siege' });
       } else if (n.loyalty < 25 && n.unrest <= 0) {
         this.alert('imp', `${n.name} على حافة التمرد (الولاء ${n.loyalty})`, { node: n.id, key: 'revolt:' + n.id, cond: true, icon: 'torch' });
       }
@@ -333,7 +328,7 @@ const Game = {
   },
   scarsAt(node, maxAge = 6) { return (this.S.scars || []).filter((x) => x.node === node && this.S.turn - x.turn <= maxAge); },
 
-  // ------------------ القادة -------------------
+  // ——————————————————— القادة ———————————————————
   addGeneral(fid, name, trait, flaw, rank = 1) {
     const g = { id: 'g' + this.S.nextId++, name, fid, orig: fid, trait: trait || null, flaw: flaw || null, rank: rank || 1, xp: RANK_XP[rank || 1], status: 'pool', army: null, captor: null, since: this.S.turn, vendetta: null };
     this.S.gens[g.id] = g;
@@ -343,16 +338,9 @@ const Game = {
     return this.addGeneral(fid, 'الضابط ' + pick(GENERIC_NAMES), null, R() < 0.25 ? pick(['cautious', 'greedy', 'reckless']) : null, 1);
   },
   genMen(g) { return 12 + 4 * g.rank; },
-  // ما تعنيه النجوم فعلاً: قدرات قيادة معلنة لا مضاعف قوة خفي. كل نجمة بعد الأولى تمنح ثلاث نقاط
-  genSkills(g) {
-    if (!g) return { coh: 0, exe: 0, res: 0, ret: 0 };
-    if (g.skills) return g.skills;
-    const r = g.rank || 1;
-    return { coh: r - 1, exe: r - 1, res: r >= 2 ? 1 : 0, ret: r >= 3 ? 1 : 0 };
-  },
   genSalary(g) { return (4 + 4 * g.rank) * (g.flaw === 'greedy' ? 2 : 1); },
   hireFee(g) { return g.name.startsWith('الضابط') ? 40 : 50 + 40 * g.rank; },
-  genTitle(g) { return g ? `${g.name} ${'★'.repeat(g.rank)}` : 'بلا قائد'; },
+  genTitle(g) { return g ? `${g.name} ${'★'.repeat(g.rank)}` : '—'; },
   mpMax(a) {
     const g = this.armyGen(a);
     let m = BASE_MP;
@@ -370,7 +358,7 @@ const Game = {
     }
   },
 
-  // ------------------ الجيوش -------------------
+  // ——————————————————— الجيوش ———————————————————
   newReg(type, men, extra) { return { type, men: men == null ? UNITS[type].men : men, exp: 0, ...(extra || {}) }; },
 
   createArmy(fid, nodeId, genId) {
@@ -416,7 +404,7 @@ const Game = {
       g.status = 'captive'; g.captor = captor; g.since = this.S.turn;
       this.event('mil', `أُسر القائد ${g.name} (${this.fname(g.fid)}) بيد ${this.fname(captor)}.`, { fids: [g.fid, captor], imp: 3 });
       if (g.fid === this.S.player) this.alert('imp', `أُسر قائدك ${g.name} بيد ${this.fname(captor)}`, { icon: 'chains' });
-      if (captor === this.S.player) this.alert('info', `أسرتَ ${g.name}، قرّر مصيره من شاشة المملكة`, { icon: 'chains', win: 'captives' });
+      if (captor === this.S.player) this.alert('info', `أسرتَ ${g.name} — قرّر مصيره من شاشة المملكة`, { icon: 'chains', win: 'captives' });
     } else if (fate === 'killed') {
       g.status = 'dead';
       g.diedTurn = this.S.turn;
@@ -460,7 +448,7 @@ const Game = {
     if (newRegs > MAX_REGS) return { err: `القائد يقود 8 وحدات على الأكثر (${newRegs})` };
     for (const m of moving) {
       if (m.whole) { a.regs.splice(a.regs.indexOf(m.r), 1); target.regs.push(m.r); }
-      else { m.r.men -= m.men; target.regs.push({ ...m.r, men: m.men, rid: this.rid ? this.rid() : undefined }); }
+      else { m.r.men -= m.men; target.regs.push({ ...m.r, men: m.men }); }
     }
     target.mp = Math.min(target.mp, a.mp);
     return { army: target };
@@ -476,12 +464,12 @@ const Game = {
     return null;
   },
 
-  // ------------------ القوة -------------------
+  // ——————————————————— القوة ———————————————————
   regPower(r) {
     const d = UNITS[r.type];
     return r.men * d.hp * (d.atk + d.def + (d.missile || 0) * 1.5 + (d.charge || 0) * 0.3) * (1 + 0.1 * (r.exp || 0)) / 100;
   },
-  genPower(g) { return g ? this.regPower({ type: 'general', men: this.genMen(g) }) : 0; },
+  genPower(g) { return g ? this.regPower({ type: 'general', men: this.genMen(g) }) * (1 + 0.15 * g.rank) : 0; },
   armyPower(a) {
     if (!a) return 0;
     return a.regs.reduce((t, r) => t + this.regPower(r), 0) + this.genPower(this.armyGen(a));
@@ -495,8 +483,8 @@ const Game = {
     return p + Math.max(0, this.f(fid).gold) / 10;
   },
 
-  // ------------------ الحامية والقوى البشرية -------------------
-  // الحامية تكبر مع السكان والأسوار، المدن لا تسقط بلا جيش كبير أو حصار طويل
+  // ——————————————————— الحامية والقوى البشرية ———————————————————
+  // الحامية تكبر مع السكان والأسوار — المدن لا تسقط بلا جيش كبير أو حصار طويل
   garrisonTarget(n) {
     const out = [];
     const militia = 1 + Math.floor(n.pop / 12000) + (n.walls >= 3 ? 1 : 0);
@@ -510,7 +498,6 @@ const Game = {
   },
   fillGarrison(n, full) {
     const target = this.garrisonTarget(n);
-    if (!full && this.opGarrisonBlocked && this.opGarrisonBlocked(n)) return;
     const g = this.defendersOf(n).map((a) => this.armyGen(a));
     const fast = g.some((x) => x && x.trait === 'defender') ? 2 : 1;
     for (let i = 0; i < target.length; i++) {
@@ -540,7 +527,7 @@ const Game = {
   },
   manpowerOf(fid) { return this.nodesOf(fid).reduce((t, n) => t + Math.floor(n.manpower), 0); },
 
-  // ------------------ الإمداد والازدحام -------------------
+  // ——————————————————— الإمداد والازدحام ———————————————————
   supplyCap(n, fid) {
     let c;
     if (this.friendly(n.owner, fid)) c = 8 + n.farm * 2 + n.granary * 3 + Math.floor(n.pop / 10000);
@@ -559,77 +546,49 @@ const Game = {
   },
   overstack(n, fid) { return Math.max(0, this.stackAt(n, fid) - this.supplyCap(n, fid)); },
 
-  // ------------------ الاقتصاد -------------------
+  // ——————————————————— الاقتصاد ———————————————————
   merchantAt(n) { return this.armiesOfAt(n.owner, n.id).some((a) => this.hasTrait(a, 'merchant')); },
-  cityIncome(n) { return this.incomeModel(n).total; },
-  // نسبة الولاء إلى الدخل: الولاء 100 = 100٪، والولاء 0 = 40٪
-  loyaltyIncomeFactor(loy) { return 0.4 + 0.6 * clamp(loy, 0, 100) / 100; },
-  // الهدر الإداري: كل مدينة بعد الثامنة تُضيع 3٪ من دخل كل مدينة (حتى 40٪). الحاكم المقيم يخفّضه للنصف في مدينته
-  adminWaste(n, count) {
-    // المدن ذات الحكم الذاتي يديرها أعيانها: لا هدر فيها ولا تُحسب في العدد
-    const auto = (x) => this.termsOf && this.termsOf(x) && this.termsOf(x).control === 'autonomy';
-    if (auto(n)) return 0;
-    const cities = count != null ? count : this.nodesOf(n.owner).filter((x) => !auto(x)).length;
-    // الخرائط الكبيرة تحدد عتبة أعلى (adminFree) لأن الدولة فيها أوسع من البداية
-    let w = Math.min(0.4, 0.03 * Math.max(0, cities - (this.sc.adminFree || 8)));
-    if (w > 0 && this.governorAt(n)) w *= 0.5;
-    return w;
-  },
-  // نموذج الدخل الوحيد: الحساب والشرح من المصدر نفسه، بالترتيب الذي تُطبَّق به النسب
-  // o.ignoreSiege / o.ignoreUnrest: العائد المتوقع بعد زوال العائق. o.patch: تغييرات افتراضية على المدينة (للمعاينة)
-  incomeModel(n0, o = {}) {
-    const n = o.patch ? { ...n0, ...o.patch } : n0;
-    const steps = [];
-    const res = (total, blocked) => ({ total: Math.round(total), steps, blocked: blocked || null });
-    if (n.owner === 'neutral') return res(0);
-    if (this.besieger(n.id) && !o.ignoreSiege) return res(0, 'siege');
+  cityIncome(n) {
+    if (this.besieger(n.id) || n.owner === 'neutral') return 0;
     const f = this.f(n.owner);
-    let g = n.pop / 1000 * 2.8;
-    steps.push({ k: 'pop', label: `السكان (${Math.round(n.pop / 1000)} ألفاً)`, add: g });
-    const mul = (k, label, m, note) => { if (Math.abs(m - 1) < 1e-9) return; const before = g; g *= m; steps.push({ k, label, mul: m, add: g - before, note }); };
-    mul('market', `الأسواق (مستوى ${n.market})`, 1 + 0.4 * n.market);
-    const lf = this.loyaltyIncomeFactor(n.loyalty);
-    mul('loyalty', `أثر الولاء ${n.loyalty}: تحصل على ${Math.round(lf * 100)}٪`, lf);
-    if (n.capital) { steps.push({ k: 'capital', label: 'العاصمة', add: 15 }); g += 15; }
-    mul('tax', `الضرائب ${TAXES[f.tax].name}`, TAXES[f.tax].income);
-    if (n.unrest > 0 && !o.ignoreUnrest) mul('unrest', `اضطراب (${n.unrest} أدوار)`, 0.4);
-    if (this.merchantAt(n) || this.governorOf(n, 'merchant')) mul('admin', 'إداري مقيم', 1.3);
+    let g = n.pop / 1000 * 2.8 * (1 + 0.4 * n.market) * (0.4 + n.loyalty / 166);
+    if (n.capital) g += 15;
+    g *= TAXES[f.tax].income;
+    if (n.unrest > 0) g *= 0.4;
+    if (this.merchantAt(n) || this.governorOf(n, 'merchant')) g *= 1.3;
+    g *= Math.max(0.5, 1 - 0.05 * this.overstack(n, n.owner));
+    // الفساد في الإمبراطوريات المترامية
+    g *= Math.max(0.6, 1 - 0.03 * Math.max(0, this.nodesOf(n.owner).length - 8));
+    if (this.nodeMods) g *= this.nodeMods(n).inc * (1 + this.rulerMod(n.owner, 'income') + (this.policyMod ? this.policyMod(n.owner, 'income') : 0));
+    return Math.round(g);
+  },
+  // تفصيل الدخل (للشرح السياقي)
+  incomeParts(n) {
+    const lines = [];
+    if (this.besieger(n.id)) return { total: 0, lines: [['محاصرة: لا دخل', '0', 'neg']] };
+    const f = this.f(n.owner);
+    const base = n.pop / 1000 * 2.8;
+    lines.push(['السكان', '+' + Math.round(base)]);
+    if (n.market) lines.push([`السوق ×${(1 + 0.4 * n.market).toFixed(1)}`, '', 'pos']);
+    lines.push([`الولاء ×${(0.4 + n.loyalty / 166).toFixed(2)}`, '', n.loyalty < 50 ? 'neg' : '']);
+    if (n.capital) lines.push(['العاصمة', '+15', 'pos']);
+    if (TAXES[f.tax].income !== 1) lines.push([`الضرائب ×${TAXES[f.tax].income}`, '', TAXES[f.tax].income > 1 ? 'pos' : 'neg']);
+    if (n.unrest > 0) lines.push(['اضطراب ×0.4', '', 'neg']);
+    if (this.merchantAt(n) || this.governorOf(n, 'merchant')) lines.push(['حاكم إداري ×1.3', '', 'pos']);
     const ov = this.overstack(n, n.owner);
-    if (ov > 0) mul('crowd', `ازدحام الجيوش (${ov} وحدات فوق الإمداد)`, Math.max(0.5, 1 - 0.05 * ov));
-    const waste = this.adminWaste(n, o.cities);
-    if (waste > 0) mul('waste', `هدر إداري: مملكة من ${o.cities != null ? o.cities : this.nodesOf(n.owner).length} مدن`, 1 - waste);
+    if (ov > 0) lines.push([`ازدحام ×${Math.max(0.5, 1 - 0.05 * ov).toFixed(2)}`, '', 'neg']);
+    const cities = this.nodesOf(n.owner).length;
+    if (cities > 8) lines.push([`فساد الاتساع ×${Math.max(0.6, 1 - 0.03 * (cities - 8)).toFixed(2)}`, '', 'neg']);
     if (this.nodeMods) {
       const m = this.nodeMods(n);
-      if (n.charter) mul('charter', 'ميثاق المدينة الحرة', 0.65);
-      const crisis = n.charter ? m.inc / 0.65 : m.inc;
-      if (Math.abs(crisis - 1) > 1e-6) mul('crisis', 'أحداث العالم (وباء أو قحط أو حجر)', crisis);
-      const rm = this.rulerMod(n.owner, 'income'), pm = this.policyMod ? this.policyMod(n.owner, 'income') : 0;
-      if (rm) mul('ruler', 'سمة الحاكم', 1 + rm);
-      if (pm) mul('policy', 'المرسوم الملكي', 1 + pm);
+      if (n.charter) lines.push(['ميثاق حر ×0.65', '', 'neg']);
+      if (m.inc !== 1 && !(n.charter && Math.abs(m.inc - 0.65) < 0.001)) lines.push([`أزمة ×${(n.charter ? m.inc / 0.65 : m.inc).toFixed(2)}`, '', 'neg']);
+      const rm = this.rulerMod(n.owner, 'income');
+      if (rm) lines.push([`الحاكم ×${(1 + rm).toFixed(2)}`, '', rm > 0 ? 'pos' : 'neg']);
     }
-    if (this.opIncome) mul('sabotage', 'سوق مخرَّب', this.opIncome(n));
-    if (this.termsIncome) mul('autonomy', 'حكم ذاتي: يصلك نصف دخلها', this.termsIncome(n));
-    return res(g);
-  },
-  // تفصيل الدخل للواجهة: كل سطر بقيمته بالذهب، ومجموع الأسطر يساوي الصافي تماماً
-  incomeParts(n) {
-    const m = this.incomeModel(n);
-    if (m.blocked === 'siege') {
-      const pot = this.incomeModel(n, { ignoreSiege: true }).total;
-      return { total: 0, lines: [['محاصرة: لا يصل الذهب', '0', 'neg'], ['بعد رفع الحصار', '+' + pot, 'pos'], ['الصافي الآن', '0', 'sum']] };
-    }
-    const lines = [];
-    let run = 0, shown = 0;
-    for (const s of m.steps) {
-      run += s.add;
-      const d = Math.round(run) - shown;
-      shown += d;
-      const pct = s.mul != null ? ` (${s.mul >= 1 ? '+' : '−'}${Math.round(Math.abs(s.mul - 1) * 100)}٪)` : '';
-      lines.push([s.label + pct, signed(d), d > 0 ? 'pos' : d < 0 ? 'neg' : '']);
-    }
-    lines.push(['الصافي كل دور', '+' + m.total, 'sum']);
-    if (n.unrest > 0) lines.push([`بعد الاستقرار (${n.unrest} أدوار)`, '+' + this.incomeModel(n, { ignoreUnrest: true }).total, 'pos']);
-    return { total: m.total, lines };
+    const total = this.cityIncome(n);
+    lines.push(['الصافي', '+' + total, 'sum']);
+    return { total, lines };
   },
   // هدف الولاء الذي تتجه إليه المدينة كل دور، مع أسبابه
   loyaltyTarget(n) {
@@ -645,8 +604,7 @@ const Game = {
     if (n.origOwner !== n.owner && this.f(n.origOwner) && this.f(n.origOwner).alive && this.f(n.origOwner).vendetta && this.f(n.origOwner).vendetta[n.owner]) parts.push(['ثأر أهلها القدامى', -8]);
     if (f.gold < 0) parts.push(['خزينة فارغة', -10]);
     const size = this.nodesOf(n.owner).length;
-    const sizeFree = this.sc.sizeFree || 7;
-    if (size > sizeFree) parts.push(['اتساع المملكة', -Math.round((size - sizeFree) * 2.5)]);
+    if (size > 7) parts.push(['اتساع المملكة', -Math.round((size - 7) * 2.5)]);
     const d = this.capitalDist(n);
     if (d > 3) parts.push(['البعد عن العاصمة', -Math.min(12, (d - 3) * 3)]);
     if (here.some((a) => this.hasFlaw(a, 'harsh'))) parts.push(['قائد قاسٍ', -8]);
@@ -657,8 +615,6 @@ const Game = {
       if (gov.flaw === 'harsh') parts.push(['حاكم قاسٍ', -8]);
     }
     if (this.policyMod) { const pm = this.policyMod(n.owner, 'loyalty'); if (pm) parts.push(['سياسة المملكة', pm]); }
-    if (this.opLoyalty) { const ol = this.opLoyalty(n); if (ol) parts.push(['محرّضون أجانب', ol]); }
-    if (this.termsLoyalty) for (const pl of this.termsLoyalty(n)) parts.push(pl);
     if (this.nodeMods) {
       for (const pl of this.nodeMods(n).loy) parts.push(pl);
       const rl = this.rulerMod(n.owner, 'loyalty');
@@ -667,11 +623,10 @@ const Game = {
     const target = parts.reduce((t, p) => t + p[1], 0);
     return { target: Math.round(target), parts };
   },
-  // البعد عن أقرب مقر حكم: العاصمة، أو مقار الولايات التي يحددها السيناريو ما دامت للمملكة نفسها
   capitalDist(n) {
-    const seats = [...this.nodesOf(n.owner).filter((x) => x.capital), ...(((this.sc.seats || {})[n.owner]) || []).map((id) => this.node(id)).filter((x) => x && x.owner === n.owner)];
-    if (!seats.length) return 0;
-    return Math.min(...seats.map((c) => this.hops(c.id, n.id, 8)));
+    const cap = this.nodesOf(n.owner).find((x) => x.capital);
+    if (!cap) return 0;
+    return this.hops(cap.id, n.id, 8);
   },
   governorAt(n) { return Object.values(this.S.gens).find((g) => g.status === 'gov' && g.city === n.id && g.fid === n.owner) || null; },
   governorOf(n, trait) { const g = this.governorAt(n); return g && g.trait === trait ? g : null; },
@@ -702,40 +657,34 @@ const Game = {
     }
     return Math.round(t);
   },
-  // صيانة مباني المدينة كل دور
-  worksUpkeep(n) { let t = 0; for (const k in BUILDINGS) t += BUILDINGS[k].upkeep ? BUILDINGS[k].upkeep(n[k] || 0) : 0; return t; },
-  // الجيش خارج الأرض الصديقة أو يحاصر: تموين الحملة يرفع كلفته ثلثاً
-  onCampaign(a) { const n = this.node(a.node); return !!a.siege || !this.friendly(n.owner, a.fid); },
   economy(fid) {
-    let gold = 0, food = 0, upkeep = 0, eat = 0, salaries = 0, overhead = 0, works = 0, field = 0;
+    let gold = 0, food = 0, upkeep = 0, eat = 0, salaries = 0, overhead = 0;
     const f = this.f(fid);
-    for (const n of this.nodesOf(fid)) { gold += this.cityIncome(n); food += this.cityFood(n); works += this.worksUpkeep(n); }
+    for (const n of this.nodesOf(fid)) { gold += this.cityIncome(n); food += this.cityFood(n); }
     const armies = this.armiesOf(fid);
     for (const a of armies) {
       const g = this.armyGen(a);
       if (g) salaries += this.genSalary(g);
-      const camp = this.onCampaign(a);
-      for (const r of a.regs) { const u = (UNITS[r.type].upkeep || 0) * (r.merc ? 1.8 : 1); upkeep += u; if (camp) field += u * 0.35; }
+      for (const r of a.regs) upkeep += (UNITS[r.type].upkeep || 0) * (r.merc ? 1.8 : 1);
       eat += this.armyEat(a);
     }
     const cities = this.nodesOf(fid).length;
     overhead = Math.max(0, armies.length - Math.max(2, cities)) * 10;
     if (!f.isPlayer && fid !== 'neutral') gold = Math.round(gold * DIFFS[this.S.difficulty].aiIncome);
     // الغزاة يعيشون على النهب: لا رواتب ولا مؤن
-    if (f.horde) { upkeep = 0; eat = 0; salaries = 0; overhead = 0; works = 0; field = 0; }
+    if (f.horde) { upkeep = 0; eat = 0; salaries = 0; overhead = 0; }
     const route = this.routeIncome ? this.routeIncome(fid) : 0;
     const trade = Math.round((this.tradeIncome(fid) + route) * (1 + (this.policyMod ? this.policyMod(fid, 'trade') : 0)));
     for (const g of this.gensOf(fid)) if (g.status === 'gov') salaries += this.genSalary(g);
     let tribute = 0;
     for (const t of this.S.tributes) { if (t.payee === fid) tribute += t.amount; if (t.payer === fid) tribute -= t.amount; }
     upkeep = Math.round(upkeep);
-    field = Math.round(field);
     eat = Math.round(eat);
-    const netGold = gold + trade + tribute - upkeep - field - salaries - overhead - works;
-    return { gold, trade, route, tribute, upkeep, field, works, salaries, overhead, food, eat, netGold, netFood: food - eat };
+    const netGold = gold + trade + tribute - upkeep - salaries - overhead;
+    return { gold, trade, route, tribute, upkeep, salaries, overhead, food, eat, netGold, netFood: food - eat };
   },
 
-  // ------------------ التجنيد والبناء -------------------
+  // ——————————————————— التجنيد والبناء ———————————————————
   recruitableTypes(fid, node) {
     const list = [...RECRUITABLE];
     const u = UNIQUE_OF[fid];
@@ -750,19 +699,16 @@ const Game = {
   canRecruit(fid, node, type, armyId, merc) {
     const d = UNITS[type];
     if (node.owner !== fid) return 'ليست مدينتك';
-    // الحصار يقطع ما يأتي من الخارج فقط: رجال المدينة وورشها ما زالوا في الداخل
-    if (merc && this.besieger(node.id)) return 'المرتزقة يأتون من خارج الأسوار، والحصار يقطع طريقهم';
+    if (this.besieger(node.id)) return 'المدينة محاصرة';
     if (!merc) {
-      const tr = this.termsRecruit && this.termsRecruit(node);
-      if (tr) return tr;
-      if (node.unrest > 0) return `غير مستقرة (${node.unrest} أدوار): المرتزقة فقط`;
+      if (node.unrest > 0) return `غير مستقرة (${node.unrest} أدوار) — المرتزقة فقط`;
       if (node.loyalty < 30) return 'الولاء منخفض جداً';
       if (d.needs === 'barracks' && !node.barracks) return 'تحتاج إسطبلات وورش';
       if (d.unique && !this.recruitableTypes(fid, node).includes(type)) return 'يحتاج قائد نخبة هنا';
       if (node.manpower < d.men) return `القوى البشرية لا تكفي (${Math.floor(node.manpower)}/${d.men})`;
     }
     const a = this.targetArmy(fid, node, armyId);
-    if (!a) return 'لا قائد هنا لديه مكان: عيّن قائداً';
+    if (!a) return 'لا قائد هنا لديه مكان — عيّن قائداً';
     if (a.regs.length >= MAX_REGS) return 'الجيش مكتمل (8 وحدات)';
     if (this.f(fid).gold < this.recruitCost(type, merc)) return 'الذهب لا يكفي';
     return null;
@@ -801,7 +747,7 @@ const Game = {
     if (node.owner !== fid) return 'ليست مدينتك';
     if (B.coastal && !this.hasWater(node)) return 'لا طريق مائياً من هنا';
     if (lvl >= B.max) return 'بلغت الحد الأعلى';
-    if (this.besieger(node.id)) return 'البناء يحتاج حجارة وخشباً وعمالاً من خارج الأسوار، والحصار يقطعها';
+    if (this.besieger(node.id)) return 'المدينة محاصرة';
     if (node.unrest > 0) return 'غير مستقرة';
     if (node.built === this.S.turn) return 'بناء واحد لكل دور';
     if (this.f(fid).gold < B.cost(lvl)) return 'الذهب لا يكفي';
@@ -839,13 +785,11 @@ const Game = {
   },
   canTrain(a) {
     const n = this.node(a.node);
-    if (a.siege || n.owner !== a.fid) return 'التدريب في مدنك فقط: المحاصِرون في الميدان';
-    if (!n.barracks) return `يحتاج إسطبلات وورشاً في ${n.name}`;
-    if (a.training) return 'يتدرّب الجيش هذا الدور';
-    if (a.mp < this.mpMax(a)) return 'تحرّك الجيش هذا الدور: التدريب يحتاج دوراً كاملاً بلا حركة';
+    if (a.siege || n.owner !== a.fid) return 'التدريب في مدنك فقط';
+    if (!n.barracks) return 'يحتاج إسطبلات وورش';
+    if (a.mp < this.mpMax(a)) return 'تحرّك الجيش هذا الدور';
     if (!a.regs.length) return 'لا وحدات';
-    if (!a.regs.some((r) => (r.exp || 0) < 3)) return 'كل الوحدات بلغت أعلى خبرة';
-    if (this.f(a.fid).gold < this.trainCost(a)) return `الذهب لا يكفي (${this.trainCost(a)})`;
+    if (this.f(a.fid).gold < this.trainCost(a)) return 'الذهب لا يكفي';
     return null;
   },
   trainCost(a) { return a.regs.length * 15; },
@@ -853,24 +797,13 @@ const Game = {
     const err = this.canTrain(a);
     if (err) return err;
     this.f(a.fid).gold -= this.trainCost(a);
-    this.spendMp(a, 'train'); a.training = true;
+    a.mp = 0; a.training = true;
     return null;
-  },
-  // ما يعود من التسريح: في مدينتك يعود 70٪ من الرجال إلى قواها البشرية، وخارجها يعودون إلى قراهم فلا يُسترد شيء
-  disbandRefund(a, r) {
-    const n = this.node(a.node);
-    if (!r || r.merc || n.owner !== a.fid || a.siege) return 0;
-    return Math.min(Math.max(0, this.mpCap(n) - n.manpower), Math.round(r.men * 0.7));
   },
   disband(a, idx) {
-    const r = a.regs[idx];
-    if (!r) return 'لا وحدة';
-    const back = this.disbandRefund(a, r);
-    a.regs.splice(idx, 1);
+    const r = a.regs.splice(idx, 1)[0];
     const n = this.node(a.node);
-    if (back) n.manpower += back;
-    this.event('int', `سُرّحت ${UNITS[r.type].name} (${r.men} رجل)${back ? `: عاد ${back} رجل إلى ${n.name}` : ''}.`, { fids: [a.fid], node: n.id, imp: 1 });
-    return null;
+    if (r && !r.merc && n.owner === a.fid) n.manpower = Math.min(this.mpCap(n), n.manpower + Math.round(r.men * 0.7));
   },
   dismissGeneral(a) {
     if (a.regs.length) return 'انقل الوحدات أولاً';
@@ -878,7 +811,7 @@ const Game = {
     return null;
   },
 
-  // ------------------ الحركة -------------------
+  // ——————————————————— الحركة ———————————————————
   edgeCost(a, from, to, kind) {
     const g = this.armyGen(a);
     const tr = g && g.trait;
@@ -946,63 +879,11 @@ const Game = {
     return out;
   },
   moveTargets(a) { return Object.keys(this.reach(a)); },
-  // سبب توقف الحركة (يُحفظ ليُشرح للاعب)
-  spendMp(a, why) { a.mp = 0; a.mpWhy = why; },
-  // لماذا لا يبلغ الجيش هذه المدينة؟ سبب محدد وما يلزم لتجاوزه، القواعد نفسها التي تحسب الحركة
-  moveBlocker(a, targetId) {
-    const n = this.node(targetId), here = this.node(a.node);
-    if (!n || !here) return 'وجهة غير معروفة';
-    if (!a.regs.length) return 'القائد بلا جنود: جنّد وحدات أو انقل إليه وحدات أولاً.';
-    if (a.mp <= 0) {
-      const why = { battle: 'خاض الجيش معركة هذا الدور', siege: 'بدأ الجيش حصاراً هذا الدور', capture: 'دخل الجيش مدينة فتحها هذا الدور ويثبّت الفتح', train: 'الجيش في التدريب هذا الدور', rearm: 'الجيش يعيد تسليح وحداته هذا الدور', move: 'استنفد الجيش حركته' }[a.mpWhy] || 'لا نقاط حركة متبقية';
-      return `${why}: يتحرك في الدور القادم.`;
-    }
-    const waterWhy = (from) => `الطريق البحري من ${from.name} يحتاج ميناءً في ${from.name}${this.friendly(from.owner, a.fid) ? ` (${BUILDINGS.port.cost()} ذهباً)` : ''} أو قائداً ربّاناً.`;
-    if (a.siege || !this.passable(a, here)) {
-      const e = this.edge(here.id, n.id);
-      if (!a.siege) return `${here.name} محاصرة: الجيش المحاصَر داخلها لا يخرج إلا بقتال المحاصِرين (الخروج للقتال).`;
-      if (!e) return `الجيش يحاصر ${here.name}: يتحرك خطوة واحدة فقط إلى مدينة مجاورة، و${n.name} ليست مجاورة.`;
-      if (e.kind === 'water' && this.edgeCost(a, here, n, e.kind) === Infinity) return waterWhy(here);
-      return `الطريق إلى ${n.name} يكلّف ${this.edgeCost(a, here, n, e.kind)} نقاط وحركتك ${a.mp}.`;
-    }
-    // أرخص طريق لو كانت كل المدن مفتوحة: نبحث عن أول عائق حقيقي عليه
-    const dist = { [here.id]: 0 }, prev = {}, open = [here.id];
-    let waterBlocked = null;
-    while (open.length) {
-      open.sort((x, y) => dist[x] - dist[y]);
-      const cur = open.shift(), cn = this.node(cur);
-      if (cur === n.id) break;
-      for (const e of this.edgesOf(cur)) {
-        const to = this.node(e.to);
-        const c = this.edgeCost(a, cn, to, e.kind);
-        if (c === Infinity) { if (e.kind === 'water' && (e.to === n.id || !waterBlocked)) waterBlocked = { from: cn, to }; continue; }
-        const nd = dist[cur] + c;
-        if (dist[to.id] !== undefined && dist[to.id] <= nd) continue;
-        dist[to.id] = nd; prev[to.id] = cur; open.push(to.id);
-      }
-    }
-    if (dist[n.id] === undefined) return waterBlocked ? waterWhy(waterBlocked.from) : `لا طريق بري إلى ${n.name} من هنا.`;
-    const path = [];
-    for (let c = n.id; c !== here.id; c = prev[c]) path.unshift(c);
-    for (const id of path.slice(0, -1)) {
-      const m = this.node(id);
-      if (!this.friendly(m.owner, a.fid)) {
-        const wf = waterBlocked && waterBlocked.to.id === n.id && (waterBlocked.from.id === here.id || this.reach(a)[waterBlocked.from.id]) ? waterBlocked.from : null;
-        const alt = wf ? ` أو اعبر البحر من ${wf.name} مباشرة: يحتاج ميناءً فيها${this.friendly(wf.owner, a.fid) ? ` (${BUILDINGS.port.cost()} ذهباً)` : ''} أو قائداً ربّاناً.` : '';
-        return `الطريق إلى ${n.name} يمر عبر ${m.name} (${this.fname(m.owner)}): لا يعبر جيش مدينة غير صديقة دون فتحها. حاصر ${m.name} أولاً${alt ? '،' + alt : '.'}`;
-      }
-      if (this.besiegers(m.id).some((b) => this.atWar(b.fid, a.fid))) return `الطريق إلى ${n.name} يمر عبر ${m.name} المحاصَرة: لا يمر جيش عبر مدينة تحت حصار العدو. فكّ الحصار أولاً.`;
-    }
-    const need = dist[n.id];
-    const turns = Math.ceil(need / Math.max(1, this.mpMax(a)));
-    const via = path.length > 1 ? ` عبر ${path.slice(0, -1).map((id) => this.node(id).name).join('، ')}` : '';
-    return `المسافة ${need} نقاط حركة وبقي لك ${a.mp}: تصل خلال ${turns} ${turns === 1 ? 'دور' : 'أدوار'}${via}.`;
-  },
 
   // ماذا سيحدث عند التحرك إلى مدينة؟
   planMove(a, targetId) {
     const r = this.reach(a)[targetId];
-    if (!r) return { err: this.moveBlocker(a, targetId) };
+    if (!r) return { err: a.mp <= 0 ? 'لا نقاط حركة متبقية هذا الدور' : 'بعيدة — لا تكفي نقاط الحركة' };
     const n = this.node(targetId);
     const plan = { path: r.path, cost: r.cost, node: n };
     if (this.friendly(n.owner, a.fid)) {
@@ -1029,8 +910,6 @@ const Game = {
     a.from = a.node;
     if (a.siege) { a.from = a.siege.from || a.from; a.siege = null; }
     a.mp = Math.max(0, a.mp - plan.cost);
-    a.mpWhy = a.mp <= 0 ? 'move' : null;
-    a.fat = Math.min(95, (a.fat || 0) + plan.cost * 2);
   },
 
   startSiege(a, n) {
@@ -1038,7 +917,7 @@ const Game = {
     a.node = n.id;
     const other = this.besiegers(n.id).find((b) => b.fid === a.fid && b !== a);
     a.siege = { turns: other ? other.siege.turns : 0, from: a.from };
-    this.spendMp(a, 'siege');
+    a.mp = 0;
     if (!already) {
       n.siegeStart = this.S.turn;
       this.event('mil', `${this.fname(a.fid)} تضرب الحصار على ${n.name} بقيادة ${this.gname(this.armyGen(a))}.`, { fids: [a.fid, n.owner], node: n.id, imp: 2 });
@@ -1051,7 +930,7 @@ const Game = {
     }
   },
 
-  // ------------------ المواجهات -------------------
+  // ——————————————————— المواجهات ———————————————————
   effWalls(n) { return n.walls; },
   siegeTurns(n, fid) { return Math.max(0, ...this.besiegers(n.id).filter((b) => b.fid === fid).map((b) => b.siege.turns)); },
   siegeEquip(n, fid) {
@@ -1104,7 +983,7 @@ const Game = {
     const g = [...gens].sort((a, b) => b.rank - a.rank)[0];
     let m = 1;
     if (!g) return 0.9;
-    m += 0.02 * this.genSkills(g).coh;
+    m += 0.05 * (g.rank - 1);
     const t = g.trait;
     if (t === 'tactician') m += 0.1;
     if (t === 'brave') m += 0.06;
@@ -1143,39 +1022,17 @@ const Game = {
     }
     return { pa: Math.max(1, pa), pd: Math.max(1, pd) };
   },
-  // الحالة المتوسطة لمجموعة جيوش، موزونة بالرجال
-  condOf(armies) {
-    let men = 0, fat = 0, mor = 0;
-    for (const a of armies) { const m = this.armyMen(a); men += m; fat += (a.fat || 0) * m; mor += (a.mor || 0) * m; }
-    return { fat: men ? fat / men : 0, mor: men ? mor / men : 0 };
-  },
-  // وسم الحالة للعرض: مشتق من المعنويات الرقمية، لا مكافأة مستقلة
-  moodTag(a) {
-    if (a.mood && a.mood.k === 'hungry') return;
-    a.mood = (a.mor || 0) <= -12 ? { k: 'shaken', t: 99 } : (a.mor || 0) >= 5 ? { k: 'confident', t: 99 } : null;
-  },
   moodMul(armies) {
-    const c = this.condOf(armies);
-    let m = (1 + c.mor / 200) * (1 - c.fat / 260);
-    for (const a of armies) if (a.mood && a.mood.k === 'hungry') m -= 0.1 / armies.length;
+    let m = 1;
+    for (const a of armies) {
+      if (!a.mood) continue;
+      if (a.mood.k === 'shaken' || a.mood.k === 'hungry') m -= 0.1 / armies.length;
+      if (a.mood.k === 'confident') m += 0.05 / armies.length;
+    }
     return m;
   },
-  // التعافي: الراحة والإمداد يزيلان التعب ويعيدان السهام. المحاصِر لا يأخذ مؤن المدينة
-  recoverArmy(a) {
-    const n = this.node(a.node), f = this.f(a.fid);
-    const own = n.owner === a.fid, besieged = own && this.besieger(n.id) && !a.siege;
-    let rest = a.siege ? 12 : own ? (besieged ? 15 : 35) : this.friendly(n.owner, a.fid) ? 25 : 15;
-    if (this.hasTrait(a, 'logistician')) rest *= 1.3;
-    if (f && f.food <= 0) rest = -8;
-    a.fat = Math.round(clamp((a.fat || 0) - rest, 0, 95));
-    const back = own && !besieged ? 8 : 5;
-    a.mor = Math.round((a.mor || 0) + clamp(-(a.mor || 0), -back, back));
-    const arrows = a.siege ? (f && f.food > 0 ? 0.25 : 0) : own ? (besieged ? (n.barracks ? 0.35 : 0.2) : 0.6) : 0.3;
-    for (const r of a.regs) if (UNITS[r.type].range && r.ammo != null) r.ammo = Math.min(1, r.ammo + arrows);
-    this.moodTag(a);
-  },
 
-  // --- المعركة بالقيادة: الإعداد والنتيجة ---
+  // ——— المعركة بالقيادة: الإعداد والنتيجة ———
   battleWeather(node) {
     const r = rng(hashStr(node.id + ':' + this.S.turn));
     const season = this.S.turn % 4, x = r();
@@ -1189,8 +1046,8 @@ const Game = {
     const s = this.encSides(enc);
     const P = this.S.player;
     const moodOf = (armies, fid, defending) => {
-      let m = this.condOf(armies).mor;
-      for (const a of armies) if (a.mood && a.mood.k === 'hungry') m -= 15 / armies.length;
+      let m = 0;
+      for (const a of armies) if (a.mood) m += { shaken: -10, hungry: -15, confident: 5 }[a.mood.k] / armies.length;
       if (defending && enc.kind === 'siege' && s.node.stores < 0) m -= 15;
       const F = this.f(fid), other = fid === enc.attFid ? enc.defFid : enc.attFid;
       if (F && F.vendetta && F.vendetta[other] > 0) m += 8;
@@ -1207,9 +1064,8 @@ const Game = {
       return {
         fid, name: this.fname(fid), color: this.f(fid).color, player: fid === P,
         regs: regs.filter((r) => r.men > 0),
-        gens: gens.filter((g) => g.status === 'army').map((g) => ({ id: g.id, name: g.name, trait: g.trait, flaw: g.flaw, rank: g.rank, men: this.genMen(g), vendetta: g.vendetta, skills: this.genSkills(g) })),
+        gens: gens.filter((g) => g.status === 'army').map((g) => ({ id: g.id, name: g.name, trait: g.trait, flaw: g.flaw, rank: g.rank, men: this.genMen(g), vendetta: g.vendetta })),
         mood: moodOf(armies, fid, defending) + rm, ai: fid === 'neutral' ? Math.min(skill, 0.45) : skill, intel, aggr: pers.aggr || 1,
-        fat: this.condOf(armies).fat, intent: fid === P && enc.intent ? enc.intent : null,
       };
     };
     return {
@@ -1222,24 +1078,12 @@ const Game = {
   // تطبيق نتيجة المحاكاة على جيوش الحملة
   applySim(enc, res) {
     if (!res || res === 'cancel' || res.winner == null) return null;
-    const sides = this.encSides(enc);
     for (let si = 0; si < 2; si++) {
       const won = res.winner === si;
-      const R2 = res.sides[si], F2 = res.sides[1 - si];
-      for (const u of R2.units) {
+      for (const u of res.sides[si].units) {
         if (!u.ref) continue;
         u.ref.men = Math.max(0, Math.round(u.men));
-        if (u.ammo0) u.ref.ammo = clamp(u.ammo / u.ammo0, 0, 1);
         if (won && u.kills >= 10 && u.ref.exp != null && R() < 0.5) u.ref.exp = Math.min(3, (u.ref.exp || 0) + 1);
-      }
-      // الإرهاق والمعنويات بقدر شدة القتال ونسبة من اشتبك: هجوم جندي واحد لا ينهك جيشاً
-      const own0 = Math.max(1, R2.men0 || 1), foe0 = F2.men0 || 0;
-      const engage = clamp(1.5 * foe0 / own0, 0.05, 1);
-      const loss = clamp(1 - (R2.menEnd != null ? R2.menEnd : own0) / own0, 0, 1);
-      const armies = si === 0 ? sides.attArmies : sides.defArmies;
-      for (const a of armies) {
-        a.fat = Math.round(clamp((a.fat || 0) + Math.max(0, (R2.fat || 0) - (R2.fat0 || 0)) * engage, 0, 95));
-        a.mor = Math.round(clamp((a.mor || 0) + (won ? 4 - loss * 30 : -10 - loss * 40) * engage, -40, 10));
       }
     }
     const fates = {};
@@ -1255,8 +1099,7 @@ const Game = {
   },
   autoResolve(enc) {
     const cfg = this.simConfig(enc);
-    // بلا نية: كل جانب يديره الذكاء. بنية: جانب اللاعب يتبع نيته بالأوامر نفسها المتاحة له في العرض المفصل
-    for (const sd of cfg.sides) if (!sd.intent) sd.player = false;
+    for (const sd of cfg.sides) sd.player = false;
     const res = new WarSim(cfg).runAuto();
     const out = this.applySim(enc, res) || { winner: 1, fates: {}, report: null };
     out.auto = true;
@@ -1286,13 +1129,12 @@ const Game = {
       if (g.status !== 'army') continue;
       const won = (g.fid === winFid);
       this.gainXp(g, won ? 2 : 1);
-      if (won && this.addFame) this.addFame(g, enc.kind === 'siege' ? 4 : 3);
     }
-    if (winFid === this.S.player && this.recProgress) this.recProgress('win');
     const winners = winner === 0 ? attArmies : defArmies;
     const losers = winner === 0 ? defArmies : attArmies;
-    for (const a of [...attArmies, ...defArmies]) { this.spendMp(a, 'battle'); a.regs = a.regs.filter((r) => r.men >= 5); }
-    for (const a of [...winners, ...losers]) this.moodTag(a);
+    for (const a of [...attArmies, ...defArmies]) { a.mp = 0; a.regs = a.regs.filter((r) => r.men >= 5); }
+    for (const a of winners) a.mood = { k: 'confident', t: 2 };
+    for (const a of losers) a.mood = { k: 'shaken', t: 2 };
     node.garrison = node.garrison.filter((r) => r.men >= 5);
     this.fixLeaderless();
 
@@ -1392,37 +1234,22 @@ const Game = {
     return false;
   },
 
-  // ------------------ سقوط المدن -------------------
+  // ——————————————————— سقوط المدن ———————————————————
   async capture(node, fid, how, armies = []) {
     const old = node.owner;
-    // مصير المدافعين يُحسب ويُحفظ: الجيوش والحامية
-    const fate = [];
-    const gMen = this.menOf(node.garrison);
     // جيوش المالك السابق وحلفائه في المدينة: ممر آمن أو استسلام
     for (const o of [...this.armiesAt(node.id)]) {
       if (o.fid === fid || o.siege) continue;
       if (this.friendly(o.fid, fid)) continue;
-      const gn = this.gname(this.armyGen(o));
       const moved = this.retreatHome(o, [node.id], fid);
-      if (moved) { this.event('mil', `جيش ${this.fname(o.fid)} يغادر ${node.name} بممر آمن.`, { fids: [o.fid, fid], node: node.id, imp: 1 }); fate.push(`جيش ${gn} انسحب بممر آمن إلى ${this.node(o.node).name}`); }
-      else fate.push(`جيش ${gn} لم يجد مهرباً فألقى السلاح`);
+      if (moved) this.event('mil', `جيش ${this.fname(o.fid)} يغادر ${node.name} بممر آمن.`, { fids: [o.fid, fid], node: node.id, imp: 1 });
     }
-    // الحامية: صلحاً تخرج بسلاحها إلى أقرب مدينة لأصحابها، وعنوةً يُجرَّد من بقي ويعود إلى بيته
-    if (gMen > 0) {
-      if (how === 'surrender') {
-        const dest = old !== 'neutral' ? this.nodesOf(old).filter((m) => m.id !== node.id && !this.besieger(m.id)).sort((a, b) => this.hops(node.id, a.id, 8) - this.hops(node.id, b.id, 8))[0] : null;
-        if (dest) { for (const r of node.garrison) dest.garrison.push({ ...r }); fate.push(`خرجت الحامية (${gMen} رجل) بسلاحها إلى ${dest.name}`); }
-        else fate.push(`تفرّقت الحامية (${gMen} رجل) في الأرياف`);
-      } else fate.push(`جُرّد ${gMen} من الحامية من سلاحهم وعادوا إلى بيوتهم، فزاد رجال المدينة ${Math.round(gMen * 0.5)}`);
-    } else if (how !== 'surrender') fate.push('لم يبقَ من الحامية أحد');
     node.owner = fid;
     node.capturedTurn = this.S.turn;
-    if (fid === this.S.player && this.recProgress) this.recProgress('city', node);
-    if (this.addFame) for (const a of armies) this.addFame(this.armyGen(a), node.capital ? 6 : 3);
     node.garrison = [];
     this.fillGarrison(node, false);
     node.stores = Math.min(2, this.storesMax(node));
-    node.manpower = Math.floor(node.manpower * 0.3) + (how === 'surrender' ? 0 : Math.round(gMen * 0.5));
+    node.manpower = Math.floor(node.manpower * 0.3);
     node.unrest = how === 'surrender' ? 2 : 4;
     for (const a of armies) if (this.S.armies.includes(a)) { if (a.node !== node.id) { a.from = a.node; a.node = node.id; } a.siege = null; }
     for (const b of this.besiegers(node.id)) if (b.fid === fid) b.siege = null;
@@ -1445,31 +1272,17 @@ const Game = {
     if (old === this.S.player) this.alert('crit', `سقطت ${node.name} بيد ${this.fname(fid)}${how === 'surrender' ? ' صلحاً' : ''}`, { node: node.id, icon: 'breach' });
     if (this.S.flips) { const k = [fid, old].sort().join('|') + ':' + node.id; this.S.flips[k] = (this.S.flips[k] || 0) + 1; }
     let choice = 'occupy';
-    const fateTxt = fate.join('، ');
-    if (this.f(fid).isPlayer) choice = this.hooks.occupation ? await this.hooks.occupation(node, how, fateTxt) : 'occupy';
+    if (this.f(fid).isPlayer) choice = this.hooks.occupation ? await this.hooks.occupation(node, how) : 'occupy';
     else {
       const p = this.pers ? this.pers(fid) : { aggr: 1, honor: 1 };
       choice = this.f(fid).horde ? (R() < 0.7 ? 'sack' : 'occupy') : p.aggr > 1.15 && p.honor < 1 && R() < 0.45 ? 'sack' : (p.honor > 1.1 && R() < 0.4 ? 'clemency' : 'occupy');
-      // من يقبل الاستسلام على الأمان لا ينهب، إلا الغزاة الذين لا عهد لهم
-      if (how === 'surrender' && choice === 'sack' && !this.f(fid).horde) choice = 'clemency';
     }
-    this.applyOccupation(node, fid, old, choice, how, fateTxt);
+    this.applyOccupation(node, fid, old, choice, how);
     this.validate();
   },
 
-  applyOccupation(node, fid, old, choice0, how, fateTxt) {
+  applyOccupation(node, fid, old, choice, how) {
     const f = this.f(fid);
-    const c = this.normChoice ? this.normChoice(choice0, how) : { control: 'direct', terms: choice0 === 'sack' ? 'sack' : choice0 === 'clemency' ? 'aman' : 'plain' };
-    const choice = c.terms === 'sack' ? 'sack' : c.terms === 'aman' ? 'clemency' : 'occupy';
-    node.terms = { k: c.terms, control: c.control, turn: this.S.turn, how, by: fid, fate: fateTxt || null };
-    // نهب مدينة سلّمت على الأمان نقضٌ للعهد يسمعه الجميع
-    if (how === 'surrender' && c.terms === 'sack') {
-      node.terms.broke = this.S.turn;
-      f.rep = Math.max(0, f.rep - 12);
-      for (const o of this.aliveMajors ? this.aliveMajors() : []) if (o !== fid) this.addRel(fid, o, -8);
-      this.chronicle('betray', `${f.name} تنقض الأمان وتنهب ${node.name} بعد أن فتحت أبوابها صلحاً.`, { fids: [fid, old], node: node.id, imp: 3 });
-    }
-    if (c.control === 'autonomy') this.event('int', `${f.name} تترك لأعيان ${node.name} حكمها الذاتي مقابل نصف دخلها.`, { fids: [fid], node: node.id, imp: 1 });
     if (choice === 'sack') {
       const loot = Math.round(node.pop / 55);
       f.gold += loot;
@@ -1487,6 +1300,7 @@ const Game = {
       node.unrest = Math.max(1, node.unrest - 2);
       this.addRel(fid, old, 8);
       f.rep = Math.min(100, f.rep + 4);
+      f.gold = Math.max(0, f.gold - 50);
       this.event('int', `${f.name} تعلن الأمان لأهل ${node.name}.`, { fids: [fid], node: node.id, imp: 1 });
     } else {
       node.loyalty = how === 'surrender' ? 52 : 40;
@@ -1514,7 +1328,7 @@ const Game = {
     }
   },
 
-  // ------------------ سلامة الحالة -------------------
+  // ——————————————————— سلامة الحالة ———————————————————
   // تُستدعى بعد كل تغيير مهم لضمان ألا يبقى جيش في حالة غير معرّفة
   validate() {
     const S = this.S;
@@ -1550,9 +1364,17 @@ const Game = {
     this.checkElimination();
   },
 
-  // ------------------ التفاوض في المواجهة -------------------
-  // طلب التسليم: احتمال معلن، رمية مثبتة بالدور، ومهلة بعد الرفض (statecraft.js)
-  tryDemandSurrender(enc) { return this.demandSurrender(enc).ok; },
+  // ——————————————————— التفاوض في المواجهة ———————————————————
+  tryDemandSurrender(enc) {
+    const { pa, pd } = this.encPower(enc);
+    const ratio = pa / Math.max(1, pd);
+    const s = this.encSides(enc);
+    let p = clamp((ratio - 1.8) * 0.35, 0, 0.85);
+    if (s.defGens.some((g) => g.trait === 'brave' || g.trait === 'defender')) p *= 0.5;
+    if (enc.kind === 'siege') { if (s.node.stores <= 0) p += 0.3; p += this.siegeTurns(s.node, enc.attFid) * 0.05; }
+    p += (this.f(enc.attFid).rep - 50) / 250;
+    return R() < clamp(p, 0, 0.9);
+  },
   bribeCost(enc) {
     const s = this.encSides(enc);
     const men = this.menOf(s.defRegs) + s.defGens.reduce((t, g) => t + this.genMen(g), 0);
@@ -1570,17 +1392,17 @@ const Game = {
     const node = this.node(enc.node);
     const att = enc.att.map((id) => this.army(id)).filter(Boolean);
     if (enc.type === 'assault') {
-      for (const a of att) this.spendMp(a, 'capture');
+      for (const a of att) a.mp = 0;
       await this.capture(node, enc.attFid, how, att);
     } else {
       for (const id of enc.def) { const d = this.army(id); if (d) this.retreatHome(d, [], null, d.siege ? d.siege.from : d.from); }
-      for (const a of att) { this.spendMp(a, 'battle'); if (a.node !== node.id) { a.from = a.node; a.node = node.id; } }
+      for (const a of att) { a.mp = 0; if (a.node !== node.id) { a.from = a.node; a.node = node.id; } }
       this.event('mil', `جيش ${this.fname(enc.defFid)} ينسحب من ${node.name} بعد التفاوض.`, { fids: [enc.attFid, enc.defFid], node: node.id, imp: 2 });
     }
     this.validate();
   },
 
-  // ------------------ الأسرى -------------------
+  // ——————————————————— الأسرى ———————————————————
   ransomPrice(g) { return 100 + 90 * g.rank + (g.trait ? 30 : 0); },
   releaseCaptive(g, by) {
     g.status = this.f(g.fid) && this.f(g.fid).alive ? 'pool' : 'exiled';
@@ -1642,7 +1464,7 @@ const Game = {
     }
     for (const n of this.nodesOf(by)) if (n.origOwner === victim) n.loyalty = Math.max(0, n.loyalty - 12);
     // جيوش الضحية في حداد ثم ثأر
-    for (const a of this.armiesOf(victim)) { a.mor = Math.min(a.mor || 0, -12); this.moodTag(a); }
+    for (const a of this.armiesOf(victim)) a.mood = { k: 'shaken', t: 1 };
     let avenger = null;
     if (V && V.alive && victim !== 'neutral' && R() < 0.55) {
       avenger = this.addGeneral(victim, 'ابن ' + g.name.split(' ').slice(-1)[0] + ' الثائر', 'brave', R() < 0.5 ? 'reckless' : null, Math.max(1, g.rank - 1));
@@ -1650,10 +1472,10 @@ const Game = {
     }
     this.event('pol', `${B.name} تعدم القائد ${g.name}! ${V ? V.name + ' تقسم على الثأر.' : ''}${avenger ? ` ظهر ${avenger.name} يطلب الانتقام.` : ''}`, { fids: [by, victim], imp: 3 });
     this.chronicle('execute', `${B.name} تعدم القائد الأسير ${g.name}.${avenger ? ` ${avenger.name} يقسم على الثأر.` : ''}`, { fids: [by, victim], imp: 3 });
-    if (victim === this.S.player) this.alert('crit', `${B.name} أعدمت قائدك ${g.name}${avenger ? `، ${avenger.name} يطلب الثأر` : ''}`, { icon: 'skull' });
+    if (victim === this.S.player) this.alert('crit', `${B.name} أعدمت قائدك ${g.name}${avenger ? ` — ${avenger.name} يطلب الثأر` : ''}`, { icon: 'skull' });
   },
 
-  // ------------------ نهاية الجولة -------------------
+  // ——————————————————— نهاية الجولة ———————————————————
   endRound() {
     const S = this.S;
     const notes = [];
@@ -1686,7 +1508,7 @@ const Game = {
       if (f.food < 0) {
         f.food = 0;
         for (const a of this.armiesOf(id)) { for (const r of a.regs) r.men = Math.round(r.men * 0.94); a.mood = { k: 'hungry', t: 1 }; }
-        if (f.isPlayer) { notes.push('نفد الطعام!'); this.alert('crit', 'نفد الطعام: جيوشك جائعة وتخسر رجالاً. ابنِ مزارع أو قلّل الجيوش', { icon: 'food', key: 'nofood' }); }
+        if (f.isPlayer) { notes.push('نفد الطعام!'); this.alert('crit', 'نفد الطعام: جيوشك جائعة وتخسر رجالاً — ابنِ مزارع أو قلّل الجيوش', { icon: 'food', key: 'nofood' }); }
       }
       f.food = Math.min(f.food, 400);
       if (f.gold < 0) {
@@ -1756,9 +1578,8 @@ const Game = {
         // الجيوش المقيمة في مدينة بها إسطبلات وورش تتدرّب تلقائياً
         for (const r of a.regs) { r.drill = (r.drill || 0) + 0.5; if (r.drill >= 2 && (r.exp || 0) < 3) { r.exp = (r.exp || 0) + 1; r.drill = 0; } }
       }
-      // التعويض من رجال المدينة: كاملاً في السلم، وبنصف السرعة تحت الحصار (الرجال في الداخل، والتدريب على الأسوار)
-      if (!a.siege && n.owner === a.fid && this.f(a.fid).gold > 0) {
-        const rate = (this.hasTrait(a, 'logistician') ? 0.18 : 0.12) * (this.besieger(n.id) ? 0.5 : 1);
+      if (!a.siege && n.owner === a.fid && !this.besieger(n.id) && this.f(a.fid).gold > 0) {
+        const rate = this.hasTrait(a, 'logistician') ? 0.18 : 0.12;
         let spent = 0;
         for (const r of a.regs) {
           if (r.merc) continue;
@@ -1771,9 +1592,8 @@ const Game = {
       }
       const g = this.armyGen(a);
       if (g) g.men = this.genMen(g);
-      if (a.mood && a.mood.k === 'hungry') { a.mood.t--; if (a.mood.t <= 0) a.mood = null; }
-      this.recoverArmy(a);
-      a.mp = this.mpMax(a); a.mpWhy = null;
+      if (a.mood) { a.mood.t--; if (a.mood.t <= 0) a.mood = null; }
+      a.mp = this.mpMax(a);
     }
     // الأسرى: محاولات الهرب
     for (const g of Object.values(S.gens)) {

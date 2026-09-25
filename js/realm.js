@@ -37,15 +37,14 @@ const CHAPTERS = [
 ];
 
 Object.assign(Game, {
-  // ------------------ الأهداف والنصر -------------------
+  // ——————————————————— الأهداف والنصر ———————————————————
   objectivesOf(fid) {
     const S = this.S;
     S.obj = S.obj || {};
     const total = S.nodes.length;
     const mine = this.nodesOf(fid);
     const out = [];
-    const frac = this.sc.empireFrac || 0.65;
-    const need = Math.ceil(total * frac);
+    const need = Math.ceil(total * 0.65);
     out.push({ k: 'empire', icon: 'crown', name: 'الإمبراطورية', desc: `احكم ${need} مدينة من ${total} ثلاثة أدوار متتالية.`, have: mine.length, need, hold: S.obj.emp || 0, done: mine.length >= need && (S.obj.emp || 0) >= 3 });
     const hd = (HISTORIC[S.scenario] || {})[fid];
     if (hd) {
@@ -84,10 +83,9 @@ Object.assign(Game, {
     S.obj = S.obj || {};
     const hd = (HISTORIC[S.scenario] || {})[P];
     S.obj.hist = hd && hd.nodes.every((id) => this.node(id) && this.node(id).owner === P) ? (S.obj.hist || 0) + 1 : 0;
-    const frac = this.sc.empireFrac || 0.65;
-    S.obj.emp = this.nodesOf(P).length >= Math.ceil(S.nodes.length * frac) ? (S.obj.emp || 0) + 1 : 0;
+    S.obj.emp = this.nodesOf(P).length >= Math.ceil(S.nodes.length * 0.65) ? (S.obj.emp || 0) + 1 : 0;
     // إمبراطورية منافسة تنهي الحملة بدل استمرار بلا معنى
-    const rivalEmp = this.aliveMajors().find((id) => id !== P && !this.f(id).kind && this.nodesOf(id).length >= Math.ceil(S.nodes.length * frac));
+    const rivalEmp = this.aliveMajors().find((id) => id !== P && !this.f(id).kind && this.nodesOf(id).length >= Math.ceil(S.nodes.length * 0.65));
     S.obj.rivalEmp = rivalEmp && rivalEmp === S.obj.rivalEmpId ? (S.obj.rivalEmp || 0) + 1 : rivalEmp ? 1 : 0;
     S.obj.rivalEmpId = rivalEmp || null;
     if (rivalEmp && S.obj.rivalEmp >= 3 && !this.isVassalOf(P, rivalEmp)) {
@@ -113,7 +111,7 @@ Object.assign(Game, {
     }
   },
 
-  // ------------------ فصول الحملة -------------------
+  // ——————————————————— فصول الحملة ———————————————————
   chapter() {
     const S = this.S, P = S.player;
     if (!S || !this.f(P)) return null;
@@ -140,15 +138,15 @@ Object.assign(Game, {
     const prev = S.chap || 0;
     if (st > prev) {
       S.chap = st;
-      this.chronicle('chapter', `${CHAPTERS[st].name}: ${CHAPTERS[st].desc}`, { fids: [P], imp: 3 });
+      this.chronicle('chapter', `${CHAPTERS[st].name} — ${CHAPTERS[st].desc}`, { fids: [P], imp: 3 });
       this.alert('info', CHAPTERS[st].name, { icon: 'book' });
     }
     const cr = this.inCrisis(P);
-    if (cr && !S.inCrisis) { this.chronicle('chapter', `${CHAPTERS[4].name}: ${CHAPTERS[4].desc}`, { fids: [P], imp: 3 }); }
+    if (cr && !S.inCrisis) { this.chronicle('chapter', `${CHAPTERS[4].name} — ${CHAPTERS[4].desc}`, { fids: [P], imp: 3 }); }
     S.inCrisis = cr;
   },
 
-  // ------------------ التابعون -------------------
+  // ——————————————————— التابعون ———————————————————
   isVassalOf(a, b) { const A = this.f(a); return !!(A && A.alive && A.overlord === b); },
   vassalLabel(P, id) { return this.isVassalOf(id, P) ? 'تابعة لك' : this.isVassalOf(P, id) ? 'متبوعتك' : null; },
   vassalsOf(fid) { return this.aliveMajors().filter((id) => this.isVassalOf(id, fid)); },
@@ -156,11 +154,11 @@ Object.assign(Game, {
     const T = this.f(t);
     if (!T || T.kind === 'horde') return { why: 'الغزاة لا يخضعون لأحد' };
     if (T.overlord) return { why: `${T.name} تابعة لغيرك` };
-    if (T.vendetta && T.vendetta[by] > 0) return { why: `${T.name} ترفض: بينكما دم` };
+    if (T.vendetta && T.vendetta[by] > 0) return { why: `${T.name} ترفض — بينكما دم` };
     const ratio = this.factionPower(by) / Math.max(1, this.factionPower(t));
     const small = this.nodesOf(t).length <= 3;
     const ok = ratio > (small ? 1.7 : 2.3) && (this.atWar(by, t) || this.rel(t, by) > 20);
-    if (!ok) { this.addRel(by, t, -10); return { why: `${T.name} ترفض: ما زالت ترى نفسها قادرة (تحتاج قوة أكبر بكثير أو حرباً تكسرها)` }; }
+    if (!ok) { this.addRel(by, t, -10); return { why: `${T.name} ترفض — ما زالت ترى نفسها قادرة (تحتاج قوة أكبر بكثير أو حرباً تكسرها)` }; }
     this.makeVassal(t, by);
     return { ok: true };
   },
@@ -171,7 +169,6 @@ Object.assign(Game, {
     this.addRel(t, by, 20);
     this.event('pol', `${T.name} تخضع لـ${this.fname(by)} وتصبح تابعة لها.`, { fids: [t, by], imp: 3 });
     this.chronicle('vassal', `${T.name} تصبح تابعة لـ${this.fname(by)}.`, { fids: [t, by], imp: 3 });
-    if (by === this.S.player && this.recProgress) this.recProgress('dip', { kind: 'vassal', fid: t, label: 'تبعية' });
     if (t === this.S.player) this.alert('crit', `أصبحت تابعاً لـ${this.fname(by)}: جزية وحروبها حروبك`, { icon: 'seal', win: 'diplo' });
     this.validate();
   },
@@ -228,7 +225,7 @@ Object.assign(Game, {
     }
   },
 
-  // ------------------ الحكّام -------------------
+  // ——————————————————— الحكّام ———————————————————
   canAppoint: true,
   appointGovernor(g, n) {
     if (!g || n.owner !== g.fid) return 'ليست مدينتك';
@@ -249,7 +246,7 @@ Object.assign(Game, {
     }
   },
 
-  // ------------------ السياسة العامة -------------------
+  // ——————————————————— السياسة العامة ———————————————————
   devFocus(fid) { return (this.f(fid) && this.f(fid).dev) || 'manual'; },
   edictOf(fid) { return (this.f(fid) && this.f(fid).edict) || 'none'; },
   setEdict(fid, k) {
@@ -295,7 +292,7 @@ Object.assign(Game, {
     }
   },
 
-  // ------------------ قيمة الخسارة: الثأر -------------------
+  // ——————————————————— قيمة الخسارة: الثأر ———————————————————
   avengerTick() {
     for (const g of Object.values(this.S.gens)) {
       if (!g.vendetta || g.status !== 'pool' || g.avenging) continue;
@@ -314,7 +311,7 @@ Object.assign(Game, {
     }
   },
 
-  // ------------------ تحليلات المطوّر (لا تظهر للاعب) -------------------
+  // ——————————————————— تحليلات المطوّر (لا تظهر للاعب) ———————————————————
   // تكشف الأدوار الميتة والتكرار والجمود واللولب والاقتصاد المتخم
   analytics() {
     const S = this.S, P = S.player, st = S.stats || { hist: [], acts: {} };
@@ -331,7 +328,7 @@ Object.assign(Game, {
     const over = this.aliveMajors().map((id) => this.overstack ? this.nodesOf(id).reduce((t, n) => t + this.overstack(n, id), 0) : 0).reduce((t, v) => t + v, 0);
     return {
       turn: S.turn, deadTurns: st.dead, longestDead: longest,
-      topAction: topAct ? `${topAct[0]} ${Math.round(100 * topAct[1] / totalActs)}٪` : 'لا شيء', actions: acts,
+      topAction: topAct ? `${topAct[0]} ${Math.round(100 * topAct[1] / totalActs)}٪` : '—', actions: acts,
       flipFlops: flips, idleArmies: idle, gold: this.f(P) ? this.f(P).gold : 0,
       staleAI: stale, goalShifts: Object.fromEntries(this.majors().map((id) => [this.fname(id), this.f(id).goalShifts || 0])),
       alliances, overstack: over,
@@ -339,7 +336,7 @@ Object.assign(Game, {
     };
   },
 
-  // ------------------ دورة المملكة -------------------
+  // ——————————————————— دورة المملكة ———————————————————
   async realmTick() {
     this.govTick();
     this.vassalTick();

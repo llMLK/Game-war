@@ -1,5 +1,5 @@
 'use strict';
-// مشهد المعركة: خريطة حرب تكتيكية، الاستطلاع، الخطة، التشكيل، المراحل والقرارات، ثم التحليل
+// مشهد المعركة: خريطة حرب تكتيكية — الاستطلاع، الخطة، التشكيل، المراحل والقرارات، ثم التحليل
 
 const BW = 1000, BH = 600;
 const SX_OURS = { L: 250, C: 500, R: 750 };
@@ -65,7 +65,7 @@ class BattleScene {
     this.free = { cx: (App.W - pw) / 2, w: App.W - pw, top: top + 6 };
   }
 
-  // ----------- الرسم المسبق لأرض المعركة -----------
+  // ——————————— الرسم المسبق لأرض المعركة ———————————
   renderBg() {
     const K = 2, cv = document.createElement('canvas');
     cv.width = BW * K; cv.height = BH * K;
@@ -155,7 +155,7 @@ class BattleScene {
     return cv;
   }
 
-  // ----------- مواقع الوحدات -----------
+  // ——————————— مواقع الوحدات ———————————
   sx(side, key) { return side === this.A ? SX_OURS[key] : SX_THEIRS[key]; }
   dir(side) { return side === this.A ? 1 : -1; }
   layoutUnits(snap) {
@@ -216,7 +216,7 @@ class BattleScene {
     if (snap) { p.x = x; p.y = y; }
   }
 
-  // ----------- الواجهة العلوية -----------
+  // ——————————— الواجهة العلوية ———————————
   renderTop() {
     const sim = this.sim;
     this.top.innerHTML = '';
@@ -241,7 +241,7 @@ class BattleScene {
     return lo === hi ? '~' + lo : `${lo}–${hi}`;
   }
 
-  // ----------- المرحلة ١: الاستطلاع -----------
+  // ——————————— المرحلة ١: الاستطلاع ———————————
   showIntel() {
     this.stage = 'intel';
     const sim = this.sim, A = this.A, E = this.E;
@@ -277,7 +277,7 @@ class BattleScene {
     );
   }
 
-  // ----------- المرحلة ٢: الخطة -----------
+  // ——————————— المرحلة ٢: الخطة ———————————
   showPlan() {
     this.stage = 'plan';
     const sim = this.sim, A = this.A;
@@ -307,7 +307,7 @@ class BattleScene {
     );
   }
 
-  // ----------- المرحلة ٣: التشكيل -----------
+  // ——————————— المرحلة ٣: التشكيل ———————————
   showFormation() {
     this.stage = 'form';
     const sim = this.sim, A = this.A;
@@ -343,7 +343,7 @@ class BattleScene {
     requestAnimationFrame(() => this.fit());
   }
 
-  // ----------- المعركة -----------
+  // ——————————— المعركة ———————————
   startBattle() {
     const sim = this.sim;
     if (!this.A.plan) sim.autoFormation(this.A, this.planPick);
@@ -388,31 +388,13 @@ class BattleScene {
     const next = () => {
       const ev = evs.shift();
       if (ev) { this.showEvent(ev, next); return; }
-      // بطاقات الأوامر تظهر حين يوجد قرار حقيقي، أو حين طلبتها؛ وإلا تستمر المعركة
-      if (!this.auto && (this.wantOrders || this.breakWorth())) { this.wantOrders = false; this.showBreakPanel(); return; }
       sim.nextPhase();
       this.renderTop();
       this.layoutUnits(false);
-      this.showPlayPanel();
-      this.timer = setTimeout(() => this.playTicks(), 700);
+      if (this.auto) { this.showPlayPanel(); this.timer = setTimeout(() => this.playTicks(), 900); }
+      else this.showBreakPanel();
     };
     next();
-  }
-  // هل تستحق نهاية المرحلة سؤال القائد؟
-  breakWorth() {
-    const sim = this.sim, A = this.A, E = this.E;
-    const next = WS_PHASES[sim.phase + 1] && WS_PHASES[sim.phase + 1].key;
-    if (!next) return false;
-    const secs = SECTS.filter((k) => sim.secUnits(A, k).length);
-    const hasRes = sim.secUnits(A, 'Res').some((u) => u.role !== 'engine' && !u.hunter);
-    this.breakWhy = null;
-    const why = (t) => { this.breakWhy = t; return true; };
-    if (secs.some((k) => A.sec[k].morale < 50) && (hasRes || !A.rallied)) return why('قطاع من جيشك يضعف');
-    if (SECTS.some((k) => sim.secUnits(E, k).length && (E.sec[k].morale < 40 || E.sec[k].state === 'waver'))) return why('قطاع من العدو يترنح');
-    if (next === 'crisis' && hasRes) return why('الأزمة قادمة واحتياطك لم يُستخدم');
-    if (!this.siege && next === 'main' && ['L', 'R'].some((k) => sim.secUnits(A, k).some((u) => u.role === 'cav') && !A.sec[k].flankDone && A.sec[k].stance !== 'flank')) return why('فرسانك يستطيعون الالتفاف في المرحلة التالية');
-    if (A.ammoOut) return why('سهام بعض رماتك نفدت');
-    return false;
   }
 
   newLines() {
@@ -434,7 +416,6 @@ class BattleScene {
     const ph = WS_PHASES[Math.max(0, this.sim.phase)];
     this.setPanel(
       h('div', { class: 'bs-h' }, icon('hourglass'), h('b', null, this.siege ? ph.siege : ph.name), h('span', { class: 'sp' }),
-        h('button', { class: 'chip' + (this.wantOrders ? ' on' : ''), title: 'تتوقف المعركة عند نهاية هذه المرحلة لتصدر أوامرك', onclick: () => { this.wantOrders = !this.wantOrders; this.showPlayPanel(); } }, icon('flag'), this.wantOrders ? 'ستتوقف للأوامر' : 'أوامر'),
         h('button', { class: 'chip' + (this.auto ? ' on' : ''), onclick: () => { this.auto = !this.auto; this.showPlayPanel(); } }, icon('play'), 'تلقائي'),
         h('button', { class: 'chip' + (this.speed > 1 ? ' on' : ''), onclick: () => { this.speed = this.speed > 1 ? 1 : 2; this.showPlayPanel(); } }, icon('fast'), this.speed > 1 ? '×2' : '×1')),
       this.lineList(3),
@@ -442,34 +423,28 @@ class BattleScene {
   }
 
   showBreakPanel() {
-    clearTimeout(this.timer);
     this.stage = 'break';
     this.newLines();
     const sim = this.sim, A = this.A;
-    const ph = WS_PHASES[sim.phase + 1] || WS_PHASES[sim.phase];
-    const cards = sim.availableOrders(A);
-    const nm = (k, side) => (this.siege ? SECT_SIEGE : SECT_NAME)[k] + (side === this.E ? ' للعدو' : '');
-    const pick = this.cardPick && cards.find((c) => c.k === this.cardPick) || null;
-    const grid = h('div', { class: 'ocards' });
-    for (const c of cards) {
-      grid.appendChild(h('button', { class: 'ocard' + (pick === c ? ' on' : '') + (c.why ? ' dim' : ''), disabled: !!c.why && c.k !== 'withdraw', onclick: () => { this.cardPick = pick === c ? null : c.k; this.showBreakPanel(); } },
-        h('b', null, icon(c.icon), c.name), c.why ? h('span', { class: 'why' }, c.why) : h('span', null, c.what)));
-    }
-    const detail = pick ? h('div', { class: 'ocard-d' },
-      h('p', null, h('b', null, 'ما يفعله الجنود: '), pick.what),
-      h('p', null, h('b', null, 'متى يفيد: '), pick.when),
-      h('p', null, h('b', null, 'يحتاج: '), pick.req),
-      h('p', { class: 'warn' }, h('b', null, 'المخاطر: '), pick.risk),
-      pick.need ? h('div', { class: 'row-btns' }, h('span', { class: 'small muted' }, pick.need === 'foe' ? 'على أي قطاع للعدو؟' : 'أي قطاع؟'),
-        pick.targets.map((k) => h('button', { class: 'chip', onclick: () => { sim.order(A, pick.k, k); if (Game.track) Game.track('order:' + pick.k); this.cardPick = null; this.layoutUnits(false); this.renderTop(); this.newLines(); if (sim.over) { this.afterEnd(); return; } this.showBreakPanel(); } }, nm(k, pick.need === 'foe' ? this.E : A)))) :
-        h('div', { class: 'row-btns' }, ib('retreat', 'نفّذ الانسحاب', { class: 'btn danger', onclick: () => { sim.order(A, 'withdraw'); if (Game.track) Game.track('order:withdraw'); this.afterEnd(); } })),
-    ) : null;
+    const ph = WS_PHASES[sim.phase];
+    const hasRes = sim.secUnits(A, 'Res').some((u) => u.role !== 'engine' && !(u.hunter && !A.huntDone));
+    const orders = h('div', { class: 'acts' },
+      hasRes ? h('span', { class: 'lbl' }, 'أرسل الاحتياط إلى:') : null,
+      hasRes ? SECTS.filter((k) => sim.secUnits(A, k).length || A.sec[k].had).map((k) => h('button', { class: 'chip', onclick: () => { sim.commitReserve(A, k, 'order'); this.layoutUnits(false); this.showBreakPanel(); } }, icon('plus'), (this.siege ? SECT_SIEGE : SECT_NAME)[k])) : null,
+      !this.siege ? h('span', { class: 'lbl' }, 'الوضعيات:') : null,
+      !this.siege ? SECTS.filter((k) => sim.secUnits(A, k).length).map((k) => {
+        const opts = ['hold', 'advance', 'skirmish'];
+        const st = A.sec[k].stance === 'flank' ? 'advance' : A.sec[k].stance;
+        return h('button', { class: 'chip', onclick: () => { A.sec[k].stance = opts[(opts.indexOf(st) + 1) % opts.length]; A.orders++; this.showBreakPanel(); } }, SECT_NAME[k].replace('الجناح ', '') + ': ', STANCES[st].name);
+      }) : null,
+    );
     this.setPanel(
-      h('div', { class: 'bs-h' }, icon('flag'), h('b', null, 'أوامر قبل: ' + (this.siege ? ph.siege : ph.name)), this.breakWhy ? h('span', { class: 'muted small' }, this.breakWhy) : null),
-      this.lineList(2),
-      grid, detail,
+      h('div', { class: 'bs-h' }, icon('flag'), h('b', null, 'المرحلة التالية: ' + (this.siege ? ph.siege : ph.name))),
+      this.lineList(3),
+      orders,
       h('div', { class: 'row-btns' },
-        ib('play', 'تابع المعركة', { class: 'btn primary', onclick: () => { this.cardPick = null; sim.nextPhase(); this.renderTop(); this.layoutUnits(false); this.playTicks(); } }),
+        ib('retreat', 'انسحاب منظم', { class: 'btn ghost', onclick: () => { sim.withdraw(A); this.afterEnd(); } }),
+        ib('play', 'متابعة', { class: 'btn primary', onclick: () => this.playTicks() }),
       ),
     );
   }
@@ -481,7 +456,7 @@ class BattleScene {
     const box = h('div', { class: 'choice' });
     for (const o of ev.options) {
       box.appendChild(h('button', { disabled: o.dis, onclick: () => { this.sim.choose(ev, o.k); this.layoutUnits(false); this.renderTop(); this.newLines(); if (this.sim.over) { this.afterEnd(); return; } done(); } },
-        h('b', null, icon(o.icon || 'chevL'), o.label), h('span', null, o.desc, o.risk && o.risk !== 'لا خطر' ? h('span', { class: 'risk' }, ' الخطر: ' + o.risk) : null)));
+        h('b', null, icon(o.icon || 'chevL'), o.label), h('span', null, o.desc, o.risk && o.risk !== '—' ? h('span', { class: 'risk' }, ' — ' + o.risk) : null)));
     }
     this.setPanel(h('div', { class: 'bs-h ev' }, icon('warning'), h('b', null, ev.title)), h('p', { class: 'lead' }, ev.text), box);
   }
@@ -508,9 +483,7 @@ class BattleScene {
     this.panel.classList.add('tall');
   }
 
-  quickResolve(intent) {
-    if (!intent) { Panels.intentPicker((k) => { if (k) this.quickResolve(k); }); return; }
-    this.A.intent = intent;
+  quickResolve() {
     this.sim.autoFormation(this.A, this.planPick);
     const res = this.sim.runAuto();
     this.result = res;
@@ -520,7 +493,7 @@ class BattleScene {
   }
   finishNow(kind) { clearTimeout(this.timer); this.onEnd(kind === 'cancel' ? 'cancel' : this.sim.result()); }
 
-  // ----------- المؤثرات -----------
+  // ——————————— المؤثرات ———————————
   consumeCues() {
     for (const c of this.sim.cues) {
       const sideOf = (i) => this.sim.sides[i];
@@ -538,9 +511,6 @@ class BattleScene {
       } else if (c.t === 'charge' || c.t === 'flank' || c.t === 'reserve' || c.t === 'retreat' || c.t === 'hunt' || c.t === 'sally' || c.t === 'ambush') {
         const s = c.side != null ? sideOf(c.side) : this.A;
         this.fx.push({ k: 'arrowBig', side: s, kind: c.t, from: c.from, to: c.to, ok: c.ok, t: 0, d: 2.2 });
-      } else if (c.t === 'focus') {
-        const s = sideOf(c.side);
-        for (const k of SECTS) if (this.sim.secUnits(s, k).some((u) => u.missile)) this.fx.push({ k: 'arrowBig', side: s, kind: 'focus', from: k, to: c.to, t: 0, d: 2 });
       } else if (c.t === 'rout') {
         this.fx.push({ k: 'arrowBig', side: this.sim.sides[c.side], kind: 'retreat', from: c.from, t: 0, d: 2 });
       } else if (c.t === 'breach') {
@@ -570,7 +540,7 @@ class BattleScene {
     }
   }
 
-  // ----------- الرسم -----------
+  // ——————————— الرسم ———————————
   render(ctx) {
     const d = App.dpr, cam = this.cam;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -732,7 +702,7 @@ class BattleScene {
       const s = f.side, d = this.dir(s);
       const a = k < 0.2 ? k / 0.2 : k > 0.8 ? (1 - k) / 0.2 : 1;
       ctx.globalAlpha = a * 0.9;
-      const col = f.kind === 'retreat' ? '#7a2a20' : f.kind === 'reserve' ? '#2f6a3a' : f.kind === 'focus' ? '#8a5a1a' : s.color;
+      const col = f.kind === 'retreat' ? '#7a2a20' : f.kind === 'reserve' ? '#2f6a3a' : s.color;
       const x0 = f.from && f.from !== 'Res' ? this.sx(s, f.from) : 500;
       let pts;
       if (f.kind === 'flank' && f.from) {
