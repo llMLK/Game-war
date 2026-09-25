@@ -257,8 +257,10 @@ class BattleScene {
       h('span', { class: 'hstat' }, icon(WEATHER[sim.weather].icon), WEATHER[sim.weather].name),
       this.siege ? h('span', { class: 'hstat' }, icon('castle'), ['بلا أسوار', 'سياج خشبي', 'أسوار حجرية', 'قلعة', 'قلعة عظمى'][sim.walls]) : null,
       this.siege && A.att ? h('span', { class: 'hstat' }, icon('ram'), [sim.equip.ram && 'كبش', sim.equip.ladders && 'سلالم', sim.equip.tower && 'برج', A.units.some((u) => u.type === 'catapult') && 'منجنيق'].filter(Boolean).join('، ') || 'بلا معدات') : null,
-      A.mood < 0 ? h('span', { class: 'hstat bad' }, icon('warning'), A.mood <= -12 ? 'جيشك جائع أو مهزوز' : 'معنويات منخفضة') : null,
-      A.mood > 0 ? h('span', { class: 'hstat' }, icon('banner'), 'جيشك واثق') : null,
+      this.readyChip(A, true),
+      A.intel >= 2 ? this.readyChip(E, false) : null,
+      A.commit < 1 ? h('span', { class: 'hstat warn' }, icon('tent'), `يقاتل ${Math.round(A.commit * 100)}٪ من جيشك، والباقون على خطوط الحصار`) : null,
+      E.commit < 1 ? h('span', { class: 'hstat' }, icon('tent'), `العدو يقاتل بـ${Math.round(E.commit * 100)}٪ من جيشه ويبقي الحصار`) : null,
     );
     const tip = TERRAIN_TIPS[sim.terrain] + (WEATHER[sim.weather].desc ? ' ' + WEATHER[sim.weather].desc : '');
     this.setPanel(
@@ -277,6 +279,18 @@ class BattleScene {
     );
   }
 
+  // جاهزية جيش في المعركة مع شرحها
+  readyChip(s, mine) {
+    const sc = Ready.score(s.ready, { missile: s.units.some((u) => u.missile && u.type !== 'catapult'), hurt: s.cmdHurt });
+    const cls = sc.total >= 80 ? '' : sc.total >= 55 ? ' warn' : ' bad';
+    return h('button', { class: 'hstat' + cls, onclick: (e) => Help.explain(e.currentTarget, {
+      icon: 'banner', title: mine ? 'جاهزية جيشك' : `جاهزية ${s.name}`, value: sc.total + '٪', meter: sc.total,
+      state: sc.total >= 85 ? 'مستريح ومستعد.' : sc.total >= 60 ? 'أثر القتال أو المسير ظاهر: يبدأ متعباً.' : 'منهك: ينكسر أسرع وينفذ الأوامر بدقة أقل.',
+      from: sc.parts.map(([k, v]) => [k, Math.round(v) + ' من 100', v >= 75 ? 'pos' : 'neg']).concat(s.cmdHurt ? [[`${s.cmd.name} جريح`, '−8', 'neg']] : []),
+      now: [['تعب أول المعركة', Math.round(s.ready.fat)], ['السهام', Math.round(s.ready.ammo) + '٪'], ['التماسك', Math.round(s.ready.coh)]],
+    }) }, icon('banner'), mine ? 'جاهزية جيشك ' : 'جاهزيتهم ', h('bdi', null, sc.total + '٪'));
+  }
+
   // ——————————— المرحلة ٢: الخطة ———————————
   showPlan() {
     this.stage = 'plan';
@@ -287,7 +301,11 @@ class BattleScene {
     const renderD = () => {
       const P = PLANS[this.planPick];
       detail.innerHTML = '';
-      detail.append(h('p', null, P.desc), h('div', { class: 'kv' }, h('span', { class: 'tag good' }, icon('check'), P.good), h('span', { class: 'tag bad' }, icon('warning'), P.bad)));
+      const B = sim.planBrief(A, this.planPick);
+      detail.append(h('p', null, P.desc),
+        B.nums.length ? h('div', { class: 'ord-nums' }, B.nums.map(([k, v]) => h('span', { class: 'tag' }, k + ': ', h('bdi', null, String(v))))) : null,
+        h('p', { class: 'small' }, h('span', { class: 'tag ' + RISK_CLS[B.risk] }, 'الخطر: ' + RISK[B.risk]), ' ', B.why),
+        h('div', { class: 'kv' }, h('span', { class: 'tag good' }, icon('check'), P.good), h('span', { class: 'tag bad' }, icon('warning'), P.bad)));
     };
     for (const k of plans) {
       const P = PLANS[k], aff = sim.affinity(A, k);
@@ -391,8 +409,8 @@ class BattleScene {
       sim.nextPhase();
       this.renderTop();
       this.layoutUnits(false);
-      if (this.auto) { this.showPlayPanel(); this.timer = setTimeout(() => this.playTicks(), 900); }
-      else this.showBreakPanel();
+      if (this.auto) { sim.aiOrders(this.A); this.layoutUnits(false); this.showPlayPanel(); this.timer = setTimeout(() => this.playTicks(), 900); }
+      else { this.pick = null; this.showBreakPanel(); }
     };
     next();
   }
@@ -422,31 +440,66 @@ class BattleScene {
     );
   }
 
+  // بين المراحل: بطاقات الأوامر. عدد الأوامر محدود، ولكل بطاقة أرقامها وخطرها وسبب تعطلها
   showBreakPanel() {
     this.stage = 'break';
     this.newLines();
     const sim = this.sim, A = this.A;
     const ph = WS_PHASES[sim.phase];
-    const hasRes = sim.secUnits(A, 'Res').some((u) => u.role !== 'engine' && !(u.hunter && !A.huntDone));
-    const orders = h('div', { class: 'acts' },
-      hasRes ? h('span', { class: 'lbl' }, 'أرسل الاحتياط إلى:') : null,
-      hasRes ? SECTS.filter((k) => sim.secUnits(A, k).length || A.sec[k].had).map((k) => h('button', { class: 'chip', onclick: () => { sim.commitReserve(A, k, 'order'); this.layoutUnits(false); this.showBreakPanel(); } }, icon('plus'), (this.siege ? SECT_SIEGE : SECT_NAME)[k])) : null,
-      !this.siege ? h('span', { class: 'lbl' }, 'الوضعيات:') : null,
-      !this.siege ? SECTS.filter((k) => sim.secUnits(A, k).length).map((k) => {
+    const list = sim.ordersFor(A);
+    const cp = A.cp || 0, cpMax = sim.cmdPoints(A);
+    if (this.pick && !list.find((x) => x.k === this.pick && !x.err)) this.pick = null;
+    const avail = list.filter((x) => !x.err), off = list.filter((x) => x.err);
+    const cards = h('div', { class: 'ord-cards' }, avail.map((x) => h('button', {
+      class: 'ord' + (this.pick === x.k ? ' on' : '') + (x.o.unlock ? ' unlock' : ''),
+      onclick: () => { this.pick = this.pick === x.k ? null : x.k; this.pickArg = null; this.showBreakPanel(); },
+    }, icon(x.o.icon), h('b', null, x.o.name), h('span', { class: 'tag ' + RISK_CLS[x.info.risk] }, RISK[x.info.risk]))),
+    !avail.length ? h('p', { class: 'hint' }, cp ? 'لا أوامر مناسبة في هذه المرحلة.' : 'استنفدت أوامر هذه المرحلة.') : null);
+    const offBox = off.length ? h('details', { class: 'ord-more' }, h('summary', null, `أوامر غير متاحة الآن (${off.length})`),
+      h('ul', { class: 'ord-off' }, off.map((x) => h('li', null, icon(x.o.icon), h('b', null, x.o.name + (x.o.unlock ? ' ★' : '') + ': '), h('span', null, x.err))))) : null;
+    let detail = null;
+    if (this.pick) {
+      const x = list.find((y) => y.k === this.pick);
+      const argOpts = x.o.arg === 'sector' ? SECTS.filter((k) => sim.secUnits(A, k).length || A.sec[k].had) : x.o.arg === 'wing' ? sim.flankWings(A) : null;
+      if (argOpts && !argOpts.includes(this.pickArg)) this.pickArg = x.o.arg === 'sector' ? sim.weakestSec(A) : sim.bestFlankWing(A);
+      const info = x.o.info(sim, A, this.pickArg);
+      detail = h('div', { class: 'ord-detail' },
+        h('p', { class: 'small muted' }, x.o.term),
+        argOpts ? h('div', { class: 'acts' }, h('span', { class: 'lbl' }, x.o.arg === 'sector' ? 'إلى:' : 'الجناح:'), argOpts.map((k) => h('button', { class: 'chip' + (k === this.pickArg ? ' on' : ''), onclick: () => { this.pickArg = k; this.showBreakPanel(); } }, sim.secName(k), x.o.arg === 'sector' ? h('bdi', { class: 'muted' }, ' ' + Math.round(A.sec[k].morale)) : null))) : null,
+        h('p', null, rich(info.does)),
+        h('div', { class: 'ord-nums' }, info.nums.filter(Boolean).map(([k, v]) => h('span', { class: 'tag' }, k + ': ', h('bdi', null, String(v))))),
+        h('p', { class: 'small' }, h('span', { class: 'tag ' + RISK_CLS[info.risk] }, 'الخطر: ' + RISK[info.risk]), ' ', info.riskWhy),
+        ib(x.o.icon, 'أصدر الأمر', { class: 'btn primary', onclick: () => this.issueOrder(x, this.pickArg) }),
+      );
+    }
+    const stances = !this.siege ? h('details', { class: 'ord-more' }, h('summary', null, 'وضعيات القطاعات (بلا كلفة)'), h('div', { class: 'acts' },
+      SECTS.filter((k) => sim.secUnits(A, k).length).map((k) => {
         const opts = ['hold', 'advance', 'skirmish'];
         const st = A.sec[k].stance === 'flank' ? 'advance' : A.sec[k].stance;
-        return h('button', { class: 'chip', onclick: () => { A.sec[k].stance = opts[(opts.indexOf(st) + 1) % opts.length]; A.orders++; this.showBreakPanel(); } }, SECT_NAME[k].replace('الجناح ', '') + ': ', STANCES[st].name);
-      }) : null,
-    );
+        return h('button', { class: 'chip', onclick: () => { A.sec[k].stance = opts[(opts.indexOf(st) + 1) % opts.length]; this.showBreakPanel(); } }, SECT_NAME[k].replace('الجناح ', '') + ': ', STANCES[st].name);
+      }))) : null;
     this.setPanel(
-      h('div', { class: 'bs-h' }, icon('flag'), h('b', null, 'المرحلة التالية: ' + (this.siege ? ph.siege : ph.name))),
-      this.lineList(3),
-      orders,
-      h('div', { class: 'row-btns' },
-        ib('retreat', 'انسحاب منظم', { class: 'btn ghost', onclick: () => { sim.withdraw(A); this.afterEnd(); } }),
-        ib('play', 'متابعة', { class: 'btn primary', onclick: () => this.playTicks() }),
-      ),
+      h('div', { class: 'bs-h' }, icon('flag'), h('b', null, (this.siege ? ph.siege : ph.name)), h('span', { class: 'tag' + (cp ? '' : ' warn') }, `الأوامر ${cp} من ${cpMax}`), h('span', { class: 'sp' }),
+        ib('play', 'متابعة', { class: 'btn sm ' + (this.pick ? '' : 'primary'), onclick: () => { this.pick = null; this.playTicks(); } })),
+      this.lineList(2),
+      cards, detail, offBox, stances,
     );
+  }
+  issueOrder(x, arg) {
+    const sim = this.sim, A = this.A;
+    const go = () => {
+      const err = sim.issue(A, x.k, arg);
+      if (err) { UI.toast(err); return; }
+      this.pick = null;
+      this.consumeCues();
+      this.layoutUnits(false);
+      this.renderTop();
+      this.newLines();
+      if (sim.over) { this.afterEnd(); return; }
+      this.showBreakPanel();
+    };
+    if (!x.o.final) { go(); return; }
+    UI.modal({ title: x.o.name, icon: x.o.icon, body: h('div', null, h('p', null, rich(x.o.info(sim, A).does)), h('p', { class: 'hint' }, 'لا رجوع عن هذا الأمر.')), buttons: [{ label: 'انسحب', danger: true, onClick: go }, { label: 'إلغاء' }] });
   }
 
   showEvent(ev, done) {
@@ -456,7 +509,7 @@ class BattleScene {
     const box = h('div', { class: 'choice' });
     for (const o of ev.options) {
       box.appendChild(h('button', { class: o.dis ? 'off' : '', onclick: (e) => { if (o.dis) { Help.explain(e.currentTarget, { icon: 'info', title: 'غير متاح', state: o.why || 'لا احتياط متبقٍ لهذا الأمر.' }); return; } this.sim.choose(ev, o.k); this.layoutUnits(false); this.renderTop(); this.newLines(); if (this.sim.over) { this.afterEnd(); return; } done(); } },
-        h('b', null, icon(o.icon || 'chevL'), o.label), h('span', null, o.desc, o.risk && o.risk !== '—' ? h('span', { class: 'risk' }, ' — ' + o.risk) : null)));
+        h('b', null, icon(o.icon || 'chevL'), o.label), h('span', null, o.desc, o.risk ? h('span', { class: 'risk' }, '، الخطر: ' + o.risk) : null)));
     }
     this.setPanel(h('div', { class: 'bs-h ev' }, icon('warning'), h('b', null, ev.title)), h('p', { class: 'lead' }, ev.text), box);
   }

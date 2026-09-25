@@ -85,3 +85,6 @@ const store = {
 };
 
 function hashStr(s) { let h2 = 2166136261; for (let i = 0; i < s.length; i++) { h2 ^= s.charCodeAt(i); h2 = Math.imul(h2, 16777619); } return h2 >>> 0; }
+
+// لام الجر مع الأسماء: «للروم» لا «لـالروم»
+const arLam = (n) => (String(n).startsWith('ال') ? 'لل' + String(n).slice(2) : 'لـ' + n);

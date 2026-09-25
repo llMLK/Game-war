@@ -192,8 +192,8 @@ const Explain = {
     x.state = 'العدد مهم لكنه ليس الحكم: النوع والخبرة والقائد والأرض والخطة والتعب تقرر المعركة.';
     x.from = [...Object.entries(by).sort((p, q) => q[1].pw - p[1].pw).map(([t, v]) => [`${UNITS[t].name} (${v.n})${v.exp ? ' خبرة ' + '★'.repeat(Math.round(v.exp / v.n)) : ''}`, `${v.men} رجل · ${pct(v.pw / Math.max(1, total))}`]),
       g ? [`حرس القائد ${g.name}`, `${Game.genMen(g)} رجل`] : null].filter(Boolean);
-    const mood = a.mood ? { shaken: 'مهزوز: أضعف 10٪', confident: 'واثق: أقوى 5٪', hungry: 'جائع: أضعف 10٪' }[a.mood.k] : null;
-    x.now = [mood ? ['الحالة', mood, a.mood.k === 'confident' ? 'pos' : 'neg'] : null, ['الإمداد هنا', `${Game.stackAt(Game.node(a.node), a.fid)} من ${Game.supplyCap(Game.node(a.node), a.fid)}`]].filter(Boolean);
+    const rs = Game.readyScore(a).total;
+    x.now = [['الجاهزية', rs + '٪', rs >= 80 ? 'pos' : 'neg'], a.mood && a.mood.k === 'hungry' ? ['الحالة', 'جائع: أضعف 10٪', 'neg'] : null, ['الإمداد هنا', `${Game.stackAt(Game.node(a.node), a.fid)} من ${Game.supplyCap(Game.node(a.node), a.fid)}`]].filter(Boolean);
     x.improve = ['الخبرة تأتي من المعارك والتدريب في مدينة بها إسطبلات وورش.', 'المزج بين الرماح والسيوف والرماة والفرسان يغطي نقاط الضعف.', 'الراحة في مدنك تعيد الرجال والمعنويات.'];
     return x;
   },
@@ -203,6 +203,25 @@ const Explain = {
     x.state = a.mood ? { shaken: 'خسر معركة مؤخراً: أبطأ وأضعف وأسرع انكساراً.', confident: 'انتصر مؤخراً: يقاتل بثقة.', hungry: 'بلا طعام كافٍ: يخسر رجالاً ويضعف.' }[a.mood.k] : 'لا أثر خاص.';
     if (a.mood) x.now = [['يزول بعد', a.mood.t + ' أدوار'], ['في المعركة', a.mood.k === 'confident' ? '+5 معنويات' : a.mood.k === 'shaken' ? '−10 معنويات' : '−15 معنويات', a.mood.k === 'confident' ? 'pos' : 'neg']];
     x.improve = ['الراحة في مدينتك، والطعام الكافي، والنصر.'];
+    return x;
+  },
+
+  // الجاهزية: ما بقي من الجيش بعد القتال والمسير، وكيف يستعيده
+  readiness(a) {
+    const r = Game.readyOf(a), sc = Game.readyScore(a);
+    const g = Game.armyGen(a);
+    const x = { icon: 'banner', title: 'جاهزية الجيش', value: sc.total + '٪', meter: sc.total };
+    x.state = sc.total >= 85 ? 'مستريح ومستعد.' : sc.total >= 65 ? 'يقاتل، لكن أثر القتال أو المسير ظاهر عليه.' : sc.total >= 45 ? 'متعب: معركة أخرى الآن ستكلفه كثيراً.' : 'منهك: قد ينكسر عند أول ضغط.';
+    x.from = [
+      ...sc.parts.map(([k, v, w]) => [`${k} (وزنها ${Math.round(w * 100)}٪)`, Math.round(v) + ' من 100', v >= 75 ? 'pos' : 'neg']),
+      g && g.wounded && g.wounded > Game.S.turn ? [`${g.name} جريح`, '−8', 'neg'] : null,
+    ].filter(Boolean);
+    x.now = [
+      ['في المعركة', `تعب أولي ${Math.round(r.fat * 0.6)}، معنويات ${r.mor >= 70 ? '+' : ''}${Math.round((r.mor - 70) * 0.3 - (100 - r.sup) / 10)}، سهام ${r.ammo}٪`],
+      a.siege ? ['واجب الحصار', 'التعب لا ينزل عن 25 والتماسك لا يتجاوز 85', 'neg'] : null,
+      ['الإمداد', Game.supplyHops(a) ? `${Game.supplyHops(a)} خطوات عن أقرب مدينة لك` : 'في أرضك'],
+    ].filter(Boolean);
+    x.improve = ['دور راحة في مدينة لك بلا حركة: التعب −35، التماسك +25، السهام +50.', 'البقاء قرب مدنك يحفظ الإمداد، والابتعاد يقطعه.', 'خبير التموين يسرّع التعافي ويحمل الإمداد معه.'];
     return x;
   },
 

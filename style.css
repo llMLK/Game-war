@@ -675,3 +675,40 @@ pre.dev { direction: ltr; text-align: left; font-size: 11px; max-height: 60vh; o
 .gpick-wrap .gcard { margin: 0; }
 .btn.sm { min-height: 30px; padding: 3px 10px; font-size: 12.5px; }
 details.mem summary { cursor: pointer; color: var(--bronze-hi); }
+
+/* ——— أوامر المعركة ——— */
+.ord-cards { display: flex; flex-wrap: wrap; gap: 5px; }
+.ord { display: inline-flex; align-items: center; gap: 5px; min-height: 36px; padding: 4px 9px; border-radius: 10px; border: 1px solid var(--line); background: rgba(40,30,21,.95); font-size: 12.3px; }
+.ord .ico { width: 17px; height: 17px; color: var(--parch); flex: none; }
+.ord b { font-size: 12.5px; white-space: nowrap; }
+.ord .tag { font-size: 10.5px; }
+.ord.on { border-color: var(--bronze-hi); background: #4b3418; box-shadow: 0 0 0 1px var(--bronze-hi) inset; }
+.ord.unlock { border-color: rgba(242,215,122,.55); }
+.ord.unlock b::after { content: ' ★'; color: #f2d77a; font-size: 10px; }
+.ord-off { margin: 4px 0 0; padding: 0; list-style: none; display: grid; gap: 3px; font-size: 11.8px; color: var(--muted); }
+.ord-off li { display: flex; gap: 5px; align-items: flex-start; line-height: 1.4; }
+.ord-off .ico { width: 13px; height: 13px; flex: none; margin-top: 2px; }
+.ord-off b { color: var(--text); font-weight: 600; white-space: nowrap; }
+.btn.sm { min-height: 30px; padding: 2px 12px; font-size: 12.5px; }
+.ord-detail { display: grid; gap: 4px; padding: 6px 8px; border-radius: 10px; background: rgba(255,240,200,.05); border: 1px solid var(--line-soft); }
+.ord-detail p { margin: 0; font-size: 12.5px; line-height: 1.5; }
+.ord-nums { display: flex; flex-wrap: wrap; gap: 4px; }
+.ord-nums .tag { font-size: 11.5px; padding: 1px 7px; }
+.ord-more summary { cursor: pointer; font-size: 12px; color: var(--muted); }
+/* الحصار حين يُهاجَم */
+.hold-choice { display: grid; gap: 5px; margin-bottom: 6px; }
+.hold-opt { display: grid; gap: 2px; text-align: start; padding: 7px 10px; border-radius: 10px; border: 1px solid var(--line); background: rgba(40,30,21,.95); }
+.hold-opt b { font-size: 13px; }
+.hold-opt span { font-size: 11.8px; color: var(--muted); line-height: 1.45; }
+.hold-opt.on { border-color: var(--bronze-hi); background: #4b3418; box-shadow: 0 0 0 1px var(--bronze-hi) inset; }
+.ready-cmp { margin: 4px 0; }
+.hstat.bad .hv, .hstat .bad, b.bad { color: var(--bad); }
+.hstat.warn .hv, .hstat .warn, b.warn { color: var(--warn); }
+/* التقرير المقسّم */
+.br-sec { display: grid; gap: 3px; }
+.br-sh { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--bronze-hi); }
+.br-sh .ico { width: 15px; height: 15px; }
+.br-sec > p { margin: 0; font-size: 12.8px; line-height: 1.6; }
+.br-list { margin: 0; padding-inline-start: 18px; display: grid; gap: 2px; font-size: 12.6px; line-height: 1.5; }
+.br-list.good li::marker { color: var(--good); }
+.br-list.bad li::marker { color: var(--bad); }

@@ -1115,7 +1115,7 @@ const Game = {
     const g = [...gens].sort((a, b) => b.rank - a.rank)[0];
     let m = 1;
     if (!g) return 0.9;
-    m += 0.05 * (g.rank - 1);
+    m += 0.03 * (g.rank - 1);
     const t = g.trait;
     if (t === 'tactician') m += 0.1;
     if (t === 'brave') m += 0.06;
@@ -1158,8 +1158,9 @@ const Game = {
     let m = 1;
     for (const a of armies) {
       if (!a.mood) continue;
-      if (a.mood.k === 'shaken' || a.mood.k === 'hungry') m -= 0.1 / armies.length;
-      if (a.mood.k === 'confident') m += 0.05 / armies.length;
+      // المعنويات بعد المعارك صارت جزءاً من الجاهزية؛ الجوع وحده يبقى أثراً منفصلاً
+      if (a.mood.k === 'hungry' || (a.mood.k === 'shaken' && !a.ready)) m -= 0.1 / armies.length;
+      if (a.mood.k === 'confident' && !a.ready) m += 0.05 / armies.length;
     }
     return m;
   },
@@ -1179,7 +1180,7 @@ const Game = {
     const P = this.S.player;
     const moodOf = (armies, fid, defending) => {
       let m = 0;
-      for (const a of armies) if (a.mood) m += { shaken: -10, hungry: -15, confident: 5 }[a.mood.k] / armies.length;
+      for (const a of armies) if (a.mood && (a.mood.k === 'hungry' || !a.ready)) m += { shaken: -10, hungry: -15, confident: 5 }[a.mood.k] / armies.length;
       if (defending && enc.kind === 'siege' && s.node.stores < 0) m -= 15;
       const F = this.f(fid), other = fid === enc.attFid ? enc.defFid : enc.attFid;
       if (F && F.vendetta && F.vendetta[other] > 0) m += 8;

@@ -54,6 +54,20 @@ function moodTag(a) {
   const names = { shaken: 'مهزوز', confident: 'واثق', hungry: 'جائع' };
   return h('button', { class: 'mood ' + a.mood.k, onclick: (e) => { e.stopPropagation(); Help.show(e.currentTarget, 'morale', { value: names[a.mood.k] }); } }, names[a.mood.k]);
 }
+// جاهزية الطرفين قبل المعركة (جيش خرج من قتال للتو لا يقاتل كجيش مستريح)
+function readyCompare(enc, P) {
+  const s = Game.encSides(enc);
+  const mine = enc.attFid === P ? s.attArmies : s.defArmies, theirs = enc.attFid === P ? s.defArmies : s.attArmies;
+  const sc = (armies) => (armies.length ? Math.round(armies.reduce((t, a) => t + Game.readyScore(a).total * Game.menOf(a.regs), 0) / Math.max(1, armies.reduce((t, a) => t + Game.menOf(a.regs), 0))) : null);
+  const m = sc(mine), t = sc(theirs);
+  if (m == null && t == null) return null;
+  const known = Game.intelLevel(P, enc.attFid === P ? enc.defFid : enc.attFid) >= 2;
+  const cls = (v) => (v >= 80 ? '' : v >= 55 ? 'warn' : 'bad');
+  return h('div', { class: 'kv ready-cmp' },
+    m != null ? xstat('ready', h('span', { class: cls(m) }, m + '٪'), () => Explain.readiness(mine[0]), { icon: 'banner', label: 'جاهزية جيشك' }) : null,
+    t != null ? h('span', { class: 'hstat' }, 'جاهزية العدو: ', known ? h('b', { class: cls(t) }, t + '٪') : h('b', null, t >= 80 ? 'مستريح تقريباً' : t >= 55 ? 'متعب' : 'منهك')) : null,
+  );
+}
 function powerCompare(enc, P) {
   const { pa, pd } = Game.encPower(enc);
   const mineAtt = enc.attFid === P;
@@ -218,7 +232,7 @@ const Panels = {
       (() => { const v = g && Voices.current(g); return v ? h('div', { class: 'quote' }, h('p', null, '«', v.text, '»'), h('span', { class: 'muted small' }, v.why)) : null; })(),
     ));
     const kv = h('div', { class: 'kv' },
-      xstat('morale', a.mood ? { shaken: 'مهزوز', confident: 'واثق', hungry: 'جائع' }[a.mood.k] : 'ثابتة', () => Explain.armyMorale(a), { cls: a.mood && a.mood.k !== 'confident' ? 'warn' : '' }),
+      (() => { const rs = Game.readyScore(a).total; return xstat('ready', rs + '٪', () => Explain.readiness(a), { icon: 'banner', label: 'جاهزية', cls: rs < 55 ? 'bad' : rs < 80 ? 'warn' : '' }); })(),
       hstat('mp', `${a.mp}/${Game.mpMax(a)}`),
       xstat('armymen', Game.armyMen(a), () => Explain.armyStrength(a), { label: 'رجل' }),
     );
@@ -1329,6 +1343,33 @@ const Panels = {
         if (node.stores < 0) info.push('المدافعون جائعون');
       }
       let closeFn = null;
+      // الجيش المحاصِر حين يُهاجَم: إبقاء الحصار أو فكّه، والميزان يتغير مع الاختيار
+      const holdChoice = () => {
+        const hi = Game.siegeHoldInfo(enc);
+        if (enc.defFid !== P) return h('p', { class: 'hint' }, enc.keep ? `${Game.fname(enc.defFid)} تبقي الحصار: تقاتل بنحو ${hi.fight} من ${hi.armyMen} رجل، والباقون يراقبون الحامية.` : `${Game.fname(enc.defFid)} ترفع الحصار وتقاتل بكل جيشها${enc.garrisonCanJoin ? '، وحاميتك تخرج لتقاتل معك' : ''}.`);
+        const opt = (keep, title, text) => h('button', { class: 'hold-opt' + (enc.keep === keep ? ' on' : ''), onclick: () => { Game.setKeep(enc, keep); renderLive(); } }, h('b', null, title), h('span', null, rich(text)));
+        return h('div', { class: 'hold-choice' },
+          h('div', { class: 'sec-h' }, icon('tent'), `جيشك يحاصر ${node.name}: كيف تواجههم؟`),
+          opt(true, 'إبقاء الحصار', `يقاتل ${hi.fight} رجلاً، ويبقى ${hi.hold} على الخطوط يراقبون حامية من ${hi.garMen}. إن انتصرت بقي تقدم الحصار (${hi.turns} أدوار).`),
+          opt(false, 'فكّ الحصار والقتال بالجيش كله', `يقاتل ${hi.armyMen} رجلاً${enc.garrisonCanJoin ? `، لكن الحامية (${hi.garMen}) تخرج لتقاتل معهم` : ''}، ويضيع تقدم الحصار (${hi.turns} أدوار).`),
+        );
+      };
+      const live = h('div', { class: 'enc-live' });
+      const renderLive = () => {
+        const s2 = Game.encSides(enc);
+        live.innerHTML = '';
+        live.append(...[
+          enc.siegeHold ? holdChoice() : null,
+          h('div', { class: 'enc-sides' },
+            sideBox(attacking ? 'جيشك' : Game.fname(enc.attFid), enc.attFid, s2.attRegs, s2.attGens),
+            h('div', { class: 'vs' }, icon('swords')),
+            sideBox((attacking ? Game.fname(enc.defFid) : 'المدافعون') + (enc.keep && enc.commit < 1 ? ` (يقاتل ${Math.round(enc.commit * 100)}٪)` : ''), enc.defFid, s2.defRegs, s2.defGens),
+          ),
+          readyCompare(enc, P),
+          powerCompare(enc, P),
+        ].filter(Boolean));
+      };
+      renderLive();
       const fight = () => { if (closeFn) closeFn(); if (Game.track) Game.track('battle:lead'); launchBattle(enc, resolve); };
       const auto = () => {
         if (closeFn) closeFn();
@@ -1361,13 +1402,8 @@ const Panels = {
           lead ? h('p', { class: 'lead warn' }, lead) : null,
           h('p', { class: 'terrain-tip' }, icon(TERRAIN[terr].icon), h('span', null, h('b', null, TERRAIN[terr].name + ': '), TERRAIN_TIPS[terr])),
           (() => { const mg = (attacking ? s.attGens : s.defGens)[0]; const adv = mg && Voices.prebattle(mg, enc, P); return adv ? h('div', { class: 'quote adv' }, Portrait.el(mg, 40), h('div', null, h('p', null, h('b', null, mg.name + ': '), '«', adv.text, '»'), h('span', { class: 'muted small' }, 'رأيه مبني على: ', adv.why))) : null; })(),
-          info.length ? h('p', { class: 'hint' }, info.join(' · ')) : null,
-          h('div', { class: 'enc-sides' },
-            sideBox(attacking ? 'جيشك' : Game.fname(enc.attFid), enc.attFid, s.attRegs, s.attGens),
-            h('div', { class: 'vs' }, icon('swords')),
-            sideBox(attacking ? Game.fname(enc.defFid) : 'المدافعون', enc.defFid, s.defRegs, s.defGens),
-          ),
-          powerCompare(enc, P),
+          info.length ? h('p', { class: 'hint' }, info.join('، ')) : null,
+          live,
         ),
         buttons,
       });
