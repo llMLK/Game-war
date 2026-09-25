@@ -30,6 +30,7 @@ class CampaignScene {
     Game.scanAlerts();
     this.refresh();
     if (Game.S.turn === 0 && !this.introShown) { this.introShown = true; Panels.intro(this); }
+    UndoBar.el = null; UndoBar.show();
   }
   exit() { Help.hide(); App.ui.innerHTML = ''; }
   onResize() { this.fitCam(true); }
@@ -531,17 +532,16 @@ class CampaignScene {
   }
 
   hudHelp(el, key) {
-    const P = this.P, e = Game.economy(P), f = Game.f(P);
-    if (key === 'gold') {
-      Help.show(el, 'gold', {
-        value: `${f.gold} (${signed(e.netGold)})`,
-        lines: [['دخل المدن', '+' + e.gold, 'pos'], e.trade ? ['التجارة', '+' + e.trade, 'pos'] : null, e.tribute ? ['الجزية', signed(e.tribute), e.tribute > 0 ? 'pos' : 'neg'] : null,
-          ['صيانة الوحدات', '−' + e.upkeep, 'neg'], ['رواتب القادة', '−' + e.salaries, 'neg'], e.overhead ? ['جيوش زائدة عن مدنك', '−' + e.overhead, 'neg'] : null, ['الصافي', signed(e.netGold), 'sum']].filter(Boolean),
+    const P = this.P;
+    if (key === 'gold') Help.explain(el, Explain.treasury(P));
+    else if (key === 'food') Help.explain(el, Explain.food(P));
+    else if (key === 'date') {
+      Help.explain(el, {
+        icon: Game.isWinter() ? 'snow' : 'sun', title: `الدور ${Game.S.turn + 1}`, value: `${Game.season()} ${Game.year()}م`,
+        state: `كل دور فصل من السنة، وكل أربعة أدوار سنة. بدأت الحملة سنة ${Game.sc.startYear}م.`,
+        now: [['الفصل', Game.season()], ['السنة', Game.year() + 'م'], ['الأدوار الماضية', Game.S.turn]],
+        note: Game.isWinter() ? 'الشتاء: الممرات والجبال أصعب، والإمداد أقل، والجيوش تأكل أكثر.' : Game.S.turn % 4 === 2 ? 'الشتاء في الدور التالي: الممرات ستصعب والإمداد يقل.' : null,
       });
-    } else if (key === 'food') {
-      Help.show(el, 'food', { value: `${f.food} (${signed(e.netFood)})`, lines: [['إنتاج المدن', '+' + e.food, 'pos'], ['أكل الجيوش', '−' + e.eat, 'neg'], ['الصافي', signed(e.netFood), 'sum']] });
-    } else if (key === 'date') {
-      Help.show(el, null, { title: `${Game.season()} ${Game.year()}م`, value: `الدور ${Game.S.turn + 1}`, note: Game.isWinter() ? 'الشتاء: الممرات والجبال أصعب، والإمداد أقل، والجيوش تأكل أكثر.' : Game.S.turn % 4 === 2 ? 'الشتاء قادم في الدور التالي: الممرات ستغلق تقريباً.' : 'كل دور فصل من السنة.' });
     }
   }
 
@@ -554,7 +554,7 @@ class CampaignScene {
     res(this.hud.gold, 'gold', f.gold, e.netGold);
     res(this.hud.food, 'food', f.food, e.netFood);
     this.hud.date.innerHTML = '';
-    this.hud.date.append(icon(Game.isWinter() ? 'snow' : 'sun'), h('span', { class: 'season' }, Game.season() + ' '), h('bdi', null, Game.year() + 'م'));
+    this.hud.date.append(h('span', { class: 'turn' }, 'الدور ', h('bdi', null, Game.S.turn + 1)), icon(Game.isWinter() ? 'snow' : 'sun'), h('span', { class: 'season' }, Game.season() + ' '), h('bdi', null, Game.year() + 'م'));
     if (Game.chapter) {
       const ch = Game.chapter();
       this.hud.chap.hidden = !ch;
@@ -571,6 +571,7 @@ class CampaignScene {
     this.setBadge(this.hud.chron, (Game.S.crises || []).filter((c) => !c.over && c.ask[P]).length);
     Sheets.refresh();
     AlertsUI.render();
+    UndoBar.show();
   }
   setBadge(btn, n) {
     let b = btn.querySelector('.badge');
@@ -600,6 +601,7 @@ class CampaignScene {
     if (cur) { if (cur.pinned) Sheets.minimize(cur.key); else Sheets.close(cur.key); }
     Help.hide();
     if (Game.track) Game.track('endTurn');
+    Undo.clear();
     try {
       for (const fid of Game.majors()) {
         if (fid === this.P || !Game.f(fid).alive) continue;

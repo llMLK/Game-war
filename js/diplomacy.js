@@ -242,21 +242,25 @@ Object.assign(Game, {
   },
 
   // ——— مرور الزمن ———
-  relBaseline(a, b) {
+  // ما تميل إليه العلاقة مع الوقت، وأسبابه (العلاقة تتحرك نحوه نقطتين كل دور)
+  relParts(a, b) {
     const st = this.status(a, b);
-    let base = st === 'war' ? -35 : st === 'alliance' ? 35 : 5;
+    const parts = [[st === 'war' ? 'حالة حرب' : st === 'alliance' ? 'حلف قائم' : 'سلام', st === 'war' ? -35 : st === 'alliance' ? 35 : 5]];
     const tr = this.treaty(a, b);
-    if (tr.marriage) base += 20;
-    if (tr.trade) base += 8;
-    if (st !== 'alliance' && this.borders(a, b)) base -= 8;
+    if (tr.marriage) parts.push(['مصاهرة بين البيتين', 20]);
+    if (tr.trade) parts.push(['تجارة بينكما', 8]);
+    if (st !== 'alliance' && this.borders(a, b)) parts.push(['حدود مشتركة', -8]);
     const dom = this.dominant();
-    if (dom === b && dom !== a) base -= 12;
-    if (this.commonEnemy(a, b)) base += 10;
-    base -= 6 * ((this.f(a).grievance || {})[b] || 0);
-    base += (this.f(b).rep - 50) / 5;
-    if ((this.f(a).vendetta || {})[b] > 0) base -= 30;
-    return base;
+    if (dom === b && dom !== a) parts.push([`${this.fname(b)} تتعاظم وتُخيف الجميع`, -12]);
+    if (this.commonEnemy(a, b)) parts.push(['عدو مشترك', 10]);
+    const gr = (this.f(a).grievance || {})[b] || 0;
+    if (gr) parts.push([`مظالم قديمة (${gr})`, -6 * gr]);
+    const rp = Math.round((this.f(b).rep - 50) / 5);
+    if (rp) parts.push(['سمعة ' + this.fname(b), rp]);
+    if ((this.f(a).vendetta || {})[b] > 0) parts.push(['ثأر دم', -30]);
+    return parts;
   },
+  relBaseline(a, b) { return this.relParts(a, b).reduce((t, p) => t + p[1], 0); },
   diplomacyTick() {
     const S = this.S;
     const alive = this.aliveMajors();

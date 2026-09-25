@@ -5,6 +5,12 @@
 function ib(name, label, attrs = {}) {
   return h('button', attrs, icon(name), label != null && label !== '' ? h('span', null, label) : null);
 }
+// نص فيه عربية وأرقام: كل رقم في عزلة حتى لا تنقلب إشارته أو يتبعثر ترتيبه
+function rich(v) {
+  const t = String(v);
+  if (!/[\u0600-\u06FF]/.test(t) || !/\d/.test(t)) return t;
+  return t.split(/([+−\-]?\d[\d,.]*[٪%]?)/).filter((x) => x !== '').map((x) => (/\d/.test(x) ? h('bdi', null, x) : x));
+}
 // قيمة بأيقونة
 function iv(name, value, cls) { return h('span', { class: 'iv' + (cls ? ' ' + cls : '') }, icon(name), h('bdi', null, value)); }
 
@@ -17,9 +23,13 @@ const UI = {
       title ? h('h2', null, ic ? icon(ic) : null, h('span', null, title)) : null,
       h('div', { class: 'modal-body' }, body),
       buttons.filter(Boolean).length ? h('div', { class: 'modal-btns' }, buttons.filter(Boolean).map((b) => h('button', {
-        class: 'btn' + (b.primary ? ' primary' : '') + (b.danger ? ' danger' : '') + (b.ghost ? ' ghost' : ''),
-        disabled: b.disabled, title: b.title || null,
-        onclick: () => { if (b.keep) { if (b.onClick) b.onClick(close); return; } close(); if (b.onClick) b.onClick(); },
+        class: 'btn' + (b.primary ? ' primary' : '') + (b.danger ? ' danger' : '') + (b.ghost ? ' ghost' : '') + (b.disabled ? ' off' : ''),
+        'aria-disabled': b.disabled ? 'true' : null, title: b.why || b.title || null,
+        // الزر غير المتاح يشرح سببه بدل أن يصمت
+        onclick: (e) => {
+          if (b.disabled) { Help.explain(e.currentTarget, { icon: 'info', title: 'غير متاح الآن', state: 'لا يمكنك تنفيذ هذا الآن لأن ' + String(b.why || b.title || 'الشروط لم تكتمل').replace(/\.$/, '') + '.' }); return; }
+          if (b.keep) { if (b.onClick) b.onClick(close); return; } close(); if (b.onClick) b.onClick();
+        },
       }, b.icon ? icon(b.icon) : null, h('span', null, b.label), b.sub ? h('small', null, b.sub) : null))) : null,
     );
     layer.appendChild(box);
@@ -173,7 +183,7 @@ const Help = {
     const el = h('div', { class: 'pop' },
       h('div', { class: 'pop-h' }, H && H.icon ? icon(H.icon) : null, h('b', null, extra.title || H.t), extra.value != null ? h('bdi', { class: 'pop-v' }, extra.value) : null),
       H && H.what ? h('p', null, H.what) : null,
-      extra.lines && extra.lines.length ? h('div', { class: 'pop-lines' }, extra.lines.map(([k, v, c]) => h('div', { class: 'pl' + (c ? ' ' + c : '') }, h('span', null, k), h('bdi', null, v)))) : null,
+      extra.lines && extra.lines.length ? h('div', { class: 'pop-lines' }, extra.lines.map(([k, v, c]) => h('div', { class: 'pl' + (c ? ' ' + c : '') }, h('span', null, rich(k)), h('bdi', null, rich(v))))) : null,
       H && H.up ? h('p', { class: 'up' }, icon('arrowUp'), H.up) : null,
       H && H.down ? h('p', { class: 'down' }, icon('arrowDown'), H.down) : null,
       H && H.eff ? h('p', { class: 'eff' }, H.eff) : null,
@@ -181,13 +191,19 @@ const Help = {
     );
     document.body.appendChild(el);
     this.el = el;
+    this.place(anchor, el);
+  },
+  // يضع النافذة الصغيرة قرب الزر دون أن تخرج من الشاشة، وتُغلق بلمسة خارجها
+  place(anchor, el) {
     const r = anchor.getBoundingClientRect();
     const W = window.innerWidth, Hh = window.innerHeight;
+    el.style.maxHeight = Math.max(160, Hh - 16) + 'px';
     const pw = el.offsetWidth, ph = el.offsetHeight;
     let x = r.left + r.width / 2 - pw / 2;
     x = clamp(x, 8, W - pw - 8);
     let y = r.bottom + 6;
-    if (y + ph > Hh - 8) y = Math.max(8, r.top - ph - 6);
+    if (y + ph > Hh - 8) y = r.top - ph - 6;
+    if (y < 8) y = Math.max(8, Hh - ph - 8);
     el.style.left = x + 'px'; el.style.top = y + 'px';
     setTimeout(() => {
       this.off = (e) => { if (!el.contains(e.target)) this.hide(); };
@@ -231,6 +247,10 @@ const AlertsUI = {
         h('button', { class: 'al-x', title: 'إخفاء', onclick: () => { Game.dismissAlert(a.id); this.render(); } }, icon('close')),
       ));
     }
-    if (list.length > 3) this.el.appendChild(h('button', { class: 'alert more', onclick: () => { this.open = !this.open; this.render(); } }, this.open ? 'أقل' : `+${list.length - 3} تنبيهات`));
+    const row = h('div', { class: 'al-row' });
+    if (list.length > 3) row.appendChild(h('button', { class: 'alert more', onclick: () => { this.open = !this.open; this.render(); } }, this.open ? 'أقل' : `+${list.length - 3} تنبيهات`));
+    // إغلاق الكل: المهمة والمعلومات تُطوى وتبقى في سجل الأحداث، والحرجة تبقى حتى تُغلق وحدها
+    if (list.length > 1) row.appendChild(h('button', { class: 'alert more', onclick: () => { for (const a of list) if (a.level !== 'crit') Game.dismissAlert(a.id); this.open = false; this.render(); UI.toast('طُويت التنبيهات. تجدها في السجل التاريخي، قسم الأحداث.'); } }, icon('close'), list.some((a) => a.level === 'crit') ? 'إغلاق غير الحرجة' : 'إغلاق الكل'));
+    if (row.childNodes.length) this.el.appendChild(row);
   },
 };

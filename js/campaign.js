@@ -4,10 +4,20 @@
 const SAVE_KEY_V1 = 'swords-kingdoms-save-v1';
 const SAVE_PREFIX = 'swords-kingdoms-v2:';
 const SAVE_SLOTS = ['auto', '1', '2', '3'];
+// الصعوبة تغيّر جودة قرارات الممالك الأخرى وجرأتها، لا خزائنها: الجميع يخضع للاقتصاد نفسه
 const DIFFS = {
-  easy: { name: 'سهل', aiIncome: 0.9, aiSkill: 0.35, aiAggr: 0.8 },
-  normal: { name: 'متوسط', aiIncome: 1.1, aiSkill: 0.6, aiAggr: 1 },
-  hard: { name: 'صعب', aiIncome: 1.3, aiSkill: 0.85, aiAggr: 1.2 },
+  easy: { name: 'سهل', aiSkill: 0.35, aiAggr: 0.8 },
+  normal: { name: 'متوسط', aiSkill: 0.6, aiAggr: 1 },
+  hard: { name: 'صعب', aiSkill: 0.85, aiAggr: 1.2 },
+};
+// أرقام الاقتصاد في مكان واحد (للمعايرة)
+const ECON = {
+  taxPer1k: 2.4, marketPer1k: 1.1, capital: 12, unrestK: 0.4,
+  upkeepMul: 1, mercMul: 1.8,
+  adminFree: 6, adminBase: 5, adminDist: 2, armyOverhead: 10,
+  supplyPerUnitHop: 1,
+  fortUpkeep: { walls: [0, 1, 2, 4, 8], barracks: 3, port: 2, granary: 1 },
+  foodCap: 300, foodSale: 0.5,
 };
 const INIT_DIPLO = {
   threeKingdoms: [['wei', 'shu', 'war'], ['wei', 'wu', 'war'], ['shu', 'wu', 'peace']],
@@ -548,95 +558,70 @@ const Game = {
 
   // ——————————————————— الاقتصاد ———————————————————
   merchantAt(n) { return this.armiesOfAt(n.owner, n.id).some((a) => this.hasTrait(a, 'merchant')); },
-  cityIncome(n) {
-    if (this.besieger(n.id) || n.owner === 'neutral') return 0;
+  // كفاءة التحصيل حسب الولاء: 100 = كامل، 50 = 70٪، 20 = 52٪
+  loyEff(n) { return Math.min(1, 0.4 + n.loyalty / 166); },
+  // دخل المدينة خطوة خطوة: كل عامل يظهر بقيمته بالذهب، ومجموع الخطوات هو الدخل نفسه تماماً
+  incomeSteps(n) {
+    const out = { steps: [], total: 0, gross: 0, tax: 0, market: 0 };
     const f = this.f(n.owner);
-    let g = n.pop / 1000 * 2.8 * (1 + 0.4 * n.market) * (0.4 + n.loyalty / 166);
-    if (n.capital) g += 15;
-    g *= TAXES[f.tax].income;
-    if (n.unrest > 0) g *= 0.4;
-    if (this.merchantAt(n) || this.governorOf(n, 'merchant')) g *= 1.3;
-    g *= Math.max(0.5, 1 - 0.05 * this.overstack(n, n.owner));
-    // الفساد في الإمبراطوريات المترامية
-    g *= Math.max(0.6, 1 - 0.03 * Math.max(0, this.nodesOf(n.owner).length - 8));
-    if (this.nodeMods) g *= this.nodeMods(n).inc * (1 + this.rulerMod(n.owner, 'income') + (this.policyMod ? this.policyMod(n.owner, 'income') : 0));
-    return Math.round(g);
-  },
-  // تفصيل الدخل (للشرح السياقي)
-  incomeParts(n) {
-    const lines = [];
-    if (this.besieger(n.id)) return { total: 0, lines: [['محاصرة: لا دخل', '0', 'neg']] };
-    const f = this.f(n.owner);
-    const base = n.pop / 1000 * 2.8;
-    lines.push(['السكان', '+' + Math.round(base)]);
-    if (n.market) lines.push([`السوق ×${(1 + 0.4 * n.market).toFixed(1)}`, '', 'pos']);
-    lines.push([`الولاء ×${(0.4 + n.loyalty / 166).toFixed(2)}`, '', n.loyalty < 50 ? 'neg' : '']);
-    if (n.capital) lines.push(['العاصمة', '+15', 'pos']);
-    if (TAXES[f.tax].income !== 1) lines.push([`الضرائب ×${TAXES[f.tax].income}`, '', TAXES[f.tax].income > 1 ? 'pos' : 'neg']);
-    if (n.unrest > 0) lines.push(['اضطراب ×0.4', '', 'neg']);
-    if (this.merchantAt(n) || this.governorOf(n, 'merchant')) lines.push(['حاكم إداري ×1.3', '', 'pos']);
+    if (!f || n.owner === 'neutral') return out;
+    if (this.besieger(n.id)) { out.sieged = true; out.steps.push({ k: 'siege', label: 'محاصرة: الجباة لا يخرجون', v: 0 }); return out; }
+    let v = 0;
+    const add = (k, label, d, note) => { if (Math.abs(d) < 0.05) return; out.steps.push({ k, label, v: d, note: note || null }); v += d; };
+    const tax0 = n.pop / 1000 * ECON.taxPer1k;
+    add('tax', 'ضرائب السكان', tax0, `${n.pop.toLocaleString('en')} نسمة`);
+    if (TAXES[f.tax].income !== 1) add('taxpol', `سياسة الضرائب ${TAXES[f.tax].name}`, tax0 * (TAXES[f.tax].income - 1));
+    const taxPart = v;
+    if (n.market) add('market', `السوق (المستوى ${n.market})`, n.pop / 1000 * ECON.marketPer1k * n.market);
+    const marketPart = v - taxPart;
+    if (n.capital) add('capital', 'مقر الحكم', ECON.capital);
+    out.gross = v;
+    const lf = this.loyEff(n);
+    if (lf < 1) add('loyalty', `ضعف التحصيل (الولاء ${n.loyalty})`, v * (lf - 1), `يصل ${Math.round(lf * 100)}٪ من المستحق`);
+    if (n.unrest > 0) add('unrest', `اضطراب بعد الفتح (${n.unrest} أدوار)`, v * (ECON.unrestK - 1), 'الجباة لا يصلون إلى كل الأحياء');
+    if (this.merchantAt(n) || this.governorOf(n, 'merchant')) add('gov', 'حاكم إداري', v * 0.3);
     const ov = this.overstack(n, n.owner);
-    if (ov > 0) lines.push([`ازدحام ×${Math.max(0.5, 1 - 0.05 * ov).toFixed(2)}`, '', 'neg']);
-    const cities = this.nodesOf(n.owner).length;
-    if (cities > 8) lines.push([`فساد الاتساع ×${Math.max(0.6, 1 - 0.03 * (cities - 8)).toFixed(2)}`, '', 'neg']);
+    if (ov > 0) add('crowd', `ازدحام الجيوش (${ov} فوق الإمداد)`, v * (Math.max(0.5, 1 - 0.05 * ov) - 1));
     if (this.nodeMods) {
       const m = this.nodeMods(n);
-      if (n.charter) lines.push(['ميثاق حر ×0.65', '', 'neg']);
-      if (m.inc !== 1 && !(n.charter && Math.abs(m.inc - 0.65) < 0.001)) lines.push([`أزمة ×${(n.charter ? m.inc / 0.65 : m.inc).toFixed(2)}`, '', 'neg']);
+      if (n.charter) add('charter', 'ميثاق حر', v * (0.65 - 1), 'الأعيان يحتفظون بثلث الدخل');
+      const cm = n.charter ? m.inc / 0.65 : m.inc;
+      if (Math.abs(cm - 1) > 0.001) add('crisis', 'أحداث تضرب المدينة', v * (cm - 1), m.why ? m.why.join('، ') : null);
       const rm = this.rulerMod(n.owner, 'income');
-      if (rm) lines.push([`الحاكم ×${(1 + rm).toFixed(2)}`, '', rm > 0 ? 'pos' : 'neg']);
+      if (rm) add('ruler', 'أثر الحاكم', v * rm);
+      const pm = this.policyMod ? this.policyMod(n.owner, 'income') : 0;
+      if (pm) add('edict', 'المرسوم الملكي', v * pm);
     }
-    const total = this.cityIncome(n);
-    lines.push(['الصافي', '+' + total, 'sum']);
-    return { total, lines };
+    out.total = Math.max(0, Math.round(v));
+    // التحصيل الفعلي موزّع على الضرائب والسوق بنسبتهما
+    const base = Math.max(0.001, taxPart + marketPart + (n.capital ? ECON.capital : 0));
+    out.market = Math.round(out.total * marketPart / base);
+    out.tax = out.total - out.market;
+    return out;
   },
-  // هدف الولاء الذي تتجه إليه المدينة كل دور، مع أسبابه
-  loyaltyTarget(n) {
-    const S = this.S;
-    const f = this.f(n.owner);
-    const parts = [['الأساس', 68]];
-    if (n.capital) parts.push(['العاصمة', 10]);
-    const here = this.armiesOfAt(n.owner, n.id);
-    if (here.length) parts.push(['جيش مقيم', 8]);
-    if (n.market) parts.push(['الأسواق', n.market * 2]);
-    if (TAXES[f.tax].loyalty) parts.push(['الضرائب', TAXES[f.tax].loyalty]);
-    if (n.origOwner !== n.owner && S.turn - n.capturedTurn < 10) parts.push(['احتلال حديث', -25]);
-    if (n.origOwner !== n.owner && this.f(n.origOwner) && this.f(n.origOwner).alive && this.f(n.origOwner).vendetta && this.f(n.origOwner).vendetta[n.owner]) parts.push(['ثأر أهلها القدامى', -8]);
-    if (f.gold < 0) parts.push(['خزينة فارغة', -10]);
-    const size = this.nodesOf(n.owner).length;
-    if (size > 7) parts.push(['اتساع المملكة', -Math.round((size - 7) * 2.5)]);
-    const d = this.capitalDist(n);
-    if (d > 3) parts.push(['البعد عن العاصمة', -Math.min(12, (d - 3) * 3)]);
-    if (here.some((a) => this.hasFlaw(a, 'harsh'))) parts.push(['قائد قاسٍ', -8]);
-    const gov = this.governorAt(n);
-    if (gov) {
-      parts.push(['حاكم مقيم', 4]);
-      if (gov.trait === 'merchant' || gov.trait === 'defender') parts.push(['حاكم ' + TRAITS[gov.trait].name, 5]);
-      if (gov.flaw === 'harsh') parts.push(['حاكم قاسٍ', -8]);
-    }
-    if (this.policyMod) { const pm = this.policyMod(n.owner, 'loyalty'); if (pm) parts.push(['سياسة المملكة', pm]); }
-    if (this.nodeMods) {
-      for (const pl of this.nodeMods(n).loy) parts.push(pl);
-      const rl = this.rulerMod(n.owner, 'loyalty');
-      if (rl) parts.push(['الحاكم', rl]);
-    }
-    const target = parts.reduce((t, p) => t + p[1], 0);
-    return { target: Math.round(target), parts };
+  cityIncome(n) { return this.incomeSteps(n).total; },
+  // تفصيل الدخل للعرض: أرقام بالذهب لا مضاعفات، والمجموع يطابق الصافي
+  incomeParts(n) {
+    const st = this.incomeSteps(n);
+    const lines = st.steps.map((x) => [x.label, x.v, x.v >= 0 ? 'pos' : 'neg', x.note]);
+    const shown = lines.map((l) => Math.round(l[1]));
+    const diff = st.total - shown.reduce((t, x) => t + x, 0);
+    if (shown.length) { let i = shown.findIndex((x, j) => j === 0); shown[i] += diff; }
+    return { total: st.total, gross: Math.round(st.gross), sieged: !!st.sieged, lines: lines.map((l, i) => [l[0], signed(shown[i]), l[2], l[3]]) };
   },
-  capitalDist(n) {
-    const cap = this.nodesOf(n.owner).find((x) => x.capital);
-    if (!cap) return 0;
-    return this.hops(cap.id, n.id, 8);
+  cityFoodSteps(n) {
+    const out = { steps: [], total: 0 };
+    if (this.besieger(n.id)) { out.steps.push({ label: 'محاصرة: الحقول خارج الأسوار', v: 0 }); return out; }
+    let v = 0;
+    const add = (label, d) => { if (Math.abs(d) < 0.05) return; out.steps.push({ label, v: d }); v += d; };
+    add('الحقول حول المدينة', 5 + n.pop / 8000);
+    if (n.farm) add(`المزارع (المستوى ${n.farm})`, n.farm * 6);
+    if (n.unrest > 0) add('اضطراب', v * -0.5);
+    if (this.nodeMods) { const m = this.nodeMods(n); if (m.food !== 1) add('أحداث تضرب الحقول', v * (m.food - 1)); }
+    out.total = Math.max(0, Math.round(v));
+    return out;
   },
-  governorAt(n) { return Object.values(this.S.gens).find((g) => g.status === 'gov' && g.city === n.id && g.fid === n.owner) || null; },
-  governorOf(n, trait) { const g = this.governorAt(n); return g && g.trait === trait ? g : null; },
-  cityFood(n) {
-    if (this.besieger(n.id)) return 0;
-    let f = 5 + n.farm * 6 + n.pop / 8000;
-    if (n.unrest > 0) f *= 0.5;
-    if (this.nodeMods) f *= this.nodeMods(n).food;
-    return Math.round(f);
-  },
+  cityFood(n) { return this.cityFoodSteps(n).total; },
   armyEat(a) {
     const n = this.node(a.node);
     let e = a.regs.reduce((t, r) => t + (UNITS[r.type].cls === 'cav' ? 2 : 1), 0) + 1;
@@ -657,33 +642,143 @@ const Game = {
     }
     return Math.round(t);
   },
+  unitUpkeep(r) { return Math.round((UNITS[r.type].upkeep || 0) * ECON.upkeepMul * (r.merc ? ECON.mercMul : 1)); },
+  // صيانة المباني: الأسوار العالية والإسطبلات والموانئ تحتاج رجالاً وخشباً كل دور
+  buildUpkeep(n) {
+    let t = 0;
+    for (const [k, v] of Object.entries(ECON.fortUpkeep)) {
+      const lvl = n[k] || 0;
+      if (!lvl) continue;
+      t += Array.isArray(v) ? v[Math.min(lvl, v.length - 1)] : v * lvl;
+    }
+    return t;
+  },
+  // كلفة إدارة المدن البعيدة: كل مدينة بعد عدد معيّن تحتاج عمّالاً وبريداً وحراسة، وتزيد مع البعد عن العاصمة
+  adminCosts(fid) {
+    const ns = this.nodesOf(fid);
+    const out = [];
+    if (ns.length <= ECON.adminFree) return out;
+    const withD = ns.map((n) => ({ n, d: this.capitalDist(n) })).sort((a, b) => a.d - b.d);
+    for (const { n, d } of withD.slice(ECON.adminFree)) {
+      let c = ECON.adminBase + ECON.adminDist * Math.max(0, d - 2);
+      const gov = this.governorAt(n);
+      if (gov) c = Math.round(c / 2);
+      out.push({ n, d, c, gov: !!gov });
+    }
+    return out;
+  },
+  // خطوات الجيش عن أقرب مدينة صديقة غير محاصرة (0 إن كان فيها)
+  supplyHops(a) {
+    const ok = (n) => n && this.friendly(n.owner, a.fid) && !this.besiegers(n.id).some((b) => this.atWar(b.fid, a.fid));
+    const here = this.node(a.node);
+    if (!a.siege && ok(here)) return 0;
+    const seen = new Set([a.node]);
+    let layer = [a.node];
+    for (let d = 1; d <= 6; d++) {
+      const next = [];
+      for (const id of layer) for (const x of this.adjAll(id)) {
+        if (seen.has(x)) continue;
+        seen.add(x);
+        if (ok(this.node(x))) return d;
+        next.push(x);
+      }
+      layer = next;
+    }
+    return 6;
+  },
+  supplyCost(a) {
+    const f = this.f(a.fid);
+    if (!f || f.horde) return 0;
+    const hops = this.supplyHops(a);
+    return hops ? a.regs.length * ECON.supplyPerUnitHop * hops : 0;
+  },
   economy(fid) {
-    let gold = 0, food = 0, upkeep = 0, eat = 0, salaries = 0, overhead = 0;
     const f = this.f(fid);
-    for (const n of this.nodesOf(fid)) { gold += this.cityIncome(n); food += this.cityFood(n); }
+    const inc = { tax: 0, market: 0, food: 0, route: 0, trade: 0, tribute: 0 };
+    const exp = { army: 0, merc: 0, wages: 0, supply: 0, admin: 0, forts: 0, overhead: 0 };
+    let food = 0, eat = 0;
+    const nodes = this.nodesOf(fid);
+    for (const n of nodes) {
+      const st = this.incomeSteps(n);
+      inc.tax += st.tax; inc.market += st.market;
+      food += this.cityFood(n);
+      exp.forts += this.buildUpkeep(n);
+    }
     const armies = this.armiesOf(fid);
     for (const a of armies) {
       const g = this.armyGen(a);
-      if (g) salaries += this.genSalary(g);
-      for (const r of a.regs) upkeep += (UNITS[r.type].upkeep || 0) * (r.merc ? 1.8 : 1);
+      if (g) exp.wages += this.genSalary(g);
+      for (const r of a.regs) exp[r.merc ? 'merc' : 'army'] += this.unitUpkeep(r);
+      exp.supply += this.supplyCost(a);
       eat += this.armyEat(a);
     }
-    const cities = this.nodesOf(fid).length;
-    overhead = Math.max(0, armies.length - Math.max(2, cities)) * 10;
-    if (!f.isPlayer && fid !== 'neutral') gold = Math.round(gold * DIFFS[this.S.difficulty].aiIncome);
-    // الغزاة يعيشون على النهب: لا رواتب ولا مؤن
-    if (f.horde) { upkeep = 0; eat = 0; salaries = 0; overhead = 0; }
-    const route = this.routeIncome ? this.routeIncome(fid) : 0;
-    const trade = Math.round((this.tradeIncome(fid) + route) * (1 + (this.policyMod ? this.policyMod(fid, 'trade') : 0)));
-    for (const g of this.gensOf(fid)) if (g.status === 'gov') salaries += this.genSalary(g);
-    let tribute = 0;
-    for (const t of this.S.tributes) { if (t.payee === fid) tribute += t.amount; if (t.payer === fid) tribute -= t.amount; }
-    upkeep = Math.round(upkeep);
+    for (const g of this.gensOf(fid)) if (g.status === 'gov') exp.wages += this.genSalary(g);
+    exp.admin = this.adminCosts(fid).reduce((t, x) => t + x.c, 0);
+    exp.overhead = Math.max(0, armies.length - Math.max(2, nodes.length)) * ECON.armyOverhead;
+    // الغزاة يعيشون على النهب: لا رواتب ولا مؤن ولا إدارة
+    if (f.horde) { for (const k in exp) exp[k] = 0; eat = 0; }
+    inc.route = this.routeIncome ? this.routeIncome(fid) : 0;
+    const tradeK = 1 + (this.policyMod ? this.policyMod(fid, 'trade') : 0);
+    inc.trade = Math.round(this.tradeIncome(fid) * tradeK);
+    inc.route = Math.round(inc.route * tradeK);
+    for (const t of this.S.tributes) { if (t.payee === fid) inc.tribute += t.amount; if (t.payer === fid) inc.tribute -= t.amount; }
     eat = Math.round(eat);
-    const netGold = gold + trade + tribute - upkeep - salaries - overhead;
-    return { gold, trade, route, tribute, upkeep, salaries, overhead, food, eat, netGold, netFood: food - eat };
+    const netFood = food - eat;
+    // فائض الطعام فوق سعة المخازن يُباع في الأسواق
+    const over = Math.max(0, (f.food || 0) + netFood - ECON.foodCap);
+    inc.food = Math.round(over * ECON.foodSale);
+    for (const k in exp) exp[k] = Math.round(exp[k]);
+    const income = inc.tax + inc.market + inc.food + inc.route + inc.trade + Math.max(0, inc.tribute);
+    const expense = exp.army + exp.merc + exp.wages + exp.supply + exp.admin + exp.forts + exp.overhead + Math.max(0, -inc.tribute);
+    const netGold = income - expense;
+    return {
+      inc, exp, income, expense, netGold, food, eat, netFood,
+      // مفاتيح قديمة تستعملها بقية الأنظمة
+      gold: inc.tax + inc.market, trade: inc.trade + inc.route, route: inc.route, tribute: inc.tribute,
+      upkeep: exp.army + exp.merc, salaries: exp.wages, overhead: exp.overhead + exp.admin,
+    };
   },
 
+  // هدف الولاء الذي تتجه إليه المدينة كل دور، مع أسبابه
+  loyaltyTarget(n) {
+    const S = this.S;
+    const f = this.f(n.owner);
+    const parts = [['رضا طبيعي', 68, 'base']];
+    if (n.capital) parts.push(['العاصمة', 10, 'capital']);
+    const here = this.armiesOfAt(n.owner, n.id);
+    if (here.length) parts.push(['جيش مقيم يحفظ الأمن', 8, 'army']);
+    if (n.market) parts.push([`الأسواق (المستوى ${n.market})`, n.market * 2, 'market']);
+    if (TAXES[f.tax].loyalty) parts.push([`ضرائب ${TAXES[f.tax].name}`, TAXES[f.tax].loyalty, 'tax']);
+    if (n.origOwner !== n.owner && S.turn - n.capturedTurn < 10) parts.push([`احتلال حديث (${10 - (S.turn - n.capturedTurn)} أدوار باقية)`, -25, 'occupied']);
+    if (n.origOwner !== n.owner && this.f(n.origOwner) && this.f(n.origOwner).alive && this.f(n.origOwner).vendetta && this.f(n.origOwner).vendetta[n.owner]) parts.push(['ثأر أهلها القدامى', -8, 'vendetta']);
+    if (f.gold < 0) parts.push(['الخزينة فارغة: رواتب متأخرة', -10, 'broke']);
+    const size = this.nodesOf(n.owner).length;
+    if (size > 7) parts.push([`ضغط الاتساع (${size} مدن)`, -Math.round((size - 7) * 2.5), 'size']);
+    const d = this.capitalDist(n);
+    if (d > 3) parts.push([`البعد عن العاصمة (${d} خطوات)`, -Math.min(12, (d - 3) * 3), 'far']);
+    if (here.some((a) => this.hasFlaw(a, 'harsh'))) parts.push(['قائد قاسٍ مقيم', -8, 'harsh']);
+    const gov = this.governorAt(n);
+    if (gov) {
+      parts.push([`حاكم مقيم: ${gov.name}`, 4, 'gov']);
+      if (gov.trait === 'merchant' || gov.trait === 'defender') parts.push(['موهبة الحاكم: ' + TRAITS[gov.trait].name, 5, 'gov']);
+      if (gov.flaw === 'harsh') parts.push(['حاكم قاسٍ', -8, 'harsh']);
+    }
+    if (this.policyMod) { const pm = this.policyMod(n.owner, 'loyalty'); if (pm) parts.push([`المرسوم: ${EDICTS[this.edictOf(n.owner)].name}`, pm, 'edict']); }
+    if (this.nodeMods) {
+      for (const pl of this.nodeMods(n).loy) parts.push([pl[0], pl[1], 'crisis']);
+      const rl = this.rulerMod(n.owner, 'loyalty');
+      if (rl) parts.push(['طبع الحاكم', rl, 'ruler']);
+    }
+    const target = parts.reduce((t, p) => t + p[1], 0);
+    return { target: Math.round(target), parts };
+  },
+  capitalDist(n) {
+    const cap = this.nodesOf(n.owner).find((x) => x.capital);
+    if (!cap) return 0;
+    return this.hops(cap.id, n.id, 8);
+  },
+  governorAt(n) { return Object.values(this.S.gens).find((g) => g.status === 'gov' && g.city === n.id && g.fid === n.owner) || null; },
+  governorOf(n, trait) { const g = this.governorAt(n); return g && g.trait === trait ? g : null; },
   // ——————————————————— التجنيد والبناء ———————————————————
   recruitableTypes(fid, node) {
     const list = [...RECRUITABLE];
@@ -742,28 +837,46 @@ const Game = {
     return null;
   },
   hasWater(node) { return this.edgesOf(node.id).some((e) => e.kind === 'water'); },
+  // مدة البناء بالأدوار حسب المستوى المطلوب
+  buildTime(b, lvl) { const t = BUILD_TIME[b]; return Array.isArray(t) ? t[Math.min(lvl, t.length - 1)] : t; },
   canBuild(fid, node, b) {
     const lvl = node[b] || 0, B = BUILDINGS[b];
     if (node.owner !== fid) return 'ليست مدينتك';
     if (B.coastal && !this.hasWater(node)) return 'لا طريق مائياً من هنا';
     if (lvl >= B.max) return 'بلغت الحد الأعلى';
-    if (this.besieger(node.id)) return 'المدينة محاصرة';
-    if (node.unrest > 0) return 'غير مستقرة';
-    if (node.built === this.S.turn) return 'بناء واحد لكل دور';
-    if (this.f(fid).gold < B.cost(lvl)) return 'الذهب لا يكفي';
+    if (node.work) return `يُبنى الآن ${BUILDINGS[node.work.b].name}: يكتمل بعد ${Math.max(1, node.work.done - this.S.turn)} أدوار`;
+    if (this.besieger(node.id)) return 'المدينة محاصرة: لا يصل العمال والمواد';
+    if (node.unrest > 0) return `غير مستقرة (${node.unrest} أدوار): لا يعمل البنّاؤون`;
+    if (this.f(fid).gold < B.cost(lvl)) return `الذهب لا يكفي (${B.cost(lvl)})`;
     return null;
   },
+  // يبدأ البناء الآن ويُدفع ثمنه، ويكتمل بعد مدته. مشروع واحد في كل مدينة
   build(fid, node, b) {
     const err = this.canBuild(fid, node, b);
     if (err) return err;
     const lvl = node[b] || 0;
-    this.f(fid).gold -= BUILDINGS[b].cost(lvl);
-    node[b] = lvl + 1;
+    const cost = BUILDINGS[b].cost(lvl);
+    this.f(fid).gold -= cost;
+    const t = this.buildTime(b, lvl);
+    node.work = { b, lvl: lvl + 1, start: this.S.turn, done: this.S.turn + t, cost, fid };
     node.built = this.S.turn;
-    if (b === 'walls' || b === 'granary') node.stores = Math.max(node.stores, this.storesMax(node));
-    const imp = b === 'walls' ? 2 : node[b] >= 2 ? 1 : 1;
-    this.event('eco', `${this.fname(fid)} ${b === 'walls' ? 'ترفع تحصين' : 'تطوّر'} ${node.name}: ${BUILDINGS[b].name} ${node[b]}.`, { fids: [fid], node: node.id, imp: fid === this.S.player ? 1 : imp });
+    this.event('eco', `${this.fname(fid)} تبدأ ${b === 'walls' ? 'رفع تحصين' : 'بناء'} ${BUILDINGS[b].name} ${lvl + 1} في ${node.name} (${t} أدوار).`, { fids: [fid], node: node.id, imp: 1 });
     return null;
+  },
+  // نهاية كل دور: البناء يتقدم، ويتوقف تحت الحصار، ويضيع إن سقطت المدينة
+  workTick() {
+    for (const n of this.S.nodes) {
+      const w = n.work;
+      if (!w) continue;
+      if (w.fid && w.fid !== n.owner) { n.work = null; continue; }
+      if (this.besieger(n.id)) { w.done++; continue; }
+      if (this.S.turn + 1 < w.done) continue;
+      n[w.b] = Math.max(n[w.b] || 0, w.lvl);
+      n.work = null;
+      if (w.b === 'walls' || w.b === 'granary') n.stores = Math.max(n.stores, Math.min(this.storesMax(n), n.stores + 2));
+      this.event('eco', `اكتمل ${BUILDINGS[w.b].name} ${w.lvl} في ${n.name}.`, { fids: [n.owner], node: n.id, imp: n.owner === this.S.player ? 2 : 1 });
+      if (n.owner === this.S.player) this.alert('info', `اكتمل ${BUILDINGS[w.b].name} ${w.lvl} في ${n.name}`, { node: n.id, icon: BUILDINGS[w.b].icon });
+    }
   },
   storesMax(n) { return 3 + n.walls + n.farm + n.granary * 3; },
   festivalCost(n) { return Math.round(60 + n.pop / 350); },
@@ -1246,6 +1359,7 @@ const Game = {
     }
     node.owner = fid;
     node.capturedTurn = this.S.turn;
+    node.work = null;
     node.garrison = [];
     this.fillGarrison(node, false);
     node.stores = Math.min(2, this.storesMax(node));
@@ -1510,7 +1624,7 @@ const Game = {
         for (const a of this.armiesOf(id)) { for (const r of a.regs) r.men = Math.round(r.men * 0.94); a.mood = { k: 'hungry', t: 1 }; }
         if (f.isPlayer) { notes.push('نفد الطعام!'); this.alert('crit', 'نفد الطعام: جيوشك جائعة وتخسر رجالاً — ابنِ مزارع أو قلّل الجيوش', { icon: 'food', key: 'nofood' }); }
       }
-      f.food = Math.min(f.food, 400);
+      f.food = Math.min(f.food, ECON.foodCap);
       if (f.gold < 0) {
         const all = this.armiesOf(id).flatMap((a) => a.regs.map((r) => ({ a, r })));
         const pickR = all.find((x) => x.r.merc) || all.sort((x, y) => (UNITS[y.r.type].upkeep || 0) - (UNITS[x.r.type].upkeep || 0))[0];
@@ -1604,6 +1718,7 @@ const Game = {
         g.captor = null;
       }
     }
+    this.workTick();
     this.diplomacyTick();
     if (S.turn % 3 === 2) for (const id of this.majors()) this.refreshMercs(id);
     S.turn++;

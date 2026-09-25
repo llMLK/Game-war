@@ -231,26 +231,35 @@ Object.assign(Game, {
   },
 
   // ——————————————————— ولاء القادة ———————————————————
-  genLoyTarget(g) {
+  // أسباب ولاء القائد، كل سبب بقيمته
+  genLoyParts(g) {
     const f = this.f(g.fid);
-    if (!f || this.isRuler(g)) return 100;
-    let t = 62 + (g.rank === 1 ? 10 : 0) - (g.flaw === 'disloyal' ? 18 : 0) - (g.flaw === 'arrogant' ? 6 : 0);
-    t += this.rulerMod(g.fid, 'genloy');
+    const parts = [['الأساس', 62]];
+    if (!f) return parts;
+    if (g.rank === 1) parts.push(['قائد ناشئ لا يطمع بعد', 10]);
+    if (g.flaw === 'disloyal') parts.push(['طبعه متقلّب', -18]);
+    if (g.flaw === 'arrogant') parts.push(['متكبّر يرى نفسه أحق', -6]);
+    const rm = this.rulerMod(g.fid, 'genloy');
+    if (rm) parts.push(['طبع الحاكم', rm]);
     const size = this.nodesOf(g.fid).length;
-    if (size > 8) t -= (size - 8) * 2;
+    if (size > 8) parts.push([`اتساع المملكة (${size} مدن)`, -(size - 8) * 2]);
     const a = g.army ? this.army(g.army) : null;
-    if (g.status === 'gov' && g.city) { const n = this.node(g.city); if (n && n.owner === g.fid && this.capitalDist(n) >= 3) t -= 6; }
+    if (g.status === 'gov' && g.city) { const n = this.node(g.city); if (n && n.owner === g.fid && this.capitalDist(n) >= 3) parts.push(['يحكم مدينة بعيدة عن العاصمة', -6]); }
     if (a) {
       const n = this.node(a.node);
-      if (n && n.owner === g.fid && this.capitalDist(n) >= 3) t -= 6;
+      if (n && n.owner === g.fid && this.capitalDist(n) >= 3) parts.push(['يقود بعيداً عن العاصمة', -6]);
       const share = this.armyPower(a) / Math.max(1, this.factionPower(g.fid));
-      if (share > 0.35 && g.rank >= 2) t -= 6;
+      if (share > 0.35 && g.rank >= 2) parts.push([`يقود ${Math.round(share * 100)}٪ من قوة المملكة`, -6]);
     }
-    if (f.gold < 0) t -= 15;
-    if (g.honored != null && this.S.turn - g.honored < 12) t += 14;
-    if (g.passed) t -= 8;
-    if (this.isHeir(g)) t += 20;
-    return clamp(t, 0, 100);
+    if (f.gold < 0) parts.push(['الخزينة فارغة: رواتب متأخرة', -15]);
+    if (g.honored != null && this.S.turn - g.honored < 12) parts.push(['كرّمته مؤخراً', 14]);
+    if (g.passed) parts.push(['تخطّيته في ولاية العهد', -8]);
+    if (this.isHeir(g)) parts.push(['ولي العهد', 20]);
+    return parts;
+  },
+  genLoyTarget(g) {
+    if (!this.f(g.fid) || this.isRuler(g)) return 100;
+    return clamp(this.genLoyParts(g).reduce((t, p) => t + p[1], 0), 0, 100);
   },
   honorCost(g) { return 80 + 50 * g.rank; },
   honorGeneral(fid, g) {
@@ -468,12 +477,15 @@ Object.assign(Game, {
   },
   // تعديلات الأزمات على المدن (الدخل، الطعام، القوى البشرية، الولاء)
   nodeMods(n) {
-    const m = { inc: 1, food: 1, mp: 1, loy: [] };
+    const m = { inc: 1, food: 1, mp: 1, loy: [], why: [] };
     if (n.charter) { m.inc *= 0.65; m.loy.push(['ميثاق حر', 20]); }
     for (const c of this.S.crises || []) {
       if (c.over) continue;
       const d = CRISES[c.type];
-      if (d.mods) d.mods.call(d, c, n, m);
+      if (!d.mods) continue;
+      const i0 = m.inc, f0 = m.food;
+      d.mods.call(d, c, n, m);
+      if (m.inc !== i0 || m.food !== f0) m.why.push(this.crisisShort(c));
     }
     return m;
   },
@@ -1852,7 +1864,7 @@ CRISES.freecity = {
     const n = Game.node(c.node);
     const army = Game.armiesOfAt(fid, n.id).length > 0;
     return [
-      { k: 'grant', label: 'امنحهم الميثاق', icon: 'scroll', desc: `ولاء ${n.name} +20 دائماً.`, risk: 'دخلها ×0.65 للأبد' },
+      { k: 'grant', label: 'امنحهم الميثاق', icon: 'scroll', desc: `ولاء ${n.name} +20 دائماً.`, risk: 'يصلك ثلثا دخلها فقط، للأبد' },
       { k: 'bribe', label: 'اشترِ كبار التجار', icon: 'coins', desc: 'تُطوى العريضة لسنوات.', gold: 110 },
       { k: 'garrison', label: 'جيشك في المدينة يكفي', icon: 'shield', desc: 'ترفض بلا ثمن ما دام جيشك هناك.', risk: 'الولاء −5', dis: !army, why: army ? '' : 'لا جيش لك فيها' },
       { k: 'refuse', label: 'ارفض', icon: 'close', desc: 'المال مال الدولة.', risk: 'الولاء −15، وقد تعلن استقلالها' },
