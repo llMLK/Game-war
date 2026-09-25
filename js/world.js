@@ -235,7 +235,8 @@ Object.assign(Game, {
     let t = 62 + (g.rank === 1 ? 10 : 0) - (g.flaw === 'disloyal' ? 18 : 0) - (g.flaw === 'arrogant' ? 6 : 0);
     t += this.rulerMod(g.fid, 'genloy');
     const size = this.nodesOf(g.fid).length;
-    if (size > 8) t -= (size - 8) * 2;
+    const free = this.sc.adminFree || 8;
+    if (size > free) t -= (size - free) * 2;
     const a = g.army ? this.army(g.army) : null;
     if (g.status === 'gov' && g.city) { const n = this.node(g.city); if (n && n.owner === g.fid && this.capitalDist(n) >= 3) t -= 6; }
     if (a) {
@@ -1083,9 +1084,10 @@ CRISES.horde = {
     const gs = known >= 2 ? v.gates : [...v.gates, ...((Game.wd().hordes || []).find((h2) => h2.key === v.key) || { gates: [] }).gates.flat()];
     const pts = gs.map((id) => Game.node(id)).filter(Boolean);
     const cx = pts.reduce((t, n) => t + n.x, 0) / pts.length, cy = pts.reduce((t, n) => t + n.y, 0) / pts.length;
-    const dl = cx, dr = MW - cx, dt = cy, db = MH - cy;
+    const W = Game.sc.w || MW, H = Game.sc.h || MH;
+    const dl = cx, dr = W - cx, dt = cy, db = H - cy;
     const m = Math.min(dl, dr, dt, db);
-    const ex = m === dl ? 0 : m === dr ? MW : cx, ey = m === dt ? 0 : m === db ? MH : cy;
+    const ex = m === dl ? 0 : m === dr ? W : cx, ey = m === dt ? 0 : m === db ? H : cy;
     const prog = [0.12, 0.3, 0.5, 0.62][Math.max(0, c.stage)] || 0.62;
     const x = lerp(ex, cx, prog), y = lerp(ey, cy, prog);
     return [{ kind: 'threat', x, y, tx: cx, ty: cy, color: v.color, icon: 'horse', label: v.revealed || known >= 2 ? `${v.name} ~${fmt(Math.round(v.men / 100) * 100)}` : `${v.name} ؟`, sure: known >= 2 }];

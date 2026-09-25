@@ -570,7 +570,8 @@ const Game = {
     const auto = (x) => this.termsOf && this.termsOf(x) && this.termsOf(x).control === 'autonomy';
     if (auto(n)) return 0;
     const cities = count != null ? count : this.nodesOf(n.owner).filter((x) => !auto(x)).length;
-    let w = Math.min(0.4, 0.03 * Math.max(0, cities - 8));
+    // الخرائط الكبيرة تحدد عتبة أعلى (adminFree) لأن الدولة فيها أوسع من البداية
+    let w = Math.min(0.4, 0.03 * Math.max(0, cities - (this.sc.adminFree || 8)));
     if (w > 0 && this.governorAt(n)) w *= 0.5;
     return w;
   },
@@ -644,7 +645,8 @@ const Game = {
     if (n.origOwner !== n.owner && this.f(n.origOwner) && this.f(n.origOwner).alive && this.f(n.origOwner).vendetta && this.f(n.origOwner).vendetta[n.owner]) parts.push(['ثأر أهلها القدامى', -8]);
     if (f.gold < 0) parts.push(['خزينة فارغة', -10]);
     const size = this.nodesOf(n.owner).length;
-    if (size > 7) parts.push(['اتساع المملكة', -Math.round((size - 7) * 2.5)]);
+    const sizeFree = this.sc.sizeFree || 7;
+    if (size > sizeFree) parts.push(['اتساع المملكة', -Math.round((size - sizeFree) * 2.5)]);
     const d = this.capitalDist(n);
     if (d > 3) parts.push(['البعد عن العاصمة', -Math.min(12, (d - 3) * 3)]);
     if (here.some((a) => this.hasFlaw(a, 'harsh'))) parts.push(['قائد قاسٍ', -8]);
@@ -665,10 +667,11 @@ const Game = {
     const target = parts.reduce((t, p) => t + p[1], 0);
     return { target: Math.round(target), parts };
   },
+  // البعد عن أقرب مقر حكم: العاصمة، أو مقار الولايات التي يحددها السيناريو ما دامت للمملكة نفسها
   capitalDist(n) {
-    const cap = this.nodesOf(n.owner).find((x) => x.capital);
-    if (!cap) return 0;
-    return this.hops(cap.id, n.id, 8);
+    const seats = [...this.nodesOf(n.owner).filter((x) => x.capital), ...(((this.sc.seats || {})[n.owner]) || []).map((id) => this.node(id)).filter((x) => x && x.owner === n.owner)];
+    if (!seats.length) return 0;
+    return Math.min(...seats.map((c) => this.hops(c.id, n.id, 8)));
   },
   governorAt(n) { return Object.values(this.S.gens).find((g) => g.status === 'gov' && g.city === n.id && g.fid === n.owner) || null; },
   governorOf(n, trait) { const g = this.governorAt(n); return g && g.trait === trait ? g : null; },

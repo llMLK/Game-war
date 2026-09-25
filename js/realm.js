@@ -44,7 +44,8 @@ Object.assign(Game, {
     const total = S.nodes.length;
     const mine = this.nodesOf(fid);
     const out = [];
-    const need = Math.ceil(total * 0.65);
+    const frac = this.sc.empireFrac || 0.65;
+    const need = Math.ceil(total * frac);
     out.push({ k: 'empire', icon: 'crown', name: 'الإمبراطورية', desc: `احكم ${need} مدينة من ${total} ثلاثة أدوار متتالية.`, have: mine.length, need, hold: S.obj.emp || 0, done: mine.length >= need && (S.obj.emp || 0) >= 3 });
     const hd = (HISTORIC[S.scenario] || {})[fid];
     if (hd) {
@@ -83,9 +84,10 @@ Object.assign(Game, {
     S.obj = S.obj || {};
     const hd = (HISTORIC[S.scenario] || {})[P];
     S.obj.hist = hd && hd.nodes.every((id) => this.node(id) && this.node(id).owner === P) ? (S.obj.hist || 0) + 1 : 0;
-    S.obj.emp = this.nodesOf(P).length >= Math.ceil(S.nodes.length * 0.65) ? (S.obj.emp || 0) + 1 : 0;
+    const frac = this.sc.empireFrac || 0.65;
+    S.obj.emp = this.nodesOf(P).length >= Math.ceil(S.nodes.length * frac) ? (S.obj.emp || 0) + 1 : 0;
     // إمبراطورية منافسة تنهي الحملة بدل استمرار بلا معنى
-    const rivalEmp = this.aliveMajors().find((id) => id !== P && !this.f(id).kind && this.nodesOf(id).length >= Math.ceil(S.nodes.length * 0.65));
+    const rivalEmp = this.aliveMajors().find((id) => id !== P && !this.f(id).kind && this.nodesOf(id).length >= Math.ceil(S.nodes.length * frac));
     S.obj.rivalEmp = rivalEmp && rivalEmp === S.obj.rivalEmpId ? (S.obj.rivalEmp || 0) + 1 : rivalEmp ? 1 : 0;
     S.obj.rivalEmpId = rivalEmp || null;
     if (rivalEmp && S.obj.rivalEmp >= 3 && !this.isVassalOf(P, rivalEmp)) {

@@ -13,11 +13,16 @@ class MapArt {
     this.K = 5;
     this.terrSig = '';
     this.nodesDef = sc.nodes;
+    // أبعاد الخريطة من السيناريو. الخرائط الكبيرة تُرسم بدقة أقل حتى تبقى ذاكرة الهاتف معقولة
+    this.W = sc.w || MW; this.H = sc.h || MH;
+    this.bgK = Math.min(2.5, Math.sqrt(4.4e6 / (this.W * this.H)));
+    this.terrK = Math.min(2, Math.sqrt(3.5e6 / (this.W * this.H)));
+    this.islands = sc.islands || [];
     this.layout = {};
     for (const n of sc.nodes) this.layout[n.id] = this.nodeLayout(n);
     this.bg = this.buildBg();
     this.terr = document.createElement('canvas');
-    this.terr.width = MW * 2; this.terr.height = MH * 2;
+    this.terr.width = Math.round(this.W * this.terrK); this.terr.height = Math.round(this.H * this.terrK);
   }
 
   // --- التخطيط الثابت لكل مدينة ---
@@ -49,7 +54,7 @@ class MapArt {
 
   // ----------- الخلفية المرسومة -----------
   buildBg() {
-    const sc = this.sc, K = 2.5;
+    const sc = this.sc, K = this.bgK, MW = this.W, MH = this.H;
     const cv = document.createElement('canvas');
     cv.width = MW * K; cv.height = MH * K;
     const g = cv.getContext('2d');
@@ -63,7 +68,7 @@ class MapArt {
     };
     const edgesXY = sc.edges.filter((e) => (e[2] || 'road') !== 'water').map(([a, b]) => { const A = nodes.find((n) => n.id === a), B = nodes.find((n) => n.id === b); return [A.x, A.y, B.x, B.y]; });
     const nearRoad = (x, y, d) => edgesXY.some(([ax, ay, bx, by]) => segD(x, y, ax, ay, bx, by) < d);
-    const inSea = (x, y) => sc.seas.some((p) => pip(p, x, y));
+    const inSea = (x, y) => sc.seas.some((p) => pip(p, x, y)) && !this.islands.some((p) => pip(p, x, y));
     const inDesert = (x, y) => (sc.deserts || []).some((p) => pip(p, x, y));
     const path = (poly) => { g.beginPath(); poly.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); g.closePath(); };
 
@@ -80,17 +85,19 @@ class MapArt {
       gr.addColorStop(0, tint[n.terrain] || 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
       g.fillStyle = gr; g.fillRect(n.x - rr, n.y - rr, rr * 2, rr * 2);
     }
-    for (let i = 0; i < 26; i++) {
+    const area = (MW * MH) / 700000;
+    for (let i = 0; i < Math.round(26 * area); i++) {
       const x = r() * MW, y = r() * MH, rr = 40 + r() * 90;
       const gr = g.createRadialGradient(x, y, 0, x, y, rr);
       gr.addColorStop(0, r() < 0.55 ? 'rgba(120,150,80,.10)' : 'rgba(150,110,60,.08)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
       g.fillStyle = gr; g.fillRect(x - rr, y - rr, rr * 2, rr * 2);
     }
     // حبيبات الورق
-    for (let i = 0; i < 14000; i++) {
-      g.fillStyle = r() < 0.5 ? 'rgba(90,70,40,.06)' : 'rgba(255,250,230,.07)';
-      g.fillRect(r() * MW, r() * MH, 0.6 + r() * 1.8, 0.6 + r() * 1.8);
-    }
+    // حبيبات الورق: مربّع صغير يتكرر بدل عشرات آلاف النقاط
+    const tile = document.createElement('canvas'); tile.width = tile.height = 200;
+    const tgc = tile.getContext('2d');
+    for (let i = 0; i < 800; i++) { tgc.fillStyle = r() < 0.5 ? 'rgba(90,70,40,.06)' : 'rgba(255,250,230,.07)'; tgc.fillRect(r() * 200, r() * 200, 0.6 + r() * 1.8, 0.6 + r() * 1.8); }
+    g.fillStyle = g.createPattern(tile, 'repeat'); g.fillRect(0, 0, MW, MH);
     // الصحارى
     for (const poly of sc.deserts || []) {
       // حافة ذائبة: القناع يُرسم صغيراً ثم يُكبَّر فتتلاشى حافته في الأرض بلا خط
@@ -131,6 +138,14 @@ class MapArt {
       }
       g.restore();
       g.strokeStyle = 'rgba(45,58,60,.75)'; g.lineWidth = 1.6; path(poly); g.stroke();
+    }
+    // الجزر: أرض فوق البحر بشاطئ رملي وخط ساحل
+    for (const poly of this.islands) {
+      g.lineJoin = 'round';
+      g.strokeStyle = 'rgba(150,190,185,.55)'; g.lineWidth = 10; path(poly); g.stroke();
+      g.strokeStyle = 'rgba(232,214,166,.95)'; g.lineWidth = 5; path(poly); g.stroke();
+      g.fillStyle = this.style === 'east' ? '#d4c89c' : '#d4bf8c'; path(poly); g.fill();
+      g.strokeStyle = 'rgba(45,58,60,.7)'; g.lineWidth = 1.3; path(poly); g.stroke();
     }
     // الأنهار: مجرى متعرّج ناعم يتسع مع الجريان، وسهل فيضي أخضر على ضفتيه (الأنهار تسقي الزرع وتعيق العبور)
     const meander = (rv) => {
@@ -246,7 +261,7 @@ class MapArt {
       }
     }
     // غابات مبعثرة
-    for (let c = 0; c < 10; c++) {
+    for (let c = 0; c < Math.round(10 * area); c++) {
       const cx = r() * MW, cy = r() * MH;
       if (inSea(cx, cy) || inDesert(cx, cy) || nearNode(cx, cy, 40)) continue;
       for (let i = 0; i < 14; i++) {
@@ -296,7 +311,7 @@ class MapArt {
     const sig = nodes.map((n) => n.owner).join(',');
     if (sig === this.terrSig) return;
     this.terrSig = sig;
-    const C = 4, W = MW / C, H = MH / C;
+    const C = 4, W = Math.ceil(this.W / C), H = Math.ceil(this.H / C), isl = this.islands;
     const cv = this.terr, g = cv.getContext('2d');
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.clearRect(0, 0, cv.width, cv.height);
@@ -307,22 +322,45 @@ class MapArt {
     const tg = tiny.getContext('2d');
     const img = tg.createImageData(W, H);
     const near = new Int16Array(W * H).fill(-1);
-    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-      const wx = x * C + C / 2, wy = y * C + C / 2;
-      const i = y * W + x;
-      if (seas.some((p) => pip(p, wx, wy))) continue;
-      let a = -1, da = 1e12;
-      for (let k = 0; k < nodes.length; k++) { const n = nodes[k]; const d = (n.x - wx) ** 2 + (n.y - wy) ** 2; if (d < da) { da = d; a = k; } }
-      if (da > 160 * 160) continue;
+    // الجزء الثابت يُحسب مرة واحدة: اليابسة، وأقرب ست مدن لكل خلية ومسافاتها. بعدها تتغير الملكية وحدها
+    const idSig = nodes.map((n) => n.id).join(',');
+    if (!this.cells || this.cells.sig !== idSig) {
+      const KN = 6, nn = new Int16Array(W * H * KN).fill(-1), nd = new Float32Array(W * H * KN);
+      // قناع البحر يُرسم على لوحة صغيرة بدقة الخلايا ويُقرأ مرة واحدة (أسرع بكثير من اختبار كل خلية)
+      const mc = document.createElement('canvas'); mc.width = W; mc.height = H;
+      const mg = mc.getContext('2d');
+      mg.setTransform(1 / C, 0, 0, 1 / C, 0, 0);
+      const poly = (pts) => { mg.beginPath(); pts.forEach(([px, py], j) => (j ? mg.lineTo(px, py) : mg.moveTo(px, py))); mg.closePath(); };
+      mg.fillStyle = '#000'; for (const p of seas) { poly(p); mg.fill(); }
+      mg.globalCompositeOperation = 'destination-out'; for (const p of isl) { poly(p); mg.fill(); }
+      const sea = mg.getImageData(0, 0, W, H).data;
+      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+        const wx = x * C + C / 2, wy = y * C + C / 2, i = y * W + x;
+        if (sea[i * 4 + 3] > 127) continue;
+        for (let k = 0; k < nodes.length; k++) {
+          const d = (nodes[k].x - wx) ** 2 + (nodes[k].y - wy) ** 2;
+          let j = KN - 1;
+          if (nn[i * KN + j] >= 0 && d >= nd[i * KN + j]) continue;
+          while (j > 0 && (nn[i * KN + j - 1] < 0 || d < nd[i * KN + j - 1])) { nn[i * KN + j] = nn[i * KN + j - 1]; nd[i * KN + j] = nd[i * KN + j - 1]; j--; }
+          nn[i * KN + j] = k; nd[i * KN + j] = d;
+        }
+      }
+      this.cells = { sig: idSig, KN, nn, nd };
+    }
+    const { KN, nn, nd } = this.cells;
+    for (let i = 0; i < W * H; i++) {
+      const a = nn[i * KN], da = nd[i * KN];
+      if (a < 0 || da > 160 * 160) continue;
       near[i] = a;
       const A = nodes[a];
       let dborder = 1e9;
-      for (let k = 0; k < nodes.length; k++) {
-        const B = nodes[k];
+      for (let k = 1; k < KN; k++) {
+        const b = nn[i * KN + k];
+        if (b < 0) break;
+        const B = nodes[b];
         if (B.owner === A.owner) continue;
-        const db = (B.x - wx) ** 2 + (B.y - wy) ** 2;
         const ab = Math.hypot(B.x - A.x, B.y - A.y) || 1;
-        dborder = Math.min(dborder, (db - da) / (2 * ab));
+        dborder = Math.min(dborder, (nd[i * KN + k] - da) / (2 * ab));
       }
       const c = cols[A.owner];
       const fade = clamp(1 - (Math.sqrt(da) - 110) / 50, 0, 1);
@@ -335,7 +373,7 @@ class MapArt {
     g.imageSmoothingEnabled = true;
     g.drawImage(tiny, 0, 0, cv.width, cv.height);
     // حدود سياسية دقيقة على منصّفات المواقع
-    const K = cv.width / MW;
+    const K = cv.width / this.W;
     g.setTransform(K, 0, 0, K, 0, 0);
     g.lineCap = 'round';
     const seg = (A, B, cx, cy, vertical) => {

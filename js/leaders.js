@@ -319,7 +319,8 @@ Object.assign(Game, {
       if (got.cities[data.id]) return;
       got.cities[data.id] = S.turn;
       const c = Object.keys(got.cities).length;
-      if (c % 2 === 0) this.earnChance('mil', `دخلت ${arN(c, ['مدينة', 'مدينتين', 'مدن', 'مدينة'])} لأول مرة، آخرها ${data.name}`);
+      const step = this.sc.recCityStep || 2;
+      if (c % step === 0) this.earnChance('mil', `دخلت ${arN(c, ['مدينة', 'مدينتين', 'مدن', 'مدينة'])} لأول مرة، آخرها ${data.name}`);
     } else if (kind === 'dip') {
       const key = data.kind + ':' + data.fid;
       if (got.dip[key]) return;
@@ -340,7 +341,7 @@ Object.assign(Game, {
     const w = got.wins % 3;
     return [
       ['المحفوظ', `${this.S.rec.chances} من ${MAX_CHANCES} (ما زاد لا يُحفظ)`],
-      ['عسكري', `${arN(3 - w, ['انتصار آخر', 'انتصاران آخران', 'انتصارات أخرى', ''])}، أو ${Object.keys(got.cities).length % 2 ? 'مدينة واحدة جديدة' : 'مدينتان جديدتان'} لم تدخلها من قبل`],
+      ['عسكري', `${arN(3 - w, ['انتصار آخر', 'انتصاران آخران', 'انتصارات أخرى', ''])}، أو ${arN((this.sc.recCityStep || 2) - Object.keys(got.cities).length % (this.sc.recCityStep || 2), ['مدينة جديدة', 'مدينتان جديدتان', 'مدن جديدة', 'مدينة جديدة'])} لم تدخلها من قبل`],
       ['اقتصادي', got.inc < INCOME_MARKS.length ? `صافي دخل ${INCOME_MARKS[got.inc]} كل دور (الآن ${this.economy(this.S.player).netGold})` : 'بلغت كل عتبات الدخل'],
       ['دبلوماسي', 'حلف أو تابع أو مصاهرة مع مملكة لأول مرة'],
       ['تاريخي', 'بداية فصل جديد من الحملة'],

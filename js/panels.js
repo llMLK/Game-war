@@ -982,10 +982,10 @@ const Panels = {
       if (Game.devFocus) this.policyExtras(scene, body);
       body.appendChild(h('div', { class: 'sec-h' }, icon('gold'), 'الخزينة'));
       body.appendChild(EconUI.lines(Game.treasuryLines(P)));
-      const cities = Game.nodesOf(P).length;
-      body.appendChild(h('p', { class: 'hint' }, cities > 8
-        ? `الهدر الإداري: مملكتك ${cities} مدن، فتضيع ${Math.round(Math.min(0.4, 0.03 * (cities - 8)) * 100)}٪ من دخل كل مدينة (3٪ لكل مدينة بعد الثامنة). الحاكم المقيم يخفّضه للنصف في مدينته، والتابعون لا يُحسبون.`
-        : 'كل جيش زائد عن عدد مدنك يكلّف 10 كل دور. بعد المدينة الثامنة يبدأ هدر إداري يخفض دخل كل المدن.'));
+      const cities = Game.nodesOf(P).filter((x) => !(Game.termsOf(x) && Game.termsOf(x).control === 'autonomy')).length, free = Game.sc.adminFree || 8;
+      body.appendChild(h('p', { class: 'hint' }, cities > free
+        ? `الهدر الإداري: مملكتك ${cities} مدينة تُدار مباشرة، فتضيع ${Math.round(Math.min(0.4, 0.03 * (cities - free)) * 100)}٪ من دخل كل مدينة (3٪ لكل مدينة بعد ${free} في هذا السيناريو). الحاكم المقيم يخفّضه للنصف في مدينته، والتابعون والمدن ذات الحكم الذاتي لا تُحسب.`
+        : `كل جيش زائد عن عدد مدنك يكلّف 10 كل دور. بعد المدينة رقم ${free} يبدأ هدر إداري يخفض دخل كل المدن.`));
       body.appendChild(h('div', { class: 'row-btns' }, ib('coins', 'فرص التطوير', { class: 'btn', onclick: () => EconUI.investTable(scene) }), Game.S.route ? ib('camel', 'طريق القوافل', { class: 'btn', onclick: () => scene.openRoute() }) : null));
     }
   },

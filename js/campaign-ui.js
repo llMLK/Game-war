@@ -3,14 +3,14 @@
 
 class CampaignScene {
   constructor() {
-    this.cam = new Camera(MW, MH);
+    this.art = new MapArt(Game.sc, { colorOf: (o) => (Game.f(o) ? Game.f(o).color : NEUTRAL.color) });
+    this.cam = new Camera(this.art.W, this.art.H);
     this.cam.cover = true;
     this.selArmy = null;
     this.selNode = null;
     this.busy = false;
     this.t = 0;
     this.fly = null;
-    this.art = new MapArt(Game.sc, { colorOf: (o) => (Game.f(o) ? Game.f(o).color : NEUTRAL.color) });
   }
 
   get S() { return Game.S; }
@@ -36,7 +36,7 @@ class CampaignScene {
 
   fitCam(keep) {
     const c = this.cam, ox = c.x, oy = c.y, oz = c.z;
-    const cover = Math.max(App.W / MW, App.H / MH);
+    const cover = Math.max(App.W / this.art.W, App.H / this.art.H);
     c.minZ = cover;
     c.maxZ = Math.max(3.2, cover * 4);
     if (keep) { c.z = clamp(oz, c.minZ, c.maxZ); c.x = ox; c.y = oy; c.clamp(); return; }
@@ -83,8 +83,8 @@ class CampaignScene {
     art.renderTerritory(S.nodes);
     cam.apply(ctx);
     ctx.imageSmoothingEnabled = true;
-    ctx.drawImage(art.bg, 0, 0, MW, MH);
-    ctx.drawImage(art.terr, 0, 0, MW, MH);
+    ctx.drawImage(art.bg, 0, 0, art.W, art.H);
+    ctx.drawImage(art.terr, 0, 0, art.W, art.H);
 
     const reach = this.selArmy && this.selArmy.mp > 0 ? Game.reach(this.selArmy) : {};
     this.reach = reach;
@@ -294,7 +294,9 @@ class CampaignScene {
       if (ns.length < 2) continue;
       const wsum = ns.reduce((t, n) => t + n.pop, 0);
       const cx = ns.reduce((t, n) => t + n.x * n.pop, 0) / wsum, cy = ns.reduce((t, n) => t + n.y * n.pop, 0) / wsum;
-      const p = cam.toScreen(cx, cy);
+      // الاسم فوق أقرب مدينة إلى المركز، فالمملكة الممتدة عبر البحر لا يسقط اسمها في الماء
+      const anchor = ns.reduce((best, n) => ((n.x - cx) ** 2 + (n.y - cy) ** 2 < (best.x - cx) ** 2 + (best.y - cy) ** 2 ? n : best), ns[0]);
+      const p = cam.toScreen(anchor.x, anchor.y - 10);
       const size = clamp(14 + ns.length * 1.6, 16, 30);
       ctx.font = `700 ${size}px "Noto Naskh Arabic", Tahoma, sans-serif`;
       ctx.globalAlpha = 0.42 * k;
