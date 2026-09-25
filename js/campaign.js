@@ -343,6 +343,13 @@ const Game = {
     return this.addGeneral(fid, 'الضابط ' + pick(GENERIC_NAMES), null, R() < 0.25 ? pick(['cautious', 'greedy', 'reckless']) : null, 1);
   },
   genMen(g) { return 12 + 4 * g.rank; },
+  // ما تعنيه النجوم فعلاً: قدرات قيادة معلنة لا مضاعف قوة خفي. كل نجمة بعد الأولى تمنح ثلاث نقاط
+  genSkills(g) {
+    if (!g) return { coh: 0, exe: 0, res: 0, ret: 0 };
+    if (g.skills) return g.skills;
+    const r = g.rank || 1;
+    return { coh: r - 1, exe: r - 1, res: r >= 2 ? 1 : 0, ret: r >= 3 ? 1 : 0 };
+  },
   genSalary(g) { return (4 + 4 * g.rank) * (g.flaw === 'greedy' ? 2 : 1); },
   hireFee(g) { return g.name.startsWith('الضابط') ? 40 : 50 + 40 * g.rank; },
   genTitle(g) { return g ? `${g.name} ${'★'.repeat(g.rank)}` : 'بلا قائد'; },
@@ -474,7 +481,7 @@ const Game = {
     const d = UNITS[r.type];
     return r.men * d.hp * (d.atk + d.def + (d.missile || 0) * 1.5 + (d.charge || 0) * 0.3) * (1 + 0.1 * (r.exp || 0)) / 100;
   },
-  genPower(g) { return g ? this.regPower({ type: 'general', men: this.genMen(g) }) * (1 + 0.15 * g.rank) : 0; },
+  genPower(g) { return g ? this.regPower({ type: 'general', men: this.genMen(g) }) : 0; },
   armyPower(a) {
     if (!a) return 0;
     return a.regs.reduce((t, r) => t + this.regPower(r), 0) + this.genPower(this.armyGen(a));
@@ -1007,6 +1014,7 @@ const Game = {
     if (a.siege) { a.from = a.siege.from || a.from; a.siege = null; }
     a.mp = Math.max(0, a.mp - plan.cost);
     a.mpWhy = a.mp <= 0 ? 'move' : null;
+    a.fat = Math.min(95, (a.fat || 0) + plan.cost * 2);
   },
 
   startSiege(a, n) {
@@ -1080,7 +1088,7 @@ const Game = {
     const g = [...gens].sort((a, b) => b.rank - a.rank)[0];
     let m = 1;
     if (!g) return 0.9;
-    m += 0.05 * (g.rank - 1);
+    m += 0.02 * this.genSkills(g).coh;
     const t = g.trait;
     if (t === 'tactician') m += 0.1;
     if (t === 'brave') m += 0.06;
@@ -1119,14 +1127,36 @@ const Game = {
     }
     return { pa: Math.max(1, pa), pd: Math.max(1, pd) };
   },
+  // الحالة المتوسطة لمجموعة جيوش، موزونة بالرجال
+  condOf(armies) {
+    let men = 0, fat = 0, mor = 0;
+    for (const a of armies) { const m = this.armyMen(a); men += m; fat += (a.fat || 0) * m; mor += (a.mor || 0) * m; }
+    return { fat: men ? fat / men : 0, mor: men ? mor / men : 0 };
+  },
+  // وسم الحالة للعرض: مشتق من المعنويات الرقمية، لا مكافأة مستقلة
+  moodTag(a) {
+    if (a.mood && a.mood.k === 'hungry') return;
+    a.mood = (a.mor || 0) <= -12 ? { k: 'shaken', t: 99 } : (a.mor || 0) >= 5 ? { k: 'confident', t: 99 } : null;
+  },
   moodMul(armies) {
-    let m = 1;
-    for (const a of armies) {
-      if (!a.mood) continue;
-      if (a.mood.k === 'shaken' || a.mood.k === 'hungry') m -= 0.1 / armies.length;
-      if (a.mood.k === 'confident') m += 0.05 / armies.length;
-    }
+    const c = this.condOf(armies);
+    let m = (1 + c.mor / 200) * (1 - c.fat / 260);
+    for (const a of armies) if (a.mood && a.mood.k === 'hungry') m -= 0.1 / armies.length;
     return m;
+  },
+  // التعافي: الراحة والإمداد يزيلان التعب ويعيدان السهام. المحاصِر لا يأخذ مؤن المدينة
+  recoverArmy(a) {
+    const n = this.node(a.node), f = this.f(a.fid);
+    const own = n.owner === a.fid, besieged = own && this.besieger(n.id) && !a.siege;
+    let rest = a.siege ? 12 : own ? (besieged ? 15 : 35) : this.friendly(n.owner, a.fid) ? 25 : 15;
+    if (this.hasTrait(a, 'logistician')) rest *= 1.3;
+    if (f && f.food <= 0) rest = -8;
+    a.fat = Math.round(clamp((a.fat || 0) - rest, 0, 95));
+    const back = own && !besieged ? 8 : 5;
+    a.mor = Math.round((a.mor || 0) + clamp(-(a.mor || 0), -back, back));
+    const arrows = a.siege ? (f && f.food > 0 ? 0.25 : 0) : own ? (besieged ? (n.barracks ? 0.35 : 0.2) : 0.6) : 0.3;
+    for (const r of a.regs) if (UNITS[r.type].range && r.ammo != null) r.ammo = Math.min(1, r.ammo + arrows);
+    this.moodTag(a);
   },
 
   // --- المعركة بالقيادة: الإعداد والنتيجة ---
@@ -1143,8 +1173,8 @@ const Game = {
     const s = this.encSides(enc);
     const P = this.S.player;
     const moodOf = (armies, fid, defending) => {
-      let m = 0;
-      for (const a of armies) if (a.mood) m += { shaken: -10, hungry: -15, confident: 5 }[a.mood.k] / armies.length;
+      let m = this.condOf(armies).mor;
+      for (const a of armies) if (a.mood && a.mood.k === 'hungry') m -= 15 / armies.length;
       if (defending && enc.kind === 'siege' && s.node.stores < 0) m -= 15;
       const F = this.f(fid), other = fid === enc.attFid ? enc.defFid : enc.attFid;
       if (F && F.vendetta && F.vendetta[other] > 0) m += 8;
@@ -1161,8 +1191,9 @@ const Game = {
       return {
         fid, name: this.fname(fid), color: this.f(fid).color, player: fid === P,
         regs: regs.filter((r) => r.men > 0),
-        gens: gens.filter((g) => g.status === 'army').map((g) => ({ id: g.id, name: g.name, trait: g.trait, flaw: g.flaw, rank: g.rank, men: this.genMen(g), vendetta: g.vendetta })),
+        gens: gens.filter((g) => g.status === 'army').map((g) => ({ id: g.id, name: g.name, trait: g.trait, flaw: g.flaw, rank: g.rank, men: this.genMen(g), vendetta: g.vendetta, skills: this.genSkills(g) })),
         mood: moodOf(armies, fid, defending) + rm, ai: fid === 'neutral' ? Math.min(skill, 0.45) : skill, intel, aggr: pers.aggr || 1,
+        fat: this.condOf(armies).fat, intent: fid === P && enc.intent ? enc.intent : null,
       };
     };
     return {
@@ -1175,12 +1206,24 @@ const Game = {
   // تطبيق نتيجة المحاكاة على جيوش الحملة
   applySim(enc, res) {
     if (!res || res === 'cancel' || res.winner == null) return null;
+    const sides = this.encSides(enc);
     for (let si = 0; si < 2; si++) {
       const won = res.winner === si;
-      for (const u of res.sides[si].units) {
+      const R2 = res.sides[si], F2 = res.sides[1 - si];
+      for (const u of R2.units) {
         if (!u.ref) continue;
         u.ref.men = Math.max(0, Math.round(u.men));
+        if (u.ammo0) u.ref.ammo = clamp(u.ammo / u.ammo0, 0, 1);
         if (won && u.kills >= 10 && u.ref.exp != null && R() < 0.5) u.ref.exp = Math.min(3, (u.ref.exp || 0) + 1);
+      }
+      // الإرهاق والمعنويات بقدر شدة القتال ونسبة من اشتبك: هجوم جندي واحد لا ينهك جيشاً
+      const own0 = Math.max(1, R2.men0 || 1), foe0 = F2.men0 || 0;
+      const engage = clamp(1.5 * foe0 / own0, 0.05, 1);
+      const loss = clamp(1 - (R2.menEnd != null ? R2.menEnd : own0) / own0, 0, 1);
+      const armies = si === 0 ? sides.attArmies : sides.defArmies;
+      for (const a of armies) {
+        a.fat = Math.round(clamp((a.fat || 0) + Math.max(0, (R2.fat || 0) - (R2.fat0 || 0)) * engage, 0, 95));
+        a.mor = Math.round(clamp((a.mor || 0) + (won ? 4 - loss * 30 : -10 - loss * 40) * engage, -40, 10));
       }
     }
     const fates = {};
@@ -1196,7 +1239,8 @@ const Game = {
   },
   autoResolve(enc) {
     const cfg = this.simConfig(enc);
-    for (const sd of cfg.sides) sd.player = false;
+    // بلا نية: كل جانب يديره الذكاء. بنية: جانب اللاعب يتبع نيته بالأوامر نفسها المتاحة له في العرض المفصل
+    for (const sd of cfg.sides) if (!sd.intent) sd.player = false;
     const res = new WarSim(cfg).runAuto();
     const out = this.applySim(enc, res) || { winner: 1, fates: {}, report: null };
     out.auto = true;
@@ -1230,8 +1274,7 @@ const Game = {
     const winners = winner === 0 ? attArmies : defArmies;
     const losers = winner === 0 ? defArmies : attArmies;
     for (const a of [...attArmies, ...defArmies]) { this.spendMp(a, 'battle'); a.regs = a.regs.filter((r) => r.men >= 5); }
-    for (const a of winners) a.mood = { k: 'confident', t: 2 };
-    for (const a of losers) a.mood = { k: 'shaken', t: 2 };
+    for (const a of [...winners, ...losers]) this.moodTag(a);
     node.garrison = node.garrison.filter((r) => r.men >= 5);
     this.fixLeaderless();
 
@@ -1553,7 +1596,7 @@ const Game = {
     }
     for (const n of this.nodesOf(by)) if (n.origOwner === victim) n.loyalty = Math.max(0, n.loyalty - 12);
     // جيوش الضحية في حداد ثم ثأر
-    for (const a of this.armiesOf(victim)) a.mood = { k: 'shaken', t: 1 };
+    for (const a of this.armiesOf(victim)) { a.mor = Math.min(a.mor || 0, -12); this.moodTag(a); }
     let avenger = null;
     if (V && V.alive && victim !== 'neutral' && R() < 0.55) {
       avenger = this.addGeneral(victim, 'ابن ' + g.name.split(' ').slice(-1)[0] + ' الثائر', 'brave', R() < 0.5 ? 'reckless' : null, Math.max(1, g.rank - 1));
@@ -1682,7 +1725,8 @@ const Game = {
       }
       const g = this.armyGen(a);
       if (g) g.men = this.genMen(g);
-      if (a.mood) { a.mood.t--; if (a.mood.t <= 0) a.mood = null; }
+      if (a.mood && a.mood.k === 'hungry') { a.mood.t--; if (a.mood.t <= 0) a.mood = null; }
+      this.recoverArmy(a);
       a.mp = this.mpMax(a); a.mpWhy = null;
     }
     // الأسرى: محاولات الهرب

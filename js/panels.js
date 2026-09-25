@@ -54,16 +54,30 @@ function moodTag(a) {
   const names = { shaken: 'مهزوز', confident: 'واثق', hungry: 'جائع' };
   return h('button', { class: 'mood ' + a.mood.k, onclick: (e) => { e.stopPropagation(); Help.show(e.currentTarget, 'morale', { value: names[a.mood.k] }); } }, names[a.mood.k]);
 }
+// تقدير ما قبل المعركة بحدود المعرفة: كلما قلت معرفتك بالعدو اتسع هامش التقدير
 function powerCompare(enc, P) {
   const { pa, pd } = Game.encPower(enc);
   const mineAtt = enc.attFid === P;
+  const foe = mineAtt ? enc.defFid : enc.attFid;
+  const lvl = Game.intelLevel(P, foe);
   const my = mineAtt ? pa : pd, en = mineAtt ? pd : pa;
   const ratio = my / Math.max(1, en);
-  const verdict = ratio > 2.2 ? 'تفوّق ساحق' : ratio > 1.4 ? 'أفضلية واضحة' : ratio > 0.85 ? 'متكافئة: الخطة ستحسمها' : ratio > 0.55 ? 'العدو أقوى: تحتاج خطة ذكية' : 'العدو أقوى بكثير';
+  const spread = lvl >= 3 ? 0 : lvl === 2 ? 0.2 : lvl === 1 ? 0.45 : 1;
+  const verdict = lvl === 0 ? 'قوتهم مجهولة: الكشافة لم تعد بشيء' : ratio > 2.2 ? 'تفوّق ساحق' : ratio > 1.4 ? 'أفضلية واضحة' : ratio > 0.85 ? 'متكافئة: الخطة ستحسمها' : ratio > 0.55 ? 'العدو أقوى: تحتاج خطة ذكية' : 'العدو أقوى بكثير';
   const pct = 100 * my / (my + en || 1);
+  const s = Game.encSides(enc);
+  const mine = mineAtt ? s.attArmies : s.defArmies, theirs = mineAtt ? s.defArmies : s.attArmies;
+  const cm = Game.condOf(mine), ce = Game.condOf(theirs);
+  const why = [];
+  if (cm.fat >= 15) why.push(`جيشك منهك ${Math.round(cm.fat)}٪`);
+  if (lvl >= 2 && ce.fat >= 15) why.push(`العدو منهك ${Math.round(ce.fat)}٪`);
+  if (cm.mor <= -8) why.push('معنويات جيشك منخفضة');
+  if (lvl >= 2 && ce.mor <= -8) why.push('معنويات العدو منخفضة');
+  if (enc.kind === 'siege') why.push(`${WALL_NAMES[Math.min(4, s.node.walls)]} تضاعف المدافعين`);
   return h('div', { class: 'compare' },
-    h('div', { class: 'cbar' }, h('i', { style: { width: pct + '%' } })),
-    h('div', { class: 'cl' }, h('span', null, 'قوتك'), h('b', null, verdict), h('span', null, 'العدو')),
+    h('div', { class: 'cbar' + (spread ? ' fuzzy' : '') }, h('i', { style: { width: (lvl === 0 ? 50 : pct) + '%' } })),
+    h('div', { class: 'cl' }, h('span', null, 'قوتك'), h('b', null, verdict, spread && lvl > 0 ? h('small', { class: 'muted' }, ` (تقدير ±${Math.round(spread * 100)}٪)`) : null), h('span', null, 'العدو')),
+    why.length ? h('p', { class: 'hint small' }, why.join(' · ')) : null,
   );
 }
 
@@ -220,7 +234,9 @@ const Panels = {
       h('div', { class: 'gline' }, traitChip(g), g && g.vendetta ? h('span', { class: 'tag bad' }, icon('drop'), 'يطلب الثأر') : null),
     ));
     const kv = h('div', { class: 'kv' },
-      hstat('morale', a.mood ? { shaken: 'مهزوز', confident: 'واثق', hungry: 'جائع' }[a.mood.k] : 'ثابتة', { cls: a.mood && a.mood.k !== 'confident' ? 'warn' : '' }),
+      hstat('morale', a.mood ? { shaken: 'مهزوز', confident: 'واثق', hungry: 'جائع' }[a.mood.k] : 'ثابتة', { cls: a.mood && a.mood.k !== 'confident' ? 'warn' : '', lines: () => [['معنويات الجيش', signed(a.mor || 0) + ' عن المعتاد', (a.mor || 0) < 0 ? 'neg' : (a.mor || 0) > 0 ? 'pos' : ''], ['تعود نحو المعتاد', `${n.owner === a.fid && !Game.besieger(n.id) ? 8 : 5} نقاط كل دور`]] }),
+      hstat('fatigue', `${a.fat || 0}٪`, { cls: (a.fat || 0) >= 50 ? 'bad' : (a.fat || 0) >= 25 ? 'warn' : '', lines: () => { const rest = a.siege ? 12 : n.owner === a.fid ? (Game.besieger(n.id) ? 15 : 35) : Game.friendly(n.owner, a.fid) ? 25 : 15; return [['الإرهاق الآن', `${a.fat || 0}٪`], ['أثره في القتال', `−${Math.round((a.fat || 0) / 2.6)}٪ من القوة`, (a.fat || 0) ? 'neg' : ''], ['يزول كل دور هنا', `${rest} نقاط${Game.hasTrait(a, 'logistician') ? ' (+30٪ خبير تموين)' : ''}`, 'pos']]; } }),
+      a.regs.some((r) => UNITS[r.type].range) ? hstat('ammo', `${Math.round(100 * a.regs.filter((r) => UNITS[r.type].range).reduce((t, r) => t + (r.ammo != null ? r.ammo : 1), 0) / a.regs.filter((r) => UNITS[r.type].range).length)}٪`) : null,
       hstat('mp', `${a.mp}/${Game.mpMax(a)}`),
       hstat('armymen', Game.armyMen(a), { lines: () => [['الوحدات', Game.menOf(a.regs)], ['حرس القائد', g ? Game.genMen(g) : 0]] }),
     );
@@ -393,6 +409,7 @@ const Panels = {
         loyWarn ? hstat('genloy', g.loy, { label: g.loy < 32 ? 'طامح' : 'ساخط', cls: g.loy < 32 ? 'bad' : 'warn', lines: () => [['الولاء الآن', g.loy], ['يتجه نحو', Game.genLoyTarget(g), 'sum']] }) : null,
         own && !ruler && g.loy != null && g.loy < 60 && ['army', 'gov', 'pool'].includes(g.status) ? h('button', { class: 'chip', onclick: (e) => { e.stopPropagation(); const er = Game.honorGeneral(Game.S.player, g); UI.toast(er || `كرّمتَ ${g.name}: الولاء ${g.loy}`); if (!er && Game.track) Game.track('honor'); Sheets.render(); } }, icon('star'), `كرّمه ${Game.honorCost(g)}`) : null),
       g.trait ? h('p', { class: 'small' }, TRAITS[g.trait].desc) : h('p', { class: 'small muted' }, 'ضابط بلا موهبة خاصة.'),
+      (() => { const k = Game.genSkills(g); const parts = [k.coh ? `تماسك +${k.coh * 3} معنويات` : null, k.exe ? `دقة الأوامر +${k.exe * 4}٪` : null, k.res ? `الاحتياط +${k.res * 4} معنويات` : null, k.ret ? `انسحاب منظم، مطاردة −${k.ret * 12}٪` : null].filter(Boolean); return h('p', { class: 'small muted' }, `${'★'.repeat(g.rank)}: `, parts.length ? parts.join('، ') : 'قائد جديد بلا قدرات قيادة إضافية'); })(),
       g.flaw ? h('p', { class: 'small warn' }, FLAWS[g.flaw].desc) : null,
       g.vendetta ? h('p', { class: 'small warn' }, `يطلب الثأر من ${Game.fname(g.vendetta)}`) : null,
       extra || null,
@@ -1405,6 +1422,7 @@ const Panels = {
           gens.length ? gens.map((g) => h('div', { class: 'gline' }, h('b', null, g.name), stars(g.rank), traitChip(g))) : h('div', { class: 'muted small' }, 'بلا قائد'),
           known ? unitSummary(regs) : h('p', { class: 'hint' }, `${regs.length} وحدات تقريباً`),
           h('div', { class: 'small' }, known ? `${Game.menOf(regs) + gens.reduce((t, g) => t + Game.genMen(g), 0)} رجل` : `نحو ${Game.estimate(P, fid, Game.menOf(regs)).text} رجل`),
+          (() => { const arm = fid === enc.attFid ? s.attArmies : s.defArmies; const c = Game.condOf(arm); return known && arm.length ? h('div', { class: 'small muted' }, `إرهاق ${Math.round(c.fat)}٪ · معنويات ${signed(Math.round(c.mor))}`) : null; })(),
         );
       };
       const title = enc.type === 'assault' ? (enc.kind === 'siege' ? `اقتحام ${node.name}` : `معركة ${node.name}`) : (enc.type === 'sally' ? `الخروج من ${node.name}` : `فكّ حصار ${node.name}`);
@@ -1420,9 +1438,13 @@ const Panels = {
       const fight = () => { if (closeFn) closeFn(); if (Game.track) Game.track('battle:lead'); launchBattle(enc, resolve); };
       const auto = () => {
         if (closeFn) closeFn();
-        if (Game.track) Game.track('battle:auto');
-        const out = Game.autoResolve(enc);
-        this.autoResult(enc, out, () => resolve(out));
+        this.intentPicker((intent) => {
+          if (!intent) { this.encounter(scene, enc).then(resolve); return; }
+          enc.intent = intent;
+          if (Game.track) Game.track('battle:auto:' + intent);
+          const out = Game.autoResolve(enc);
+          this.autoResult(enc, out, () => resolve(out));
+        });
       };
       const buttons = [
         { label: attacking ? 'قُد المعركة' : 'قُد الدفاع', icon: 'swords', primary: true, onClick: fight },
@@ -1498,6 +1520,23 @@ const Panels = {
     });
   },
 
+  // نية القائد في الحسم السريع: المحرك نفسه يختار الخطة والأوامر وفقها
+  intentPicker(cb) {
+    UI.modal({
+      title: 'حسم سريع', icon: 'fast',
+      body: h('div', null, h('p', null, 'المعركة نفسها تجري بالمحرك نفسه، وقائدك يختار الخطة والأوامر حسب نيتك:'),
+        h('ul', { class: 'steps small' },
+          h('li', null, h('b', null, 'اقتحام: '), 'خطط هجومية، مطاردة المنهزم، والاحتياط لكسر أضعف قطاعات العدو.'),
+          h('li', null, h('b', null, 'متوازن: '), 'خطة تناسب الأرض والجيش، والاحتياط لإنقاذ القطاع المترنح.'),
+          h('li', null, h('b', null, 'حذر: '), 'خطط دفاعية، بلا مطاردة، وانسحاب منظم إن مالت الكفة بشدة.'))),
+      buttons: [
+        { label: 'اقتحام', icon: 'charge', onClick: () => cb('bold') },
+        { label: 'متوازن', icon: 'scales', primary: true, onClick: () => cb('steady') },
+        { label: 'حذر', icon: 'shield', onClick: () => cb('careful') },
+        { label: 'رجوع', ghost: true, onClick: () => cb(null) },
+      ],
+    });
+  },
   autoResult(enc, out, cb) {
     const P = Game.S.player;
     const side = enc.attFid === P ? 0 : 1;
