@@ -226,7 +226,7 @@ Object.assign(Game, {
     const how = cause === 'ill' ? 'مات' : cause === 'captive' ? 'خُلع الأسير' : 'سقط';
     this.chronicle('death', `${how} ${old ? old.name : 'الحاكم'} حاكم ${f.name}${cause === 'battle' ? ' في ساحة القتال' : ''}. ${noHeir ? `بلا وريث، فرفع البلاط ${heir.name}.` : `تولّى ${heir.name} العرش.`}`, { fids: [fid], imp: 3 });
     this.event('pol', `${f.name}: ${heir.name} يتولى العرش بعد ${old ? old.name : 'الحاكم'}.`, { fids: [fid], imp: 3 });
-    if (f.isPlayer) this.alert('crit', `${how} ${old ? old.name : 'حاكمك'} — ${heir.name} على العرش`, { icon: 'crown', win: 'kingdom' });
+    if (f.isPlayer) this.alert('crit', `${how} ${old ? old.name : 'حاكمك'}، ${heir.name} على العرش`, { icon: 'crown', win: 'kingdom' });
     return { heir, rivals, noHeir, old };
   },
 
@@ -854,7 +854,7 @@ CRISES.horde = {
       c.fids = [...new Set([...c.fids, ...v.targets])];
       if (!v.targets.length) { c.next = Game.S.turn + 1; return; }
       Game.cLog(c, `رسل ${v.leader[0]} في بلاط ${WX.fnames(v.targets)}: «${v.trib} ذهباً، وإلا فالسيف».`, { chron: true, imp: 3 });
-      for (const fid of v.targets) Game.crisisAsk(c, fid, 'envoy', { turns: 1, urgent: true, def: 'refuse', title: `رسول ${v.leader[0]} يطلب الجزية`, alert: `رسول ${v.name} يطلب ${v.trib} ذهباً — قرّر` });
+      for (const fid of v.targets) Game.crisisAsk(c, fid, 'envoy', { turns: 1, urgent: true, def: 'refuse', title: `رسول ${v.leader[0]} يطلب الجزية`, alert: `رسول ${v.name} يطلب ${v.trib} ذهباً، قرّر` });
       c.next = Game.S.turn + 1;
     },
     function invasion(c) {
@@ -919,7 +919,7 @@ CRISES.horde = {
       for (const f2 of Game.aliveMajors()) c.known[f2] = 2;
       c.node = where[0].id;
       const victim = target === 'neutral' ? 'المدن المستقلة' : Game.fname(target);
-      Game.cLog(c, `${v.people} تعبر الحدود! ${v.leader[0]} يطبق على ${WX.names(where.map((n) => n.id))} (${victim})${v.redirect ? ' — وتقول الألسن إن ذهب ' + Game.fname(v.redirect.by) + ' وجّهه' : ''}.`, { chron: true, imp: 3, kind: 'war', icon: 'horse' });
+      Game.cLog(c, `${v.people} تعبر الحدود! ${v.leader[0]} يطبق على ${WX.names(where.map((n) => n.id))} (${victim})${v.redirect ? '، وتقول الألسن إن ذهب ' + Game.fname(v.redirect.by) + ' وجّهه' : ''}.`, { chron: true, imp: 3, kind: 'war', icon: 'horse' });
       if (target === S.player) Game.alert('crit', `${v.name} تغزو أرضك وتحاصر ${where[0].name}!`, { icon: 'horse', node: where[0].id, win: 'crisis', crisis: c.id, key: 'crisis:' + c.id });
       else if (WX.alive(S.player)) Game.alert('imp', `${v.name} تغزو ${victim}`, { icon: 'horse', node: where[0].id, win: 'crisis', crisis: c.id, key: 'crisis:' + c.id });
       c.next = S.turn + 1;
@@ -1007,7 +1007,7 @@ CRISES.horde = {
       const vic = data && data.victim;
       return [
         { k: 'aid', label: `أمدّ ${Game.fname(vic)} بالمال`, icon: 'coins', desc: 'علاقة أفضل كثيراً، والغزاة يُستنزفون عندهم لا عندك.', gold: 150 },
-        { k: 'none', label: 'راقب من بعيد', icon: 'eye', desc: 'قد تكون فرصة لضرب المنشغلين — من نافذة الدبلوماسية.' },
+        { k: 'none', label: 'راقب من بعيد', icon: 'eye', desc: 'قد تكون فرصة لضرب المنشغلين، من نافذة الدبلوماسية.' },
       ];
     }
     return [];
@@ -1431,7 +1431,7 @@ CRISES.succession = {
         v.phase = 'ill';
         Game.cLog(c, `${v.rname} حاكم ${F.name} طريح الفراش، والأطباء لا يبشّرون.`, { chron: true, imp: 2, kind: 'crisis' });
         c.next = Game.S.turn + 2 + (R() < 0.5 ? 1 : 0);
-        if (F.isPlayer) Game.crisisAsk(c, v.fid, 'ill', { turns: 2, def: 'wait', title: `${v.rname} مريض — العرش في خطر` });
+        if (F.isPlayer) Game.crisisAsk(c, v.fid, 'ill', { turns: 2, def: 'wait', title: `${v.rname} مريض، العرش في خطر` });
         return;
       }
       if (v.cause === 'captive') {
@@ -1558,7 +1558,7 @@ CRISES.succession = {
         } else {
           F.gold += Game.ransomPrice(g) * 3;
           c.log.push({ turn: Game.S.turn, text: `${Game.fname(g.captor)} ترفض الفدية!` });
-          if (F.isPlayer) Game.crisisAsk(c, fid, 'captive', { turns: 1, urgent: true, def: 'crown', title: `رُفضت الفدية — ${v.rname} ما زال أسيراً` });
+          if (F.isPlayer) Game.crisisAsk(c, fid, 'captive', { turns: 1, urgent: true, def: 'crown', title: `رُفضت الفدية، ${v.rname} ما زال أسيراً` });
           else this.decide(c, fid, 'captive', 'crown');
         }
       } else if (k === 'crown') {
@@ -1719,7 +1719,7 @@ CRISES.rebel = {
         Game.crisisEnd(c, 'killed');
       } else {
         F.rep = Math.max(0, F.rep - 10);
-        c.log.push({ turn: Game.S.turn, text: `نجا ${g.name} من خنجر مأجور — وعرف من أرسله.` });
+        c.log.push({ turn: Game.S.turn, text: `نجا ${g.name} من خنجر مأجور، وعرف من أرسله.` });
         g.loy = 0;
         c.stage = 2; c.next = Game.S.turn;
       }
@@ -2238,7 +2238,7 @@ CRISES.route = {
       Game.S.route = { key: pickA.key, name: pickA.name, path: pickA.path.slice(), bad: 0, dead: false };
       const winners = WX.owners(pickA.path);
       Game.cLog(c, `القوافل تسلك ${pickA.name} الآن. الذهب يتدفق على ${WX.fnames(winners) || 'المدن المستقلة'}.`, { chron: true, imp: 3, kind: 'crisis' });
-      if (winners.includes(Game.S.player)) Game.alert('info', `${pickA.name} يمر بأرضك — دخل القوافل لك`, { icon: 'camel' });
+      if (winners.includes(Game.S.player)) Game.alert('info', `${pickA.name} يمر بأرضك، دخل القوافل لك`, { icon: 'camel' });
       Game.crisisEnd(c, 'settled');
     },
   ],

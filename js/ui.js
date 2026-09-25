@@ -239,7 +239,9 @@ const AlertsUI = {
     const list = Game.activeAlerts();
     this.el.innerHTML = '';
     if (!list.length) return;
-    const show = this.open ? list : list.slice(0, 3);
+    // في الوضع العمودي تنبيه واحد ظاهر والباقي خلف عدّاد، حتى لا تغطي الخريطة
+    const lim = App.H > App.W ? 1 : 3;
+    const show = this.open ? list : list.slice(0, lim);
     for (const a of show) {
       this.el.appendChild(h('div', { class: 'alert ' + a.level + (a.seen ? ' seen' : '') },
         h('button', { class: 'al-main', onclick: () => { a.seen = true; this.scene.focusAlert(a); this.render(); } },
@@ -248,7 +250,7 @@ const AlertsUI = {
       ));
     }
     const row = h('div', { class: 'al-row' });
-    if (list.length > 3) row.appendChild(h('button', { class: 'alert more', onclick: () => { this.open = !this.open; this.render(); } }, this.open ? 'أقل' : `+${list.length - 3} تنبيهات`));
+    if (list.length > lim) row.appendChild(h('button', { class: 'alert more', onclick: () => { this.open = !this.open; this.render(); } }, this.open ? 'أقل' : `+${list.length - lim} ${list.length - lim === 1 ? 'تنبيه' : 'تنبيهات'}`));
     // إغلاق الكل: المهمة والمعلومات تُطوى وتبقى في سجل الأحداث، والحرجة تبقى حتى تُغلق وحدها
     if (list.length > 1) row.appendChild(h('button', { class: 'alert more', onclick: () => { for (const a of list) if (a.level !== 'crit') Game.dismissAlert(a.id); this.open = false; this.render(); UI.toast('طُويت التنبيهات. تجدها في السجل التاريخي، قسم الأحداث.'); } }, icon('close'), list.some((a) => a.level === 'crit') ? 'إغلاق غير الحرجة' : 'إغلاق الكل'));
     if (row.childNodes.length) this.el.appendChild(row);

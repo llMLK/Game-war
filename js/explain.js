@@ -206,6 +206,41 @@ const Explain = {
     return x;
   },
 
+  // الأرض عند نقطة من الخريطة: اسمها وأثرها في الحركة والمعركة، والطريق القريب
+  terrainAt(w) {
+    const sc = Game.sc;
+    if ((sc.seas || []).some((poly) => pip(poly, w.x, w.y))) return { icon: 'wave', title: 'بحر', state: 'لا تعبره الجيوش إلا من ميناء لك أو بقيادة ربّان، وتكلفه الطرق المائية نقاطاً أكثر.' };
+    const nodes = Game.S.nodes.map((n) => ({ n, d: Math.hypot(n.x - w.x, n.y - w.y) })).sort((a, b) => a.d - b.d);
+    const near = nodes[0];
+    const desert = (sc.deserts || []).some((poly) => pip(poly, w.x, w.y));
+    const t = desert ? 'desert' : near && near.d < 150 ? near.n.terrain : null;
+    if (!t) return null;
+    const T = TERRAIN[t];
+    const FX = {
+      plains: ['انقضاض الفرسان +25٪', 'الالتفاف أسهل (×1.25)'],
+      hills: ['المدافع أقوى قليلاً ويستطيع التمسك بالمرتفع', 'الانقضاض ×0.9'],
+      mountains: ['الجبهة ضيقة: الكثرة لا تنفع', 'المدافع +15٪', 'الالتفاف شبه مستحيل (×0.3)'],
+      forest: ['الفرسان −30٪ والانقضاض ×0.6', 'السهام −28٪', 'الالتفاف صعب (×0.6)'],
+      desert: ['التعب أسرع ×1.45 لمن ليس ابن الصحراء', 'الانقضاض ×1.15'],
+      river: ['المهاجم العابر −16٪ في الالتحام الأول', 'الانقضاض ×0.8'],
+      coast: ['البحر يغلق جناحاً ويحصر المناورة'],
+    }[t] || [];
+    // أقرب طريق
+    let edge = null, ed = 1e9;
+    for (const e of sc.edges) {
+      const A = Game.node(e[0]), B = Game.node(e[1]);
+      if (!A || !B) continue;
+      const dx = B.x - A.x, dy = B.y - A.y, k = clamp(((w.x - A.x) * dx + (w.y - A.y) * dy) / (dx * dx + dy * dy || 1), 0, 1);
+      const d = Math.hypot(w.x - A.x - k * dx, w.y - A.y - k * dy);
+      if (d < ed) { ed = d; edge = { A, B, kind: e[2] || 'road' }; }
+    }
+    const x = { icon: T.icon, title: `الأرض هنا: ${T.name}`, value: near ? `قرب ${near.n.name}` : '', state: TERRAIN_TIPS[t] };
+    x.now = [['دخول مدينة في هذه الأرض', `${T.mp} نقاط حركة`]];
+    x.from = FX.map((f) => [f, '']);
+    if (edge && ed < 26) x.note = edge.kind === 'pass' ? `ممر جبلي بين ${edge.A.name} و${edge.B.name}: الحركة فيه أبطأ، والمعركة فيه تجري في مضيق.` : edge.kind === 'water' ? `طريق مائي بين ${edge.A.name} و${edge.B.name}: يحتاج ميناءً لك أو قائداً ربّاناً.` : `طريق بين ${edge.A.name} و${edge.B.name}.`;
+    return x;
+  },
+
   // الجاهزية: ما بقي من الجيش بعد القتال والمسير، وكيف يستعيده
   readiness(a) {
     const r = Game.readyOf(a), sc = Game.readyScore(a);

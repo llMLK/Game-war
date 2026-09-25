@@ -881,7 +881,7 @@ class WarSim {
     this.cue({ t: 'retreat', side: s.i, from: 'C' });
     if (ex.q === 'fail' || ex.q === 'disobey') {
       s.sec.C.morale -= 22;
-      this.line(s, `التقهقر المصطنع خرج عن السيطرة — القلب لدى ${s.name} يتراجع فعلاً!`, s.player ? 'bad' : 'good');
+      this.line(s, `التقهقر المصطنع خرج عن السيطرة، القلب لدى ${s.name} يتراجع فعلاً!`, s.player ? 'bad' : 'good');
       this.decisions.push({ side: s.i, kind: 'feintFail', text: 'التقهقر المصطنع تحوّل إلى تراجع حقيقي', weight: 4 });
       this.moment(foe, 'انهيار خدعة التقهقر', 4, 'feint');
       return;
@@ -898,7 +898,7 @@ class WarSim {
       this.cue({ t: 'ambush', side: s.i });
     } else {
       s.sec.C.morale -= 2; s.sec.C.front += 0.15;
-      this.line(s, `${foe.name} لم تبتلع الطُّعم${t === 'tactician' ? ' — قائدها الداهية كشف الخدعة' : ''}. خسر القلب لدى ${s.name} أرضاً.`, s.player ? 'bad' : 'good');
+      this.line(s, `${foe.name} لم تبتلع الطُّعم${t === 'tactician' ? '، قائدها الداهية كشف الخدعة' : ''}. خسر القلب لدى ${s.name} أرضاً.`, s.player ? 'bad' : 'good');
       this.decisions.push({ side: s.i, kind: 'feintIgnored', text: 'خدعة التقهقر لم تنطلِ على العدو', weight: 1.5 });
     }
   }
@@ -1219,7 +1219,7 @@ class WarSim {
     s.orderly = true;
     const ex = this.execQuality(s, 'C', 'withdraw');
     if (ex.q === 'fail' || ex.q === 'disobey') { s.orderly = false; this.line(s, 'الانسحاب يتحول إلى فوضى!', s.player ? 'bad' : 'good'); }
-    else this.line(s, `${s.name} تنسحب بانتظام${ex.q === 'excellent' ? ' — تراجع محكم يحفظ الرجال' : ''}.`, '');
+    else this.line(s, `${s.name} تنسحب بانتظام${ex.q === 'excellent' ? '، تراجع محكم يحفظ الرجال' : ''}.`, '');
     this.finish(s.foe.i, 'withdraw');
   }
 
@@ -1328,14 +1328,14 @@ class WarSim {
       case 'pursuit':
         s.pursueAsked = true;
         ev.title = 'العدو ينهار';
-        ev.text = `صفوف ${foe.name} تتفكك. المطاردة تحصد الكثير — وقد تكون فخاً.`;
+        ev.text = `صفوف ${foe.name} تتفكك. المطاردة تحصد الكثير، وقد تكون فخاً.`;
         opt('pursue', 'طارد بالفرسان', 'charge', 'قتلى وأسرى أكثر.', 'كمين محتمل إن بقي لديهم احتياط.');
         opt('hold', 'اثبت في الميدان', 'shield', 'نصر آمن.', 'ينجو كثير منهم.');
         break;
       case 'feintWarn':
         s.feintAsked = true;
         ev.title = 'العدو يتراجع فجأة؟';
-        ev.text = `قلب ${foe.name} يبدو وكأنه ينسحب${this.cmdTrait(s, 'tactician') ? ' — قائدك الداهية يشك في خدعة' : ''}.`;
+        ev.text = `قلب ${foe.name} يبدو وكأنه ينسحب${this.cmdTrait(s, 'tactician') ? '، قائدك الداهية يشك في خدعة' : ''}.`;
         opt('caution', 'لا تلاحق: اثبتوا', 'shield', 'لن تقع في فخ إن كان خدعة.', 'قد تضيع فرصة إن كان انسحاباً حقيقياً.');
         opt('chase', 'لاحقوهم!', 'charge', 'إن كان انهياراً حقيقياً فهو النصر.', 'إن كانت خدعة فهو الكمين.');
         break;
@@ -1731,7 +1731,7 @@ const BattleReport = {
     return { won, text: t, sub: won ? `على ${rep.loserName}` : `أمام ${rep.winnerName}` };
   },
   render(rep, P, o = {}) {
-    if (!rep) return h('p', null, '—');
+    if (!rep) return h('p', null, 'لا تقرير');
     const me = P != null ? this.mine(rep, P) : null;
     const headTxt = me ? `${me.text} ${me.sub}` : `${rep.verdict}: ${rep.winnerName}`;
     return h('div', { class: 'breport' },

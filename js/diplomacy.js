@@ -51,8 +51,8 @@ Object.assign(Game, {
       const B = this.f(b);
       B.grievance[a] = (B.grievance[a] || 0) + 2;
     }
-    this.event('pol', `${A.name} تعلن الحرب على ${this.fname(b)}${treachery ? ' ناقضةً العهد' : ''}${why ? ' — ' + why : ''}.`, { fids: [a, b], imp: 3 });
-    if (b === this.S.player) this.alert('crit', `${A.name} تعلن الحرب عليك${why ? ' — ' + why : ''}`, { icon: 'swords', win: 'diplo', key: 'war:' + a });
+    this.event('pol', `${A.name} تعلن الحرب على ${this.fname(b)}${treachery ? ' ناقضةً العهد' : ''}${why ? '، ' + why : ''}.`, { fids: [a, b], imp: 3 });
+    if (b === this.S.player) this.alert('crit', `${A.name} تعلن الحرب عليك${why ? '، ' + why : ''}`, { icon: 'swords', win: 'diplo', key: 'war:' + a });
     if (this.chronicle) this.chronicle('war', `${A.name} تعلن الحرب على ${this.fname(b)}${treachery ? ' ناقضةً العهد' : ''}.`, { fids: [a, b], imp: treachery ? 3 : 2 });
     // حلفاء المعتدى عليه يلبّون النداء
     for (const c of this.aliveMajors()) {
@@ -91,9 +91,9 @@ Object.assign(Game, {
   breakAlliance(a, b, why) {
     this.setStatus(a, b, 'peace', 0);
     this.addRel(a, b, -20);
-    this.event('pol', `انتهى الحلف بين ${this.fname(a)} و${this.fname(b)}${why ? ' — ' + why : ''}.`, { fids: [a, b], imp: 3 });
-    this.chronicle('betray', `انفضّ الحلف بين ${this.fname(a)} و${this.fname(b)}${why ? ' — ' + why : ''}.`, { fids: [a, b], imp: 2 });
-    if (b === this.S.player) this.alert('imp', `${this.fname(a)} تفضّ حلفها معك${why ? ' — ' + why : ''}`, { icon: 'dagger', win: 'diplo' });
+    this.event('pol', `انتهى الحلف بين ${this.fname(a)} و${this.fname(b)}${why ? '، ' + why : ''}.`, { fids: [a, b], imp: 3 });
+    this.chronicle('betray', `انفضّ الحلف بين ${this.fname(a)} و${this.fname(b)}${why ? '، ' + why : ''}.`, { fids: [a, b], imp: 2 });
+    if (b === this.S.player) this.alert('imp', `${this.fname(a)} تفضّ حلفها معك${why ? '، ' + why : ''}`, { icon: 'dagger', win: 'diplo' });
     this.validate();
   },
   setTrade(a, b, on) {
@@ -236,7 +236,7 @@ Object.assign(Game, {
       B.rep = Math.max(0, B.rep - 5);
       if (T.grievance) T.grievance[by] = (T.grievance[by] || 0) + 1;
       this.event('pol', `قُبض على جواسيس ${B.name} في أرض ${T.name}!`, { fids: [by, target], imp: 2 });
-      text += ' لكن جاسوساً قُبض عليه — العلاقة تضررت.';
+      text += ' لكن جاسوساً قُبض عليه، العلاقة تضررت.';
     }
     return { ok: true, caught, text };
   },

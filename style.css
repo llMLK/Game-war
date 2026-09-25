@@ -728,3 +728,44 @@ details.mem summary { cursor: pointer; color: var(--bronze-hi); }
 .sel { background: rgba(40,30,21,.95); color: var(--text); border: 1px solid var(--line); border-radius: 8px; min-height: 32px; padding: 2px 8px; font: inherit; }
 .pl .v.pos { color: var(--good); }
 .pl .v.neg { color: var(--bad); }
+
+/* ——— أزرار الشريط بنص واضح ——— */
+.nav-btn { width: auto; min-width: 46px; height: 40px; padding: 0 6px; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; }
+.nav-btn .ico { width: 17px; height: 17px; }
+.nav-btn .nl { font-size: 10px; line-height: 1.1; color: var(--muted); white-space: nowrap; }
+.hud-pill.more { display: none; }
+.nav-band { display: none; }
+/* لمس مريح: أهداف لا تقل عن 36 بكسل على الشاشات اللمسية */
+@media (pointer: coarse) {
+  .chip { min-height: 34px; }
+  .al-x { min-width: 32px; }
+}
+
+/* ——— الوضع العمودي: شريط موارد يُطوى، وتنقّل سفلي، ونوافذ فوقه ——— */
+@media (orientation: portrait) {
+  .hud-res { right: calc(6px + var(--safe-r)); left: calc(6px + var(--safe-l)); max-width: none; flex-wrap: nowrap; gap: 4px; }
+  .hud-res:not(.open) .hud-pill.fac { font-size: 0; padding: 0 9px; gap: 0; }
+  .hud-res:not(.open) .hud-pill.date .season, .hud-res:not(.open) .hud-pill.date > .ico, .hud-res:not(.open) .hud-pill.date > bdi { display: none; }
+  .hud-res:not(.open) .hud-pill.chap { display: none; }
+  .hud-res.open { flex-wrap: wrap; }
+  .hud-pill.more { display: inline-flex; margin-inline-start: auto; padding: 0 8px; }
+  .hud-res.open .hud-pill.more .ico { transform: rotate(180deg); }
+  .nav-band { display: block; position: absolute; left: 0; right: 0; bottom: 0; height: calc(58px + var(--safe-b)); background: rgba(18, 13, 8, .93); border-top: 1px solid var(--line); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); pointer-events: auto; }
+  .hud-btns { top: auto; bottom: calc(8px + var(--safe-b)); left: auto; right: calc(6px + var(--safe-r)); gap: 2px; }
+  .nav-btn { min-width: 50px; height: 42px; background: none; border-color: transparent; box-shadow: none; }
+  .nav-btn .nl { font-size: 10.5px; color: var(--parch); }
+  .end-turn { bottom: calc(8px + var(--safe-b)); left: calc(8px + var(--safe-l)); width: min(36vw, 160px); min-height: 42px; }
+  .sheet { bottom: calc(58px + var(--safe-b)); padding-bottom: 0; max-height: min(56%, calc(100% - 110px - var(--safe-b) - var(--safe-t))); }
+  .dock { bottom: calc(64px + var(--safe-b)); left: calc(8px + var(--safe-l)); right: calc(8px + var(--safe-r)); }
+  .alerts { top: calc(42px + var(--safe-t)); left: calc(6px + var(--safe-l)); width: calc(100% - 12px - var(--safe-l) - var(--safe-r)); }
+  .toast { bottom: calc(70px + var(--safe-b)); }
+  .undo-bar { bottom: calc(66px + var(--safe-b)); }
+  /* بطاقات الأحداث تملأ الشاشة */
+  .modal.event { width: 100%; min-height: 100%; display: flex; flex-direction: column; border-radius: 12px; }
+  .modal.event .modal-btns { margin-top: auto; }
+}
+/* شعار الفرس في القائمة */
+.menu .emblem { width: 64px; height: 64px; margin: 0 auto 4px; border-radius: 50%; display: grid; place-items: center; background: #1f1810; border: 3px solid var(--bronze); box-shadow: 0 0 0 1px rgba(196,154,69,.4) inset, 0 6px 18px rgba(0,0,0,.4); }
+.menu .emblem .ico { width: 40px; height: 40px; color: var(--parch); }
+.alert.more { overflow: visible; white-space: nowrap; padding: 0 10px; flex: none; }
+.al-row { display: flex; gap: 4px; flex-wrap: wrap; }

@@ -47,16 +47,48 @@ class CampaignScene {
     c.clamp();
   }
 
-  // تحريك الكاميرا نحو نقطة، مع مراعاة النافذة الجانبية
+  // المساحة المكشوفة من الخريطة: ما لا تغطيه الأشرطة والنوافذ
+  updatePads() {
+    const c = this.cam;
+    if (!this.root || !this.hud) return;
+    const port = App.H > App.W;
+    const hr = this.hud.res.getBoundingClientRect();
+    let top = hr.bottom + 4, bottom = 8, right = 0, left = 0;
+    const sh = [...document.querySelectorAll('.sheet')].find((x) => !x.hidden && x.offsetParent !== null);
+    if (port) {
+      const nav = this.root.querySelector('.nav-band');
+      if (nav) bottom = App.H - nav.getBoundingClientRect().top + 4;
+      if (sh) bottom = Math.max(bottom, App.H - sh.getBoundingClientRect().top + 4);
+    } else {
+      const bt = this.root.querySelector('.hud-btns').getBoundingClientRect();
+      top = Math.max(top, bt.bottom + 4);
+      bottom = App.H - this.hud.end.getBoundingClientRect().top + 4;
+      if (sh) right = App.W - sh.getBoundingClientRect().left + 6;
+    }
+    c.padTop = top; c.padBottom = bottom; c.padRight = right; c.padLeft = left;
+  }
+  // نقطة الخريطة التي تقع في وسط المساحة المكشوفة
+  visCenter() {
+    const c = this.cam;
+    return { x: (c.padLeft || 0) + (App.W - (c.padLeft || 0) - (c.padRight || 0)) / 2, y: (c.padTop || 0) + (App.H - (c.padTop || 0) - (c.padBottom || 0)) / 2 };
+  }
+  // تحريك الكاميرا نحو نقطة حتى تظهر في وسط ما لا تغطيه الواجهة
   flyTo(x, y, zoom) {
-    const sheetOpen = !!Sheets.current() && App.W > App.H;
-    const sw = sheetOpen ? Math.min(356, Math.max(272, App.W * 0.37)) + 16 : 0;
+    this.updatePads();
     const z = zoom ? clamp(zoom, this.cam.minZ, this.cam.maxZ) : this.cam.z;
-    this.fly = { x: x + sw / 2 / z, y, z, t: 0 };
+    const v = this.visCenter();
+    this.fly = { x: x - (v.x - App.W / 2) / z, y: y - (v.y - App.H / 2) / z, z, t: 0 };
+  }
+  // هل النقطة ظاهرة فعلاً (لا تحت شريط أو نافذة)؟
+  inView(x, y, m = 24) {
+    const c = this.cam, sp = c.toScreen(x, y);
+    return sp.x > (c.padLeft || 0) + m && sp.x < App.W - (c.padRight || 0) - m && sp.y > (c.padTop || 0) + m && sp.y < App.H - (c.padBottom || 0) - m;
   }
 
   update(dt) {
     this.t += dt;
+    this.padClock = (this.padClock || 0) + dt;
+    if (this.padClock > 0.3) { this.padClock = 0; this.updatePads(); }
     if (this.fly) {
       const c = this.cam, f = this.fly;
       f.t += dt;
@@ -431,7 +463,12 @@ class CampaignScene {
     }
     if (!hit) {
       if (this.selArmy) { this.cancelMove(); return; }
-      if (!Sheets.dismissCurrent()) this.selNode = null;
+      if (!Sheets.dismissCurrent()) {
+        const had = !!this.selNode;
+        this.selNode = null;
+        // أرض فارغة: ما هذه الأرض وماذا تعني في الحركة والقتال
+        if (!had) { const x = Explain.terrainAt(w); if (x) Help.explainAt(p.x, p.y, x); }
+      }
       return;
     }
     if (hit.kind === 'army' && hit.a.fid === this.P) {
@@ -449,9 +486,11 @@ class CampaignScene {
   }
 
   // ——— النوافذ ———
-  openCity(n) { this.selNode = n; Sheets.open(Panels.citySpec(this, n)); this.refresh(); }
-  openArmy(a) { this.selNode = Game.node(a.node); Sheets.open(Panels.armySpec(this, a)); this.refresh(); }
-  openSiege(n) { this.selNode = n; Sheets.open(Panels.siegeSpec(this, n)); this.refresh(); }
+  // النافذة لا تغطي ما فُتحت من أجله: الكاميرا تتحرك إن لزم
+  keepVisible(n) { if (!n) return; this.updatePads(); if (!this.inView(n.x, n.y, 30)) this.flyTo(n.x, n.y); }
+  openCity(n) { this.selNode = n; Sheets.open(Panels.citySpec(this, n)); this.refresh(); this.keepVisible(n); }
+  openArmy(a) { this.selNode = Game.node(a.node); Sheets.open(Panels.armySpec(this, a)); this.refresh(); this.keepVisible(this.selNode); }
+  openSiege(n) { this.selNode = n; Sheets.open(Panels.siegeSpec(this, n)); this.refresh(); this.keepVisible(n); }
   openDiplo(focus) { Sheets.open(Panels.diploSpec(this, focus)); this.refresh(); }
   openKingdom(tab) { Sheets.open(Panels.kingdomSpec(this, tab)); this.refresh(); }
   openChron(tab) { Sheets.open(Panels.chronSpec(this, tab)); this.refresh(); }
@@ -470,7 +509,7 @@ class CampaignScene {
     const w = Sheets.get(key);
     if (w && !had) w.auto = true;
     this.refresh();
-    if (!this.moveHint) { this.moveHint = true; UI.toast('اختر مدينة مضيئة — الرقم فوقها كلفة الحركة'); }
+    if (!this.moveHint) { this.moveHint = true; UI.toast('اختر مدينة مضيئة: الرقم فوقها كلفة الحركة'); }
   }
   cancelMove(silent) {
     const a = this.selArmy;
@@ -530,8 +569,8 @@ class CampaignScene {
     if (focus) {
       this.selNode = focus;
       // لا تترك موضع الحدث خارج الشاشة
-      const sp = this.cam.toScreen(focus.x, focus.y);
-      if (sp.x < 60 || sp.y < 70 || sp.x > App.W - 60 || sp.y > App.H - 70) this.flyTo(focus.x, focus.y);
+      this.updatePads();
+      if (!this.inView(focus.x, focus.y, 40)) this.flyTo(focus.x, focus.y);
     }
     if (win === 'siege' && focus && Game.besiegers(focus.id).length && !this.selArmy) Sheets.open(Panels.siegeSpec(this, focus));
     this.refresh();
@@ -547,13 +586,19 @@ class CampaignScene {
     this.hud.food = pill('food', 'food');
     this.hud.date = pill('date', 'date');
     this.hud.chap = h('button', { class: 'hud-pill chap', hidden: true, onclick: () => this.openKingdom('goals') });
-    this.root.appendChild(h('div', { class: 'hud-res' }, this.hud.fac, this.hud.gold, this.hud.food, this.hud.date, this.hud.chap));
-    this.hud.diplo = ib('treaty', null, { class: 'icon-btn', title: 'الممالك والدبلوماسية', onclick: () => this.openDiplo() });
-    this.hud.king = ib('crown', null, { class: 'icon-btn', title: 'المملكة والقادة', onclick: () => this.openKingdom() });
-    this.hud.chron = ib('book', null, { class: 'icon-btn', title: 'السجل التاريخي', onclick: () => this.openChron() });
+    // في الوضع العمودي يُطوى الشريط إلى الذهب والطعام والدور، ويُفتح بالسهم
+    this.hud.more = h('button', { class: 'hud-pill more', title: 'المزيد', onclick: () => { this.hud.res.classList.toggle('open'); this.updatePads(); } }, icon('chevD'));
+    this.hud.res = h('div', { class: 'hud-res' }, this.hud.fac, this.hud.gold, this.hud.food, this.hud.date, this.hud.chap, this.hud.more);
+    this.root.appendChild(this.hud.res);
+    // أزرار بنص واضح لا بأيقونة وحدها
+    const nb = (ic, label, title, fn) => h('button', { class: 'icon-btn nav-btn', title, onclick: fn }, icon(ic), h('span', { class: 'nl' }, label));
+    this.hud.diplo = nb('treaty', 'الدول', 'الممالك والدبلوماسية', () => this.openDiplo());
+    this.hud.king = nb('crown', 'المملكة', 'المملكة والقادة', () => this.openKingdom());
+    this.hud.chron = nb('book', 'السجل', 'السجل التاريخي', () => this.openChron());
+    this.root.appendChild(h('div', { class: 'nav-band' }));
     this.root.appendChild(h('div', { class: 'hud-btns' },
       this.hud.diplo, this.hud.king, this.hud.chron,
-      ib('menu', null, { class: 'icon-btn', title: 'القائمة', onclick: () => Panels.menu(this) }),
+      nb('menu', 'القائمة', 'القائمة', () => Panels.menu(this)),
     ));
     this.hud.end = h('button', { class: 'btn primary end-turn', onclick: () => this.endTurn() });
     this.root.appendChild(this.hud.end);

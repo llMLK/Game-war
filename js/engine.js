@@ -32,8 +32,10 @@ class Camera {
     const halfW = App.W / 2 / this.z, halfH = App.H / 2 / this.z;
     // وضع التغطية: الخريطة تملأ الشاشة دائماً بلا حواف سوداء
     if (this.cover) {
-      this.x = this.ww >= halfW * 2 ? clamp(this.x, halfW, this.ww - halfW) : this.ww / 2;
-      this.y = this.wh >= halfH * 2 ? clamp(this.y, halfH, this.wh - halfH) : this.wh / 2;
+      // يُسمح بتجاوز الحافة بقدر ما تغطيه الواجهة، حتى تُرى مدن الأطراف خارج الأشرطة
+      const pl = (this.padLeft || 0) / this.z, pr = (this.padRight || 0) / this.z, pt = (this.padTop || 0) / this.z, pb = (this.padBottom || 0) / this.z;
+      this.x = this.ww >= halfW * 2 ? clamp(this.x, halfW - pl, this.ww - halfW + pr) : this.ww / 2;
+      this.y = this.wh >= halfH * 2 ? clamp(this.y, halfH - pt, this.wh - halfH + pb) : this.wh / 2;
       return;
     }
     const mx = Math.max(0, halfW - this.ww / 2) + 60 / this.z;

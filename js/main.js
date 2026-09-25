@@ -57,8 +57,9 @@ function showMainMenu() {
   const menu = h('div', { class: 'menu' },
     h('div', { class: 'menu-card' },
       h('div', { class: 'title' },
+        h('div', { class: 'emblem' }, icon('horse')),
         h('h1', null, 'سيوف الممالك'),
-        h('p', null, 'حرب استراتيجية في العصور القديمة — الخطة تهزم العدد'),
+        h('p', null, 'حرب استراتيجية في العصور القديمة، الخطة تهزم العدد'),
       ),
       h('div', { class: 'menu-btns' },
         hasSave ? h('button', { class: 'btn primary big', onclick: () => continueCampaign() },
@@ -75,7 +76,7 @@ function showMainMenu() {
           h('button', { class: 'btn ghost', onclick: () => goFullscreen() }, 'ملء الشاشة'),
         ),
       ),
-      h('p', { class: 'rotate-hint' }, 'أدر الهاتف أفقياً لأفضل تجربة'),
+      h('p', { class: 'rotate-hint' }, 'تعمل اللعبة عمودياً وأفقياً. الأفقي يعرض الخريطة والنافذة جنباً إلى جنب.'),
     ),
   );
   App.ui.appendChild(menu);
