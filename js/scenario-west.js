@@ -28,7 +28,7 @@ const GP = (pts) => pts.map(([lon, lat]) => GEO(lon, lat));
     battleGround: U.battleGround,
     // أبعاد الخريطة وعتبات تناسب دولة واسعة منذ البداية
     w: 2110, h: 960,
-    sizeFree: 20, adminFree: 22, empireFrac: 0.8, recCityStep: 3,
+    sizeFree: 20, adminFree: 22, empireFrac: 0.8, recCityStep: 4,
     seats: { umayyad: ['cordoba', 'qayrawan', 'fustat', 'kufa'], byzantine: ['syracuse', 'thessalonica'] },
     factions: {
       umayyad: {

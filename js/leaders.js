@@ -313,13 +313,13 @@ Object.assign(Game, {
     const got = R0.got;
     if (kind === 'win') {
       got.wins++;
-      if (got.wins % 3 === 0) this.earnChance('mil', `${arN(got.wins, ['انتصار', 'انتصاران', 'انتصارات', 'انتصاراً'])} في الميدان`);
+      if (got.wins % 4 === 0) this.earnChance('mil', `${arN(got.wins, ['انتصار', 'انتصاران', 'انتصارات', 'انتصاراً'])} في الميدان`);
     } else if (kind === 'city') {
       // كل مدينة تُحسب مرة واحدة مهما تكرر فتحها، وكل مدينتين جديدتين تمنحان فرصة
       if (got.cities[data.id]) return;
       got.cities[data.id] = S.turn;
       const c = Object.keys(got.cities).length;
-      const step = this.sc.recCityStep || 2;
+      const step = this.sc.recCityStep || 3;
       if (c % step === 0) this.earnChance('mil', `دخلت ${arN(c, ['مدينة', 'مدينتين', 'مدن', 'مدينة'])} لأول مرة، آخرها ${data.name}`);
     } else if (kind === 'dip') {
       const key = data.kind + ':' + data.fid;
@@ -338,10 +338,10 @@ Object.assign(Game, {
   // ما يلزم للفرصة التالية من كل طريق (تُعرض للاعب)
   recRoads() {
     const got = this.S.rec.got;
-    const w = got.wins % 3;
+    const w = got.wins % 4;
     return [
       ['المحفوظ', `${this.S.rec.chances} من ${MAX_CHANCES} (ما زاد لا يُحفظ)`],
-      ['عسكري', `${arN(3 - w, ['انتصار آخر', 'انتصاران آخران', 'انتصارات أخرى', ''])}، أو ${arN((this.sc.recCityStep || 2) - Object.keys(got.cities).length % (this.sc.recCityStep || 2), ['مدينة جديدة', 'مدينتان جديدتان', 'مدن جديدة', 'مدينة جديدة'])} لم تدخلها من قبل`],
+      ['عسكري', `${arN(4 - w, ['انتصار آخر', 'انتصاران آخران', 'انتصارات أخرى', ''])}، أو ${arN((this.sc.recCityStep || 3) - Object.keys(got.cities).length % (this.sc.recCityStep || 3), ['مدينة جديدة', 'مدينتان جديدتان', 'مدن جديدة', 'مدينة جديدة'])} لم تدخلها من قبل`],
       ['اقتصادي', got.inc < INCOME_MARKS.length ? `صافي دخل ${INCOME_MARKS[got.inc]} كل دور (الآن ${this.economy(this.S.player).netGold})` : 'بلغت كل عتبات الدخل'],
       ['دبلوماسي', 'حلف أو تابع أو مصاهرة مع مملكة لأول مرة'],
       ['تاريخي', 'بداية فصل جديد من الحملة'],
