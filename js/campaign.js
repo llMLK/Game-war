@@ -566,7 +566,10 @@ const Game = {
   loyaltyIncomeFactor(loy) { return 0.4 + 0.6 * clamp(loy, 0, 100) / 100; },
   // الهدر الإداري: كل مدينة بعد الثامنة تُضيع 3٪ من دخل كل مدينة (حتى 40٪). الحاكم المقيم يخفّضه للنصف في مدينته
   adminWaste(n, count) {
-    const cities = count != null ? count : this.nodesOf(n.owner).length;
+    // المدن ذات الحكم الذاتي يديرها أعيانها: لا هدر فيها ولا تُحسب في العدد
+    const auto = (x) => this.termsOf && this.termsOf(x) && this.termsOf(x).control === 'autonomy';
+    if (auto(n)) return 0;
+    const cities = count != null ? count : this.nodesOf(n.owner).filter((x) => !auto(x)).length;
     let w = Math.min(0.4, 0.03 * Math.max(0, cities - 8));
     if (w > 0 && this.governorAt(n)) w *= 0.5;
     return w;
@@ -604,6 +607,7 @@ const Game = {
       if (pm) mul('policy', 'المرسوم الملكي', 1 + pm);
     }
     if (this.opIncome) mul('sabotage', 'سوق مخرَّب', this.opIncome(n));
+    if (this.termsIncome) mul('autonomy', 'حكم ذاتي: يصلك نصف دخلها', this.termsIncome(n));
     return res(g);
   },
   // تفصيل الدخل للواجهة: كل سطر بقيمته بالذهب، ومجموع الأسطر يساوي الصافي تماماً
@@ -652,6 +656,7 @@ const Game = {
     }
     if (this.policyMod) { const pm = this.policyMod(n.owner, 'loyalty'); if (pm) parts.push(['سياسة المملكة', pm]); }
     if (this.opLoyalty) { const ol = this.opLoyalty(n); if (ol) parts.push(['محرّضون أجانب', ol]); }
+    if (this.termsLoyalty) for (const pl of this.termsLoyalty(n)) parts.push(pl);
     if (this.nodeMods) {
       for (const pl of this.nodeMods(n).loy) parts.push(pl);
       const rl = this.rulerMod(n.owner, 'loyalty');
@@ -745,6 +750,8 @@ const Game = {
     // الحصار يقطع ما يأتي من الخارج فقط: رجال المدينة وورشها ما زالوا في الداخل
     if (merc && this.besieger(node.id)) return 'المرتزقة يأتون من خارج الأسوار، والحصار يقطع طريقهم';
     if (!merc) {
+      const tr = this.termsRecruit && this.termsRecruit(node);
+      if (tr) return tr;
       if (node.unrest > 0) return `غير مستقرة (${node.unrest} أدوار): المرتزقة فقط`;
       if (node.loyalty < 30) return 'الولاء منخفض جداً';
       if (d.needs === 'barracks' && !node.barracks) return 'تحتاج إسطبلات وورش';
@@ -1385,13 +1392,26 @@ const Game = {
   // ------------------، سقوط المدن -------------------
   async capture(node, fid, how, armies = []) {
     const old = node.owner;
+    // مصير المدافعين يُحسب ويُحفظ: الجيوش والحامية
+    const fate = [];
+    const gMen = this.menOf(node.garrison);
     // جيوش المالك السابق وحلفائه في المدينة: ممر آمن أو استسلام
     for (const o of [...this.armiesAt(node.id)]) {
       if (o.fid === fid || o.siege) continue;
       if (this.friendly(o.fid, fid)) continue;
+      const gn = this.gname(this.armyGen(o));
       const moved = this.retreatHome(o, [node.id], fid);
-      if (moved) this.event('mil', `جيش ${this.fname(o.fid)} يغادر ${node.name} بممر آمن.`, { fids: [o.fid, fid], node: node.id, imp: 1 });
+      if (moved) { this.event('mil', `جيش ${this.fname(o.fid)} يغادر ${node.name} بممر آمن.`, { fids: [o.fid, fid], node: node.id, imp: 1 }); fate.push(`جيش ${gn} انسحب بممر آمن إلى ${this.node(o.node).name}`); }
+      else fate.push(`جيش ${gn} لم يجد مهرباً فألقى السلاح`);
     }
+    // الحامية: صلحاً تخرج بسلاحها إلى أقرب مدينة لأصحابها، وعنوةً يُجرَّد من بقي ويعود إلى بيته
+    if (gMen > 0) {
+      if (how === 'surrender') {
+        const dest = old !== 'neutral' ? this.nodesOf(old).filter((m) => m.id !== node.id && !this.besieger(m.id)).sort((a, b) => this.hops(node.id, a.id, 8) - this.hops(node.id, b.id, 8))[0] : null;
+        if (dest) { for (const r of node.garrison) dest.garrison.push({ ...r }); fate.push(`خرجت الحامية (${gMen} رجل) بسلاحها إلى ${dest.name}`); }
+        else fate.push(`تفرّقت الحامية (${gMen} رجل) في الأرياف`);
+      } else fate.push(`جُرّد ${gMen} من الحامية من سلاحهم وعادوا إلى بيوتهم، فزاد رجال المدينة ${Math.round(gMen * 0.5)}`);
+    } else if (how !== 'surrender') fate.push('لم يبقَ من الحامية أحد');
     node.owner = fid;
     node.capturedTurn = this.S.turn;
     if (fid === this.S.player && this.recProgress) this.recProgress('city', node);
@@ -1399,7 +1419,7 @@ const Game = {
     node.garrison = [];
     this.fillGarrison(node, false);
     node.stores = Math.min(2, this.storesMax(node));
-    node.manpower = Math.floor(node.manpower * 0.3);
+    node.manpower = Math.floor(node.manpower * 0.3) + (how === 'surrender' ? 0 : Math.round(gMen * 0.5));
     node.unrest = how === 'surrender' ? 2 : 4;
     for (const a of armies) if (this.S.armies.includes(a)) { if (a.node !== node.id) { a.from = a.node; a.node = node.id; } a.siege = null; }
     for (const b of this.besiegers(node.id)) if (b.fid === fid) b.siege = null;
@@ -1422,17 +1442,31 @@ const Game = {
     if (old === this.S.player) this.alert('crit', `سقطت ${node.name} بيد ${this.fname(fid)}${how === 'surrender' ? ' صلحاً' : ''}`, { node: node.id, icon: 'breach' });
     if (this.S.flips) { const k = [fid, old].sort().join('|') + ':' + node.id; this.S.flips[k] = (this.S.flips[k] || 0) + 1; }
     let choice = 'occupy';
-    if (this.f(fid).isPlayer) choice = this.hooks.occupation ? await this.hooks.occupation(node, how) : 'occupy';
+    const fateTxt = fate.join('، ');
+    if (this.f(fid).isPlayer) choice = this.hooks.occupation ? await this.hooks.occupation(node, how, fateTxt) : 'occupy';
     else {
       const p = this.pers ? this.pers(fid) : { aggr: 1, honor: 1 };
       choice = this.f(fid).horde ? (R() < 0.7 ? 'sack' : 'occupy') : p.aggr > 1.15 && p.honor < 1 && R() < 0.45 ? 'sack' : (p.honor > 1.1 && R() < 0.4 ? 'clemency' : 'occupy');
+      // من يقبل الاستسلام على الأمان لا ينهب، إلا الغزاة الذين لا عهد لهم
+      if (how === 'surrender' && choice === 'sack' && !this.f(fid).horde) choice = 'clemency';
     }
-    this.applyOccupation(node, fid, old, choice, how);
+    this.applyOccupation(node, fid, old, choice, how, fateTxt);
     this.validate();
   },
 
-  applyOccupation(node, fid, old, choice, how) {
+  applyOccupation(node, fid, old, choice0, how, fateTxt) {
     const f = this.f(fid);
+    const c = this.normChoice ? this.normChoice(choice0, how) : { control: 'direct', terms: choice0 === 'sack' ? 'sack' : choice0 === 'clemency' ? 'aman' : 'plain' };
+    const choice = c.terms === 'sack' ? 'sack' : c.terms === 'aman' ? 'clemency' : 'occupy';
+    node.terms = { k: c.terms, control: c.control, turn: this.S.turn, how, by: fid, fate: fateTxt || null };
+    // نهب مدينة سلّمت على الأمان نقضٌ للعهد يسمعه الجميع
+    if (how === 'surrender' && c.terms === 'sack') {
+      node.terms.broke = this.S.turn;
+      f.rep = Math.max(0, f.rep - 12);
+      for (const o of this.aliveMajors ? this.aliveMajors() : []) if (o !== fid) this.addRel(fid, o, -8);
+      this.chronicle('betray', `${f.name} تنقض الأمان وتنهب ${node.name} بعد أن فتحت أبوابها صلحاً.`, { fids: [fid, old], node: node.id, imp: 3 });
+    }
+    if (c.control === 'autonomy') this.event('int', `${f.name} تترك لأعيان ${node.name} حكمها الذاتي مقابل نصف دخلها.`, { fids: [fid], node: node.id, imp: 1 });
     if (choice === 'sack') {
       const loot = Math.round(node.pop / 55);
       f.gold += loot;
@@ -1450,7 +1484,6 @@ const Game = {
       node.unrest = Math.max(1, node.unrest - 2);
       this.addRel(fid, old, 8);
       f.rep = Math.min(100, f.rep + 4);
-      f.gold = Math.max(0, f.gold - 50);
       this.event('int', `${f.name} تعلن الأمان لأهل ${node.name}.`, { fids: [fid], node: node.id, imp: 1 });
     } else {
       node.loyalty = how === 'surrender' ? 52 : 40;

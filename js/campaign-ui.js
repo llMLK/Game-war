@@ -663,7 +663,7 @@ class CampaignScene {
 function installHooks(scene) {
   Game.hooks.notify = (msg) => { Game.alert('info', msg); AlertsUI.render(); };
   Game.hooks.proposal = (p) => Panels.proposal(p);
-  Game.hooks.occupation = (node, how) => Panels.occupation(node, how);
+  Game.hooks.occupation = (node, how, fate) => Panels.occupation(node, how, fate);
   Game.hooks.encounter = (enc) => Panels.encounter(scene, enc);
 }
 

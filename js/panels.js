@@ -150,6 +150,11 @@ const Panels = {
     const gov = Game.governorAt(n);
     if (gov) body.appendChild(h('p', { class: 'hint' }, icon('seal'), ` الحاكم: ${gov.name} `, traitChip(gov)));
     if (n.charter) body.appendChild(h('p', { class: 'hint' }, icon('scroll'), ' مدينة ذات ميثاق حر: ولاء أعلى ودخل أقل.'));
+    if (own && Game.termsLines && Game.termsOf(n)) {
+      const t = Game.termsOf(n);
+      body.appendChild(h('div', { class: 'box terms' }, h('div', { class: 'sec-h' }, icon('scroll'), 'شروط الفتح'), EconUI.lines(Game.termsLines(n)),
+        t.control === 'autonomy' ? h('button', { class: 'chip warn', onclick: () => { const early = Game.S.turn - t.turn < AUTONOMY_KEEP; UI.ask({ title: `إلغاء الحكم الذاتي في ${n.name}`, icon: 'scroll', body: h('p', null, `الولاء −15 فوراً، ويعود دخلها كاملاً والتجنيد منها. ${early ? `ما زال العهد جديداً (قبل الدور ${t.turn + AUTONOMY_KEEP}): إلغاؤه الآن نكث، السمعة −3.` : ''}`), buttons: [{ label: 'ألغِ الحكم الذاتي', value: true, danger: true }, { label: 'إبقاء', value: false }] }).then((ok) => { if (ok) { const e = Game.revokeAutonomy(n); UI.toast(e || 'أُلغي الحكم الذاتي'); scene.afterAction(n); } }); } }, 'إلغاء الحكم الذاتي') : null));
+    }
     if (Game.crisesAt) for (const c of Game.crisesAt(n.id)) body.appendChild(h('button', { class: 'box crisis', onclick: () => this.openCrisis(scene, c) }, h('div', { class: 'sec-h' }, icon(CRISES[c.type].icon), Game.crisisTitle(c), h('span', { class: 'muted' }, c.ask[P] ? 'قرار مطلوب' : Game.crisisStatus(c)))));
 
     if (!own) { this.foreignCity(scene, n, body, intel); return; }
@@ -811,6 +816,9 @@ const Panels = {
         else { UI.toast(`${f.name} ترفض الحلف (تحتاج علاقة أفضل أو عدواً مشتركاً)`); Game.addRel(P, id, -2); }
       }));
       if (st === 'alliance') {
+        const pc = Game.pactFor && Game.pactFor(id);
+        if (pc) { const tn = Game.node(pc.target), d = Game.armyDist(id, pc.target); box.append(h('span', { class: 'lbl' }, `هدف مشترك: ${tn.name} · ${d === 0 ? 'جيوشهم عندها' : d >= 99 ? 'لا طريق لجيوشهم بعد' : `جيوشهم على بعد ${arN(d, ['خطوة واحدة', 'خطوتين', 'خطوات', 'خطوة'])}`} (بدأت من ${pc.d0 >= 99 ? 'بعيد' : pc.d0}) · باقي ${Math.max(0, pc.until - Game.S.turn)} أدوار`)); }
+        else if (Game.pactTerms) box.append(h('button', { class: 'chip', onclick: () => this.pactDialog(scene, id, redo) }, 'هدف مشترك…'));
         box.append(act('coins', 'تمويل 150', () => { Game.subsidy(P, id, 150); UI.toast('وصلت الأموال'); }, myF.gold < 150));
         box.append(act('close', 'فضّ الحلف', () => { Game.breakAlliance(P, id, 'بقرار منك'); UI.toast('انتهى الحلف'); }, false, 'warn'));
       }
@@ -1396,22 +1404,38 @@ const Panels = {
     });
   },
 
-  occupation(node, how) {
-    return UI.ask({
-      title: `دخلتَ ${node.name}`, icon: 'flag',
-      body: h('div', null,
-        h('p', { class: 'lead' }, how === 'surrender' ? 'فتحت المدينة أبوابها. كيف تعامل أهلها؟' : 'سقطت المدينة. كيف تعامل أهلها؟'),
-        h('ul', { class: 'steps' },
-          h('li', null, h('b', null, 'الضمّ: '), 'ولاء متوسط واضطراب 4 أدوار.'),
-          h('li', null, h('b', null, 'النهب: '), `غنيمة نحو ${Math.round(node.pop / 55)} ذهباً الآن، لكن السكان يقلّون والولاء ينهار والسمعة تتضرر، وتبقى آثار النهب.`),
-          h('li', null, h('b', null, 'الأمان: '), 'ولاء عالٍ واضطراب أقصر وسمعة أفضل، يكلّف 50.'),
-        ),
-      ),
-      buttons: [
-        { label: 'ضمّ المدينة', value: 'occupy', primary: true },
-        { label: 'نهب', value: 'sack', danger: true, icon: 'fire' },
-        { label: 'إعلان الأمان', value: 'clemency', icon: 'dove' },
-      ],
+  // نوع السيطرة ومعاملة الأهل قراران منفصلان، ومصير المدافعين معروض قبل القرار
+  occupation(node, how, fate) {
+    return new Promise((resolve) => {
+      const sel = { control: 'direct', terms: how === 'surrender' ? 'aman' : 'plain' };
+      const out = h('div', null);
+      const segC = h('div', { class: 'seg' }), segT = h('div', { class: 'seg' });
+      const loot = Math.round(node.pop / 55);
+      const draw = () => {
+        segC.innerHTML = ''; segT.innerHTML = '';
+        for (const [k, c] of Object.entries(CONTROL)) segC.appendChild(h('button', { class: sel.control === k ? 'on' : '', onclick: () => { sel.control = k; draw(); } }, c.name));
+        for (const [k, t] of Object.entries(TERMS)) segT.appendChild(h('button', { class: (sel.terms === k ? 'on' : '') + (k === 'sack' ? ' warn' : ''), onclick: () => { sel.terms = k; draw(); } }, k === 'sack' && how === 'surrender' ? 'نقض الأمان والنهب' : t.name));
+        out.innerHTML = '';
+        out.append(
+          h('p', { class: 'small' }, h('b', null, CONTROL[sel.control].name + ': '), CONTROL[sel.control].desc),
+          h('p', { class: 'small' }, h('b', null, TERMS[sel.terms].name + ': '), TERMS[sel.terms].desc, sel.terms === 'sack' ? ` الغنيمة نحو ${loot} ذهباً.` : ''),
+          ...[how === 'surrender' && sel.terms === 'sack' ? h('p', { class: 'hint warn' }, 'فتحت المدينة أبوابها على الأمان. نهبها نقض للعهد: السمعة −12، وكل الممالك تنفر منك (−8)، ويُكتب في السجل.') : null,
+            how === 'surrender' && sel.terms === 'plain' ? h('p', { class: 'hint' }, 'سلّمت المدينة على الأمان، وتركه بلا عهد مكتوب لا يُعدّ نقضاً، لكنك تفقد مكاسبه.') : null].filter(Boolean));
+      };
+      let close;
+      close = UI.modal({
+        title: `دخلتَ ${node.name}`, icon: 'flag',
+        body: h('div', null,
+          h('p', { class: 'lead' }, how === 'surrender' ? 'فتحت المدينة أبوابها صلحاً.' : 'سقطت المدينة عنوة.'),
+          fate ? h('p', { class: 'small' }, h('b', null, 'مصير المدافعين: '), fate, '.') : null,
+          h('div', { class: 'label' }, 'نوع السيطرة'), segC,
+          h('div', { class: 'label' }, 'معاملة الأهل'), segT,
+          out,
+          h('p', { class: 'hint' }, 'تُحفظ الشروط على المدينة وتظهر في نافذتها مع آثارها ومدتها.')),
+        buttons: [{ label: 'اعتمد', primary: true, onClick: () => resolve({ ...sel }) }],
+      });
+      void close;
+      draw();
     });
   },
 
@@ -1777,5 +1801,44 @@ Object.assign(Panels, {
     });
     out.parentElement.appendChild(h('div', { class: 'row-btns' }, btn));
     upd();
+  },
+});
+
+// ═══════════════ الأهداف المشتركة مع الحلفاء ═══════════════
+Object.assign(Panels, {
+  pactDialog(scene, ally, redo) {
+    const P = scene.P, A = Game.f(ally);
+    const cands = Game.S.nodes.filter((n) => n.owner !== P && n.owner !== ally && (n.owner === 'neutral' || Game.atWar(P, n.owner)))
+      .map((n) => ({ n, t: Game.pactTerms(ally, n.id), dp: Game.distTo(P, n.id) }))
+      .filter((x) => x.dp <= 4 || x.t.ok)
+      .sort((a, b) => (b.t.ok - a.t.ok) || (a.dp - b.dp)).slice(0, 10);
+    let close;
+    const detail = h('div', null);
+    const show = (x) => {
+      detail.innerHTML = '';
+      detail.append(
+        h('div', { class: 'sec-h' }, `${x.n.name} (${Game.fname(x.n.owner)})`),
+        x.t.hard ? h('p', { class: 'hint warn' }, x.t.hard) : EconUI.lines([...x.t.parts.map(([k, v]) => [k, signed(v), v > 0 ? 'pos' : v < 0 ? 'neg' : '']), ['يقبلون إن بلغ المجموع', `${x.t.need} فأكثر`, 'sum'], ['المجموع الآن', x.t.score, x.t.ok ? 'pos' : 'neg']]),
+        h('div', { class: 'row-btns' }, h('button', { class: 'btn primary', disabled: !!x.t.hard, onclick: () => send(x.n.id) }, `اقترح ${x.n.name}`)));
+    };
+    const send = (tid) => {
+      const r = Game.proposePact(ally, tid);
+      if (Game.track) Game.track('diplo:pact');
+      if (r.ok) { UI.toast(`${A.name} توافق: جيوشها تتجه إلى ${Game.node(tid).name} خلال ${PACT_TURNS} أدوار`, 4200); close(); redo && redo(); scene.refresh(); return; }
+      detail.innerHTML = '';
+      const alt = r.alt && Game.node(r.alt);
+      detail.append(h('p', { class: 'lead warn' }, `${A.name} ترفض ${Game.node(tid).name}.`),
+        EconUI.lines(r.t.parts.map(([k, v]) => [k, signed(v), v > 0 ? 'pos' : v < 0 ? 'neg' : ''])),
+        alt ? h('div', null, h('p', null, `تقترح بدلاً منها: ${alt.name} (${Game.fname(alt.owner)}).`), h('div', { class: 'row-btns' }, h('button', { class: 'btn primary', onclick: () => send(alt.id) }, `اقبل ${alt.name}`), h('button', { class: 'btn', onclick: () => close() }, 'لا'))) : h('p', { class: 'hint' }, 'لا تقترح بديلاً الآن: لا مدينة تناسبها في ظروفها الحالية.'));
+    };
+    close = UI.modal({
+      title: `هدف مشترك مع ${A.name}`, icon: 'treaty', cls: 'wide',
+      body: h('div', null,
+        h('p', { class: 'hint' }, `اختر مدينة لعدو مشترك. الحليف يحسب المسافة وقوته ودفاعها وتهديد أرضه وقرب جيشك، ويرد بقبول أو رفض بأسباب أو بديل. إن قبل تتجه جيوشه إليها ${PACT_TURNS} أدوار، وإن غاب جيشك عنها عاتبك.`),
+        cands.length ? h('div', { class: 'row-btns' }, cands.map((x) => h('button', { class: 'chip' + (x.t.ok ? ' on' : ''), onclick: () => show(x) }, `${x.n.name}${x.t.ok ? '' : ' (يرفض)'}`))) : h('p', { class: 'hint' }, 'لا مدن لعدو مشترك قريبة. الهدف المشترك يحتاج حرباً مع مملكة يحاربها حليفك أيضاً.'),
+        detail),
+      buttons: [{ label: 'إغلاق', ghost: true }],
+    });
+    if (cands.length) show(cands[0]);
   },
 });
