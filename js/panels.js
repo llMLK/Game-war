@@ -414,6 +414,7 @@ const Panels = {
       (() => { const k = Game.genSkills(g); const parts = [k.coh ? `تماسك +${k.coh * 3} معنويات` : null, k.exe ? `دقة الأوامر +${k.exe * 4}٪` : null, k.res ? `الاحتياط +${k.res * 4} معنويات` : null, k.ret ? `انسحاب منظم، مطاردة −${k.ret * 12}٪` : null].filter(Boolean); return h('p', { class: 'small muted' }, `${'★'.repeat(g.rank)}: `, parts.length ? parts.join('، ') : 'قائد جديد بلا قدرات قيادة إضافية'); })(),
       g.flaw ? h('p', { class: 'small warn' }, FLAWS[g.flaw].desc) : null,
       g.vendetta ? h('p', { class: 'small warn' }, `يطلب الثأر من ${Game.fname(g.vendetta)}`) : null,
+      (() => { const v = own && typeof Voices !== 'undefined' ? Voices.say(g) : null; return v && v.pri >= 3 ? this.quote(v) : null; })(),
       extra || null,
     );
   },
@@ -1085,7 +1086,8 @@ const Panels = {
       if (y !== year) { year = y; box.appendChild(h('div', { class: 'chron-year' }, `سنة ${y}م`)); }
       const item = h('div', { class: 'chron-item' + (e.fids.includes(P) ? ' mine' : '') }, icon(e.icon || 'scroll'),
         h('div', null, h('p', null, e.text), h('span', { class: 'when' }, SEASONS[e.turn % 4]),
-          e.story ? h('details', null, h('summary', { class: 'small muted' }, 'قصة المعركة'), h('div', { class: 'story' }, e.story)) : null));
+          e.story ? h('details', null, h('summary', { class: 'small muted' }, 'قصة المعركة'), h('div', { class: 'story' }, e.story)) : null,
+          e.gens && e.gens.length ? h('div', { class: 'row-btns' }, e.gens.map((id) => Game.gen(id)).filter(Boolean).map((g) => h('button', { class: 'chip', onclick: () => this.bioDialog(g) }, icon('helmet'), g.name))) : null));
       box.appendChild(item);
     }
     if (!list.length) box.appendChild(h('p', { class: 'hint' }, 'لم يُكتب شيء بعد. التاريخ يُصنع الآن.'));
@@ -1424,6 +1426,14 @@ const Panels = {
         return h('div', { class: 'enc-side' },
           h('div', { class: 'enc-h' }, dotEl(Game.f(fid).color), h('b', null, label)),
           gens.length ? gens.map((g) => h('div', { class: 'gline' }, h('b', null, g.name), stars(g.rank), traitChip(g))) : h('div', { class: 'muted small' }, 'بلا قائد'),
+          (() => {
+            if (fid !== P || !gens.length || typeof Voices === 'undefined') return null;
+            const foeFid = fid === enc.attFid ? enc.defFid : enc.attFid;
+            const foeGens = (fid === enc.attFid ? s.defGens : s.attGens).map((x) => x.name);
+            const arm = fid === enc.attFid ? s.attArmies : s.defArmies;
+            const v = Voices.say(gens[0], { ctx: 'battle', foe: foeFid, foeGens, army: Game.condOf(arm) });
+            return v ? this.quote(v) : null;
+          })(),
           known ? unitSummary(regs) : h('p', { class: 'hint' }, `${regs.length} وحدات تقريباً`),
           h('div', { class: 'small' }, known ? `${Game.menOf(regs) + gens.reduce((t, g) => t + Game.genMen(g), 0)} رجل` : `نحو ${Game.estimate(P, fid, Game.menOf(regs)).text} رجل`),
           (() => { const arm = fid === enc.attFid ? s.attArmies : s.defArmies; const c = Game.condOf(arm); return known && arm.length ? h('div', { class: 'small muted' }, `إرهاق ${Math.round(c.fat)}٪ · معنويات ${signed(Math.round(c.mor))}`) : null; })(),
@@ -1609,9 +1619,43 @@ Object.assign(Panels, {
           g.pay != null ? ['أجر العقد', `${g.pay} كل دور${g.retinue ? ` + حرس خاص ${RETINUE.pay}` : ''}`] : ['الراتب المعتاد', Game.genSalary(g)],
           g.loy != null ? ['الولاء', g.loy] : null,
         ].filter(Boolean)),
-        h('p', { class: 'hint' }, 'السمة والعيب والولاء والمصير هنا من قواعد اللعبة وأحداث حملتك، لا من المصادر التاريخية.')),
+        h('p', { class: 'hint' }, 'السمة والعيب والولاء والمصير هنا من قواعد اللعبة وأحداث حملتك، لا من المصادر التاريخية.'),
+        this.memoryBlock(g)),
       buttons: [{ label: 'إغلاق', ghost: true }],
     });
+  },
+  quote(v) {
+    return h('button', { class: 'quote', onclick: (e) => { e.stopPropagation(); Help.show(e.currentTarget, null, { title: 'لماذا قال هذا؟', note: `قاعدة من اللعبة: ${v.why}. الكلام سرد لا يغيّر الأرقام.` }); } }, `«${v.text}»`);
+  },
+  memoryBlock(g) {
+    const box = h('div', { class: 'mem' });
+    const v = typeof Voices !== 'undefined' ? Voices.say(g) : null;
+    box.appendChild(h('div', { class: 'sec-h' }, 'ذكرياته في هذه الحملة'));
+    const mem = (g.mem || []).slice().reverse();
+    if (!mem.length) box.appendChild(h('p', { class: 'small muted' }, 'لم تُكتب له ذكرى بعد: الذكريات تأتي من معاركه وأسره وتكريمه وما يجري في البلاط.'));
+    else box.appendChild(h('ul', { class: 'steps small' }, mem.map((m) => h('li', null, h('span', { class: 'muted' }, `${SEASONS[m.t % 4]} ${Game.sc.startYear + Math.floor(m.t / 4)}: `), m.txt, m.ch ? h('span', { class: 'muted' }, ' (في السجل)') : null))));
+    if (v) box.append(h('div', { class: 'label' }, 'يقول الآن (نص من قواعد اللعبة):'), this.quote(v), h('p', { class: 'small muted' }, `السبب: ${v.why}`));
+    if (typeof Voices !== 'undefined' && Voices.sampler && mem.length) {
+      const out = h('p', { class: 'ai-out', hidden: true });
+      const note = h('p', { class: 'small muted', hidden: true }, 'نص مولَّد بالذكاء الاصطناعي من الوقائع أعلاه فقط، يُحسب من رصيدك في Claude. لا يغيّر شيئاً في اللعبة، وقد يخطئ في الأسلوب.');
+      let ctl = null;
+      const btn = h('button', { class: 'btn' }, icon('talk'), 'صِغ ذكرياته بأسلوب أدبي (اختياري، ذكاء اصطناعي)');
+      btn.onclick = async () => {
+        if (ctl) { ctl.abort(); return; }
+        ctl = new AbortController();
+        btn.lastChild.textContent = 'إيقاف';
+        out.hidden = false; note.hidden = false; out.textContent = 'يفكر…';
+        try { out.textContent = (await Voices.compose(g, (t) => { out.textContent = t; }, ctl.signal)).replace(/\u2014/g, '،'); }
+        catch (e) {
+          const c = e && e.code;
+          if (['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed', 'unavailable'].includes(c)) { Voices.sampler = null; btn.remove(); out.textContent = 'الصياغة الآلية غير متاحة هنا. يبقى نص القواعد أعلاه.'; }
+          else if (c === 'cancelled') out.textContent = (e.text || '').replace(/\u2014/g, '،') || 'أُوقفت.';
+          else out.textContent = c === 'rate_limited' ? 'طلبات كثيرة الآن. جرّب لاحقاً؛ نص القواعد أعلاه باقٍ.' : 'تعذّرت الصياغة. نص القواعد أعلاه باقٍ.';
+        } finally { ctl = null; if (btn.isConnected) btn.lastChild.textContent = 'صِغ ذكرياته بأسلوب أدبي (اختياري، ذكاء اصطناعي)'; }
+      };
+      box.append(btn, out, note);
+    }
+    return box;
   },
   candCard(e, extra) {
     const sum = e.sk.reduce((a, b) => a + b, 0);

@@ -529,6 +529,8 @@ Object.assign(Game, {
     this.enrichGen(g);
     if (!g.skills) g.skills = { ...this.genSkills(g) };
     g.xpBank = 0; g.fame = 0;
+    // الولاء يُحدد لحظة الإنشاء لا عند الدور التالي، فالحفظ والتحميل لا يغيّران القائد
+    if (g.loy === undefined && this.baseLoy && this.S.factions && this.S.factions[g.fid] && this.S.factions[g.fid].ruler !== undefined) g.loy = this.baseLoy(g);
     return g;
   };
   const ng = Game.newGame;

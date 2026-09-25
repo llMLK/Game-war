@@ -648,3 +648,9 @@ table.res.roi tr.dim { opacity: .55; }
 .check-row { display: flex; align-items: center; gap: 6px; margin: 6px 0; }
 .check-row input { width: 18px; height: 18px; accent-color: var(--bronze-hi); }
 .modal select { width: 100%; min-height: 38px; border-radius: 8px; border: 1px solid var(--line); background: rgba(0,0,0,.3); color: var(--parch); font: inherit; padding: 0 8px; margin: 4px 0 8px; }
+
+/* كلام القادة وذكرياتهم */
+.quote { display: block; width: 100%; text-align: start; font: inherit; font-size: 12.5px; font-style: italic; color: #e9d9b0; background: rgba(255,240,200,.05); border: 0; border-inline-start: 2px solid var(--bronze-hi); border-radius: 6px; padding: 4px 8px; margin: 2px 0; }
+.mem { display: grid; gap: 4px; margin-top: 6px; }
+.mem .steps li { margin-bottom: 2px; }
+.ai-out { white-space: pre-wrap; font-size: 13px; line-height: 1.7; padding: 6px 8px; border-radius: 8px; background: rgba(139,92,201,.12); border: 1px dashed rgba(160,110,230,.5); margin: 4px 0 0; }
