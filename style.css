@@ -769,3 +769,6 @@ details.mem summary { cursor: pointer; color: var(--bronze-hi); }
 .menu .emblem .ico { width: 40px; height: 40px; color: var(--parch); }
 .alert.more { overflow: visible; white-space: nowrap; padding: 0 10px; flex: none; }
 .al-row { display: flex; gap: 4px; flex-wrap: wrap; }
+.unit-row { display: block; width: 100%; text-align: start; background: none; border: 0; padding: 0; }
+/* أزرار الحوار ظاهرة دائماً في أسفله حتى على الشاشات القصيرة */
+.modal-btns { position: sticky; bottom: -10px; z-index: 1; margin-bottom: -10px; padding: 8px 0 10px; background: linear-gradient(rgba(26,20,14,0), rgba(26,20,14,.97) 35%); }

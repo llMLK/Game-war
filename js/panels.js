@@ -184,9 +184,9 @@ const Panels = {
     const g = Game.armyGen(a);
     const sel = scene.selArmy === a;
     return h('div', { class: 'acard own' + (sel ? ' sel' : '') },
-      h('div', { class: 'ah' }, icon('banner'), h('b', null, g ? g.name : 'بلا قائد'), stars(g && g.rank), h('span', { class: 'sp' }), h('span', { class: 'muted small' }, `${Game.armyMen(a)} رجل`)),
+      h('div', { class: 'ah' }, icon('banner'), h('b', null, g ? g.name : 'بلا قائد'), stars(g && g.rank), h('span', { class: 'sp' }), xstat('armymen', `${Game.armyMen(a)} رجل`, () => Explain.armyStrength(a), { cls: 'small' })),
       h('div', { class: 'gline' }, traitChip(g), mpPips(a), moodTag(a), a.siege ? h('span', { class: 'tag bad' }, icon('tent'), 'يحاصر') : null),
-      a.regs.length ? unitSummary(a.regs) : h('span', { class: 'hint' }, 'القائد وحرسه فقط'),
+      a.regs.length ? h('button', { class: 'unit-row', onclick: (e) => Help.explain(e.currentTarget, Explain.armyStrength(a)) }, unitSummary(a.regs)) : h('span', { class: 'hint' }, 'القائد وحرسه فقط'),
       h('div', { class: 'row-btns' },
         actBtn([icon('boot'), h('span', null, 'تحريك')], { cls: 'btn primary', err: !a.regs.length ? 'الجيش بلا وحدات: جنّد أو انقل إليه وحدات أولاً' : a.mp <= 0 ? 'استنفد الجيش نقاط حركته هذا الدور، وتتجدد في الدور التالي' : null, onClick: () => scene.startMove(a) }),
         ib('expand', 'التفاصيل', { class: 'btn', onclick: () => scene.openArmy(a) }),
@@ -784,7 +784,7 @@ const Panels = {
           h('span', { class: 'sp' }), icon(open ? 'chevU' : 'chevD'),
         ),
         h('div', { class: 'rmeta' },
-          xstat('relation', rel, () => Explain.relation(P, id), { meter: rel + 100, meterMax: 200, label: 'العلاقة' }), xstat('power', cmp, () => Explain.power(P, id), { label: '' }), h('span', null, Game.nodesOf(id).length, ' مدن'),
+          xstat('relation', rel, () => Explain.relation(P, id), { meter: rel + 100, meterMax: 200, label: 'العلاقة' }), xstat('power', cmp, () => Explain.power(P, id), { label: '' }), h('button', { class: 'hstat', onclick: (e) => Help.explain(e.currentTarget, { icon: 'castle', title: `مدن ${f.name}`, value: String(Game.nodesOf(id).length), state: lvl >= 1 ? Game.nodesOf(id).map((n) => n.name).join('، ') : 'لا تعرف مدنها بعد.', note: 'المدن مصدر الدخل والرجال، وكل مدينة تأخذها منهم تضعفهم وتقوّيك.' }) }, icon('castle'), h('bdi', null, Game.nodesOf(id).length), ' مدن'),
           truce > 0 && st !== 'war' ? h('span', { class: 'tag' }, icon('hourglass'), `عهد ${truce}`) : null,
           tr.trade ? h('span', { class: 'tag good' }, icon('camel'), 'تجارة') : null,
           tr.marriage ? h('span', { class: 'tag good' }, icon('ring'), 'مصاهرة') : null,
