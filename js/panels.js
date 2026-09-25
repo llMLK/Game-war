@@ -867,7 +867,7 @@ const Panels = {
     const P = scene.P, F = Game.f(P);
     const tab = scene.kingTab || (Game.objectivesOf ? 'goals' : 'gens');
     const seg = h('div', { class: 'seg' });
-    const tabs = [Game.objectivesOf ? ['goals', 'target', 'الأهداف'] : null, ['gens', 'helmet', 'القادة'], ['capt', 'chains', `الأسرى ${Game.captivesHeldBy(P).length || ''}`], ['policy', 'scales', 'السياسة']].filter(Boolean);
+    const tabs = [Game.objectivesOf ? ['goals', 'target', 'الأهداف'] : null, ['budget', 'gold', 'الخزينة'], ['gens', 'helmet', 'القادة'], ['capt', 'chains', `الأسرى ${Game.captivesHeldBy(P).length || ''}`], ['policy', 'scales', 'السياسة']].filter(Boolean);
     for (const [k, ic, name] of tabs) seg.appendChild(h('button', { class: k === tab ? 'on' : '', onclick: () => { scene.kingTab = k; Sheets.render(); } }, icon(ic), name));
     body.appendChild(seg);
     if (tab === 'goals' && Game.objectivesOf) { this.goalsTab(scene, body); return; }
@@ -893,15 +893,19 @@ const Panels = {
       const cs = Game.captivesHeldBy(P);
       if (!cs.length) body.appendChild(h('p', { class: 'hint' }, 'لا أسرى لديك. يقع القادة في الأسر حين تُباد جيوشهم أو يسقط حرسهم.'));
       for (const g of cs) body.appendChild(h('div', { class: 'acard' }, this.genCard(g, h('p', { class: 'small' }, `من ${Game.fname(g.fid)} · أسير منذ ${Game.S.turn - g.since} أدوار`)), ib('scales', 'قرّر مصيره', { class: 'btn', onclick: () => this.captiveDialog(scene, g) })));
-    } else {
-      body.appendChild(h('div', { class: 'sec-h' }, icon('gold'), 'الميزانية كل دور'));
+    } else if (tab === 'budget') {
       const e = Game.economy(P);
-      body.appendChild(h('div', { class: 'pop-lines budget' }, Explain.budgetLines(e).map(([k, v, c]) => h('div', { class: 'pl ' + (c || '') }, h('span', null, rich(k)), h('span', { class: 'v' }, rich(v))))));
       body.appendChild(h('div', { class: 'kv' },
         xstat('gold', F.gold, () => Explain.treasury(P), { label: 'الخزينة' }),
         xstat('food', F.food, () => Explain.food(P), { label: 'الطعام' }),
         xstat('supply', e.exp.admin ? '−' + e.exp.admin : 'لا كلفة', () => Explain.expansion(P), { icon: 'map', label: 'ضغط الاتساع' }),
       ));
+      body.appendChild(h('div', { class: 'sec-h' }, icon('gold'), 'دخل الدور القادم ومصروفاته'));
+      body.appendChild(h('div', { class: 'pop-lines budget' }, Explain.budgetLines(e).map(([k, v, c]) => h('div', { class: 'pl ' + (c || '') }, h('span', null, rich(k)), h('span', { class: 'v' }, rich(v))))));
+      body.appendChild(h('div', { class: 'pop-lines budget' }, h('div', { class: 'pl sum' }, h('span', null, 'الخزينة بعد الدور القادم'), h('span', { class: 'v' }, rich(String(F.gold + e.netGold))))));
+      body.appendChild(h('p', { class: 'hint' }, 'المال قرار: كل وحدة وقائد وحصن له ثمن كل دور، والحرب البعيدة تكلّف إمداداً، وكل مدينة بعد السادسة تكلّف إدارة أكثر من سابقتها.'));
+      body.appendChild(h('button', { class: 'chip', onclick: () => this.investDialog(scene) }, icon('scales'), 'فرص الاستثمار في مدنك'));
+    } else {
       body.appendChild(h('div', { class: 'sec-h' }, icon('scales'), 'الضرائب'));
       const row = h('div', { class: 'choice' });
       for (const [k, tx] of Object.entries(TAXES)) {

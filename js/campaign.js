@@ -12,16 +12,18 @@ const DIFFS = {
 };
 // أرقام الاقتصاد في مكان واحد (للمعايرة)
 const ECON = {
-  taxPer1k: 2.4, marketPer1k: 1.1, capital: 12, unrestK: 0.4,
-  upkeepMul: 1, mercMul: 1.8,
-  adminFree: 6, adminBase: 5, adminDist: 2, armyOverhead: 10,
-  supplyPerUnitHop: 1,
-  fortUpkeep: { walls: [0, 1, 2, 4, 8], barracks: 3, port: 2, granary: 1 },
+  taxPer1k: 2.4, marketPer1k: 0.8, capital: 12, unrestK: 0.4,
+  garrisonPerMan: 0.04,
+  upkeepMul: 2.2, mercMul: 1.8,
+  // الإدارة تتصاعد: كل مدينة بعد المجانية أغلى من التي قبلها، والبعد عن العاصمة يزيدها
+  adminFree: 6, adminBase: 4, adminStep: 2, adminDist: 2, armyOverhead: 12,
+  supplyPerUnitHop: 2,
+  fortUpkeep: { walls: [0, 1, 3, 6, 12], barracks: 4, port: 3, granary: 2 },
   foodCap: 300, foodSale: 0.5,
 };
 const INIT_DIPLO = {
   threeKingdoms: [['wei', 'shu', 'war'], ['wei', 'wu', 'war'], ['shu', 'wu', 'peace']],
-  umayyad: [['umayyad', 'byzantine', 'war'], ['umayyad', 'khazar', 'war'], ['byzantine', 'khazar', 'alliance']],
+  umayyad: [['umayyad', 'byzantine', 'war'], ['umayyad', 'khazar', 'war'], ['byzantine', 'khazar', 'alliance', true]],
 };
 const GENERIC_NAMES = ['عامر', 'خالد', 'منصور', 'ثابت', 'حمزة', 'سالم', 'نصر', 'ليث', 'زياد', 'مالك', 'حارث', 'عتبة', 'رافع', 'عمرو'];
 const MAX_REGS = 8;
@@ -56,15 +58,16 @@ const Game = {
       const A = S.factions[a];
       A.status[b] = 'peace'; A.rel[b] = 5; A.truce[b] = 0; A.warTurns[b] = 0;
     }
-    for (const [a, b, st] of INIT_DIPLO[scId] || []) {
+    for (const [a, b, st, trade] of INIT_DIPLO[scId] || []) {
       this.setStatus(a, b, st, 0);
       const r = st === 'war' ? -40 : st === 'alliance' ? 50 : 15;
       S.factions[a].rel[b] = r; S.factions[b].rel[a] = r;
+      if (trade) this.setTreaty(a, b, 'trade', true);
     }
     for (const n of sc.nodes) {
       S.nodes.push({
         id: n.id, name: n.name, x: n.x, y: n.y, owner: n.owner, origOwner: n.owner, pop: n.pop,
-        walls: n.walls, market: 0, farm: 0, granary: 0, roads: 0, port: 0, barracks: n.capital ? 1 : 0,
+        walls: n.walls, market: n.market || 0, farm: 0, granary: 0, roads: 0, port: 0, barracks: n.capital ? 1 : 0,
         loyalty: 75, capital: !!n.capital, terrain: n.terrain, stores: 3 + n.walls, garrison: [],
         capturedTurn: -99, unrest: 0, manpower: 0, parley: -1, built: -1, festival: -99,
       });
@@ -642,6 +645,8 @@ const Game = {
     }
     return Math.round(t);
   },
+  // رواتب حامية المدينة: رجال ثابتون يُدفع لهم كل دور
+  garrisonUpkeep(n) { return n.owner === 'neutral' ? 0 : Math.round(this.menOf(n.garrison) * ECON.garrisonPerMan); },
   unitUpkeep(r) { return Math.round((UNITS[r.type].upkeep || 0) * ECON.upkeepMul * (r.merc ? ECON.mercMul : 1)); },
   // صيانة المباني: الأسوار العالية والإسطبلات والموانئ تحتاج رجالاً وخشباً كل دور
   buildUpkeep(n) {
@@ -659,8 +664,10 @@ const Game = {
     const out = [];
     if (ns.length <= ECON.adminFree) return out;
     const withD = ns.map((n) => ({ n, d: this.capitalDist(n) })).sort((a, b) => a.d - b.d);
+    let k = 0;
     for (const { n, d } of withD.slice(ECON.adminFree)) {
-      let c = ECON.adminBase + ECON.adminDist * Math.max(0, d - 2);
+      k++;
+      let c = ECON.adminBase + ECON.adminStep * k + ECON.adminDist * Math.max(0, d - 2);
       const gov = this.governorAt(n);
       if (gov) c = Math.round(c / 2);
       out.push({ n, d, c, gov: !!gov });
@@ -695,7 +702,7 @@ const Game = {
   economy(fid) {
     const f = this.f(fid);
     const inc = { tax: 0, market: 0, food: 0, route: 0, trade: 0, tribute: 0 };
-    const exp = { army: 0, merc: 0, wages: 0, supply: 0, admin: 0, forts: 0, overhead: 0 };
+    const exp = { army: 0, merc: 0, wages: 0, garrison: 0, supply: 0, admin: 0, forts: 0, overhead: 0 };
     let food = 0, eat = 0;
     const nodes = this.nodesOf(fid);
     for (const n of nodes) {
@@ -703,6 +710,7 @@ const Game = {
       inc.tax += st.tax; inc.market += st.market;
       food += this.cityFood(n);
       exp.forts += this.buildUpkeep(n);
+      exp.garrison += this.garrisonUpkeep(n);
     }
     const armies = this.armiesOf(fid);
     for (const a of armies) {
@@ -729,7 +737,7 @@ const Game = {
     inc.food = Math.round(over * ECON.foodSale);
     for (const k in exp) exp[k] = Math.round(exp[k]);
     const income = inc.tax + inc.market + inc.food + inc.route + inc.trade + Math.max(0, inc.tribute);
-    const expense = exp.army + exp.merc + exp.wages + exp.supply + exp.admin + exp.forts + exp.overhead + Math.max(0, -inc.tribute);
+    const expense = exp.army + exp.merc + exp.wages + exp.garrison + exp.supply + exp.admin + exp.forts + exp.overhead + Math.max(0, -inc.tribute);
     const netGold = income - expense;
     return {
       inc, exp, income, expense, netGold, food, eat, netFood,
@@ -1628,11 +1636,18 @@ const Game = {
       }
       f.food = Math.min(f.food, ECON.foodCap);
       if (f.gold < 0) {
-        const all = this.armiesOf(id).flatMap((a) => a.regs.map((r) => ({ a, r })));
-        const pickR = all.find((x) => x.r.merc) || all.sort((x, y) => (UNITS[y.r.type].upkeep || 0) - (UNITS[x.r.type].upkeep || 0))[0];
-        if (pickR) {
+        // الجنود بلا رواتب يرحلون: المرتزقة أولاً ثم الأغلى، حتى يعود الصافي موجباً (ثلاث وحدات على الأكثر في الدور)
+        const gone = [];
+        for (let k = 0; k < 3; k++) {
+          const all = this.armiesOf(id).flatMap((a) => a.regs.map((r) => ({ a, r })));
+          const pickR = all.find((x) => x.r.merc) || all.sort((x, y) => this.unitUpkeep(y.r) - this.unitUpkeep(x.r))[0];
+          if (!pickR) break;
           pickR.a.regs.splice(pickR.a.regs.indexOf(pickR.r), 1);
-          if (f.isPlayer) { notes.push('الخزينة فارغة'); this.alert('crit', `الخزينة فارغة: تسرّحت وحدة ${UNITS[pickR.r.type].name}${pickR.r.merc ? ' من المرتزقة' : ''}`, { icon: 'gold', key: 'broke' }); }
+          gone.push(UNITS[pickR.r.type].name + (pickR.r.merc ? ' (مرتزقة)' : ''));
+          if (this.economy(id).netGold >= 0) break;
+        }
+        if (gone.length) {
+          if (f.isPlayer) { notes.push('الخزينة فارغة'); this.alert('crit', `الخزينة فارغة: رحل جنود لم يُدفع لهم (${gone.join('، ')})`, { icon: 'gold', key: 'broke' }); }
           this.event('eco', `${f.name} عاجزة عن دفع الرواتب وتسرّح جنوداً.`, { fids: [id], imp: 1 });
         }
         for (const n of this.nodesOf(id)) n.loyalty = Math.max(0, n.loyalty - 3);

@@ -153,7 +153,7 @@ const Explain = {
       ['الضرائب', gl(I.tax), 'pos'], I.market ? ['الأسواق', gl(I.market), 'pos'] : null, I.food ? ['بيع فائض الطعام', gl(I.food), 'pos'] : null,
       I.route ? ['القوافل', gl(I.route), 'pos'] : null, I.trade ? ['اتفاقات التجارة', gl(I.trade), 'pos'] : null, I.tribute > 0 ? ['الجزية', gl(I.tribute), 'pos'] : null,
       ['الدخل', gl(e.income), 'sum'],
-      ['الجيوش', '−' + X.army, 'neg'], X.merc ? ['المرتزقة', '−' + X.merc, 'neg'] : null, ['رواتب القادة', '−' + X.wages, 'neg'],
+      ['الجيوش', '−' + X.army, 'neg'], X.merc ? ['المرتزقة', '−' + X.merc, 'neg'] : null, ['رواتب القادة', '−' + X.wages, 'neg'], X.garrison ? ['حاميات المدن', '−' + X.garrison, 'neg'] : null,
       X.supply ? ['الإمداد خارج أرضك', '−' + X.supply, 'neg'] : null, X.admin ? ['إدارة المدن البعيدة', '−' + X.admin, 'neg'] : null,
       X.forts ? ['صيانة التحصينات والمباني', '−' + X.forts, 'neg'] : null, X.overhead ? ['جيوش أكثر من مدنك', '−' + X.overhead, 'neg'] : null, I.tribute < 0 ? ['جزية تدفعها', gl(I.tribute), 'neg'] : null,
       ['المصروفات', '−' + e.expense, 'sum'], ['الصافي', gl(e.netGold), 'sum'],
@@ -174,11 +174,11 @@ const Explain = {
     const n = Game.nodesOf(fid).length;
     const tot = list.reduce((t, c) => t + c.c, 0);
     const x = { icon: 'map', title: 'ضغط الاتساع', value: tot ? `−${tot} كل دور` : 'لا كلفة بعد' };
-    x.state = `كلما اتسعت المملكة بعيداً عن مركز الحكم ارتفعت كلفة الإدارة وضعف ولاء الأطراف. أول ${ECON.adminFree} مدن بلا كلفة إدارة، ولديك ${n}.`;
+    x.state = `كلما اتسعت المملكة بعيداً عن مركز الحكم ارتفعت كلفة الإدارة وضعف ولاء الأطراف. أول ${ECON.adminFree} مدن بلا كلفة، وكل مدينة بعدها أغلى من التي قبلها. لديك ${n}.`;
     x.from = list.length ? [...list.slice().sort((a, b) => b.c - a.c).slice(0, 8).map((c) => [`${c.n.name} (${c.d} خطوات${c.gov ? '، لها حاكم' : ''})`, '−' + c.c, 'neg']), list.length > 8 ? [`و${list.length - 8} مدن أخرى`, ''] : null, ['المجموع', '−' + tot, 'sum']].filter(Boolean) : null;
     x.now = [['ولاء كل مدنك', n > 7 ? '−' + Math.round((n - 7) * 2.5) : 'لا أثر', n > 7 ? 'neg' : ''], ['ولاء المدن الأبعد من 3 خطوات', 'حتى −12']];
     x.improve = ['الحاكم يخفض كلفة إدارة مدينته إلى النصف ويرفع ولاءها.', 'المدن القريبة من العاصمة أرخص إدارة.', 'التابعون يدفعون الجزية دون كلفة إدارة.'];
-    x.adv = [['مدن بلا كلفة', ECON.adminFree], ['كلفة المدينة', `${ECON.adminBase} + ${ECON.adminDist} لكل خطوة بعد الثانية`]];
+    x.adv = [['مدن بلا كلفة', ECON.adminFree], ['كلفة المدينة رقم ك بعدها', `${ECON.adminBase} + ${ECON.adminStep}×ك + ${ECON.adminDist} لكل خطوة بعد الثانية`]];
     return x;
   },
 

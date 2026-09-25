@@ -130,7 +130,7 @@ const BASE_MP = 4;
 
 const BUILDINGS = {
   walls: { name: 'أسوار', icon: 'wall', max: 4, cost: (lvl) => [180, 300, 450, 750][lvl], desc: 'تفرض الحصار وتضاعف كلفة الاقتحام. الرابع قلعة عظمى.' },
-  market: { name: 'سوق', icon: 'market', max: 3, cost: (lvl) => [150, 300, 550][lvl], desc: '+40٪ دخل لكل مستوى، وتجارة أكثر' },
+  market: { name: 'سوق', icon: 'market', max: 3, cost: (lvl) => [300, 500, 800][lvl], desc: 'دخل إضافي يزيد مع حجم المدينة، وتجارة أكثر، وولاء +2' },
   farm: { name: 'مزارع', icon: 'farm', max: 2, cost: (lvl) => [120, 240][lvl], desc: '+6 طعام، سكان وقوى بشرية أكثر' },
   granary: { name: 'مخازن', icon: 'granary', max: 2, cost: (lvl) => [140, 280][lvl], desc: '+3 أدوار صمود في الحصار، +3 سعة إمداد' },
   barracks: { name: 'إسطبلات وورش', icon: 'horseshoe', max: 1, cost: () => 220, desc: 'تتيح الخيالة والمنجنيق، وتدريب الجيوش المقيمة' },
@@ -253,7 +253,7 @@ const SCENARIOS = {
       { id: 'wan', name: 'وان', x: 560, y: 260, owner: 'wei', pop: 13000, walls: 1, terrain: 'plains' },
       { id: 'xiangyang', name: 'شيانغيانغ', x: 520, y: 345, owner: 'wei', pop: 20000, walls: 2, terrain: 'river' },
       { id: 'hefei', name: 'خفي', x: 780, y: 300, owner: 'wei', pop: 12000, walls: 2, terrain: 'plains' },
-      { id: 'jianye', name: 'جيانيه', x: 900, y: 420, owner: 'wu', pop: 32000, walls: 3, capital: true, terrain: 'river' },
+      { id: 'jianye', name: 'جيانيه', x: 900, y: 420, owner: 'wu', pop: 32000, walls: 3, capital: true, terrain: 'river', market: 1 },
       { id: 'chaisang', name: 'تشايسانغ', x: 690, y: 450, owner: 'wu', pop: 15000, walls: 2, terrain: 'river' },
       { id: 'yuzhang', name: 'يوجانغ', x: 740, y: 560, owner: 'wu', pop: 13000, walls: 1, terrain: 'forest' },
       { id: 'kuaiji', name: 'كوايجي', x: 900, y: 570, owner: 'wu', pop: 16000, walls: 1, terrain: 'coast' },
@@ -353,7 +353,7 @@ const SCENARIOS = {
       { id: 'derbent', name: 'باب الأبواب', x: 870, y: 260, owner: 'khazar', pop: 11000, walls: 3, terrain: 'mountains' },
       { id: 'balanjar', name: 'بلنجر', x: 860, y: 150, owner: 'khazar', pop: 13000, walls: 1, terrain: 'plains' },
       { id: 'samandar', name: 'سمندر', x: 930, y: 200, owner: 'khazar', pop: 10000, walls: 1, terrain: 'coast' },
-      { id: 'atil', name: 'إتل', x: 940, y: 70, owner: 'khazar', pop: 28000, walls: 2, capital: true, terrain: 'river' },
+      { id: 'atil', name: 'إتل', x: 940, y: 70, owner: 'khazar', pop: 28000, walls: 2, capital: true, terrain: 'river', market: 1 },
     ],
     edges: [
       ['constantinople', 'nicaea'], ['nicaea', 'amorium'], ['nicaea', 'ancyra'], ['amorium', 'ancyra'], ['amorium', 'caesarea'],

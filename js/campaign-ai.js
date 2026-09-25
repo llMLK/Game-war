@@ -418,7 +418,7 @@ const CampaignAI = {
         }
         if (f.gold - UNITS[type].cost < reserve) break;
         Game.recruit(fid, n, type, a.id);
-        net -= UNITS[type].upkeep;
+        net -= Game.unitUpkeep({ type });
       }
     }
   },
