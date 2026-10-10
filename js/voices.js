@@ -80,34 +80,21 @@ const Voices = {
     return { text: c[0][1], why: c[0][2], g };
   },
 
-  // ——— الصياغة الاختيارية بالذكاء الاصطناعي (داخل Claude فقط) ———
-  sampler: null,
-  async init() {
-    try {
-      if (!window.claude || !window.claude.use) return;
-      const s = await window.claude.use('sample');
-      if (s) this.sampler = s;
-    } catch (e) { this.sampler = null; }
-  },
-  facts(g) {
-    const rec = g.rec || {};
-    return [`الاسم: ${g.name}`, `المملكة: ${Game.fname(g.fid)}`, `الموهبة: ${ARCH[g.arch || 'none'].name}`, g.flaw ? `العيب: ${FLAWS[g.flaw].name}` : null,
-      `الولاء: ${g.loy}`, `المعارك: ${rec.battles || 0}، الانتصارات: ${rec.wins || 0}`, (g.titles || []).length ? `الألقاب: ${g.titles.map((t) => t.t).join('، ')}` : null,
-      ...(g.mem || []).slice(-5).map((m) => `ذكرى: ${m.text}`)].filter(Boolean);
-  },
+  // Optional future text adapter. The game always works offline and never discovers a paid API.
+  adapter: null,
+  init() {},
+  setAdapter(adapter) { this.adapter = typeof adapter === 'function' ? adapter : null; },
   async rephrase(line) {
-    if (!this.sampler || !line) return null;
-    const prompt = [
-      'أنت كاتب حوار للعبة استراتيجية تاريخية بالعربية الفصحى.',
-      'أعد صياغة جملة القائد التالية بصوته في جملة أو جملتين قصيرتين.',
-      'قواعد صارمة: لا تضف أي حقيقة أو اسم أو رقم أو حدثاً غير موجود في الجملة أو الوقائع. لا تستخدم الشرطة الطويلة. لا رموز تعبيرية.',
-      'الوقائع:', ...this.facts(line.g), `الجملة: ${line.text}`, 'أعد الجملة الجديدة فقط.',
-    ].join('\n');
-    try {
-      const r = await this.sampler(prompt, { modelTier: 'quick' });
-      const t = (r && r.text || '').trim().replace(/—/g, '،');
-      return t && t.length < 280 ? t : null;
-    } catch (e) { return null; }
+    if (!line || !this.adapter) return line?.text || null;
+    try { const t = await this.adapter({text:line.text, context:line.why, name:line.g.name}); return typeof t === 'string' && t.length <= 280 ? t : line.text; }
+    catch { return line.text; }
   },
 };
-window.addEventListener('load', () => { Voices.init(); });
+const legacyLeaderVoice = Voices.current.bind(Voices);
+Voices.current = function(g) {
+  const request = g?.ask;
+  if (request) return {text:Game.leaderRequestText(request), why:'طلب ينتظر جوابك', g};
+  const last=g?.dialogue?.at(-1);
+  if(last&&Game.S.turn-last.turn<=12)return {...last,g};
+  return legacyLeaderVoice(g) || (g ? {text:Game.leaderIdentity(g).need+'؛ هذا ما أطلبه من خدمتي.',why:'ما يهمّه في المجلس',g} : null);
+};

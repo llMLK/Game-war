@@ -1,0 +1,426 @@
+{
+  "checks": [
+    {
+      "viewport": [
+        1440,
+        900
+      ],
+      "treasury": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "ledger": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "explanation": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "investment": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "building": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "caravan": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "caravanSegments": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "occupation": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "aman": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      }
+    },
+    {
+      "viewport": [
+        1024,
+        768
+      ],
+      "treasury": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "ledger": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "explanation": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "investment": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "building": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "caravan": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "caravanSegments": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "occupation": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "aman": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "treasury": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "ledger": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "explanation": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "investment": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "building": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "caravan": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "caravanSegments": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "occupation": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "aman": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "treasury": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "ledger": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "explanation": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "investment": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "building": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "caravan": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "caravanSegments": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "occupation": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "aman": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "treasury": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "ledger": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "explanation": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "investment": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "building": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "caravan": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "caravanSegments": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "occupation": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "aman": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "treasury": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "ledger": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "explanation": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "investment": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "building": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "caravan": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "caravanSegments": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "occupation": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "aman": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "treasury": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "ledger": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "explanation": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "investment": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "building": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "caravan": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "caravanSegments": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "occupation": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      },
+      "aman": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44
+      }
+    }
+  ],
+  "saveReloads": 2,
+  "errors": []
+}

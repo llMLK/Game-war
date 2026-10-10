@@ -1,4 +1,13 @@
 'use strict';
+// Shared by the atlas data, terrain renderer and terrain inspection.
+function pip(poly, x, y) {
+  let inside = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const [xi, yi] = poly[i], [xj, yj] = poly[j];
+    if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) inside = !inside;
+  }
+  return inside;
+}
 // أدوات عامة مشتركة بين كل أجزاء اللعبة
 
 const TAU = Math.PI * 2;

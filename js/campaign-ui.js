@@ -3,8 +3,11 @@
 
 class CampaignScene {
   constructor() {
+    mapDimensions(Game.sc);
     this.cam = new Camera(MW, MH);
-    this.cam.cover = true;
+    this.cam.safeFrame = true;
+    const xs=Game.sc.nodes.map(n=>n.x),ys=Game.sc.nodes.map(n=>n.y);
+    this.atlasFrame={x:(Math.min(...xs)+Math.max(...xs))/2,y:(Math.min(...ys)+Math.max(...ys))/2,w:Math.max(...xs)-Math.min(...xs)+110,h:Math.max(...ys)-Math.min(...ys)+110};
     this.selArmy = null;
     this.selNode = null;
     this.busy = false;
@@ -33,17 +36,20 @@ class CampaignScene {
     UndoBar.el = null; UndoBar.show();
   }
   exit() { Help.hide(); App.ui.innerHTML = ''; }
-  onResize() { this.fitCam(true); }
+  onResize() { AlertsUI.render();this.fitCam(true); }
 
   fitCam(keep) {
     const c = this.cam, ox = c.x, oy = c.y, oz = c.z;
-    const cover = Math.max(App.W / MW, App.H / MH);
-    c.minZ = cover;
-    c.maxZ = Math.max(3.2, cover * 4);
+    this.updatePads();
+    const frame=this.atlasFrame||{w:MW,h:MH};
+    const fit = Math.min((App.W-c.padLeft-c.padRight-24)/frame.w,(App.H-c.padTop-c.padBottom-24)/frame.h);
+    c.minZ = Math.max(.12,fit);
+    c.maxZ = 3.6;
     if (keep) { c.z = clamp(oz, c.minZ, c.maxZ); c.x = ox; c.y = oy; c.clamp(); return; }
     const cap = Game.nodesOf(this.P).find((n) => n.capital) || Game.nodesOf(this.P)[0];
-    c.z = clamp(cover * 1.55, c.minZ, c.maxZ);
-    if (cap) { c.x = cap.x; c.y = cap.y; }
+    c.z = clamp(App.H>App.W ? 1.45 : Math.max(1.15,Math.min(1.55,App.W/950)), c.minZ, c.maxZ);
+    const v=this.visCenter();
+    if (cap) { c.x = cap.x-(v.x-App.W/2)/c.z; c.y = cap.y-(v.y-App.H/2)/c.z; }
     c.clamp();
   }
 
@@ -65,7 +71,16 @@ class CampaignScene {
       bottom = App.H - this.hud.end.getBoundingClientRect().top + 4;
       if (sh) right = App.W - sh.getBoundingClientRect().left + 6;
     }
-    c.padTop = top; c.padBottom = bottom; c.padRight = right; c.padLeft = left;
+    const alerts=this.root.querySelector('.alerts');
+    if(alerts)alerts.style.top=(top+3)+'px';
+    if(alerts && alerts.childElementCount) top=Math.max(top,alerts.getBoundingClientRect().bottom+6);
+    const dock=this.root.querySelector('.dock');
+    if(dock&&!dock.hidden) bottom=Math.max(bottom,App.H-dock.getBoundingClientRect().top+4);
+    c.padTop = top; c.padBottom = bottom+52; c.padRight = right; c.padLeft = left;
+    const frame=this.atlasFrame||{w:MW,h:MH};
+    c.minZ=Math.max(.1,Math.min((App.W-left-right-24)/frame.w,(App.H-top-c.padBottom-24)/frame.h));
+    this.root.style.setProperty('--map-top',top+'px');
+    this.root.style.setProperty('--map-bottom',bottom+'px');
   }
   // نقطة الخريطة التي تقع في وسط المساحة المكشوفة
   visCenter() {
@@ -104,7 +119,7 @@ class CampaignScene {
   render(ctx) {
     const S = Game.S, d = App.dpr, cam = this.cam, art = this.art, t = this.t;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.fillStyle = '#2b2217'; ctx.fillRect(0, 0, App.canvas.width, App.canvas.height);
+    ctx.fillStyle = '#c5b48d'; ctx.fillRect(0, 0, App.canvas.width, App.canvas.height);
     art.renderTerritory(S.nodes);
     cam.apply(ctx);
     ctx.imageSmoothingEnabled = true;
@@ -122,6 +137,8 @@ class CampaignScene {
     for (const e of Game.sc.edges) {
       const [a, b, kind = 'road'] = e;
       const A = Game.node(a), B = Game.node(b);
+      const points=this.routePoints(e);
+      const roadPath=()=>{ctx.beginPath();ctx.moveTo(...points[0]);for(const p of points.slice(1))ctx.lineTo(...p);};
       const hl = onPath.has(a + '|' + b);
       const paved = (A.roads || B.roads);
       ctx.setLineDash([]);
@@ -132,10 +149,15 @@ class CampaignScene {
         ctx.strokeStyle = hl ? 'rgba(255,215,110,.95)' : 'rgba(95,55,30,.8)'; ctx.lineWidth = hl ? 3 : 2; ctx.setLineDash([6, 2.5, 1.5, 2.5]);
       } else if (paved) {
         ctx.strokeStyle = 'rgba(70,52,30,.55)'; ctx.lineWidth = hl ? 4.4 : 3.4;
-        ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
+        roadPath(); ctx.stroke();
         ctx.strokeStyle = hl ? 'rgba(255,215,110,.95)' : 'rgba(215,195,150,.95)'; ctx.lineWidth = hl ? 2.6 : 1.9;
       } else { ctx.setLineDash([3.5, 3]); ctx.strokeStyle = hl ? 'rgba(255,215,110,.95)' : 'rgba(95,65,35,.62)'; ctx.lineWidth = hl ? 2.8 : 1.5; }
-      ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
+      roadPath(); ctx.stroke();
+      if(kind==='water') {
+        ctx.setLineDash([2,3]);ctx.strokeStyle='rgba(82,68,43,.65)';ctx.lineWidth=1;
+        for(const n of [A,B]){const def=Game.sc.nodes.find(d=>d.id===n.id);if(def.landing){ctx.beginPath();ctx.moveTo(n.x,n.y);ctx.lineTo(...def.landing);ctx.stroke();drawIcon(ctx,'anchor',...def.landing,9,'#244f5a');}}
+        const p=this.pointOnRoute(points,.52);drawIcon(ctx,'ship',p[0],p[1],9,hl?'#ffe3a3':'#d2ded0',{outline:'#365d65'});
+      }
     }
     ctx.setLineDash([]);
 
@@ -158,6 +180,8 @@ class CampaignScene {
     // المستوطنات
     const order = [...S.nodes].sort((a, b) => a.y - b.y);
     for (const n of order) {
+      const sp=cam.toScreen(n.x,n.y);
+      if(sp.x < -100 || sp.y < -100 || sp.x > App.W+100 || sp.y > App.H+100) continue;
       const si = this.siegeInfo[n.id];
       art.drawNode(ctx, n, { color: Game.f(n.owner).color, siege: !!si, t, scars: Game.scarsAt(n.id), age });
       if (si) art.drawSiegeCamp(ctx, n, si);
@@ -189,13 +213,25 @@ class CampaignScene {
     ctx.setTransform(d, 0, 0, d, 0, 0);
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     this.hits = [];
+    this.labelBoxes = [];
+    this.markerBoxes = [];this.armyDraws=[];
+    this.focusLabelBox=null;
+    if(this.selNode&&this.inView(this.selNode.x,this.selNode.y,8)){
+      const n=this.selNode,p=cam.toScreen(n.x,n.y);ctx.font=`${n.capital?'700':'600'} ${n.capital?14:13}px "Noto Naskh Arabic", Tahoma, sans-serif`;
+      const w=ctx.measureText(n.name).width+22+(n.capital?12:0);
+      this.focusLabelBox={x:clamp(p.x-w/2,cam.padLeft+4,App.W-cam.padRight-w-4),y:clamp(p.y+art.rad(n)*cam.z+3,cam.padTop+4,App.H-cam.padBottom-26),w,h:22};
+    }
+    this.visibleLabels = [];
     this.badges = {};
     for (const m of marks) if (m.node) (this.badges[m.node] = this.badges[m.node] || []).push(m);
-    for (const n of S.nodes) {
+    const labelOrder=[...S.nodes].sort((a,b)=>this.labelPriority(b)-this.labelPriority(a));
+    for(const n of labelOrder)if(this.inView(n.x,n.y,8))this.drawArmiesAt(ctx,n,true);
+    for (const n of labelOrder) {
       const s = cam.toScreen(n.x, n.y);
+      if(s.x < -40 || s.y < -40 || s.x > App.W+40 || s.y > App.H+40) continue;
       const R = art.rad(n) * cam.z;
-      this.hits.push({ kind: 'node', n, x: s.x, y: s.y, r: Math.max(20, R + 4) });
-      this.namePlate(ctx, n, s.x, s.y + R + 9);
+      this.hits.push({ kind: 'node', n, x: s.x, y: s.y, r: Math.max(16, R + 4) });
+      this.placeName(ctx,n,s,R);
       const si = this.siegeInfo[n.id];
       if (si) this.siegePlate(ctx, n, si, s.x, s.y - R - 22);
       if (reach[n.id] && this.selArmy) {
@@ -210,7 +246,7 @@ class CampaignScene {
         ctx.font = '700 11px sans-serif'; ctx.fillStyle = '#ffe38a'; ctx.direction = 'ltr'; ctx.fillText('−' + cost, s.x + 6, y + 0.5); ctx.direction = 'inherit';
       }
     }
-    for (const n of S.nodes) this.drawArmiesAt(ctx, n);
+    for(const m of this.armyDraws){if(m.a)this.drawArmy(ctx,m.a,m.x,m.y);else{ctx.fillStyle='#24362c';this.rrect(ctx,m.x-19,m.y-14,38,28,4);ctx.fill();ctx.fillStyle='#f0dfad';ctx.font='700 13px sans-serif';ctx.fillText('+'+m.extra,m.x,m.y);}}
     for (const m of marks) if (m.kind === 'threat') this.threatMarker(ctx, m);
     // علامات القوافل: المقطع المتوقف علامة حمراء تفتح أسبابه، والنشط تفتحه لمسة على الجمال
     for (const rm of this.routeMarks || []) {
@@ -224,7 +260,38 @@ class CampaignScene {
     }
   }
 
+  labelPriority(n) {return (this.selNode===n?1000:0)+(this.siegeInfo[n.id]?500:0)+(this.reach&&this.reach[n.id]?250:0)+(n.capital?150:0)+(Game.armiesAt(n.id).length?80:0)+(n.owner===this.P?15:0)+n.pop/10000;}
+  placeName(ctx,n,p,R) {
+    const important=this.labelPriority(n)>=80;
+    if(this.cam.z<.55&&!important)return;
+    ctx.font=`${n.capital?'700':'600'} ${n.capital?14:13}px "Noto Naskh Arabic", Tahoma, sans-serif`;
+    const w=ctx.measureText(n.name).width+22+(n.capital?12:0), hh=22;
+    const positions=[[p.x,p.y+R+14],[p.x,p.y-R-14],[p.x+w/2+R+7,p.y],[p.x-w/2-R-7,p.y],[p.x,p.y+R+38]];
+    const c=this.cam;
+    if(this.selNode===n&&this.focusLabelBox)positions.unshift([this.focusLabelBox.x+w/2,this.focusLabelBox.y+hh/2]);
+    if(this.selNode===n){const x=clamp(p.x,c.padLeft+w/2+4,App.W-c.padRight-w/2-4);positions.push([x,App.H-c.padBottom-hh/2-4],[x,c.padTop+hh/2+4]);}
+    for(const [x,y] of positions) {
+      const box={x:x-w/2,y:y-hh/2,w,h:hh};
+      if(box.x<c.padLeft+4||box.x+w>App.W-c.padRight-4||box.y<c.padTop+3||box.y+hh>App.H-c.padBottom-3)continue;
+      if([...this.labelBoxes,...this.markerBoxes].some(b=>box.x<b.x+b.w+4&&box.x+w+4>b.x&&box.y<b.y+b.h+3&&box.y+hh+3>b.y))continue;
+      this.labelBoxes.push(box);this.visibleLabels.push(n.id);
+      if(Math.abs(x-p.x)>5||Math.abs(y-p.y)>R+20){ctx.strokeStyle='rgba(61,48,30,.55)';ctx.lineWidth=.8;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(x,y);ctx.stroke();}
+      this.namePlate(ctx,n,x,y);
+      this.hits.push({kind:'node',n,x,y,r:0,box});
+      break;
+    }
+  }
+
   // ——— طريق القوافل: شريط ذهبي وقوافل تتحرك، وأحمر متقطع حيث انقطع ———
+  routePoints(e) {
+    const a=Game.node(e[0]),b=Game.node(e[1]);
+    const landing=n=>e[2]==='water'&&Game.sc.nodes.find(d=>d.id===n.id).landing||[n.x,n.y];
+    return [landing(a),...(e[3]||[]),landing(b)];
+  }
+  pointOnRoute(points,f) {
+    const lengths=points.slice(1).map((b,i)=>Math.hypot(b[0]-points[i][0],b[1]-points[i][1]));let t=lengths.reduce((a,b)=>a+b,0)*f;
+    for(let i=0;i<lengths.length;i++){if(t<=lengths[i]||i===lengths.length-1){const k=t/(lengths[i]||1);return [lerp(points[i][0],points[i+1][0],k),lerp(points[i][1],points[i+1][1],k)];}t-=lengths[i];}return points[0];
+  }
   drawRoute(ctx) {
     this.routeMarks = [];
     const r = Game.S.route;
@@ -232,19 +299,23 @@ class CampaignScene {
     for (let i = 0; i < r.path.length - 1; i++) {
       const A = Game.node(r.path[i]), B = Game.node(r.path[i + 1]);
       if (!A || !B) continue;
+      const edge=Game.sc.edges.find(e=>e[0]===A.id&&e[1]===B.id||e[1]===A.id&&e[0]===B.id);
+      if(!edge)continue;
+      const points=this.routePoints(edge);if(edge[0]!==A.id)points.reverse();
       const ok = !r.dead && Game.routeSegOk(A.id, B.id);
       ctx.lineCap = 'round';
       ctx.setLineDash(ok ? [] : [5, 6]);
       ctx.strokeStyle = ok ? 'rgba(214,168,62,.42)' : 'rgba(160,60,40,.38)';
       ctx.lineWidth = ok ? 6.5 : 4;
-      ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
+      ctx.beginPath();ctx.moveTo(...points[0]);for(const p of points.slice(1))ctx.lineTo(...p);ctx.stroke();
       ctx.setLineDash([]);
-      (this.routeMarks = this.routeMarks || []).push({ x: (A.x + B.x) / 2, y: (A.y + B.y) / 2, ok });
+      const mid=this.pointOnRoute(points,.5);
+      this.routeMarks.push({x:mid[0],y:mid[1],ok});
       if (!ok) continue;
       const len = Math.hypot(B.x - A.x, B.y - A.y) || 1;
       for (let k = 0; k < 2; k++) {
         const f = ((this.t * 9) / len + i * 0.37 + k * 0.5) % 1;
-        drawIcon(ctx, 'camel', lerp(A.x, B.x, f), lerp(A.y, B.y, f) - 2.5, 7.5, '#5e3f18', { outline: 'rgba(255,240,205,.9)' });
+        const p=this.pointOnRoute(points,f);drawIcon(ctx,edge[2]==='water'?'ship':'camel',p[0],p[1]-2.5,7.5,'#5e3f18',{outline:'rgba(255,240,205,.9)'});
       }
     }
   }
@@ -301,9 +372,9 @@ class CampaignScene {
 
   namePlate(ctx, n, x, y) {
     const cap = n.capital;
-    ctx.font = `${cap ? '700 ' : '600 '}${cap ? 12.5 : 11.5}px "Noto Naskh Arabic", Tahoma, sans-serif`;
+    ctx.font = `${cap ? '700 ' : '600 '}${cap ? 14 : 13}px "Noto Naskh Arabic", Tahoma, sans-serif`;
     const tw = ctx.measureText(n.name).width;
-    const w = tw + 14 + (cap ? 12 : 0), h2 = 17;
+    const w = tw + 18 + (cap ? 12 : 0), h2 = 22;
     const own = n.owner === this.P;
     const besieged = !!this.siegeInfo[n.id];
     ctx.fillStyle = 'rgba(0,0,0,.25)'; this.rrect(ctx, x - w / 2 + 1, y - h2 / 2 + 1.5, w, h2, 5); ctx.fill();
@@ -373,21 +444,30 @@ class CampaignScene {
         show = show.slice(0, max - 1);
         if (sel && !show.includes(sel)) show[show.length - 1] = sel;
       }
-      const W = 30, gap = 3;
-      const total = show.length * (W + gap) + (extra ? 22 : 0) - gap;
+      const W = 52, gap = 5;
+      const total = show.length * (W + gap) + (extra ? 42 : 0) - gap;
+      const c=this.cam;
+      cx=clamp(cx,c.padLeft+total/2+5,App.W-c.padRight-total/2-5);
+      cy=clamp(cy,c.padTop+24,App.H-c.padBottom-24);
+      if(Math.abs(cy-s.y)<R+20&&s.x-R-total-10>c.padLeft){cx=s.x-R-total/2-9;cy=clamp(s.y,c.padTop+24,App.H-c.padBottom-24);}
+      const avoid=[...this.markerBoxes,...(this.focusLabelBox?[this.focusLabelBox]:[])];
+      const clash=y=>avoid.some(b=>cx-total/2<b.x+b.w+3&&cx+total/2>b.x-3&&y-20<b.y+b.h+3&&y+20>b.y-3);
+      for(const y of [cy,cy-43,cy+43,c.padTop+24,App.H-c.padBottom-24])if(Math.abs(y-cy)<=48&&y>=c.padTop+24&&y<=App.H-c.padBottom-24&&!clash(y)){cy=y;break;}
       let x = cx - total / 2 + W / 2;
       for (const a of show) {
-        this.drawArmy(ctx, a, x, cy);
-        this.hits.push({ kind: 'army', a, x, y: cy, r: 17 });
+        const box={x:x-W/2,y:cy-20,w:W,h:40};
+        if(Math.hypot(x-s.x,cy-s.y)>R+30){ctx.strokeStyle='rgba(49,60,42,.5)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(x,cy);ctx.stroke();}
+        this.markerBoxes.push(box);this.armyDraws.push({a,x,y:cy});
+        this.hits.push({ kind: 'army', a, x, y: cy, r: 0,box });
         x += W + gap;
       }
       if (extra) {
-        ctx.fillStyle = 'rgba(20,14,8,.85)'; this.rrect(ctx, x - W / 2 + 1, cy - 9, 20, 16, 5); ctx.fill();
-        ctx.fillStyle = '#ffe38a'; ctx.font = '700 11px sans-serif'; ctx.fillText('+' + extra, x - W / 2 + 11, cy - 1);
-        this.hits.push({ kind: 'node', n, x: x - W / 2 + 11, y: cy, r: 14 });
+        const bx=x-W/2+21,box={x:bx-21,y:cy-20,w:42,h:40};
+        this.markerBoxes.push(box);this.armyDraws.push({extra,x:bx,y:cy});
+        this.hits.push({ kind: 'node', n, x:bx,y:cy,r:0,box });
       }
     };
-    if (inside.length) row(inside, s.x, s.y - R - (this.siegeInfo[n.id] ? 44 : 20), 4);
+    if (inside.length) row(inside, s.x, s.y - R - (this.siegeInfo[n.id] ? 58 : 26), App.H>App.W?2:3);
     if (outside.length) {
       const si = this.siegeInfo[n.id];
       const d = (art.rad(n) + 22) * cam.z + 14;
@@ -397,44 +477,22 @@ class CampaignScene {
   }
 
   drawArmy(ctx, a, x, y) {
-    const f = Game.f(a.fid);
-    const own = a.fid === this.P;
-    const men = Game.armyMen(a);
-    const sel = this.selArmy === a;
-    const mpMax = Game.mpMax(a);
-    const spent = own && a.mp <= 0;
-    ctx.globalAlpha = spent ? 0.62 : 1;
-    if (sel) {
-      ctx.fillStyle = 'rgba(255,220,120,.28)';
-      ctx.beginPath(); ctx.arc(x, y - 1, 19 + Math.sin(this.t * 6) * 1.5, 0, TAU); ctx.fill();
-    }
-    // السارية
-    ctx.strokeStyle = '#1e160e'; ctx.lineWidth = 1.6;
-    ctx.beginPath(); ctx.moveTo(x - 13, y + 13); ctx.lineTo(x - 13, y - 12); ctx.stroke();
-    ctx.fillStyle = '#d9b45a'; ctx.beginPath(); ctx.arc(x - 13, y - 13, 1.8, 0, TAU); ctx.fill();
-    // الراية
-    const w = 27;
-    ctx.fillStyle = 'rgba(0,0,0,.3)';
-    ctx.beginPath(); ctx.moveTo(x - 12, y - 9); ctx.lineTo(x - 12 + w, y - 9); ctx.lineTo(x - 12 + w - 4, y - 1); ctx.lineTo(x - 12 + w, y + 7); ctx.lineTo(x - 12, y + 7); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = f.color;
-    ctx.beginPath(); ctx.moveTo(x - 13, y - 11); ctx.lineTo(x - 13 + w, y - 11); ctx.lineTo(x - 13 + w - 4, y - 3); ctx.lineTo(x - 13 + w, y + 5); ctx.lineTo(x - 13, y + 5); ctx.closePath(); ctx.fill();
-    ctx.lineWidth = sel ? 2.2 : own && a.mp > 0 ? 1.7 : 1.1;
-    ctx.strokeStyle = sel ? '#ffe38a' : own && a.mp > 0 ? `rgba(255,225,130,${0.6 + 0.4 * Math.sin(this.t * 4)})` : '#1e160e';
-    ctx.stroke();
-    ctx.font = '700 10.5px "Noto Naskh Arabic", Tahoma, sans-serif';
-    ctx.fillStyle = isLight(f.color) ? '#1e160e' : '#fff8e8';
-    const vis = own || Game.intelLevel(this.P, a.fid) >= 2 ? String(men) : '~' + Math.round(men / 50) * 50;
-    ctx.fillText(vis, x - 1, y - 3);
-    if (own) {
-      for (let i = 0; i < mpMax; i++) {
-        ctx.fillStyle = i < a.mp ? '#ffe38a' : 'rgba(30,20,10,.65)';
-        ctx.fillRect(x - 11 + i * 4.6, y + 8, 3.4, 3.4);
-      }
-    }
-    if (a.mood && (a.mood.k === 'shaken' || a.mood.k === 'hungry')) drawIcon(ctx, a.mood.k === 'hungry' ? 'food' : 'warning', x + 13, y - 12, 9, '#ffb49c', { outline: '#2a1208' });
-    else if (a.sick > 0) drawIcon(ctx, 'skull', x + 13, y - 12, 9, '#c8e08a', { outline: '#1e2a08' });
-    if (Game.isRuler && Game.isRuler(Game.armyGen(a))) drawIcon(ctx, 'crown', x - 13, y - 17, 8, '#ffd24a', { outline: '#2a1a08' });
-    ctx.globalAlpha = 1;
+    const f=Game.f(a.fid),own=a.fid===this.P,sel=this.selArmy===a,men=Game.armyMen(a),mp=Game.mpMax(a);
+    ctx.save();ctx.translate(x,y);
+    // A stable banner: pale troop count, faction cloth, explicit movement pips.
+    ctx.fillStyle='rgba(26,29,19,.24)';this.rrect(ctx,-25,-16,52,35,4);ctx.fill();
+    ctx.fillStyle=f.color;this.rrect(ctx,-26,-18,52,34,4);ctx.fill();
+    ctx.strokeStyle=sel?'#ffdf86':own?'#e9d7a7':'#394132';ctx.lineWidth=sel?2.5:1.2;ctx.stroke();
+    ctx.fillStyle='#f2e5c4';this.rrect(ctx,-22,-12,44,20,2);ctx.fill();
+    const vis=own||Game.intelLevel(this.P,a.fid)>=2?String(men):'~'+Math.round(men/50)*50;
+    ctx.font='700 13px Tahoma, sans-serif';ctx.direction='ltr';ctx.textAlign='center';ctx.fillStyle='#18261e';ctx.fillText(vis,0,-1);
+    if(own)for(let i=0;i<mp;i++){ctx.fillStyle=i<a.mp?'#ffe49b':'#152a2499';const w=Math.min(5,38/Math.max(1,mp));ctx.fillRect(-mp*(w+2)/2+i*(w+2),11,w,3);}
+    else{ctx.fillStyle='rgba(255,243,208,.68)';ctx.fillRect(-12,11,24,1);}
+    if(sel){ctx.fillStyle='#ffdf86';ctx.beginPath();ctx.moveTo(-5,19);ctx.lineTo(5,19);ctx.lineTo(0,25);ctx.fill();}
+    if(a.mood&&(a.mood.k==='shaken'||a.mood.k==='hungry'))drawIcon(ctx,a.mood.k==='hungry'?'food':'warning',22,-19,11,'#ffdb9d',{outline:'#44261c'});
+    else if(a.sick>0)drawIcon(ctx,'skull',22,-19,10,'#dfeba6',{outline:'#25351a'});
+    if(Game.isRuler&&Game.isRuler(Game.armyGen(a)))drawIcon(ctx,'crown',-22,-20,10,'#ffe09b',{outline:'#423322'});
+    ctx.restore();
   }
 
   // ——— اللمس ———
@@ -442,7 +500,7 @@ class CampaignScene {
     if (this.busy) return;
     Help.hide();
     const score = (h2) => h2.d - (h2.kind === 'army' ? 8 : h2.kind === 'siege' ? 4 : h2.kind === 'crisis' ? 3 : h2.kind === 'route' ? -6 : 0);
-    const hits = (this.hits || []).map((h2) => ({ ...h2, d: Math.hypot(h2.x - p.x, h2.y - p.y) })).filter((h2) => h2.d < h2.r && !(this.selArmy && (h2.kind === 'crisis' || h2.kind === 'route'))).sort((a, b) => score(a) - score(b));
+    const hits = (this.hits || []).map((h2) => ({ ...h2, d: Math.hypot(h2.x - p.x, h2.y - p.y) })).filter((h2) => (h2.box ? p.x>=h2.box.x&&p.x<=h2.box.x+h2.box.w&&p.y>=h2.box.y&&p.y<=h2.box.y+h2.box.h : h2.d < h2.r) && !(this.selArmy && (h2.kind === 'crisis' || h2.kind === 'route'))).sort((a, b) => score(a) - score(b));
     const hit = hits[0];
     if (hit && hit.kind === 'crisis') { Panels.openCrisis(this, hit.c); return; }
     if (hit && hit.kind === 'route' && !this.selArmy) { Panels.openRoute(this); return; }
@@ -602,6 +660,26 @@ class CampaignScene {
     ));
     this.hud.end = h('button', { class: 'btn primary end-turn', onclick: () => this.endTurn() });
     this.root.appendChild(this.hud.end);
+    const zoom=(f)=>{this.fly=null;const v=this.visCenter();this.cam.zoomAt(v.x,v.y,f);};
+    this.root.appendChild(h('div',{class:'map-tools'},
+      h('button',{class:'map-tool atlas-open',title:'أطلس الأقاليم والمدن',onclick:()=>this.openAtlas()},icon('map'),h('span',null,'الأطلس')),
+      h('button',{class:'map-tool',title:'تكبير الخريطة',onclick:()=>zoom(1.3)},'+'),
+      h('button',{class:'map-tool',title:'تصغير الخريطة',onclick:()=>zoom(1/1.3)},'−'),
+      h('button',{class:'map-tool map-home',title:'العودة إلى العاصمة',onclick:()=>{const n=Game.nodesOf(this.P).find(n=>n.capital)||Game.nodesOf(this.P)[0];if(n)this.flyTo(n.x,n.y,1.45);}},icon('flag'))));
+  }
+
+  openAtlas() {
+    const by={};for(const n of Game.S.nodes)(by[n.region||'مدن الحملة']=by[n.region||'مدن الحملة']||[]).push(n);
+    const body=h('div',{class:'atlas-browser'}),list=h('div',{class:'atlas-regions'});
+    let close;
+    const draw=(query='')=>{list.innerHTML='';for(const [name,ns]of Object.entries(by)){
+      const cities=ns.filter(n=>n.name.includes(query)||name.includes(query));if(!cities.length)continue;
+      list.appendChild(h('section',null,h('button',{class:'atlas-region',onclick:()=>{close();Sheets.dismissCurrent();const x=ns.reduce((v,n)=>v+n.x,0)/ns.length,y=ns.reduce((v,n)=>v+n.y,0)/ns.length;this.flyTo(x,y,1.3);}},name,h('small',null,cities.length+' مدن')),
+        h('div',{class:'atlas-cities'},cities.map(n=>h('button',{onclick:()=>{close();this.openCity(n);this.flyTo(n.x,n.y,Math.max(1.45,this.cam.z));}},h('i',{class:'dot',style:{background:Game.f(n.owner).color}}),n.name,n.capital?icon('crown'):null)))));
+    }};
+    body.append(h('p',{class:'atlas-hint'},'اسحب الأرض لتتنقل، وقرّب بإصبعين أو بأزرار التكبير. اختر مدينة أو إقليماً للانتقال إليه.'),h('input',{class:'atlas-search',type:'search',placeholder:'ابحث عن مدينة أو إقليم',oninput:e=>draw(e.target.value.trim())}),list,
+      h('div',{class:'map-legend'},Object.entries(Game.sc.factions).map(([id,f])=>h('span',null,h('i',{class:'dot',style:{background:f.color}}),f.name)),h('span',null,'بني: طريق بري'),h('span',null,'أزرق وسفينة: عبور بحري'),h('span',null,'مرساة: مرفأ الإقليم'),h('span',null,'شُرط بنية: ممر جبلي'),h('span',null,'ذهبي: طريق القوافل')));
+    draw();close=UI.modal({title:'أطلس الممالك',icon:'map',cls:'atlas-dialog wide',body,buttons:[{label:'الخريطة كاملة',onClick:()=>{Sheets.dismissCurrent();this.updatePads();this.cam.z=this.cam.minZ;this.flyTo(this.atlasFrame.x,this.atlasFrame.y,this.cam.minZ);}},{label:'عودة',primary:true}],dismissable:true});
   }
 
   hudHelp(el, key) {

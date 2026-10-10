@@ -1,0 +1,247 @@
+{
+  "checkedAt": "2026-10-10T12:56:35.698Z",
+  "tests": [
+    {
+      "file": "tests/map-routes.cjs",
+      "exitCode": 0,
+      "seconds": 0.73,
+      "stdout": "PASS all scenarios have valid, unique, bidirectional graph edges and bounded cities\nPASS expanded atlas remains a single connected network including maritime islands\nPASS every caravan template follows actual route segments\nPASS western maritime endpoints allow a normal army to embark in both directions\nPASS Tarsus and Tartus are distinct cities and the Cilician pass has two strategic approaches\nPASS Tarsus reaches the enemy pass but cannot skip a hostile checkpoint to Amorium\nPASS controlling the pass opens the route to Amorium with normal points on the next turn\nPASS allied access opens transit generically, while exhausted armies remain stationary\nPASS Tartus has a connected land approach without an accidental forced sea crossing\nPASS winter mountain passes consume the turn without becoming permanent movement locks\n\nMap routes: 10 passed, 0 failed.\n",
+      "stderr": ""
+    },
+    {
+      "file": "tests/leaders.cjs",
+      "exitCode": 0,
+      "seconds": 10.44,
+      "stdout": "PASS Six campaign starts: valid two-candidate opportunities, capacity and state\nPASS Earned keys including turn zero cannot grant twice; cooldown and bank cap\nPASS One replacement per delegation, capped earned tokens, no repeated-city tokens\nPASS Contract hires exactly one, deducts one-turn advance and retires the other name\nPASS Invalid salaries, no funds and full capacity never create leaders or consume attempts\nPASS Salary acceptance rises with offer, prestige and personality change expectations\nPASS Insult ends negotiation, two ordinary refusals exhaust attempts, fixed saved threshold\nPASS Pending offers freeze salary through treasury changes and save/load\nPASS Old saves retain leader IDs, contracts, army references, XP and biography identity\nPASS Legacy invalid candidates and duplicate offers are migrated safely\nPASS Historical candidate timing, affiliation, local fallback and spoiler-free copy\nPASS Rerolls persist after load; dismissed hires do not refresh offers\nPASS Relationships materially change loyalty, honor cannot be bought repeatedly\nPASS Assignment, rivalry, ignored requests and promises have distinct consequences\nPASS Capture, valid rescue, invalid rescue and repeated fate callbacks are safe\nPASS Execution records a loss without generating a fictional replacement; invalid execution does nothing\nPASS Defection produces a memorial and surviving friendship becomes rivalry\nPASS Specialized growth persists, grants mobility only to qualified leaders; officers stay modest\nPASS Late-game treasury does not buy opportunities; repeated losses and recaptures cannot spam\nPASS End-round and world-tick integration stay runnable for both scenarios\nPASS Context and personality change spoken reactions; city service and scars are recorded\nPASS Historical rivals link when hired later and exert political pressure\nPASS Prestige adds social abilities and mentorship rather than only raw bonuses\nPASS Direct event deaths have consequences once; expired opportunities never reopen\nPASS Geography and political context gate recruitment and salary expectations\nPASS A rest request requires a real idle friendly turn, not merely moving home\nPASS Starting armies use their intended historical leaders without stealing rulers\nPASS Campaign randomness is saved: new campaigns vary, reloads retain the same candidates\nPASS Expanded starting empires retain viable leader loyalty and meaningful personal choices\n29/29 leader tests passed\n",
+      "stderr": ""
+    },
+    {
+      "file": "tests/battles.cjs",
+      "exitCode": 0,
+      "seconds": 1.43,
+      "stdout": "PASS Preparation is paused before all combat and ignores repeated begin\nPASS Every phase has a command boundary, repeated commit/end cannot execute twice\nPASS Card costs, duplicate orders and incompatible postures enforced\nPASS Manual stepping and Quick Resolve share exact outcomes across 40 seeds\nPASS Formation preview never changes combat RNG or generates arrows\nPASS Empty quivers cause zero arrow damage and ammo never increases\nPASS Event choice is once-only and unavailable choices are rejected\nPASS Guards are capped by soldiers and do not create a hero army\nPASS Reserves stay out until committed; exhausted and fresh rows mix their fatigue\nPASS Emergency retreat costs more than successful organized withdrawal\nPASS Persistent readiness degrades across fights without ammo or supply refills\nPASS Result/report/fates are cached; narrative consumes no battle RNG\nPASS AI observation hides unrevealed plan and supply\nPASS Siege equipment opens breaches, unavailable maneuvers stay unavailable\nPASS Army and garrison readiness survive save/load; old partial saves migrate\nPASS Campaign application is idempotent and preserves the pre-casualty baseline\nPASS Marching costs readiness; safe-city rest recovers it without restoring casualties\nPASS Narrative has >100 unique fact-bound passages and reports factual evidence\nPASS Splitting and partial merging transfer weighted readiness without replenishing source\nPASS Keeping a siege returns only held men, all survivors keep the cost of battle\nPASS No equipment produces a siege postponement, not a fake defeat\nPASS A blocked retreat cannot teleport to a distant friendly preferred city\nPASS No pursuit is honored during sector collapse and after withdrawal\nPASS Hard pursuit causes more losses but exposes cavalry to an actual reserve trap\nPASS AI can use emergency retreat at zero command points\nPASS Wave assault cannot spend absent supplies; specialized plans require their troops\nPASS Campaign passes actual leader personality and abilities to tactical AI\nPASS AI choices respond to personality, condition, composition and phase\nPASS Report commander fate matches the cached campaign outcome\nPASS Exposed skirmishers take melee losses when cavalry catches them\nPASS Rapid assault counters the extra uncontested attrition volley from either side\n31 battle logic groups passed\n",
+      "stderr": ""
+    },
+    {
+      "file": "tests/economy.cjs",
+      "exitCode": 0,
+      "seconds": 0.89,
+      "stdout": "PASS income and expense categories sum to the live forecast\nPASS administrative paths use actual geography and bounded isolation, never 99 hops\nPASS local administration does not multiply existing city costs after expansion\nPASS population growth smoothly diminishes and preserves oversized old cities\nPASS all building previews equal actual formula changes and do not mutate saved state\nPASS construction charges once, grants no premature yield, completes on its due turn\nPASS investment preference changes with local resources and route position\nPASS leader contracts and assigned officers are charged exactly once\nPASS upkeep and campaign supply use the existing unit and readiness integration formulas\nPASS full endRound ledger reconciles construction, reinforcement and recurring collection\nPASS settlement is idempotent and cannot duplicate income after reload\nPASS tribute and vassal transfers reconcile symmetrically and are not paid twice\nPASS Annexation and Aman previews match execution with declining local costs\nPASS save migration preserves population, buildings, burdens and route disruption\nPASS occupation keeps defender choices and previews their gold and production effects exactly\nPASS saving a large treasury carries no fee or change to normal recurring costs\nPASS equipment replacement is proportional to unit cost and reconciles with the live round\nPASS unclassified events reconcile exactly and reading explanations never collects money\nEconomy: 18 groups passed.\n",
+      "stderr": ""
+    },
+    {
+      "file": "tests/economy-trade.cjs",
+      "exitCode": 0,
+      "seconds": 2.73,
+      "stdout": "PASS treaties pay only for connected usable links, symmetrically and at the existing cap\nPASS isolated cities reduce income and reconnection restores it without creating money\nPASS ports are required at both ends of maritime trade, with an actionable cause\nPASS merchant paths can reroute around a disrupted port without changing caravan or movement paths\nPASS war, hostile third-party territory, siege and hostile armies interrupt merchant access\nPASS sabotage reports an exact remaining duration and automatically recovers at expiry\nPASS bandit remedies match loyalty thresholds, guards expire, and duplicate causes merge\nPASS quarantine and world events have temporary contextual explanations\nPASS caravan migration does not falsely shut every treaty trade link in the world\nPASS changing city ownership changes the recipient, not the meaning of automatic caravans\nPASS old atlas routes migrate while preserving guards and permanent state in both scenarios\nPASS save/load preserves economic route state and reading forecasts never collects trade twice\n\nEconomy trade: 12 passed.\n",
+      "stderr": ""
+    },
+    {
+      "file": "tests/politics.cjs",
+      "exitCode": 0,
+      "seconds": 1.02,
+      "stdout": "PASS money offers change willingness monotonically, with contextual reasons\nPASS invalid money, missing payer, excessive tribute and stale prisoners cannot negotiate\nPASS rejection consumes one envoy, persists and cannot be rerolled by changing offers\nPASS pending counter survives reload and applies exactly once with reconciled money\nPASS counter cannot be accepted after peace, expiry, a new war or edited terms\nPASS peace terms apply money, captives, city, truce and memory through actual campaign APIs\nPASS peace settlement itself rejects duplicate execution, even without a counter id\nPASS counter respects current city ownership and excludes impossible final-city concessions\nPASS treaty actions cannot renew truces or farm relations by repeated calls\nPASS trade toggling, marriage and gifts have bounded persistent effects\nPASS one diplomatic proposal interval applies across types and survives reload\nPASS memory deduplicates keys, caps repetition, decays and affects diplomacy\nPASS personalities affect war and trade without bypassing unsafe conditions\nPASS threatened vassal considers survival, allies, distance and exhaustion\nPASS vassalage preserves autonomy, pays once, forbids chains and independent wars\nPASS tribute is not renewed, not immediately collected and ledger collection is idempotent\nPASS many allies share a bounded actual peace payment and cannot collect it twice\nPASS incoming offer survives reload and cannot execute twice or after context changes\nPASS surrender rejection expires instead of permanently disabling negotiations\nPASS surrender and contribution previews never mutate campaign state\nPASS broken and kept treaties produce different persistent memories\nPASS political save roundtrip retains offers, counters, terms, memory, spy effects and war effort\nPASS legacy cooldown and tribute migration is idempotent without adding empty node fields\n23 political logic groups passed\n",
+      "stderr": ""
+    },
+    {
+      "file": "tests/political-spy.cjs",
+      "exitCode": 0,
+      "seconds": 1.35,
+      "stdout": "PASS assessment explains approximate chances, concrete costs, consequences and cooldowns\nPASS same-turn operations and post-detection recovery reject without charging again\nPASS save/reload cannot change outcome or reset operation cooldown and ledger charge\nPASS realm intelligence uses one deterministic draw regardless of an omitted target ID\nPASS incitement weakens loyalty, actual tax and reinforcement/recruitment for exact duration\nPASS loyal stable cities are harder to incite than restive cities\nPASS security and intelligence investment are finite, meaningful, charged once and saved\nPASS road sabotage changes movement without changing road data, then recovers\nPASS each sabotage has live consequences and the stated inclusive duration\nPASS siege-equipment sabotage affects only targeted camp and is persisted/repaired\nPASS another intact allied camp keeps its own siege equipment\nPASS invalid targets and ineffective sabotage are refused before charging\nPASS old-save migration preserves histories, derives cooldowns and is idempotent\nPASS repeated espionage chooses contextual varied targets and does not fixate on Nicaea\nPASS strategic siege and unrest changes alter priorities\n15 espionage groups passed\n",
+      "stderr": ""
+    },
+    {
+      "file": "tests/political-allies.cjs",
+      "exitCode": 0,
+      "seconds": 2.66,
+      "stdout": "PASS new alliance has no invented contribution; accepting or arriving earns no points\nPASS same-turn requests are bounded and survive reload without relation farming\nPASS blocked geography and insufficient armies produce concrete refusal\nPASS the ally protects its threatened home and cannot be commandeered by defense requests\nPASS exhausted available armies are not sent on new allied expeditions\nPASS allied siege reinforcement uses existing movement and preserves siege age\nPASS siege contribution requires real supply attrition and cannot multiply by army splitting\nPASS legacy contribution migrates factual casualties and captures without fabricated aid/siege evidence\nPASS mixed allied battle records actual unit damage and loss separately by faction\nPASS contribution survives save/load; settled wars retain their effort for peace comparison\nPASS peace contribution feedback and shared spoils persist and can only pay once\nPASS independent military dispatch performs a useful common-front action with limited forces\n12 allied-action checks passed.\n",
+      "stderr": ""
+    }
+  ],
+  "ui": [
+    {
+      "file": "tests/map-interactions.cjs",
+      "exitCode": 0,
+      "seconds": 33.03,
+      "stdout": "PASS real pointer/touch interactions, army occlusion and critical alerts at 8 sizes; eastern renderer.\n",
+      "stderr": ""
+    },
+    {
+      "file": "tests/leader-actions.cjs",
+      "exitCode": 0,
+      "seconds": 10.2,
+      "stdout": "PASS visible refusal feedback, mobile touch honor, salary request, cancel/confirm dismissal and persistent relationship/contract state\n",
+      "stderr": ""
+    },
+    {
+      "file": "tests/battle-preview.cjs",
+      "exitCode": 0,
+      "seconds": 46.83,
+      "stdout": "{\n  \"viewports\": [\n    [\n      1440,\n      900\n    ],\n    [\n      1024,\n      768\n    ],\n    [\n      390,\n      844\n    ],\n    [\n      360,\n      740\n    ],\n    [\n      320,\n      568\n    ],\n    [\n      844,\n      390\n    ],\n    [\n      568,\n      320\n    ]\n  ],\n  \"saveReload\": {\n    \"passes\": 2,\n    \"preserved\": [\n      \"fatigue\",\n      \"morale\",\n      \"cohesion\",\n      \"ammunition\",\n      \"supply\",\n      \"strain\",\n      \"battles\",\n      \"army casualties\",\n      \"garrison condition\",\n      \"leader relationships\"\n    ]\n  },\n  \"errors\": []\n}\n",
+      "stderr": ""
+    },
+    {
+      "file": "tests/economy-preview.cjs",
+      "exitCode": 0,
+      "seconds": 86.19,
+      "stdout": "PASS UI 1440x900\nPASS UI 1024x768\nPASS UI 390x844\nPASS UI 360x740\nPASS UI 320x568\nPASS UI 844x390\nPASS UI 568x320\nEconomy visual checks passed: 7 viewports this run; 0 unchanged desktop checks retained; two browser save/load passes.\n",
+      "stderr": ""
+    },
+    {
+      "file": "tests/politics-preview.cjs",
+      "exitCode": 0,
+      "seconds": 95.27,
+      "stdout": "PASS political UI 1440x900\nPASS political UI 1024x768\nPASS political UI 390x844\nPASS political UI 360x740\nPASS political UI 320x568\nPASS political UI 844x390\nPASS political UI 568x320\nPolitical visuals, real touch/slider/select/confirm actions and two page reloads passed.\n",
+      "stderr": ""
+    }
+  ],
+  "branch": "claude/ai-strategy-war-game-1dghz2",
+  "remote": "https://github.com/llMLK/Game-war.git",
+  "baseCommit": "8f0b7dfbc9b223cdc4b23044c4bc2bc20213abcc",
+  "logicGroups": 150,
+  "syntax": {
+    "scriptsChecked": 68,
+    "failures": 0
+  },
+  "runtimeReferences": {
+    "checked": 50,
+    "missing": 0
+  },
+  "balance": {
+    "battle": {
+      "exitCode": 0,
+      "seeds": 160,
+      "simulations": 5824
+    },
+    "economy": {
+      "exitCode": 0,
+      "counts": {
+        "scenarios": 16,
+        "turns": 840,
+        "actualEndRoundTurns": 120
+      },
+      "productionReserveFee": 0
+    },
+    "politics": {
+      "exitCode": 0,
+      "controlledCampaigns": 192,
+      "controlledTurns": 6912,
+      "espionageTurns": 60,
+      "fullGameplayRounds": 72,
+      "summary": [
+        {
+          "name": "equalRivals",
+          "samples": 24,
+          "turns": 36,
+          "peaceReached": 24,
+          "medianFirstPeace": 8,
+          "warStarts": 27,
+          "endingVassals": 20,
+          "allianceBreaks": 8,
+          "stillAtWar": 12,
+          "invalidOffers": 0
+        },
+        {
+          "name": "dominantVsWeak",
+          "samples": 24,
+          "turns": 36,
+          "peaceReached": 24,
+          "medianFirstPeace": 1,
+          "warStarts": 30,
+          "endingVassals": 23,
+          "allianceBreaks": 16,
+          "stillAtWar": 6,
+          "invalidOffers": 0
+        },
+        {
+          "name": "twoFronts",
+          "samples": 24,
+          "turns": 36,
+          "peaceReached": 24,
+          "medianFirstPeace": 2,
+          "warStarts": 28,
+          "endingVassals": 19,
+          "allianceBreaks": 6,
+          "stillAtWar": 9,
+          "invalidOffers": 0
+        },
+        {
+          "name": "commonEnemyAlliance",
+          "samples": 24,
+          "turns": 36,
+          "peaceReached": 24,
+          "medianFirstPeace": 7,
+          "warStarts": 19,
+          "endingVassals": 21,
+          "allianceBreaks": 11,
+          "stillAtWar": 16,
+          "invalidOffers": 0
+        },
+        {
+          "name": "prolongedWar",
+          "samples": 24,
+          "turns": 36,
+          "peaceReached": 24,
+          "medianFirstPeace": 0,
+          "warStarts": 31,
+          "endingVassals": 20,
+          "allianceBreaks": 11,
+          "stillAtWar": 12,
+          "invalidOffers": 0
+        },
+        {
+          "name": "exhaustedPeace",
+          "samples": 24,
+          "turns": 36,
+          "peaceReached": 24,
+          "medianFirstPeace": 0,
+          "warStarts": 36,
+          "endingVassals": 19,
+          "allianceBreaks": 9,
+          "stillAtWar": 8,
+          "invalidOffers": 0
+        },
+        {
+          "name": "threatenedVassal",
+          "samples": 24,
+          "turns": 36,
+          "peaceReached": 24,
+          "medianFirstPeace": 8,
+          "warStarts": 18,
+          "endingVassals": 20,
+          "allianceBreaks": 9,
+          "stillAtWar": 14,
+          "invalidOffers": 0
+        },
+        {
+          "name": "limitedAlly",
+          "samples": 24,
+          "turns": 36,
+          "peaceReached": 24,
+          "medianFirstPeace": 7,
+          "warStarts": 17,
+          "endingVassals": 20,
+          "allianceBreaks": 9,
+          "stillAtWar": 13,
+          "invalidOffers": 0
+        },
+        {
+          "name": "repeatedEspionage",
+          "turns": 30,
+          "operations": 16,
+          "distinctTargets": 5,
+          "nicaea": 0
+        },
+        {
+          "name": "highUnrest",
+          "turns": 30,
+          "operations": 20,
+          "distinctTargets": 10,
+          "nicaea": 0
+        }
+      ]
+    }
+  },
+  "phaseFStarted": false,
+  "whitespace": "Removed only surplus EOF blank lines in four new test files found by staged diff check; JavaScript syntax remains valid"
+}

@@ -29,9 +29,8 @@ class BattleScene {
     this.weDefend = this.siege && !this.A.att;
     this.wallY = this.weDefend ? 372 : 228;
     // اقتراح خطة للاعب (يمكن تغييرها)
-    this.sim.autoFormation(this.E, this.sim.aiPlan(this.E));
-    this.planPick = this.sim.aiPlan(this.A);
-    this.sim.autoFormation(this.A, this.planPick);
+    this.sim.prepare();
+    this.planPick = this.A.plan;
   }
 
   enter() {
@@ -40,7 +39,8 @@ class BattleScene {
     App.ui.appendChild(this.root);
     this.top = h('div', { class: 'bs-top' });
     this.panel = h('div', { class: 'bs-panel' });
-    this.root.append(this.top, this.panel);
+    this.board = h('div', { class: 'bs-board', 'aria-label': 'حالة قطاعات جيشك' });
+    this.root.append(this.top, this.panel, this.board);
     this.bg = this.renderBg();
     this.fit();
     this.layoutUnits(true);
@@ -52,17 +52,18 @@ class BattleScene {
   // الخريطة في المساحة الحرة: اللوحة جانبية أفقياً، وسفلية عمودياً
   fit() {
     const land = App.W > App.H;
-    const pw = land && this.panel ? Math.min(this.panel.offsetWidth || 340, App.W * 0.45) + 14 : 0;
-    const ph = !land && this.panel ? Math.min(this.panel.offsetHeight || 200, App.H * 0.5) + 10 : 0;
-    const top = (this.top && this.top.offsetHeight ? this.top.offsetHeight + this.top.offsetTop : 40) + 4;
-    const W = App.W - pw, H = App.H - ph - top;
-    const vw = 820, vh = 540;
+    const rect = this.panel.getBoundingClientRect();
+    const top = Math.max(this.top.getBoundingClientRect().bottom, this.top.querySelector('.bs-steps')?.getBoundingClientRect().bottom || 0) + 8;
+    const W = land ? rect.left - 8 : App.W;
+    const bottom = land ? App.H - 8 : rect.top - 8;
+    const H = Math.max(60, bottom - top - 54);
+    const vw = 1040, vh = 620;
     const z = Math.min(W / vw, H / vh);
     this.cam.z = z; this.cam.minZ = z * 0.9; this.cam.maxZ = z * 3;
-    // مركز المساحة الحرة (اللوحة على اليمين في الوضع الأفقي)
-    this.cam.x = BW / 2 + (pw / 2) / z;
-    this.cam.y = BH / 2 - (top / 2 - ph / 2) / z;
-    this.free = { cx: (App.W - pw) / 2, w: App.W - pw, top: top + 6 };
+    this.cam.x = BW / 2 + (App.W / 2 - W / 2) / z;
+    this.cam.y = BH / 2 + (App.H / 2 - top - H / 2) / z;
+    this.free = { cx: W / 2, w: W, top, bottom };
+    Object.assign(this.board.style, { left: '8px', width: Math.max(50, W - 16) + 'px', top: (bottom - 52) + 'px' });
   }
 
   // ——————————— الرسم المسبق لأرض المعركة ———————————
@@ -78,10 +79,10 @@ class BattleScene {
     gr.addColorStop(0, base[0]); gr.addColorStop(1, base[1]);
     g.fillStyle = gr; g.fillRect(0, 0, BW, BH);
     for (let i = 0; i < 9000; i++) { g.fillStyle = r() < 0.5 ? 'rgba(90,70,40,.06)' : 'rgba(255,250,230,.08)'; g.fillRect(r() * BW, r() * BH, 1 + r() * 2, 1 + r() * 2); }
-    // شبكة خريطة الحرب
-    g.strokeStyle = 'rgba(110,85,50,.12)'; g.lineWidth = 0.6;
-    for (let x = 0; x <= BW; x += 50) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, BH); g.stroke(); }
-    for (let y = 0; y <= BH; y += 50) { g.beginPath(); g.moveTo(0, y); g.lineTo(BW, y); g.stroke(); }
+    // Survey marks and ink margins keep the terrain legible without an RTS grid.
+    g.strokeStyle = 'rgba(110,85,50,.11)'; g.lineWidth = .7;
+    for (let x = 40; x < BW; x += 40) for (let y = 40; y < BH; y += 40) { g.beginPath();g.moveTo(x-2,y);g.lineTo(x+2,y);g.moveTo(x,y-2);g.lineTo(x,y+2);g.stroke(); }
+    g.strokeStyle='#806a4670';g.lineWidth=1;g.strokeRect(12,12,BW-24,BH-24);g.strokeRect(17,17,BW-34,BH-34);
     const tree = (x, y, s) => {
       g.fillStyle = 'rgba(40,50,25,.25)'; g.beginPath(); g.ellipse(x + s * 0.3, y + s * 0.9, s * 0.8, s * 0.3, 0, 0, TAU); g.fill();
       g.fillStyle = '#5c7a42'; g.beginPath(); g.arc(x, y, s * 0.62, 0, TAU); g.fill();
@@ -125,13 +126,10 @@ class BattleScene {
       }
     }
     if (T === 'river' && !this.siege) {
-      g.fillStyle = 'rgba(110,150,165,.9)'; g.fillRect(0, 286, BW, 28);
-      g.strokeStyle = 'rgba(230,245,245,.4)'; g.lineWidth = 1;
-      for (let i = 0; i < 60; i++) { const x = r() * BW, y = 290 + r() * 20; g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + 4, y - 2, x + 8, y); g.stroke(); }
-      g.strokeStyle = 'rgba(60,80,80,.5)'; g.lineWidth = 1.5; g.strokeRect(-2, 286, BW + 4, 28);
-      g.setLineDash([3, 4]); g.strokeStyle = 'rgba(245,235,210,.7)';
-      for (const x of [250, 500, 750]) { g.beginPath(); g.moveTo(x - 40, 300); g.lineTo(x + 40, 300); g.stroke(); }
-      g.setLineDash([]);
+      const river=()=>{g.beginPath();g.moveTo(-10,294);g.bezierCurveTo(170,326,280,268,430,292);g.bezierCurveTo(600,325,760,278,1010,306);};
+      g.lineCap='round';g.strokeStyle='#7b887665';g.lineWidth=42;river();g.stroke();g.strokeStyle='#7097a0';g.lineWidth=28;river();g.stroke();
+      g.strokeStyle='#bdcbb3';g.lineWidth=1;g.setLineDash([12,9,3,11]);river();g.stroke();g.setLineDash([]);
+      for (const [x,y] of [[250,298],[500,302],[750,299]]) {g.strokeStyle='#ded1a5';g.lineWidth=8;g.beginPath();g.moveTo(x-3,y-18);g.lineTo(x+3,y+18);g.stroke();g.strokeStyle='#745c3a';g.lineWidth=1;for(let j=-15;j<=15;j+=5){g.beginPath();g.moveTo(x-6,j+y);g.lineTo(x+6,j+y);g.stroke();}}
     }
     if (T === 'coast') {
       g.fillStyle = 'rgba(100,140,155,.95)'; g.beginPath(); g.moveTo(BW - 90, 0); g.quadraticCurveTo(BW - 130, BH / 2, BW - 90, BH); g.lineTo(BW, BH); g.lineTo(BW, 0); g.closePath(); g.fill();
@@ -208,7 +206,7 @@ class BattleScene {
       }
     }
   }
-  blockW(u) { return Math.round(22 + Math.sqrt(Math.max(1, u.men)) * 2.8); }
+  blockW(u) { return Math.max(46 / Math.max(.5,this.cam.z),Math.round(22 + Math.sqrt(Math.max(1, u.men)) * 2.8)); }
   setTarget(u, x, y, snap) {
     let p = this.pos.get(u.id);
     if (!p) { p = { x, y, tx: x, ty: y, a: 1 }; this.pos.set(u.id, p); }
@@ -221,14 +219,23 @@ class BattleScene {
     const sim = this.sim;
     this.top.innerHTML = '';
     const bar = (s) => {
-      const men = sim.liveMen(s);
+      const men = sim.over ? sim.totalMen(s) : sim.liveMen(s);
       const mor = sim.phase < 0 ? s.sec.C.morale || 70 : sim.avgMorale(s);
-      return h('div', { class: 'bs-side' + (s === this.E ? ' foe' : '') },
-        dotEl(s.color), h('b', null, s.name), h('bdi', { class: 'bs-men' }, s === this.E && sim.phase < 0 ? this.est(s.units.reduce((t, u) => t + u.men, 0)) : men),
+      const known = s === this.A || this.A.intel >= 1;
+      return h('div', { class: 'bs-side' + (s === this.E ? ' foe' : ''), style: { '--army-color': s.color } },
+        s.cmd && known ? Portrait.el(s.cmd, 48) : icon('helmet'),
+        h('div', { class: 'bs-identity' }, h('b', null, s.name), h('span', null, known && s.cmd ? s.cmd.name : 'قائد غير معروف')),
+        h('bdi', { class: 'bs-men', title: sim.over ? 'الناجون، بما فيهم المنسحبون' : 'الرجال القادرون على القتال' }, s === this.E && sim.phase < 0 ? this.est(s.units.reduce((t, u) => t + u.men, 0)) : men),
         h('span', { class: 'bs-mor', title: 'المعنويات' }, h('i', { style: { width: clamp(mor, 0, 100) + '%' } })));
     };
     const steps = h('div', { class: 'bs-steps' }, WS_PHASES.map((p, i) => h('span', { class: 'st' + (i === sim.phase ? ' on' : i < sim.phase ? ' done' : '') }, this.siege ? p.siege : p.name)));
     this.top.append(bar(this.A), steps, bar(this.E));
+    if (this.board) {
+      this.board.replaceChildren(...[...SECTS, 'Res'].map((k) => h('div', { class: 'bs-sector ' + (this.A.sec[k].state || '') },
+        h('span', null, k === 'Res' ? 'الاحتياط' : this.sim.secName(k).replace('الجناح ', '')),
+        h('bdi', null, sim.over ? this.A.units.filter((u) => u.sec === k && u.state !== 'dead').reduce((n,u)=>n+u.men,0) : sim.secMen(this.A, k)),
+        h('small', null, k === 'Res' ? (sim.over ? 'بقي خارج الصفوف' : 'بانتظار القرار') : sim.over && this.A.sec[k].state === 'broken' ? 'صفوف متراجعة' : `معنويات ${Math.round(clamp(this.A.sec[k].morale,0,100))}٪`))));
+    }
   }
   est(v) {
     const lvl = this.A.intel;
@@ -266,7 +273,7 @@ class BattleScene {
     this.setPanel(
       h('div', { class: 'bs-h' }, icon('eye'), h('b', null, 'الاستطلاع'), h('span', { class: 'muted small' }, this.cfg.title ? (this.siege ? 'أسوار ' : 'ساحة ') + this.cfg.title : '')),
       chips,
-      h('p', { class: 'hint' }, tip),
+      h('p', { class: 'hint' }, tip), this.assessment(),
       h('div', { class: 'bs-cols' },
         h('div', { class: 'bs-col' }, h('div', { class: 'sec-h' }, dotEl(A.color), 'قواتك', h('span', { class: 'muted' }, sim.liveMen(A) + ' رجل')), gline(A, true), comp(A, true)),
         h('div', { class: 'bs-col' }, h('div', { class: 'sec-h' }, dotEl(E.color), E.name, h('span', { class: 'muted' }, this.est(sim.liveMen(E)) + ' رجل')), gline(E, false),
@@ -346,6 +353,8 @@ class BattleScene {
     const pos = h('div', { class: 'row-btns' }, h('span', { class: 'small muted' }, 'موقع القائد:'), Object.entries(CMD_POS).map(([k, p]) => h('button', { class: 'chip' + (A.cmdPos === k ? ' on' : ''), title: p.desc, onclick: () => { A.cmdPos = k; this.showFormation(); } }, p.name)));
     this.setPanel(
       h('div', { class: 'bs-h' }, icon('men'), h('b', null, 'التشكيل'), h('span', { class: 'muted small' }, this.sel ? 'اضغط قطاعاً لنقل الوحدة إليه' : 'اضغط وحدة ثم قطاعاً لنقلها. اضغط الوضعية لتغييرها.')),
+      h('div', { class: 'bs-reserve' }, h('p', { class: 'hint' }, `الاحتياط الحالي ${sim.resMen(A)} رجلًا. حجبه يقوي قرارك المتأخر ويضعف الصف الأول.`),
+        h('div', { class: 'row-btns' }, [[0,'كل القوة في الصف'],[.2,'احتياط محدود'],[.35,'احتياط كبير']].map(([fraction,label])=>ib('men',label,{class:'btn',onclick:()=>this.reservePreset(fraction)})))),
       cols, pos,
       h('div', { class: 'row-btns' },
         ib('chevR', 'الخطة', { class: 'btn ghost', onclick: () => this.showPlan() }),
@@ -357,8 +366,52 @@ class BattleScene {
 
   setPanel(...kids) {
     this.panel.innerHTML = '';
-    for (const k of kids) if (k) this.panel.appendChild(k);
+    this.panel.dataset.stage = this.stage;
+    const content = kids.filter(Boolean), header = content.shift();
+    const footer = content.at(-1)?.classList?.contains('row-btns') ? content.pop() : null;
+    if (header) this.panel.appendChild(header);
+    this.panel.appendChild(h('div', { class: 'bs-body' }, content));
+    if (footer) { footer.classList.add('bs-footer'); this.panel.appendChild(footer); }
     requestAnimationFrame(() => this.fit());
+  }
+  reservePreset(fraction) {
+    const s=this.A,sim=this.sim;
+    sim.autoFormation(s,this.planPick);
+    // Whole regiments remain intact. The displayed count is the actual, not promised, share.
+    for(const u of s.units.filter(u=>u.sec==='Res'&&u.role!=='engine')) {
+      u.hunter=false;
+      u.sec=SECTS.slice().sort((a,b)=>sim.secMen(s,a)-sim.secMen(s,b))[0];
+    }
+    const pool=s.units.filter(u=>!['guard','engine'].includes(u.role)).sort((a,b)=>sim.unitMelee(b)-sim.unitMelee(a));
+    const target=sim.liveMen(s)*fraction;let held=0;
+    for(const u of pool) {
+      if(held>=target || !fraction)break;
+      if(pool.filter(x=>x.sec!=='Res').length<=3)break;
+      if(sim.secUnits(s,u.sec).filter(x=>x.role!=='guard').length<2)continue;
+      held+=u.men;u.sec='Res';
+    }
+    this.sel=null;this.renderTop();this.layoutUnits(false);this.showFormation();
+  }
+
+  assessment() {
+    const sim = this.sim, A = this.A, E = this.E;
+    const q = (s) => s.units.reduce((n, u) => n + sim.unitMelee(u) + u.men * u.missile * .45, 0);
+    const condition = (s) => { const r = s.initialReady; return (1 - r.fat * .006) * (.6 + r.coh * .004) * (.7 + r.sup * .003) * (.55 + r.mor * .006); };
+    const ground = sim.kind === 'siege' ? 1 + sim.walls * .23 : ['hills', 'mountains', 'river'].includes(sim.terrain) ? 1.18 : 1;
+    const ratio = q(A) * condition(A) / Math.max(1, q(E) * condition(E)) * (A.att ? 1 / ground : ground);
+    const uncertain = A.intel < 2;
+    const band = uncertain ? 'استطلاع غير كافٍ' : ratio > 1.3 ? 'مواتية' : ratio > .82 ? 'متوازنة' : ratio > .55 ? 'خطرة' : 'شديدة الخطورة';
+    const facts = [`${sim.liveMen(A)} رجلًا لديك؛ التقدير المقابل ${this.est(sim.liveMen(E))}`, `التعب ${A.ready.fat}، التماسك ${A.ready.coh}، الإمداد ${A.ready.sup}٪`,
+      A.cmd ? `${A.cmd.name}: ${TRAITS[A.cmd.trait]?.name || 'قيادة ميدانية'}؛ التنفيذ الجيد لا يعوض كل نقص عددي` : 'غياب قائد يضعف التنسيق',
+      ...(sim.cfg.sides[A.i].readyReasons || [])];
+    return h('details', { class: 'bs-assessment', open: true }, h('summary', null, 'تقدير الموقف: ', h('b', { class: ratio < .82 ? 'warn' : '' }, band)),
+      h('p', { class: 'small muted' }, 'تقدير قبل الخطة. الأرض والوحدات والقرارات قد تغير النتيجة؛ لا ضمان للنصر.'),
+      h('ul', null, facts.map((t) => h('li', null, rich(t)))));
+  }
+
+  showLog() {
+    UI.modal({ title: 'سجل الميدان', icon: 'scroll', cls: 'battle-log', body: h('div', { class: 'battle-log-lines' },
+      this.sim.lines.map((l) => h('p', { class: l.tone || '' }, l.text))), buttons: [{ label: 'العودة إلى القيادة' }] });
   }
 
   // ——————————— المعركة ———————————
@@ -372,11 +425,13 @@ class BattleScene {
     this.linesSeen = 0;
     this.renderTop();
     this.layoutUnits(false);
-    this.playTicks();
+    this.showBreakPanel();
   }
 
   playTicks() {
     clearTimeout(this.timer);
+    this.sim.autoAll = this.auto;
+    this.sim.commitPhase();
     this.stage = 'play';
     this.showPlayPanel();
     const tickMs = 950 / this.speed;
@@ -389,11 +444,19 @@ class BattleScene {
       this.layoutUnits(false);
       this.renderTop();
       this.showPlayPanel();
-      const ev = sim.takeInterrupt();
-      if (ev) { this.showEvent(ev, () => { this.stage = 'play'; this.showPlayPanel(); this.timer = setTimeout(loop, tickMs * 0.6); }); return; }
-      if (sim.over) { this.timer = setTimeout(() => this.afterEnd(), 900); return; }
-      if (sim.phaseDone()) { this.timer = setTimeout(() => this.phaseBreak(), tickMs * 0.8); return; }
-      this.timer = setTimeout(loop, tickMs);
+      const resume = () => {
+        if (sim.over) { this.afterEnd(); return; }
+        if (sim.phaseDone()) { this.timer = setTimeout(() => this.phaseBreak(), tickMs * .6); return; }
+        this.timer = setTimeout(loop, tickMs);
+      };
+      const event = () => {
+        if (sim.over) { resume(); return; }
+        const ev = sim.takeInterrupt();
+        if (!ev) { this.stage = 'play'; resume(); return; }
+        if (!sim.sides[ev.side].player || this.auto) { sim.choose(ev, sim.aiChoose(sim.sides[ev.side], ev)); event(); }
+        else this.showEvent(ev, event);
+      };
+      event();
     };
     this.timer = setTimeout(loop, 350);
   }
@@ -404,12 +467,17 @@ class BattleScene {
     this.renderTop();
     if (sim.over) { this.afterEnd(); return; }
     const next = () => {
+      if (sim.over) { this.afterEnd(); return; }
       const ev = evs.shift();
-      if (ev) { this.showEvent(ev, next); return; }
+      if (ev) {
+        if (!sim.sides[ev.side].player || this.auto) { sim.choose(ev, sim.aiChoose(sim.sides[ev.side], ev)); next(); }
+        else this.showEvent(ev, next);
+        return;
+      }
       sim.nextPhase();
       this.renderTop();
       this.layoutUnits(false);
-      if (this.auto) { sim.aiOrders(this.A); this.layoutUnits(false); this.showPlayPanel(); this.timer = setTimeout(() => this.playTicks(), 900); }
+      if (this.auto) { this.layoutUnits(false); this.showPlayPanel(); this.timer = setTimeout(() => this.playTicks(), 900); }
       else { this.pick = null; this.showBreakPanel(); }
     };
     next();
@@ -452,8 +520,8 @@ class BattleScene {
     const avail = list.filter((x) => !x.err), off = list.filter((x) => x.err);
     const cards = h('div', { class: 'ord-cards' }, avail.map((x) => h('button', {
       class: 'ord' + (this.pick === x.k ? ' on' : '') + (x.o.unlock ? ' unlock' : ''),
-      onclick: () => { this.pick = this.pick === x.k ? null : x.k; this.pickArg = null; this.showBreakPanel(); },
-    }, icon(x.o.icon), h('b', null, x.o.name), h('span', { class: 'tag ' + RISK_CLS[x.info.risk] }, RISK[x.info.risk]))),
+      onclick: () => { this.pick = this.pick === x.k ? null : x.k; this.pickArg = null; this.showBreakPanel(); requestAnimationFrame(()=>this.panel.querySelector('.ord-detail')?.scrollIntoView({block:'start'})); },
+    }, icon(x.o.icon), h('b', null, x.o.name), h('span', { class: 'ord-cost' }, `${x.o.free ? 0 : x.o.cost || 1} نقطة قيادة`), h('span', { class: 'tag ' + RISK_CLS[x.info.risk] }, RISK[x.info.risk]))),
     !avail.length ? h('p', { class: 'hint' }, cp ? 'لا أوامر مناسبة في هذه المرحلة.' : 'استنفدت أوامر هذه المرحلة.') : null);
     const offBox = off.length ? h('details', { class: 'ord-more' }, h('summary', null, `أوامر غير متاحة الآن (${off.length})`),
       h('ul', { class: 'ord-off' }, off.map((x) => h('li', null, icon(x.o.icon), h('b', null, x.o.name + (x.o.unlock ? ' ★' : '') + ': '), h('span', null, x.err))))) : null;
@@ -464,11 +532,13 @@ class BattleScene {
       if (argOpts && !argOpts.includes(this.pickArg)) this.pickArg = x.o.arg === 'sector' ? sim.weakestSec(A) : sim.bestFlankWing(A);
       const info = x.o.info(sim, A, this.pickArg);
       detail = h('div', { class: 'ord-detail' },
+        h('b', null, x.o.name),
         h('p', { class: 'small muted' }, x.o.term),
         argOpts ? h('div', { class: 'acts' }, h('span', { class: 'lbl' }, x.o.arg === 'sector' ? 'إلى:' : 'الجناح:'), argOpts.map((k) => h('button', { class: 'chip' + (k === this.pickArg ? ' on' : ''), onclick: () => { this.pickArg = k; this.showBreakPanel(); } }, sim.secName(k), x.o.arg === 'sector' ? h('bdi', { class: 'muted' }, ' ' + Math.round(A.sec[k].morale)) : null))) : null,
         h('p', null, rich(info.does)),
         h('div', { class: 'ord-nums' }, info.nums.filter(Boolean).map(([k, v]) => h('span', { class: 'tag' }, k + ': ', h('bdi', null, String(v))))),
         h('p', { class: 'small' }, h('span', { class: 'tag ' + RISK_CLS[info.risk] }, 'الخطر: ' + RISK[info.risk]), ' ', info.riskWhy),
+        ORDER_GUIDE[x.k] ? h('dl', { class: 'ord-guide' }, ['المستفيد', 'أفضل استعمال', 'ما يصدّه'].flatMap((t, i) => [h('dt', null, t), h('dd', null, ORDER_GUIDE[x.k][i])])) : null,
         ib(x.o.icon, 'أصدر الأمر', { class: 'btn primary', onclick: () => this.issueOrder(x, this.pickArg) }),
       );
     }
@@ -479,10 +549,11 @@ class BattleScene {
         return h('button', { class: 'chip', onclick: () => { A.sec[k].stance = opts[(opts.indexOf(st) + 1) % opts.length]; this.showBreakPanel(); } }, SECT_NAME[k].replace('الجناح ', '') + ': ', STANCES[st].name);
       }))) : null;
     this.setPanel(
-      h('div', { class: 'bs-h' }, icon('flag'), h('b', null, (this.siege ? ph.siege : ph.name)), h('span', { class: 'tag' + (cp ? '' : ' warn') }, `الأوامر ${cp} من ${cpMax}`), h('span', { class: 'sp' }),
-        ib('play', 'متابعة', { class: 'btn sm ' + (this.pick ? '' : 'primary'), onclick: () => { this.pick = null; this.playTicks(); } })),
+      h('div', { class: 'bs-h' }, icon('flag'), h('b', null, (this.siege ? ph.siege : ph.name)), h('span', { class: 'tag' + (cp ? '' : ' warn') }, `القيادة ${cp} من ${cpMax}`)),
+      h('p', { class: 'hint' }, 'الميدان متوقف. اختر أوامرك ثم نفّذ المرحلة؛ النقاط غير المستعملة لا تنتقل.'),
       this.lineList(2),
       cards, detail, offBox, stances,
+      h('div', { class: 'row-btns' }, ib('play', 'نفّذ المرحلة', { class: 'btn primary', onclick: () => { this.pick = null; this.playTicks(); } }), ib('scroll', 'السجل', { class: 'btn', onclick: () => this.showLog() })),
     );
   }
   issueOrder(x, arg) {
@@ -519,7 +590,7 @@ class BattleScene {
     this.renderTop();
     this.layoutUnits(false);
     this.newLines();
-    setTimeout(() => this.showReport(), 700);
+    this.timer = setTimeout(() => this.showReport(), 350);
   }
 
   showReport() {
@@ -527,18 +598,16 @@ class BattleScene {
     const res = this.sim.result();
     this.result = res;
     const me = res.report ? BattleReport.mine(res.report, this.A.i) : { won: res.winner === this.A.i, text: res.winner === this.A.i ? 'نصر' : 'هزيمة', sub: '' };
-    const body = h('div', { class: 'bs-report' },
-      h('div', { class: 'bs-h ' + (me.won ? 'win' : 'lose') }, icon(me.won ? 'laurel' : 'crownbroken'), h('b', null, me.text), h('span', { class: 'muted small' }, me.sub)),
+    this.setPanel(h('div', { class: 'bs-h ' + (me.won ? 'win' : 'lose') }, icon(me.won ? 'laurel' : 'crownbroken'), h('b', null, me.text), h('span', { class: 'muted small' }, me.sub)),
       res.report ? BattleReport.render(res.report, this.A.i, { head: false }) : null,
-      h('div', { class: 'row-btns' }, ib('chevL', 'العودة', { class: 'btn primary', onclick: () => this.onEnd(res) })),
-    );
-    this.setPanel(body);
+      h('div', { class: 'row-btns' }, ib('chevL', 'العودة', { class: 'btn primary', onclick: () => this.onEnd(res) }), ib('scroll', 'السجل', { class: 'btn', onclick: () => this.showLog() })));
     this.panel.classList.add('tall');
   }
 
   quickResolve() {
     this.sim.autoFormation(this.A, this.planPick);
     const res = this.sim.runAuto();
+    if (res.reason === 'starve') { this.finishNow('cancel'); return; }
     this.result = res;
     this.layoutUnits(true);
     this.renderTop();
@@ -599,12 +668,11 @@ class BattleScene {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.fillStyle = '#2b2217'; ctx.fillRect(0, 0, App.canvas.width, App.canvas.height);
     cam.apply(ctx);
-    // الأرض تمتد خارج الميدان (نسخ معكوسة معتمة) كي لا تظهر أشرطة فارغة
-    const ext = (sx, sy, dx, dy) => { ctx.save(); ctx.translate(dx, dy); ctx.scale(sx, sy); ctx.drawImage(this.bg, 0, 0, BW, BH); ctx.restore(); };
-    ext(1, -1, 0, 0); ext(1, -1, 0, 2 * BH); ext(-1, 1, 0, 0); ext(-1, 1, 2 * BW, 0);
-    ctx.fillStyle = 'rgba(30,22,14,.55)';
-    ctx.fillRect(-BW, -BH, 3 * BW, BH); ctx.fillRect(-BW, BH, 3 * BW, BH); ctx.fillRect(-BW, 0, BW, BH); ctx.fillRect(BW, 0, BW, BH);
+    // A single campaign chart sits on the command table; no mirrored terrain seams.
+    ctx.fillStyle = '#252720'; ctx.fillRect(-BW, -BH, BW*3,BH*3);
+    ctx.shadowColor='#0009';ctx.shadowBlur=25;ctx.shadowOffsetY=6;
     ctx.drawImage(this.bg, 0, 0, BW, BH);
+    ctx.shadowBlur=0;ctx.shadowOffsetY=0;
     ctx.strokeStyle = 'rgba(60,40,20,.5)'; ctx.lineWidth = 2; ctx.strokeRect(0, 0, BW, BH);
     const sim = this.sim;
     // الأرض المكسوبة لكل جانب
@@ -634,8 +702,15 @@ class BattleScene {
     ctx.setTransform(d, 0, 0, d, 0, 0);
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     const fc = this.free ? this.free.cx : App.W / 2;
-    let fy = (this.free ? this.free.top : 40) + 14;
-    for (const f of this.floats) {
+    let fy = (this.free ? this.free.top : 40) + 20;
+    if (this.free && App.W > App.H && App.H > 540) {
+      ctx.fillStyle='#dcc997';ctx.font='700 20px "Reem Kufi", sans-serif';
+      ctx.fillText(this.cfg.title || 'ميدان المعركة',fc,fy);
+      ctx.fillStyle='#aeab8e';ctx.font='14px "Noto Naskh Arabic", sans-serif';
+      ctx.fillText(`${TERRAIN[sim.terrain].name} · ${WEATHER[sim.weather].name} · ${this.siege?'اقتحام الأسوار':'مواجهة ميدانية'}`,fc,fy+29);
+      fy+=64;
+    }
+    for (const f of App.H > 540 && App.W > App.H ? this.floats.slice(-1) : []) {
       const a = f.t < 0.3 ? f.t / 0.3 : f.t > 2.6 ? Math.max(0, (3.2 - f.t) / 0.6) : 1;
       ctx.globalAlpha = a;
       ctx.font = '700 15px "Reem Kufi", "Noto Naskh Arabic", sans-serif';
@@ -709,7 +784,8 @@ class BattleScene {
     const dead = u.men <= 0 || u.state === 'dead';
     const rout = u.state === 'rout';
     if (dead) return;
-    const w = this.blockW(u), hh = u.role === 'cav' || u.role === 'skirm' ? 16 : 18;
+    const legibility=Math.max(1,Math.min(1.8,1/this.cam.z));
+    const w = this.blockW(u), hh = (u.role === 'cav' || u.role === 'skirm' ? 18 : 20)*legibility;
     const known = s === this.A || this.A.intel >= 2 || this.sim.phase >= 1;
     ctx.globalAlpha = rout ? 0.45 : 1;
     ctx.fillStyle = 'rgba(0,0,0,.28)'; ctx.fillRect(p.x - w / 2 + 2, p.y - hh / 2 + 2, w, hh);
@@ -726,7 +802,7 @@ class BattleScene {
     if (known) drawIcon(ctx, UNIT_ICON[u.type] || 'swords', p.x - w / 2 + 10, p.y, 14, isLight(s.color) ? '#2a1e12' : '#fff6e2');
     else drawIcon(ctx, 'info', p.x, p.y, 12, isLight(s.color) ? '#2a1e12' : '#fff6e2');
     if (known) {
-      ctx.font = '700 11px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.direction = 'ltr';
+      ctx.font = `700 ${12*legibility}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.direction = 'ltr';
       ctx.fillStyle = isLight(s.color) ? '#2a1e12' : '#fff6e2';
       ctx.fillText(String(u.men), p.x + 7, p.y + 0.5);
       ctx.direction = 'inherit';

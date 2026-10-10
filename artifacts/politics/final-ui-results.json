@@ -1,0 +1,209 @@
+{
+  "checks": [
+    {
+      "viewport": [
+        1440,
+        900
+      ],
+      "noInventedShare": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "actualContribution": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "coordination": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "contributionReload": true,
+      "headerClose": true,
+      "surrender": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "surrenderCooldown": true
+    },
+    {
+      "viewport": [
+        1024,
+        768
+      ],
+      "noInventedShare": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "actualContribution": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "coordination": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "contributionReload": true,
+      "headerClose": true,
+      "surrender": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "surrenderCooldown": true
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "noInventedShare": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "actualContribution": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "coordination": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "contributionReload": true,
+      "headerClose": true,
+      "surrender": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "surrenderCooldown": true
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "noInventedShare": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "actualContribution": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "coordination": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "contributionReload": true,
+      "headerClose": true,
+      "surrender": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "surrenderCooldown": true
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "noInventedShare": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "actualContribution": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "coordination": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "contributionReload": true,
+      "headerClose": true,
+      "surrender": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "surrenderCooldown": true
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "noInventedShare": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "actualContribution": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "coordination": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "contributionReload": true,
+      "headerClose": true,
+      "surrender": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "surrenderCooldown": true
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "noInventedShare": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "actualContribution": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "coordination": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "contributionReload": true,
+      "headerClose": true,
+      "surrender": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true
+      },
+      "surrenderCooldown": true
+    }
+  ],
+  "contributionReloads": 7,
+  "errors": []
+}

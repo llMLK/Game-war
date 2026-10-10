@@ -150,3 +150,30 @@ js/cmd-ui.js           واجهة القادة
 js/statecraft-ui.js    واجهة الصلح والتنسيق والتجسس والفتح
 js/main.js             القائمة الرئيسية والمعركة السريعة
 ```
+
+## تحديثات المراحل A–E والتحقق
+
+تقارير التنفيذ والقرارات ونتائج الاختبارات والصور:
+
+- [A: العالم والخريطة](docs/phase-a.md)
+- [B: نظام القادة](docs/phase-b.md)
+- [C: المعارك والقيادة الحربية](docs/phase-c.md)
+- [D: الاقتصاد والخزينة والبناء والقوافل](docs/phase-d-economy.md)
+- [E: الدبلوماسية والتحالف والتبعية والتجسس](docs/phase-e-politics.md)
+
+تعمل اللعبة مباشرة من ملفاتها الثابتة. اختبارات المنطق تحتاج Node.js ولا تحتاج تثبيت مكتبات إضافية:
+
+```bash
+node tests/map-routes.cjs
+node tests/leaders.cjs
+node tests/battles.cjs
+node tests/economy.cjs
+node tests/economy-trade.cjs
+node tests/politics.cjs
+node tests/political-spy.cjs
+node tests/political-allies.cjs
+```
+
+محاكاة التوازن القابلة للتكرار: `tests/battle-balance.cjs` و`tests/economy-balance.cjs` و`tests/political-sim.cjs`. نتائج الفحص والصور محفوظة في `artifacts/`، والتحقق الذي سبق رفع المراحل الخمس في [artifacts/release/final-tests.json](artifacts/release/final-tests.json).
+
+اختبارات المعاينة واللمس تحتاج Playwright ومتصفح Edge وخادمًا محليًا على المنفذ 8000 (`node tests/serve.cjs`). مسارات Playwright في بعض هذه الأدوات مرتبطة ببيئة التطوير الأصلية؛ لا تستخدمها اللعبة أثناء التشغيل. مرحلة الصقل النهائي لم تبدأ.

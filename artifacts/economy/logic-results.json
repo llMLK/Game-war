@@ -1,0 +1,23 @@
+{
+  "passed": 18,
+  "checks": [
+    "income and expense categories sum to the live forecast",
+    "administrative paths use actual geography and bounded isolation, never 99 hops",
+    "local administration does not multiply existing city costs after expansion",
+    "population growth smoothly diminishes and preserves oversized old cities",
+    "all building previews equal actual formula changes and do not mutate saved state",
+    "construction charges once, grants no premature yield, completes on its due turn",
+    "investment preference changes with local resources and route position",
+    "leader contracts and assigned officers are charged exactly once",
+    "upkeep and campaign supply use the existing unit and readiness integration formulas",
+    "full endRound ledger reconciles construction, reinforcement and recurring collection",
+    "settlement is idempotent and cannot duplicate income after reload",
+    "tribute and vassal transfers reconcile symmetrically and are not paid twice",
+    "Annexation and Aman previews match execution with declining local costs",
+    "save migration preserves population, buildings, burdens and route disruption",
+    "occupation keeps defender choices and previews their gold and production effects exactly",
+    "saving a large treasury carries no fee or change to normal recurring costs",
+    "equipment replacement is proportional to unit cost and reconciles with the live round",
+    "unclassified events reconcile exactly and reading explanations never collects money"
+  ]
+}

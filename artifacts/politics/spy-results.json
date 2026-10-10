@@ -1,0 +1,41 @@
+{
+  "checks": 15,
+  "passed": [
+    "assessment explains approximate chances, concrete costs, consequences and cooldowns",
+    "same-turn operations and post-detection recovery reject without charging again",
+    "save/reload cannot change outcome or reset operation cooldown and ledger charge",
+    "realm intelligence uses one deterministic draw regardless of an omitted target ID",
+    "incitement weakens loyalty, actual tax and reinforcement/recruitment for exact duration",
+    "loyal stable cities are harder to incite than restive cities",
+    "security and intelligence investment are finite, meaningful, charged once and saved",
+    "road sabotage changes movement without changing road data, then recovers",
+    "each sabotage has live consequences and the stated inclusive duration",
+    "siege-equipment sabotage affects only targeted camp and is persisted/repaired",
+    "another intact allied camp keeps its own siege equipment",
+    "invalid targets and ineffective sabotage are refused before charging",
+    "old-save migration preserves histories, derives cooldowns and is idempotent",
+    "repeated espionage chooses contextual varied targets and does not fixate on Nicaea",
+    "strategic siege and unrest changes alter priorities"
+  ],
+  "simulations": {
+    "loyaltySuccess": [
+      0.47,
+      0.26999999999999996,
+      0.1
+    ],
+    "repeatedIncitement": {
+      "attempts": 19,
+      "uniqueTargets": 6,
+      "targets": [
+        "iconium",
+        "caesarea",
+        "trebizond",
+        "syracuse",
+        "attalia",
+        "constantinople"
+      ],
+      "nicaea": 0
+    },
+    "unrestTarget": "nicaea"
+  }
+}

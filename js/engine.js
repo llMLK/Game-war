@@ -30,6 +30,15 @@ class Camera {
   }
   clamp() {
     const halfW = App.W / 2 / this.z, halfH = App.H / 2 / this.z;
+    if (this.safeFrame) {
+      const m = 60, l = this.padLeft || 0, r = this.padRight || 0;
+      const t = this.padTop || 0, b = this.padBottom || 0;
+      const x0 = (App.W / 2 - l - m) / this.z, x1 = this.ww - (App.W / 2 - r - m) / this.z;
+      const y0 = (App.H / 2 - t - m) / this.z, y1 = this.wh - (App.H / 2 - b - m) / this.z;
+      this.x = x0 <= x1 ? clamp(this.x,x0,x1) : this.ww/2 + (r-l)/2/this.z;
+      this.y = y0 <= y1 ? clamp(this.y,y0,y1) : this.wh/2 + (b-t)/2/this.z;
+      return;
+    }
     // وضع التغطية: الخريطة تملأ الشاشة دائماً بلا حواف سوداء
     if (this.cover) {
       // يُسمح بتجاوز الحافة بقدر ما تغطيه الواجهة، حتى تُرى مدن الأطراف خارج الأشرطة
@@ -122,6 +131,7 @@ const App = {
       try { c.setPointerCapture(e.pointerId); } catch (err) { /* مؤشر اصطناعي */ }
       P.set(e.pointerId, pos(e));
       const s = this.scene;
+      if (s && s.fly) s.fly = null;
       if (P.size === 1) {
         const p = pos(e);
         this.gesture = { mode: 'tap', sx: p.x, sy: p.y, t: performance.now(), moved: false };
@@ -194,6 +204,7 @@ const App = {
       e.preventDefault();
       const s = this.scene;
       if (s && s.cam) s.cam.zoomAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.12 : 1 / 1.12);
+      if (s) s.fly = null;
     }, { passive: false });
 
     c.addEventListener('contextmenu', (e) => e.preventDefault());

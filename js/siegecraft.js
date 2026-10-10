@@ -14,6 +14,14 @@ const NEED_NAME = { arms: 'سوقاً أو إسطبلات وورشاً (حدّا
 const SURRENDER_WAIT = 2;
 
 Object.assign(Game, {
+  recruitmentConditions(n, merc = false) {
+    const siege = !!this.besieger(n.id), disrupted = (n.noRecruit ?? -1) >= this.S.turn;
+    const extra = merc ? 0 : (siege ? 0.35 : 0) + (disrupted ? 0.3 : 0);
+    return { siege, disrupted, extra, note: [siege && !merc ? 'حصار: تجهيز محلي بتكلفة إضافية 35٪' : null, disrupted && !merc ? 'تعطيل الإمداد: تكلفة إضافية 30٪' : null].filter(Boolean).join('، ') };
+  },
+  localRecruitCost(type, merc, n) {
+    return Math.round(this.recruitCost(type, merc) * (1 + this.recruitmentConditions(n, merc).extra));
+  },
   // ——— التجهيز ———
   reequipOptions(a, r) {
     const n = this.node(a.node);
@@ -22,7 +30,7 @@ Object.assign(Game, {
       const from = UNITS[r.type], to = UNITS[o.to];
       const newMen = Math.max(5, Math.round(r.men / from.men * to.men));
       const back = Math.max(0, r.men - newMen);
-      const cost = Math.max(20, Math.round((to.cost - from.cost) * (newMen / to.men)) + 10);
+      const cost = Math.round(Math.max(20, Math.round((to.cost - from.cost) * (newMen / to.men)) + 10) * (1 + this.recruitmentConditions(n).extra));
       let err = null;
       if (a.siege || n.owner !== a.fid) err = 'التجهيز يحتاج مدينة لك: الورش والإسطبلات فيها';
       else if (o.need === 'arms' && !n.market && !n.barracks) err = `يحتاج ${NEED_NAME.arms} في ${n.name}`;
@@ -43,7 +51,7 @@ Object.assign(Game, {
     this.f(a.fid).gold -= o.cost;
     r.type = to; r.men = o.newMen; r.exp = Math.max(0, (r.exp || 0) - 1); r.drill = 0;
     n.manpower = Math.min(this.mpCap(n), n.manpower + o.back);
-    const mp0 = a.mp;
+      const mp0 = a.mp;
     if (typeof Undo !== 'undefined') Undo.push({
       label: `تجهيز ${UNITS[before.type].name} إلى ${UNITS[to].name}`,
       valid: () => this.S.armies.includes(a) && a.regs[idx] === r && r.type === to && r.men === o.newMen && a.mp >= mp0,
@@ -116,4 +124,39 @@ function oddsBand(p) {
   if (p < 0.45) return 'محتمل';
   if (p < 0.65) return 'جيد';
   return 'مرجح';
+}
+
+// المحاصرون يسلّحون رجال مدينتهم؛ لا يستطيع المرتزقة عبور الطوق.
+{
+  Game.canRecruit = function (fid, n, type, armyId, merc) {
+    const unit = UNITS[type];
+    if (!unit || n.owner !== fid) return 'الوحدة أو المدينة غير متاحة';
+    const conditions = this.recruitmentConditions(n, merc);
+    if (merc && conditions.siege) return 'المرتزقة خارج الأسوار؛ فك الحصار أو جنّد من أهل المدينة';
+    if (!merc) {
+      if (n.unrest > 0 && !conditions.siege && !conditions.disrupted) return `اضطراب محلي (${n.unrest} أدوار): هدّئ أهل المدينة أولاً`;
+      if (n.loyalty < 20) return 'الأهالي يرفضون الخدمة؛ ارفع الولاء إلى 20 على الأقل';
+      if (unit.needs === 'barracks' && !n.barracks) return 'تحتاج إسطبلات وورشاً لتوفير المعدات';
+      if (unit.unique && !this.recruitableTypes(fid, n).includes(type)) return 'تحتاج قائد نخبة هنا';
+      if (n.manpower < unit.men) return `رجال المدينة لا يكفون (${Math.floor(n.manpower)}/${unit.men})`;
+    }
+    const army = this.targetArmy(fid, n, armyId);
+    if (!army) return 'عيّن قائداً في المدينة أو أفرغ موضعاً في جيش قائم';
+    if (army.regs.length >= MAX_REGS) return 'الجيش مكتمل؛ ادمج الوحدات المتوافقة أو انقل بعضها';
+    const cost = this.localRecruitCost(type, merc, n);
+    if (this.f(fid).gold < cost) return `تحتاج ${cost} ذهباً${conditions.note ? ' (' + conditions.note + ')' : ''}`;
+    return null;
+  };
+  const recruit = Game.recruit;
+  Game.recruit = function (fid, n, type, armyId) {
+    const extra = this.localRecruitCost(type, false, n) - this.recruitCost(type, false);
+    const result = recruit.call(this, fid, n, type, armyId);
+    if (!result) this.f(fid).gold -= extra;
+    return result;
+  };
+  const demand = Game.tryDemandSurrender;
+  Game.tryDemandSurrender = function (enc) {
+    if (enc.type === 'assault' && this.besiegers(enc.node).some((a) => a.fid === enc.attFid)) return !!this.demandSurrender(this.node(enc.node), enc.attFid).ok;
+    return demand.call(this, enc);
+  };
 }

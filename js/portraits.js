@@ -1,87 +1,33 @@
 'use strict';
-// صور القادة: رسم متجه يُولَّد من الاسم والثقافة والعمر والندوب، ثابت لكل قائد.
-// ليس صورة تاريخية: رسم توضيحي يميّز القادة بطابع عصرهم.
-
-const PORTRAIT_SKIN = {
-  arab: ['#c89a6e', '#b98459', '#d4a77c', '#a8744c'], rum: ['#e0b894', '#d5a883', '#c99a74'], steppe: ['#d9b08a', '#c89c74', '#e3bd97'],
-  caucasus: ['#dcb18c', '#cf9f79', '#e2bb95'], han: ['#e6c49a', '#dbb68a', '#efcfa6'],
-};
-const PORTRAIT_CLOTH = {
-  arab: ['#e8e2d2', '#2f4f3f', '#6b2a24', '#394a6a'], rum: ['#5b2b6e', '#7a1f2b', '#1f3f6e', '#6b5a1e'], steppe: ['#6a4a2a', '#2f5f5a', '#7a3a24', '#4a4a3a'],
-  caucasus: ['#5a3a2a', '#2f4a5a', '#6a2a2a'], han: ['#3f6e4a', '#3a4f7a', '#7a2a24', '#5a4a2a'],
-};
-const PORTRAIT_HAIR = ['#1e1611', '#2b1d14', '#3a2616', '#4a3420', '#15110d'];
-
-const Portrait = {
-  cache: {},
-  svg(g, size = 96) {
-    const pr = Game.prestigeOf ? Game.prestigeOf(g) : { cls: 'p0' };
-    const age = Game.cmdAge ? Game.cmdAge(g) : null;
-    const key = [g.name, g.culture, size, pr.cls, (g.scars || []).length, age != null ? Math.floor(age / 10) : 'x', Game.isRuler && Game.isRuler(g) ? 'r' : ''].join('|');
-    if (this.cache[key]) return this.cache[key];
-    const r = rng(hashStr(g.name + ':face'));
-    const cul = g.culture || 'arab';
-    const skin = pick(PORTRAIT_SKIN[cul] || PORTRAIT_SKIN.arab, r);
-    const cloth = pick(PORTRAIT_CLOTH[cul] || PORTRAIT_CLOTH.arab, r);
-    const old = age != null ? age >= 52 : r() < 0.25;
-    const hair = old ? (r() < 0.5 ? '#9a948a' : '#c9c3b8') : pick(PORTRAIT_HAIR, r);
-    const ruler = Game.isRuler && Game.isRuler(g);
-    const officer = Game.isOfficer && Game.isOfficer(g);
-    const fierce = ['brave', 'cavalier'].includes(g.trait) || g.flaw === 'reckless' || g.flaw === 'harsh';
-    const faceW = 15 + r() * 3, faceH = 19 + r() * 3;
-    const ring = { p0: '#6b5a3e', p1: '#8a6a3a', p2: '#a9a9b0', p3: '#d4a847', p4: '#f0cf6a' }[pr.cls] || '#6b5a3e';
-    const bg = { arab: '#3a2f22', rum: '#2e2238', steppe: '#2a2f26', caucasus: '#2e2a26', han: '#23302a' }[cul] || '#2e2a26';
-    const parts = [];
-    // الخلفية والإطار
-    parts.push(`<circle cx="50" cy="50" r="48" fill="${bg}"/>`);
-    parts.push(`<circle cx="50" cy="50" r="46" fill="none" stroke="${ring}" stroke-width="${pr.cls === 'p4' ? 3.5 : 2.5}"/>`);
-    if (pr.cls === 'p4') parts.push(`<circle cx="50" cy="50" r="42" fill="none" stroke="${ring}" stroke-width="0.8" stroke-dasharray="2 3" opacity=".8"/>`);
-    // الكتفان: درع أو ثوب
-    const armor = !officer && (cul === 'rum' || cul === 'han' || r() < 0.4);
-    parts.push(`<path d="M14 98 Q18 72 38 66 L62 66 Q82 72 86 98 Z" fill="${cloth}"/>`);
-    if (armor) parts.push(`<path d="M22 96 Q26 76 40 70 L60 70 Q74 76 78 96" fill="none" stroke="#c8b27a" stroke-width="1.4" opacity=".7"/><path d="M34 78 L66 78 M32 86 L68 86" stroke="#c8b27a" stroke-width="1" opacity=".5"/>`);
-    else parts.push(`<path d="M40 66 L50 82 L60 66" fill="none" stroke="#00000055" stroke-width="1.5"/>`);
-    // الرقبة والوجه
-    parts.push(`<rect x="44" y="56" width="12" height="12" rx="4" fill="${skin}"/>`);
-    parts.push(`<ellipse cx="50" cy="44" rx="${faceW}" ry="${faceH}" fill="${skin}"/>`);
-    parts.push(`<ellipse cx="${50 - faceW + 1}" cy="45" rx="2.5" ry="4" fill="${skin}"/><ellipse cx="${50 + faceW - 1}" cy="45" rx="2.5" ry="4" fill="${skin}"/>`);
-    // العينان والحاجبان
-    const ey = 42 + r() * 2;
-    parts.push(`<ellipse cx="44" cy="${ey}" rx="2.1" ry="1.3" fill="#1b140f"/><ellipse cx="56" cy="${ey}" rx="2.1" ry="1.3" fill="#1b140f"/>`);
-    const bt = fierce ? 2.2 : 0.4;
-    parts.push(`<path d="M40 ${ey - 3.5 + bt * 0.3} L47 ${ey - 3.5 - bt * 0.5}" stroke="${hair}" stroke-width="1.6" stroke-linecap="round"/><path d="M53 ${ey - 3.5 - bt * 0.5} L60 ${ey - 3.5 + bt * 0.3}" stroke="${hair}" stroke-width="1.6" stroke-linecap="round"/>`);
-    parts.push(`<path d="M50 ${ey + 1} L48.5 ${ey + 7} L51 ${ey + 7.5}" fill="none" stroke="#00000044" stroke-width="1"/>`);
-    if (old) parts.push(`<path d="M41 ${ey - 7} Q50 ${ey - 9} 59 ${ey - 7}" fill="none" stroke="#00000033" stroke-width=".8"/><path d="M40 ${ey + 3} L42 ${ey + 5} M60 ${ey + 3} L58 ${ey + 5}" stroke="#00000033" stroke-width=".8"/>`);
-    // اللحية والشارب حسب الثقافة
-    const beard = cul === 'han' ? 'long' : cul === 'rum' ? (r() < 0.5 ? 'short' : 'full') : cul === 'steppe' ? (r() < 0.6 ? 'mustache' : 'short') : officer ? 'short' : 'full';
-    if (beard === 'full') parts.push(`<path d="M${50 - faceW + 2} 46 Q${50 - faceW + 3} 66 50 70 Q${50 + faceW - 3} 66 ${50 + faceW - 2} 46 Q56 58 50 58 Q44 58 ${50 - faceW + 2} 46 Z" fill="${hair}"/>`);
-    if (beard === 'short') parts.push(`<path d="M${50 - faceW + 4} 50 Q50 64 ${50 + faceW - 4} 50 Q50 58 ${50 - faceW + 4} 50 Z" fill="${hair}" opacity=".9"/>`);
-    if (beard === 'long') parts.push(`<path d="M47 58 Q48 74 50 80 Q52 74 53 58 Z" fill="${hair}"/><path d="M42 55 Q46 53 50 55 Q54 53 58 55" fill="none" stroke="${hair}" stroke-width="1.6"/>`);
-    if (beard === 'mustache') parts.push(`<path d="M41 56 Q46 52 50 54 Q54 52 59 56 Q56 58 50 56 Q44 58 41 56 Z" fill="${hair}"/><path d="M48 60 L50 68 L52 60" fill="${hair}"/>`);
-    parts.push(`<path d="M46 ${ey + 11} Q50 ${ey + 12.5} 54 ${ey + 11}" fill="none" stroke="#5a2a1a" stroke-width="1.1"/>`);
-    // غطاء الرأس
-    const gold = '#d4b060';
-    if (officer) parts.push(`<path d="M${50 - faceW - 1} 36 Q50 12 ${50 + faceW + 1} 36 Z" fill="#6a6a6a"/><rect x="${50 - faceW - 1}" y="34" width="${2 * faceW + 2}" height="4" fill="#555"/>`);
-    else if (cul === 'arab' || cul === 'caucasus' && r() < 0.3) {
-      const tc = pick(['#f2ede0', '#e6dcc2', '#2f3f5a', '#5a2a24', '#1f1f1f'], r);
-      if (r() < 0.35 && !ruler) parts.push(`<path d="M${50 - faceW - 2} 38 Q50 6 ${50 + faceW + 2} 38 Z" fill="#8a8a86"/><path d="M50 8 L50 14" stroke="#8a8a86" stroke-width="2"/><path d="M${50 - faceW - 2} 37 Q50 31 ${50 + faceW + 2} 37" fill="none" stroke="${tc}" stroke-width="4"/>`);
-      else parts.push(`<path d="M${50 - faceW - 3} 38 Q${50 - faceW - 5} 20 50 16 Q${50 + faceW + 5} 20 ${50 + faceW + 3} 38 Q50 30 ${50 - faceW - 3} 38 Z" fill="${tc}"/><path d="M${50 - faceW} 30 Q50 22 ${50 + faceW} 32 M${50 - faceW + 2} 25 Q50 19 ${50 + faceW - 1} 27" fill="none" stroke="#00000022" stroke-width="1.2"/>`);
-    } else if (cul === 'rum') {
-      if (ruler) parts.push(`<path d="M${50 - faceW} 30 L${50 - faceW} 22 L${50 - 6} 26 L50 18 L${50 + 6} 26 L${50 + faceW} 22 L${50 + faceW} 30 Z" fill="${gold}"/><circle cx="50" cy="24" r="2" fill="#a01e2a"/>`);
-      else parts.push(`<path d="M${50 - faceW - 2} 38 Q50 8 ${50 + faceW + 2} 38 Z" fill="#9a8a5a"/><path d="M44 12 Q50 2 60 8 Q66 14 70 26" fill="none" stroke="#a01e2a" stroke-width="4" stroke-linecap="round"/><rect x="${50 - faceW - 2}" y="35" width="${2 * faceW + 4}" height="3.5" fill="#7a6a3a"/>`);
-    } else if (cul === 'steppe') {
-      parts.push(`<path d="M${50 - faceW - 3} 38 L50 6 L${50 + faceW + 3} 38 Z" fill="${r() < 0.5 ? '#7a6a52' : '#5a4a3a'}"/><path d="M${50 - faceW - 4} 38 Q50 32 ${50 + faceW + 4} 38 L${50 + faceW + 4} 41 Q50 35 ${50 - faceW - 4} 41 Z" fill="#c8b08a"/>`);
-    } else if (cul === 'han') {
-      if (r() < 0.5 || ruler) parts.push(`<path d="M${50 - faceW + 1} 30 Q50 22 ${50 + faceW - 1} 30 Q50 34 ${50 - faceW + 1} 30 Z" fill="${hair}"/><rect x="45" y="12" width="10" height="12" rx="2" fill="${ruler ? gold : '#1e1611'}"/><path d="M40 16 L60 16" stroke="${ruler ? gold : '#1e1611'}" stroke-width="2"/>`);
-      else parts.push(`<path d="M${50 - faceW - 2} 38 Q50 10 ${50 + faceW + 2} 38 Z" fill="#6a5a3a"/><path d="M50 12 Q46 2 52 0" fill="none" stroke="#a01e2a" stroke-width="3"/>`);
-    } else parts.push(`<path d="M${50 - faceW - 2} 38 Q50 12 ${50 + faceW + 2} 38 Z" fill="#6a5a4a"/>`);
-    // الندوب من سجله
-    const sc = (g.scars || []).length;
-    if (sc) parts.push(`<path d="M${57 + r() * 3} ${ey - 5} L${53 + r() * 2} ${ey + 8}" stroke="#8a3a2a" stroke-width="1.3" stroke-linecap="round" opacity=".85"/>`);
-    if (sc > 1) parts.push(`<path d="M42 ${ey + 6} L46 ${ey + 9}" stroke="#8a3a2a" stroke-width="1.1" opacity=".75"/>`);
-    const out = `<svg class="portrait" viewBox="0 0 100 100" width="${size}" height="${size}" role="img" aria-label="${g.name}">${parts.join('')}</svg>`;
-    this.cache[key] = out;
-    return out;
-  },
-  el(g, size) { return h('span', { class: 'pt-wrap', html: this.svg(g, size) }); },
+// Illustrated manuscript busts. Stable face geometry, dress and marks; never claims a likeness.
+const Portrait={
+ cache:{},
+ svg(g,size=96){
+  const p=Game.prestigeOf(g),age=Game.cmdAge(g),cul=g.culture||'arab',scars=(g.scars||[]).length;
+  const key=[g.name,cul,p.cls,age==null?'x':Math.floor(age/10),scars,size,g.trait].join('|');if(this.cache[key])return this.cache[key];
+  const r=rng(hashStr(g.name+':engraving')),uid='p'+hashStr(key),old=age!=null&&age>=52;
+  const palette={arab:['#c29b72','#d4c5a3','#444d3b'],rum:['#ceae8b','#8f946f','#53596a'],han:['#cab18b','#687c6a','#3b4f49'],steppe:['#bfa078','#907558','#504d3b'],caucasus:['#c6a982','#a78e6d','#445953']}[cul]||['#c6a982','#a78e6d','#445953'];
+  const skin=palette[0],cloth=pick([palette[1],'#b7ae8c','#7c8370','#847467','#aaa792'],r),cloak=pick([palette[2],'#624b3d','#344d4a','#484b38','#514b52'],r),hair=old?'#aaa393':pick(['#342c24','#504131','#242c26'],r),ring={p0:'#887450',p1:'#b19862',p2:'#aeb5a5',p3:'#d1b374',p4:'#e9c982'}[p.cls];
+  const helmet=['brave','cavalier','siege','defender','mountaineer'].includes(g.trait),beardDepth=old?146:128+Math.floor(r()*18);
+  const width=21+r()*9,jaw=15+r()*10,eye=79+r()*7,fierce=['brave','cavalier'].includes(g.trait),brow=fierce?3:0;
+  const parts=[`<defs><linearGradient id="${uid}bg" x2="1" y2="1"><stop stop-color="#434739"/><stop offset="1" stop-color="#171f1c"/></linearGradient><linearGradient id="${uid}face" x2="1" y2=".2"><stop stop-color="#897152"/><stop offset=".45" stop-color="${skin}"/><stop offset=".72" stop-color="${skin}"/><stop offset="1" stop-color="#aa855f"/></linearGradient><linearGradient id="${uid}coat"><stop stop-color="#182621"/><stop offset=".52" stop-color="${cloak}"/><stop offset="1" stop-color="#18241f"/></linearGradient><pattern id="${uid}grain" width="7" height="7" patternUnits="userSpaceOnUse"><path d="M0 7L7 0" stroke="#e7daba" stroke-width=".35" opacity=".09"/></pattern><clipPath id="${uid}clip"><rect x="5" y="5" width="150" height="190" rx="5"/></clipPath></defs>`,
+  `<rect x="1" y="1" width="158" height="198" rx="7" fill="#19211b" stroke="${ring}" stroke-width="1.5"/><g clip-path="url(#${uid}clip)"><path d="M0 0H160V200H0Z" fill="url(#${uid}bg)"/><path d="M17 185V69Q17 9 80 9Q143 9 143 69V185" fill="none" stroke="${ring}" opacity=".28"/><circle cx="80" cy="72" r="53" fill="none" stroke="${ring}" opacity=".12"/>`,
+  `<path d="M8 207Q11 157 42 143L65 136H96L120 146Q151 159 155 207Z" fill="url(#${uid}coat)" stroke="#151e18"/><path d="M59 130L51 149L81 182L107 147L99 129Z" fill="${cloth}" stroke="#897957"/><path d="M42 144L56 172L38 195M121 146L107 175L124 195" stroke="#ac9b74" fill="none" opacity=".5"/><path d="M67 124L66 143Q80 156 96 141L94 122" fill="${skin}"/><path d="M64 130Q83 146 97 126L94 138Q78 150 66 141Z" fill="#725d47" opacity=".6"/>`,
+  `<path d="M${80-width} 56Q80 37 ${80+width} 57L${83+width} 91L${80+jaw} 119Q81 139 ${80-jaw} 117L${77-width} 90Z" fill="url(#${uid}face)" stroke="#5c4b37" stroke-width="1"/><path d="M${80-width} 75Q${70-width} 72 ${76-width} 88L${83-width} 95M${80+width} 75Q${90+width} 72 ${84+width} 88L${77+width} 95" fill="${skin}" stroke="#84674b"/>`,
+  `<path d="M59 ${eye-3+brow}Q66 ${eye-7} 74 ${eye-4-brow}M87 ${eye-4-brow}Q94 ${eye-7} 103 ${eye-3+brow}" fill="none" stroke="${hair}" stroke-width="2.2"/><path d="M59 ${eye+1}Q66 ${eye-3} 74 ${eye+1}M87 ${eye+1}Q95 ${eye-3} 102 ${eye+1}" fill="#d4ba91" stroke="#564a37" stroke-width="1"/><ellipse cx="67" cy="${eye}" rx="2.1" ry="2.6" fill="#282921"/><ellipse cx="94" cy="${eye}" rx="2.1" ry="2.6" fill="#282921"/><path d="M79 ${eye-1}L76 99L82 102M86 97L88 100" stroke="#745b40" stroke-width="1.1" fill="none"/><path d="M61 91L66 98M99 90L95 98" stroke="#94704e" opacity=".5"/>`,
+  `<path d="M${81-width} 90Q60 111 73 111L88 111Q102 110 ${79+width} 90L${77+width} 116Q92 ${cul==='han'?151:beardDepth} 80 ${cul==='han'?154:beardDepth+2}Q61 133 ${82-width} 111Z" fill="${hair}"/><path d="M67 106Q74 103 81 107Q89 102 96 106L94 111Q84 108 80 111Q73 108 66 111Z" fill="${hair}"/><path d="M74 113Q81 115 88 112" stroke="#694d39" fill="none"/><path d="M67 119L73 132M79 119L81 138M90 118L87 132" stroke="#d1c4a0" opacity=".2" fill="none"/>`];
+  if(cul==='arab'&&helmet)parts.push(`<path d="M48 71Q49 39 80 24Q111 39 112 71Z" fill="#8d9078" stroke="#444e3e"/><path d="M80 25V64M51 60Q80 48 109 61" fill="none" stroke="#c3bb94"/><path d="M48 69L48 122L57 129L60 76M105 75L107 128L117 120L112 69" fill="#666f60" stroke="#a6a48b"/><path d="M47 69Q80 56 113 70" stroke="${cloth}" stroke-width="7" fill="none"/>`);
+  else if(cul==='arab')parts.push(`<path d="M49 77L47 49Q55 26 82 28Q108 29 114 51L111 78Q91 67 80 66Q63 66 49 77Z" fill="${cloth}" stroke="#6a6550"/><path d="M48 63Q80 49 112 68M50 52Q80 37 108 56M57 41Q78 30 101 44" stroke="#716a50" fill="none" stroke-width="2"/><path d="M106 73L116 132L108 144L102 88Z" fill="${cloth}" opacity=".8"/>`);
+  else if(cul==='han')parts.push(`<path d="M51 68Q47 45 61 38L69 37L72 23H91L94 38Q112 46 110 67Q80 57 51 68Z" fill="#29392f" stroke="#9d9270"/><path d="M54 57Q80 49 107 57M73 28L90 28M77 31V41M84 30V40" fill="none" stroke="#aea078" opacity=".7"/><path d="M52 68L43 94M109 68L117 96" stroke="#33372a" stroke-width="4"/>`);
+  else if(cul==='steppe')parts.push(`<path d="M47 72L57 47L81 23L104 47L116 72Z" fill="${cloth}" stroke="#736345"/><path d="M45 68Q80 58 116 68L113 79Q80 69 47 79Z" fill="#625c49" stroke="#b5a17b"/><path d="M81 25V61M56 50L70 64M104 50L92 65" stroke="#d1bb86" opacity=".55"/>`);
+  else parts.push(`<path d="M47 72Q46 38 80 29Q114 39 115 72Z" fill="#989778" stroke="#5b624f"/><path d="M80 30L78 64M51 57Q82 42 111 59M48 70Q80 59 114 70" stroke="#d5c495" fill="none"/><path d="M48 69L46 109L55 117L57 73M107 72L108 116L117 108L114 69" fill="#777e69" stroke="#b8b18c"/><path d="M53 82L53 103M111 81L113 102" stroke="#d3c29a" opacity=".6"/>`);
+  if(old)parts.push(`<path d="M63 74Q70 72 76 73M87 73Q94 71 102 74M59 87L65 90M103 87L97 90" stroke="#7f674a" fill="none" opacity=".7"/>`);
+  if(scars)parts.push(`<path d="M97 72L92 95" stroke="#a47055" stroke-width="1.7"/><path d="M95 80L98 81M92 90L95 91" stroke="#d7b185"/>`);
+  for(let y=155;y<198;y+=8)for(let x=55;x<110;x+=9)parts.push(`<path d="M${x} ${y}q4 7 8 0" fill="none" stroke="#c1ad79" opacity=".15"/>`);
+  parts.push(`<rect width="160" height="200" fill="url(#${uid}grain)"/><path d="M7 194H153" stroke="${ring}" opacity=".7"/></g>`);
+  if(p.cls==='p4')parts.push(`<path d="M5 22L12 8L26 5M134 5L148 8L155 22M5 178L12 192L26 195M134 195L148 192L155 178" stroke="${ring}" fill="none" stroke-width="2"/>`);
+  const safe=g.name.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const out=`<svg class="portrait" viewBox="0 0 160 200" width="${size}" height="${size*1.25}" role="img" aria-label="رسم توضيحي للقائد ${safe}">${parts.join('')}</svg>`;this.cache[key]=out;return out;
+ },
+ el(g,size){return h('span',{class:'pt-wrap',html:this.svg(g,size)});},
 };

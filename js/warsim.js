@@ -3,10 +3,10 @@
 // المعركة على مراحل، مع أحداث تكتيكية، وصفات قادة تغيّر التنفيذ، وتحليل يشرح النتيجة ويروي القصة
 
 const WS_PHASES = [
-  { key: 'approach', name: 'الاقتراب', siege: 'الزحف تحت السهام', ticks: 2 },
+  { key: 'approach', name: 'الاستطلاع والتهيؤ', siege: 'التهيؤ تحت الأسوار', ticks: 2 },
   { key: 'contact', name: 'الالتحام الأول', siege: 'اقتحام الأسوار', ticks: 2 },
   { key: 'main', name: 'الاشتباك الرئيسي', siege: 'القتال على الأسوار', ticks: 3 },
-  { key: 'crisis', name: 'الأزمة', siege: 'حرب الشوارع', ticks: 2 },
+  { key: 'crisis', name: 'حسم الاحتياط', siege: 'حرب الشوارع', ticks: 2 },
   { key: 'collapse', name: 'الحسم والمطاردة', siege: 'الحسم', ticks: 1 },
 ];
 const SECTS = ['L', 'C', 'R'];
@@ -61,8 +61,8 @@ const PLANS = {
   balanced: { name: 'متوازنة', icon: 'scales', desc: 'تقدّم منظم واحتياط حاضر. لا نقاط ضعف واضحة ولا مفاجآت.', good: 'حين لا تعرف العدو جيداً', bad: 'قد تضيع فرصة الحسم' },
   assault: { name: 'هجوم كاسح', icon: 'charge', desc: 'اقتراب سريع تحت السهام والتحام عنيف يهزّ العدو. يُنهك جيشك إن طالت المعركة.', good: 'ضد الرماة والجيوش المهزوزة أو الأضعف', bad: 'ضد جدار الرماح والمدافعين على المرتفع' },
   defensive: { name: 'دفاع صلب', icon: 'shield', defOnly: true, desc: 'صفوف ثابتة ورماة مستعدون. العدو يأتي إليك ويتعب في الطريق.', good: 'حين تكون أضعف أو تملك رماحاً ورماة', bad: 'لا يكسب أرضاً، والاستنزاف بالسهام يؤذيه' },
-  flanking: { name: 'التفاف', icon: 'flank', desc: 'الفرسان يدورون حول جناح العدو ليضربوه من الخلف في الاشتباك الرئيسي.', good: 'بخيالة كافية في السهول والصحراء', bad: 'في الغابات والجبال، وأمام الرماح والاحتياط اليقظ' },
-  attrition: { name: 'استنزاف وتأخير', icon: 'bow', desc: 'الرماة والخيالة الرماة يُمطرون العدو ويتراجعون قبل الالتحام.', good: 'بالرماة ضد المشاة البطيئة', bad: 'في المطر، وأمام الخيالة السريعة' },
+  flanking: { name: 'التفاف', icon: 'flank', needCav: 1, desc: 'الفرسان يدورون حول جناح العدو ليضربوه من الخلف في الاشتباك الرئيسي.', good: 'بخيالة كافية في السهول والصحراء', bad: 'في الغابات والجبال، وأمام الرماح والاحتياط اليقظ' },
+  attrition: { name: 'استنزاف وتأخير', icon: 'bow', needMissile: true, desc: 'الرماة والخيالة الرماة يُمطرون العدو ويتراجعون قبل الالتحام. تحتاج رماة بذخيرة.', good: 'بالرماة ضد المشاة البطيئة', bad: 'في المطر، وأمام الخيالة السريعة' },
   feigned: { name: 'تقهقر مصطنع', icon: 'retreat', needCav: 2, desc: 'القلب يتظاهر بالانسحاب ليستدرج العدو إلى فخ الفرسان على الجناحين.', good: 'ضد القادة المتهورين والمتكبرين', bad: 'ضد الداهية والمتردد؛ وقد يتحول التظاهر إلى هزيمة حقيقية' },
   highground: { name: 'التمسك بالمرتفع', icon: 'hill', defOnly: true, terrain: ['hills', 'mountains'], desc: 'تثبت فوق المرتفع: رماتك أبعد مدى، والصاعدون يتعبون.', good: 'حين تدافع في التلال أو الجبال', bad: 'لا مطاردة للعدو المنهزم' },
   breakcenter: { name: 'كسر القلب', icon: 'arrowUp', desc: 'أقوى مشاتك في القلب والاحتياط خلفه: إن انكسر قلب العدو انقسم جيشه.', good: 'بمشاة صدام قوية', bad: 'جناحاك رقيقان أمام الالتفاف' },
@@ -109,11 +109,13 @@ class WarSim {
       gens: (s.gens || []).filter(Boolean).slice().sort((a, b) => b.rank - a.rank),
       mood: s.mood || 0, ledger: {}, killed: 0, men0: 0, withdrew: false, orders: 0, aggr: s.aggr || 1,
       // الجاهزية القادمة من الحملة: تعب ومعنويات وسهام وتماسك وإمداد (تبقى بين المعارك)
-      ready: { fat: 0, mor: 70, ammo: 100, coh: 100, sup: 100, ...(s.ready || {}) }, commit: s.commit || 1,
+      ready: { fat: 0, mor: 70, ammo: 100, coh: 100, sup: 100, strain: 0, battles: 0, ...(s.ready || {}) }, commit: s.commit || 1,
       buffs: {}, cmdLog: [], used: {},
     };
-    side.fortune = 0.88 + this.r() * 0.24;
+    // Small battlefield uncertainty; composition and preparation carry the result.
+    side.fortune = 0.96 + this.r() * 0.08;
     side.cmd = side.gens[0] || null;
+    side.initialReady = { ...side.ready };
     if (side.cmd && side.cmd.wounded) { side.cmdWounded = true; side.cmdHurt = true; }
     side.sub = { L: side.gens[1] || null, R: side.gens[2] || null, C: null };
     let k = 0;
@@ -125,14 +127,16 @@ class WarSim {
       u.held = r.men - men;
       side.units.push(u);
     }
-    for (const g of side.gens) side.units.push(this.makeUnit(side, 'general', g.men || (12 + 4 * g.rank), 2, null, k++, g));
+    const soldiers = side.units.reduce((t, u) => t + u.men, 0);
+    const guardPool = Math.min(side.gens.length * 20, Math.floor(soldiers * 0.12));
+    for (const g of side.gens) side.units.push(this.makeUnit(side, 'general', Math.min(g.men || 20, Math.floor(guardPool / side.gens.length)), 1, null, k++, g));
     side.men0 = side.units.reduce((t, u) => t + u.men, 0);
     side.sec = {};
     for (const key of [...SECTS, 'Res']) side.sec[key] = { key, stance: 'hold', morale: 70, fat: 0, front: 0, state: 'ok', flanked: false, breach: 0, wavered: false };
     return side;
   }
   makeUnit(side, type, men, exp, ref, k, gen) {
-    const d = UNITS[type];
+    const d = type === 'general' ? { ...UNITS[type], hp: 14, atk: 8, def: 7, charge: 6 } : UNITS[type];
     return {
       id: side.i + ':' + k, side: side.i, type, role: wsRole(type), men, men0: men, exp, ref, gen: gen || null,
       hp: d.hp, atk: d.atk, def: d.def, missile: d.missile || 0, charge: d.charge || 0, armor: d.armor || 0,
@@ -179,6 +183,7 @@ class WarSim {
       if (p.defOnly && side.att) continue;
       if (p.terrain && !p.terrain.includes(this.terrain)) continue;
       if (p.needCav && side.units.filter((u) => (u.role === 'cav' || u.role === 'skirm') && u.men > 0).length < p.needCav) continue;
+      if (p.needMissile && !side.units.some((u) => u.men > 0 && ['missile', 'skirm'].includes(u.role) && u.ammo > 0)) continue;
       if (p.needEquip && !this.equip[p.needEquip]) continue;
       if (p.needCat && !side.units.some((u) => u.type === 'catapult')) continue;
       if (p.needTrait && !side.gens.some((g) => p.needTrait.includes(g.trait))) continue;
@@ -199,6 +204,8 @@ class WarSim {
 
   // ——————————— التشكيل التلقائي حسب الخطة ———————————
   autoFormation(side, plan) {
+    const combatRandom = this.r;
+    this.r = rng(hashStr(`${this.cfg.seed}:${side.i}:${plan}:formation`));
     side.plan = plan;
     const us = side.units.filter((u) => u.men > 0);
     const pw = (u) => this.unitMelee(u) + u.men * u.missile * 2;
@@ -210,7 +217,7 @@ class WarSim {
     for (const e of us.filter((u) => u.role === 'engine')) e.sec = siegeAtt ? 'C' : 'Res';
     const rest = us.filter((u) => !u.sec).sort((a, b) => pw(b) - pw(a));
     // الاحتياط
-    let resCount = rest.length >= 8 ? 2 : rest.length >= 4 ? 1 : 0;
+    let resCount = rest.length >= 8 ? 2 : rest.length >= 5 ? 1 : 0;
     // القائد الحذر يحتفظ باحتياط أكبر
     if (side.cmd && side.cmd.flaw === 'cautious' && rest.length >= 6) resCount++;
     if (plan === 'escalade' || plan === 'attrition') resCount = Math.max(0, resCount - 1);
@@ -239,7 +246,8 @@ class WarSim {
     if (!siegeAtt && !siegeDef) {
       if (plan === 'flanking') {
         side.flankWing = side.flankWing || (this.r() < 0.5 ? 'L' : 'R');
-        cavs.forEach((u) => { u.sec = side.flankWing; });
+        const otherFront = rest.filter((u) => !u.sec && !['cav', 'skirm', 'missile'].includes(u.role)).length;
+        cavs.forEach((u, i) => { u.sec = otherFront < 2 && i === 0 ? 'C' : otherFront < 2 && i === 1 ? OPP[side.flankWing] : side.flankWing; });
       } else {
         let lw = 0, rw = 0;
         for (const u of cavs) { if (lw <= rw) { u.sec = 'L'; lw += pw(u); } else { u.sec = 'R'; rw += pw(u); } }
@@ -273,7 +281,13 @@ class WarSim {
     const f = side.cmd && side.cmd.flaw, t = side.cmd && side.cmd.trait;
     side.cmdPos = f === 'reckless' || t === 'brave' || plan === 'assault' || plan === 'breakcenter' ? 'front' : f === 'cautious' || t === 'merchant' ? 'rear' : 'center';
     if (siegeDef) side.cmdPos = t === 'defender' ? 'front' : 'center';
-    if (plan === 'attrition') for (const u of us) if (u.missile) u.ammo += 3;
+    // Changing a formation must never create ammunition.
+    this.r = combatRandom;
+  }
+
+  prepare() {
+    const plans = this.sides.map((s) => s.plan || this.aiPlan(s));
+    this.sides.forEach((s, i) => { if (!s.plan) this.autoFormation(s, plans[i]); });
   }
 
   // ——————————— المعنويات الأولى ———————————
@@ -281,14 +295,14 @@ class WarSim {
     let m = 68 + side.mood;
     const g = side.cmd;
     const R0 = side.ready;
-    m += (R0.mor - 70) * 0.3 - (100 - R0.sup) / 10;
+    m += (R0.mor - 70) * 0.7 - (100 - R0.sup) / 12 - (100 - R0.coh) * 0.1 - R0.strain * 0.06;
     if (side.cmdHurt) m -= 5;
     if (g) {
       // النجوم خبرة تثبّت الصفوف، لا قوة ضرب إضافية
       m += (g.rank - 1) * 2;
       if (g.style === 'inspiring') m += 4;
-      if (g.trait === 'brave') m += 10;
-      if (g.trait === 'defender' && this.kind === 'siege' && !side.att) m += 10;
+      if (g.trait === 'brave') m += 6;
+      if (g.trait === 'defender' && this.kind === 'siege' && !side.att) m += 6;
       if (g.trait === 'merchant') m -= 5;
       if (g.vendetta && g.vendetta === side.foe.fid) m += 8;
     } else m -= 8;
@@ -296,19 +310,21 @@ class WarSim {
     if (side.plan === 'defensive' || side.plan === 'highground') m += 2;
     if (this.kind === 'siege' && !side.att && this.cfg.stores != null && this.cfg.stores < 0) m -= 15;
     if (this.kind === 'siege' && !side.att && this.cfg.capital) m += 6;
-    m += (this.r() - 0.5) * 12;
-    m = clamp(m, 35, 96);
+    m += (this.r() - 0.5) * 6;
+    m = clamp(m, 12, 94);
     for (const k of [...SECTS, 'Res']) side.sec[k].morale = m;
     side.morale0 = m;
   }
 
   // ——————————— التشغيل ———————————
   begin() {
+    if (this.phase >= 0 || this.over) return;
+    this.prepare();
     for (const s of this.sides) {
       if (!s.plan) this.autoFormation(s, this.aiPlan(s));
       this.initMorale(s);
-      // جزء من تعب الأيام السابقة يظهر في أول المعركة
-      for (const k of [...SECTS, 'Res']) s.sec[k].fat = clamp(s.ready.fat * 0.6, 0, 90);
+      // No rest between two battles in the same campaign turn.
+      for (const k of [...SECTS, 'Res']) s.sec[k].fat = clamp(s.ready.fat, 0, 100);
       for (const k of SECTS) s.sec[k].had = this.secUnits(s, k).length > 0;
       if (s.cmdHurt && s.cmdPos === 'front') s.cmdPos = 'center';
     }
@@ -321,6 +337,10 @@ class WarSim {
     }
     this.terrainNotes();
     this.phase = 0; this.tick = 0;
+    for (const s of this.sides) {
+      s.cp = this.cmdPoints(s);
+      s.initialFactors = this.factorSnapshot(s);
+    }
     this.openPhase();
   }
 
@@ -341,7 +361,7 @@ class WarSim {
       if ((t === 'hills' || t === 'mountains') && d.plan === 'highground') notes.push([d, 'highground', 'المدافع يمسك المرتفع: سهامه أبعد والصاعدون يتعبون']);
       if (t === 'river') notes.push([d, 'river', 'النهر يُضعف المهاجمين العابرين في الالتحام الأول']);
       if (t === 'forest') notes.push([null, 'forest', 'الغابة تكسر انقضاض الخيالة وتحجب السهام']);
-      if (t === 'mountains') notes.push([null, 'pass', 'الممر الضيق يُلغي التفوق العددي']);
+      if (t === 'mountains') notes.push([null, 'pass', 'الممر الضيق يقلل عدد الرجال الذين يستطيعون الاشتباك معًا']);
       if (t === 'plains') notes.push([null, 'plains', 'السهول المكشوفة ميدان الفرسان']);
       if (t === 'desert') notes.push([null, 'desert', 'الصحراء تُنهك غير المعتادين عليها']);
     }
@@ -352,8 +372,29 @@ class WarSim {
   openPhase() {
     const ph = WS_PHASES[this.phase];
     this.line(null, (this.kind === 'siege' ? ph.siege : ph.name), 'phase');
-    // تأثيرات بداية المرحلة
-    for (const s of this.sides) this.phaseStart(s, ph.key);
+    this.awaitingOrders = true;
+    this.queuedOrders = [];
+  }
+
+  // Both interfaces stop here before the first tick. All counters are in place
+  // before any flank, raid or plan maneuver can inflict casualties.
+  commitPhase() {
+    if (this.over || !this.awaitingOrders) return false;
+    for (const s of this.sides) if ((!s.player || this.autoAll) && !this.over) this.aiOrders(s);
+    this.awaitingOrders = false;
+    const initiative = (this.cfg.seed + this.phase) % 2;
+    const orders = this.queuedOrders.slice().sort((a, b) => (a.side === initiative ? 0 : 1) - (b.side === initiative ? 0 : 1));
+    this.queuedOrders = [];
+    for (const queued of orders) {
+      if (this.over) break;
+      const s = this.sides[queued.side], order = ORDERS[queued.k];
+      const err = order.need(this, s);
+      if (err) { this.line(s, `تعذر أمر «${order.name}»: ${err}.`, 'warn', 'orderCancelled'); continue; }
+      const txt = order.apply(this, s, queued.arg);
+      if (txt) this.line(s, txt, s.player ? 'good' : '');
+    }
+    for (const s of this.sides) if (!this.over) this.phaseStart(s, this.phaseKey());
+    return true;
   }
 
   phaseStart(s, key) {
@@ -365,14 +406,13 @@ class WarSim {
       if (s.plan === 'sally') this.resolveSally(s);
     }
     if (key === 'contact') {
-      for (const k of SECTS) if (s.sec[k].stance === 'flank' && s.sec[k].state === 'ok') this.resolveFlank(s, k);
+      for (const k of SECTS) if (s.sec[k].stance === 'flank' && !s.sec[k].flankDone && s.sec[k].state === 'ok') this.resolveFlank(s, k);
       if (s.plan === 'feigned') this.resolveFeint(s);
       if (s.plan === 'hunt') this.resolveHunt(s, 0.85);
     }
     if (key === 'main') {
       if (s.plan === 'hunt' && !s.huntDone) this.resolveHunt(s, 1);
-      // الذكاء: زجّ الاحتياط في الهجوم الكاسح وكسر القلب
-      if ((s.plan === 'assault' || s.plan === 'breakcenter') && this.secUnits(s, 'Res').length) this.commitReserve(s, s.plan === 'breakcenter' ? 'C' : this.weakestFoeFacing(s), 'auto');
+      // Reserves are a command decision; a plan never commits them for the player.
     }
   }
   weakestFoeFacing(s) {
@@ -401,7 +441,11 @@ class WarSim {
   depth(side, key) { return Math.max(0, this.secUnits(side, key).filter((u) => u.role !== 'engine').length - this.frontage(key)); }
   // وحدات القتال الفعلي (الواجهة محدودة في الممرات)
   fighting(side, key) {
-    const us = this.secUnits(side, key).filter((u) => u.role !== 'engine' && !(side.sec[key].stance === 'skirmish' && (u.role === 'missile' || u.role === 'skirm')));
+    const present = this.secUnits(side, key).filter((u) => u.role !== 'engine');
+    const screen = present.filter((u) => !(side.sec[key].stance === 'skirmish' && (u.role === 'missile' || u.role === 'skirm')));
+    // An uncovered missile wing must evade successfully or fight when caught.
+    // Excluding every skirmisher here previously made that wing immune to melee.
+    const us = screen.length ? screen : present;
     const cap = this.frontage(key);
     if (us.length <= cap) return us;
     return us.sort((a, b) => this.unitMelee(b) - this.unitMelee(a)).slice(0, cap);
@@ -415,7 +459,9 @@ class WarSim {
     const ph = this.phaseKey();
     const t = this.terrain;
     m *= 0.55 + 0.45 * clamp(sec.morale, 0, 100) / 100;
-    m *= 1 - clamp(sec.fat, 0, 100) / 230;
+    m *= 1 - clamp(sec.fat, 0, 100) * 0.006;
+    m *= 0.65 + side.ready.coh * 0.0035;
+    m *= 0.65 + side.ready.sup * 0.0035;
     if (kind === 'melee') {
       if (sec.stance === 'advance') m *= 1.08;
       if (sec.stance === 'hold') m *= 0.96;
@@ -443,11 +489,12 @@ class WarSim {
       if (!side.att && this.kind === 'siege') m *= 1 + 0.25 * this.walls;
       if (side.plan === 'highground') m *= 1.15;
       if (side.plan === 'defensive' && ph === 'approach') m *= 1.1;
-      if (side.plan === 'attrition') m *= 1.15;
+      if (side.plan === 'attrition' && sec.stance === 'skirmish') m *= 1.15;
       if (this.weather === 'rain') m *= 0.6;
       if (this.weather === 'fog') m *= 0.7;
       if (side.foe.plan === 'night' && !side.att) m *= 0.55;
       if (this.cmdTrait(side, 'archer')) m *= 1.2;
+      if (this.bf(side, 'fortify') && ph === 'approach') m *= 0.85;
     }
     m *= side.fortune;
     // القائد والقادة الفرعيون
@@ -466,13 +513,15 @@ class WarSim {
     if (kind === 'melee') {
       const pr = this.bf(side, 'press');
       if (pr) m *= pr.mul;
+      if (this.bf(side, 'protect') && key === 'C') m *= 0.88;
+      if (this.bf(side, 'watch') && this.bf(side, 'watch').sec === key) m *= 0.92;
     } else if (this.bf(side, 'volley')) m *= 1.3;
     return m;
   }
 
   // ——————————— خطوة (نبضة) ———————————
   step() {
-    if (this.over) return;
+    if (this.over || this.awaitingOrders || this.awaitNext || this.queue?.length || this.phaseDone()) return false;
     this.cues = [];
     const ph = this.phaseKey();
     const [A, B] = this.sides;
@@ -489,18 +538,23 @@ class WarSim {
     this.lastLoss = [before[0] - after[0], before[1] - after[1]];
     this.checkEnd();
     this.tick++;
+    return true;
   }
 
   // هل انتهت المرحلة؟
   phaseDone() { return this.tick >= WS_PHASES[this.phase].ticks + this.extraTicks(); }
   extraTicks() {
     const ph = this.phaseKey();
-    if (ph === 'approach' && this.sides.some((s) => s.plan === 'attrition' || s.plan === 'bombard')) return 1;
-    if (ph === 'approach' && this.sides.some((s) => s.plan === 'assault' && s.att)) return -1;
+    if (ph !== 'approach') return 0;
+    // A rapid advance closes the range before an attrition plan can buy another
+    // uncontested volley. Either side may counterattack on an open field.
+    if (this.kind === 'field' && this.sides.some((s) => s.plan === 'assault')) return -1;
+    if (this.sides.some((s) => s.plan === 'attrition' || s.plan === 'bombard')) return 1;
     return 0;
   }
   // الانتقال إلى المرحلة التالية (تُرجع أحداثاً تحتاج قراراً)
   endPhase() {
+    if (this.awaitNext || (!this.over && !this.phaseDone())) return [];
     const [A, B] = this.sides;
     this.track.push({ phase: this.phase, m: [this.avgMorale(A), this.avgMorale(B)], men: [this.liveMen(A), this.liveMen(B)] });
     if (this.over) return [];
@@ -514,8 +568,7 @@ class WarSim {
     for (const s of this.sides) {
       const e = this.findEvent(s);
       if (!e) continue;
-      if (s.player) evs.push(e);
-      else this.choose(e, this.aiChoose(s, e));
+      evs.push(e);
     }
     this.pending = evs;
     this.awaitNext = true;
@@ -523,13 +576,13 @@ class WarSim {
   }
   // بعد القرارات: المرحلة التالية
   nextPhase() {
+    if (this.over || !this.awaitNext || this.pending.some((e)=>!e.resolved)) return false;
     this.awaitNext = false;
     this.pending = [];
-    if (this.over) return;
     this.phase++; this.tick = 0;
     for (const s of this.sides) s.cp = this.cmdPoints(s);
     this.openPhase();
-    for (const s of this.sides) if ((!s.player || this.autoAll) && !this.over) this.aiOrders(s);
+    return true;
   }
 
   avgMorale(s) {
@@ -541,6 +594,7 @@ class WarSim {
   // ——— السهام ———
   volleys(ph) {
     for (const s of this.sides) {
+      if (this.bf(s, 'conserve')) continue;
       const foe = s.foe;
       for (const k of [...SECTS, 'Res']) {
         let us = this.secUnits(s, k).filter((u) => u.missile && u.type !== 'catapult');
@@ -550,7 +604,8 @@ class WarSim {
         let pow = 0;
         const vo = this.bf(s, 'volley');
         for (const u of us) {
-          const ammo = u.ammo > 0 ? 1 : 0.2;
+          if (u.resupply) { u.resupply = false; continue; }
+          const ammo = u.ammo > 0 ? 1 : 0;
           const rate = u.type === 'repeater' ? 1.6 : 1;
           const melee = (ph === 'main' || ph === 'crisis' || ph === 'collapse') && s.sec[k].stance !== 'skirmish' && !vo && u.role === 'missile' ? 0.5 : 1;
           pow += u.men * u.missile * rate * ammo * melee * (1 + 0.1 * u.exp);
@@ -563,7 +618,7 @@ class WarSim {
         if (!tgt) continue;
         let kill = pow * 0.022;
         // الصفوف الثابتة هدف سهل للمستنزِفين
-        if (s.plan === 'attrition' && (foe.plan === 'defensive' || foe.plan === 'highground' || foe.plan === 'walls')) kill *= 1.25;
+        if (s.plan === 'attrition' && s.sec[k].stance === 'skirmish' && (foe.plan === 'defensive' || foe.plan === 'highground' || foe.plan === 'walls')) kill *= 1.25;
         if (this.terrain === 'forest') kill *= 0.72;
         if (this.kind === 'siege' && s.att && foe.sec[tgt].breach < 1) kill *= 0.5;
         const menT = this.secMen(foe, tgt);
@@ -685,7 +740,9 @@ class WarSim {
       if (pa <= 0 && pb <= 0) continue;
       const toughA = ua.reduce((t, u) => t + this.tough(u) * u.men, 0) / Math.max(1, ua.reduce((t, u) => t + u.men, 0));
       const toughB = ub.reduce((t, u) => t + this.tough(u) * u.men, 0) / Math.max(1, ub.reduce((t, u) => t + u.men, 0));
-      const tk = (st) => (st === 'hold' ? 0.93 : st === 'advance' ? 1.05 : st === 'skirmish' ? 0.7 : 1);
+      // Evading already avoids this exchange entirely. If caught, dispersed
+      // skirmishers are exposed; they do not receive a second defensive bonus.
+      const tk = (st) => (st === 'hold' ? 0.93 : st === 'advance' ? 1.05 : st === 'skirmish' ? 1.15 : 1);
       // كسر القلب يرقّق الجناحين: يتلقيان ضربات أكثر
       let takenA = pb * k0 / toughA * tk(sa.stance) * (A.plan === 'breakcenter' && ka !== 'C' ? 1.12 : 1);
       let takenB = pa * k0 / toughB * tk(sb.stance) * (B.plan === 'breakcenter' && kb !== 'C' ? 1.12 : 1);
@@ -726,8 +783,12 @@ class WarSim {
     // القائد الحذر أو الدفاعي: الصف الثابت يصمد أكثر
     const g = this.genOf(s, key) || s.cmd;
     if (g && s.sec[key].stance === 'hold' && (g.flaw === 'cautious' || g.doctrine === 'defensive')) m *= 0.94;
-    if (this.bf(s, 'highground')) m *= 0.85;
+    if (s.plan === 'highground' || this.bf(s, 'highground')) m *= 0.85;
+    if (!s.att && this.kind === 'field' && ['hills', 'mountains'].includes(this.terrain)) m *= 0.94;
     if (this.bf(s, 'shieldwall') && (s.sec[key].stance === 'hold')) m *= 0.9;
+    if (this.bf(s, 'fortify') && s.sec[key].stance === 'hold') m *= 0.9;
+    if (this.bf(s, 'protect') && key === 'C') m *= 0.8;
+    if (this.bf(s, 'waves')) m *= 1.05;
     const rot = this.bf(s, 'rotate');
     if (rot && rot.sec === key) m *= 1.05;
     return m;
@@ -741,7 +802,7 @@ class WarSim {
       for (const r in comp) mul += comp[r] * (WS_VS[u.role][r] || 1);
       if (foe.sec[fkey].flanked && (u.role === 'cav' || u.role === 'skirm')) mul = Math.max(mul, 1.3);
       let v = this.unitMelee(u) * (mul || 1);
-      if (u.role === 'cav' && this.terrain === 'forest') v *= 0.7;
+      v *= this.terrainUnit(u);
       if (u.role === 'cav' && this.cmdTrait(s, 'cavalier')) v *= 1.12;
       if (u.fordFree && this.terrain === 'river') v *= 1.1;
       if (u.role === 'engine') v *= 0.3;
@@ -751,6 +812,11 @@ class WarSim {
     // الالتفاف الناجح على هذا القطاع يضاعف ضغط العدو
     if (foe.sec[fkey].flanked) p *= 1.5;
     return p;
+  }
+  terrainUnit(u) {
+    if (u.role !== 'cav' && u.role !== 'skirm') return 1;
+    if (this.kind === 'siege') return .6; // Mounted troops dismount in breaches and narrow streets.
+    return { plains:1.08, desert:1, coast:1, hills:.85, river:.8, forest:.48, mountains:.4 }[this.terrain] || 1;
   }
 
   // قطاع انهار خصمه: يلتف على القطاع المجاور
@@ -763,7 +829,7 @@ class WarSim {
         if (!s.foe.sec[tk].flanked || s.foe.sec[tk].state === 'broken' || !s.sec[k].flankOk) continue;
         const riders = this.secUnits(s, k).filter((u) => u.role === 'cav' || u.role === 'skirm' || u.role === 'guard');
         if (!riders.length || !this.secUnits(s.foe, tk).length) continue;
-        const pw = riders.reduce((t, u) => t + this.unitMelee(u), 0) * this.mods(s, k, 'melee') * 0.45;
+        const pw = riders.reduce((t, u) => t + this.unitMelee(u) * this.terrainUnit(u), 0) * this.mods(s, k, 'melee') * 0.45;
         const d = this.applyLoss(s.foe, tk, pw * 0.09 / 14, 'flank');
         s.foe.sec[tk].morale -= 4;
         this.led(s, 'flank', d);
@@ -779,7 +845,7 @@ class WarSim {
         // القطاع المجاور لدى العدو
         const adj = k === 'C' ? ['R', 'L'].find((x) => foe.sec[x].state === 'ok' && this.secUnits(foe, x).length) : foe.sec.C.state === 'ok' && this.secUnits(foe, 'C').length ? 'C' : null;
         if (!adj) continue;
-        const pw = this.secUnits(s, k).reduce((t, u) => t + this.unitMelee(u), 0) * this.mods(s, k, 'melee') * 0.5;
+        const pw = this.secUnits(s, k).reduce((t, u) => t + this.unitMelee(u) * this.terrainUnit(u), 0) * this.mods(s, k, 'melee') * 0.5;
         const dealt = this.applyLoss(foe, adj, pw * 0.08 / 14, 'flank');
         foe.sec[adj].morale -= 6;
         this.led(s, 'flank', dealt);
@@ -805,12 +871,17 @@ class WarSim {
     if (side.plan === 'night') p -= 0.08;
     if (side.cmdAlive === false) p -= 0.15;
     p -= this.cohK(side) * 0.25;
+    p -= side.ready.strain * 0.0025;
     if (side.cmdHurt && g === side.cmd) p -= 0.08;
     if (g) {
       const D = { aggressive: { charge: 0.08, press: 0.08, withdraw: -0.08 }, defensive: { hold: 0.08, withdraw: 0.05 }, cautious: { withdraw: 0.1, hold: 0.05, charge: -0.05 }, maneuver: { flank: 0.08, bait: 0.05, envelop: 0.08 }, siegecraft: { siege: 0.1 } }[g.doctrine] || {};
       const St = { disciplined: { hold: 0.05, withdraw: 0.08 }, cunning: { bait: 0.08, flank: 0.04 }, careful: { withdraw: 0.05 }, fearless: { charge: 0.05 } }[g.style] || {};
       p += (D[order] || 0) + (St[order] || 0);
+      p += clamp(((g.skills?.command || 3) - 3) * .02 + ((g.trust ?? 50) - 50) * .0005 + ((g.loyalty ?? 70) - 70) * .0005, -.08, .07);
+      if (g.personality === 'careful' && ['hold', 'withdraw'].includes(order)) p += .04;
+      if (g.personality === 'bold' && ['charge', 'press'].includes(order)) p += .04;
     }
+    p = clamp(p, .18, .94);
     if (side.cmdPos === 'front' && (key === 'C' || key === 'Res')) p += 0.05;
     const roll = this.r();
     const disobey = f === 'disloyal' && roll < 0.05 ? true : (f === 'reckless' && (order === 'hold' || order === 'withdraw') && roll < 0.22) || (f === 'arrogant' && roll < 0.08);
@@ -837,6 +908,8 @@ class WarSim {
     if (this.cmdTrait(foe, 'tactician')) cp *= 1.2;
     let chance = 0.3 + 0.45 * (fp - cp) / Math.max(1, fp + cp) + { excellent: 0.2, good: 0.08, poor: -0.1, fail: -0.25, disobey: -0.3 }[ex.q];
     if (foe.flankWatch && foe.flankWatch === tk) chance -= 0.25;
+    if (this.bf(foe, 'watch') && this.bf(foe, 'watch').sec === tk) chance -= 0.25;
+    if (this.bf(s, 'scout')) chance += 0.08;
     if (foe.plan === 'breakcenter') chance += 0.12;
     chance = clamp(chance, 0.05, 0.9);
     this.lastFlankChance = chance;
@@ -1036,6 +1109,7 @@ class WarSim {
         if (this.bf(s.foe, 'highground') && s.att) f += 3;
         if (this.bf(s.foe, 'volley')) f += 2;
         if (this.bf(s.foe, 'waves')) f += 3;
+        if (this.bf(s, 'conserve')) f = Math.max(0, f - 3);
         f *= 1 + (100 - s.ready.sup) / 250;
         f *= 1 - Math.min(0.4, this.depth(s, k) * 0.12);
         if (this.cmdTrait(s, 'logistician')) f *= 0.8;
@@ -1065,8 +1139,7 @@ class WarSim {
       s.cmdWounded = true;
       for (const k of SECTS) s.sec[k].morale -= 8;
       this.line(s, `${how === 'hunt' ? 'فرسان ' + by.name + ' يبلغون ' : ''}${g.name} جريح!`, s.player ? 'bad' : 'good', 'cmdWounded');
-      if (s.player) this.pendingWound = true;
-      else if (this.r() < 0.5) { this.evacuate(s); }
+      s.pendingWound = true;
       this.moment(by, `جرح ${g.name}`, 4, 'commander');
       return;
     }
@@ -1082,7 +1155,7 @@ class WarSim {
     // القائد التالي يتولى
     const next = s.gens.find((x) => x !== g && !(s.fallen || []).includes(x));
     s.fallen = [...(s.fallen || []), g];
-    if (next) this.line(s, `${next.name} يتولى القيادة.`, '');
+    if (next) this.line(s, `بقي ${next.name} بين الضباط، لكن فقد القائد أربك القيادة.`, '');
   }
   evacuate(s) {
     for (const k of SECTS) s.sec[k].morale -= 6;
@@ -1099,15 +1172,15 @@ class WarSim {
         const sec = s.sec[k];
         if (sec.state === 'waver' && !sec.asked && this.secUnits(s, k).length && !this.over) {
           const ev = this.buildEvent(s, { id: 'wingWaver', wing: k });
-          if (s.player) this.queue.push(ev); else this.choose(ev, this.aiChoose(s, ev));
+          this.queue.push(ev);
         }
       }
-      if (s.player && this.pendingWound && s.cmdWounded && !s.evacuated && !s.woundAsked) {
+      if (s.pendingWound && s.cmdWounded && !s.evacuated && !s.woundAsked) {
         s.woundAsked = true;
         this.queue.push(this.buildEvent(s, { id: 'wounded' }));
       }
+      s.pendingWound = false;
     }
-    this.pendingWound = false;
   }
   takeInterrupt() { return this.queue && this.queue.length ? this.queue.shift() : null; }
   moraleChecks() {
@@ -1133,7 +1206,8 @@ class WarSim {
     const us = this.secUnits(s, k);
     const cav = this.secUnits(foe, OPP[k]).filter((u) => u.role === 'cav' || u.role === 'skirm').reduce((t, u) => t + u.men, 0);
     let pur = 0;
-    for (const u of us) { const l = Math.round(u.men * (0.1 + Math.min(0.25, cav / 600))); u.men -= l; pur += l; u.state = 'rout'; }
+    const rate = foe.noPursuit || foe.plan === 'highground' ? 0 : 0.1 + Math.min(0.25, cav / 600);
+    for (const u of us) { const l = Math.round(u.men * rate); u.men -= l; pur += l; u.state = 'rout'; }
     this.led(foe, 'pursuit', pur);
     this.led(foe, 'rout', 80);
     for (const x of SECTS) if (x !== k) s.sec[x].morale -= k === 'C' ? 16 : 10;
@@ -1175,23 +1249,28 @@ class WarSim {
     } else this.finish(sc[0] >= sc[1] ? 0 : 1, 'field');
     this.line(null, this.winner === 0 ? `${this.sides[0].name} تكسب الميدان بعد يوم طويل.` : `${this.sides[1].name} تثبت حتى ينسحب خصمها.`, '');
   }
+  pursuitRate(s) {
+    if (s.noPursuit || s.plan === 'highground') return 0;
+    const cav = s.units.filter((u) => this.alive(u) && (u.role === 'cav' || u.role === 'skirm')).reduce((t, u) => t + u.men, 0);
+    return (0.08 + Math.min(0.14, cav / 1200)) * (s.pursueHard ? 1.6 : 1);
+  }
   finish(w, reason) {
     if (this.over) return;
     this.over = true; this.winner = w; this.reason = reason;
     const L = this.sides[1 - w], W = this.sides[w];
     // المطاردة
-    if (reason !== 'withdraw' && reason !== 'starve') {
-      const cav = W.units.filter((u) => this.alive(u) && (u.role === 'cav' || u.role === 'skirm')).reduce((t, u) => t + u.men, 0);
-      let k = (W.noPursuit || W.plan === 'highground' ? 0.03 : 0.08 + Math.min(0.14, cav / 1200)) * (W.pursueHard ? 1.6 : 1);
-      if (this.kind === 'siege' && reason === 'fall') k = 0.2;
+    if (reason !== 'starve' && reason !== 'terms') {
+      let k = this.pursuitRate(W);
+      if (this.kind === 'siege' && reason === 'fall' && !W.noPursuit) k = 0.2;
       if (L.orderly) k *= 0.35;
+      if (L.emergency) k *= 1.4;
       // القائد الحذر أو المنضبط يترك مؤخرة تحمي المنسحبين
       else if (L.cmd && L.cmdAlive !== false && (L.cmd.flaw === 'cautious' || L.cmd.style === 'disciplined')) k *= 0.7;
       let pur = 0;
       for (const u of L.units) { if (u.men <= 0) continue; const l = Math.round(u.men * k); u.men -= l; pur += l; }
       this.led(W, 'pursuit', pur);
       if (pur > 20) this.line(W, `المطاردة تحصد ${pur} رجلاً من ${L.name}.`, W.player ? 'good' : 'bad');
-      if (W.pursueHard && W.pursueTrap) { for (const u of W.units) if (u.role === 'cav') u.men = Math.round(u.men * 0.7); this.line(L, 'المطاردون وقعوا في كمين الاحتياط!', L.player ? 'good' : 'bad'); }
+      if (k > 0 && W.pursueHard && W.pursueTrap) { for (const u of W.units) if (u.role === 'cav') u.men = Math.round(u.men * 0.7); this.line(L, 'المطاردون وقعوا في كمين الاحتياط!', L.player ? 'good' : 'bad'); }
     }
     this.line(null, `${W.name} تنتصر.`, W.player ? 'win' : 'lose', 'end');
   }
@@ -1200,6 +1279,8 @@ class WarSim {
   commitReserve(s, key, why) {
     const res = this.secUnits(s, 'Res').filter((u) => u.role !== 'engine' && !(u.hunter && !s.huntDone));
     if (!res.length) return false;
+    const front = this.secMen(s, key), arriving = res.reduce((n,u)=>n+u.men,0);
+    s.sec[key].fat = (s.sec[key].fat * front + s.sec.Res.fat * arriving) / Math.max(1,front + arriving);
     for (const u of res) u.sec = key;
     s.sec[key].had = true;
     if (s.sec[key].state === 'broken') s.sec[key].state = 'ok';
@@ -1214,10 +1295,12 @@ class WarSim {
   }
 
   // انسحاب منظم
-  withdraw(s) {
+  withdraw(s, emergency = false) {
     s.withdrew = true;
-    s.orderly = true;
-    const ex = this.execQuality(s, 'C', 'withdraw');
+    s.orderly = !emergency;
+    s.emergency = emergency;
+    const ex = emergency ? {q:'fail'} : this.execQuality(s, 'C', 'withdraw');
+    if (emergency) for (const k of SECTS) s.sec[k].morale = Math.max(0,s.sec[k].morale-8);
     if (ex.q === 'fail' || ex.q === 'disobey') { s.orderly = false; this.line(s, 'الانسحاب يتحول إلى فوضى!', s.player ? 'bad' : 'good'); }
     else this.line(s, `${s.name} تنسحب بانتظام${ex.q === 'excellent' ? '، تراجع محكم يحفظ الرجال' : ''}.`, '');
     this.finish(s.foe.i, 'withdraw');
@@ -1229,7 +1312,7 @@ class WarSim {
     const next = WS_PHASES[this.phase + 1] ? WS_PHASES[this.phase + 1].key : null;
     const cands = [];
     const hasRes = this.secUnits(s, 'Res').filter((u) => u.role !== 'engine').length > 0;
-    if (this.pendingWound && s.player && s.cmdWounded && !s.evacuated && !s.woundAsked) { s.woundAsked = true; cands.push({ id: 'wounded', pri: 9 }); }
+    if (s.pendingWound && s.cmdWounded && !s.evacuated && !s.woundAsked) { s.woundAsked = true; cands.push({ id: 'wounded', pri: 9 }); }
     if (this.kind === 'field') {
       // التفاف قادم من العدو
       if (next === 'contact') {
@@ -1323,7 +1406,8 @@ class WarSim {
         ev.text = 'جعاب رماتك شبه فارغة.';
         opt('back', 'اسحبهم إلى الاحتياط', 'retreat', 'يسلمون ويعودون وقت الحاجة.', 'تقل الأجساد في الصف.');
         opt('melee', 'ليشاركوا في الالتحام', 'sword', 'رجال إضافيون في الصف.', 'يقاتلون بضعف ويُقتلون.');
-        opt('resupply', 'أعِد تزويدهم', 'cart', 'السهام تعود في المرحلة التالية.', 'لا رمي في هذه المرحلة.');
+        opt('resupply', 'استدع سهام الأمتعة', 'cart', 'ينقل السهام التي احتفظت بها الأمتعة إلى الرماة. الإمداد ينقص 6.', 'لا رمي أثناء النقل.');
+        if (s.ready.sup < 20 || !s.units.some((u) => u.reserveAmmo > 0)) { ev.options[ev.options.length - 1].dis = true; ev.options[ev.options.length - 1].why = 'لا سهام احتياطية أو لا إمداد يكفي لنقلها'; }
         break;
       case 'pursuit':
         s.pursueAsked = true;
@@ -1397,10 +1481,13 @@ class WarSim {
 
   // تطبيق القرار
   choose(ev, k) {
+    if (!ev || ev.resolved || this.over) return false;
     const s = this.sides[ev.side];
     const foe = s.foe;
     const W = ev.wing;
-    const opt = ev.options.find((o) => o.k === k) || ev.options[0];
+    const opt = ev.options.find((o) => o.k === k);
+    if (!opt || opt.dis) return false;
+    ev.resolved = true;
     const say = (t, tone = '') => this.line(s, t, tone);
     s.orders++;
     this.decisions.push({ side: s.i, kind: ev.id + ':' + opt.k, text: opt.label, phase: this.phase, weight: 0 });
@@ -1459,10 +1546,11 @@ class WarSim {
       case 'ammo':
         for (const u of s.units.filter((x) => x.role === 'missile' && this.alive(x))) {
           if (opt.k === 'back') u.sec = 'Res';
-          else if (opt.k === 'resupply') { u.ammo = 3; u.resupply = true; }
+          else if (opt.k === 'resupply') { u.ammo += u.reserveAmmo || 0; u.reserveAmmo = 0; u.resupply = true; }
           else u.atk += 1;
         }
         s.ammoOut = 0;
+        if (opt.k === 'resupply') s.ready.sup = Math.max(0, s.ready.sup - 6);
         break;
       case 'pursuit':
         if (opt.k === 'pursue') { s.pursueHard = true; s.pursueTrap = this.secUnits(foe, 'Res').some((u) => u.role === 'cav' || u.role === 'shock') && this.r() < 0.45; }
@@ -1540,15 +1628,28 @@ class WarSim {
   }
 
   // ——————————— خطة الذكاء ———————————
+  observe(s) {
+    const f = s.foe, level = s.scouted ? 3 : Math.min(2, s.intel);
+    const error = [ .4, .28, .12, 0 ][level];
+    const r = rng(hashStr(`${this.cfg.seed}:${s.i}:${this.phase}:observation`));
+    const men = Math.max(1,Math.round(this.liveMen(f) * (1 + (r() * 2 - 1) * error) / 10) * 10);
+    const share = (roles) => level === 0 ? (roles.includes('line') ? .35 : .2) : Math.round(this.roleShare(f, roles) / .1) * .1;
+    return { men, cav:share(['cav','skirm']), line:share(['line']), missile:share(['missile']),
+      plan:s.scouted ? f.plan : null, supply:level === 3 ? f.ready.sup : 75,
+      quality: level >= 2 ? Math.round(f.units.reduce((n,u)=>n+this.unitMelee(u)+u.men*u.missile*2,0)/Math.max(1,this.liveMen(f))) : 13,
+      cmd:level >= 1 ? f.cmd : null };
+  }
   aiPlan(s) {
+    const planRandom = rng(hashStr(`${this.cfg.seed}:${s.i}:plan`));
     const opts = this.availablePlans(s);
     if (!opts.length) return this.kind === 'siege' ? (s.att ? 'escalade' : 'walls') : 'balanced';
     const foe = s.foe;
     const share = (side, roles) => { const us = side.units.filter((u) => u.men > 0); const t = us.reduce((x, u) => x + u.men, 0) || 1; return us.filter((u) => roles.includes(u.role)).reduce((x, u) => x + u.men, 0) / t; };
     const pw = (side) => side.units.reduce((t, u) => t + this.unitMelee(u) + u.men * u.missile * 2, 0);
-    const ratio = pw(s) / Math.max(1, pw(foe));
+    const seen = this.observe(s);
+    const ratio = pw(s) * (1-s.ready.fat*.004) * (.65+s.ready.coh*.0035) / Math.max(1,seen.men*seen.quality);
     const cav = share(s, ['cav']), sk = share(s, ['skirm']), mis = share(s, ['missile']), shock = share(s, ['shock']), line = share(s, ['line']);
-    const fcav = share(foe, ['cav', 'skirm']), fline = share(foe, ['line']), fmis = share(foe, ['missile']);
+    const fcav = seen.cav, fline = seen.line, fmis = seen.missile;
     const t = this.terrain;
     const sc = {};
     for (const k of opts) {
@@ -1559,10 +1660,10 @@ class WarSim {
         case 'defensive': v = 0.7 + (1 - ratio) * 1.2 + line * 0.9 + mis * 0.5; break;
         case 'flanking': v = 0.15 + (cav + sk) * 1.7 + ((FLANK_TERRAIN[t] || 1) - 1) * 1.5 - fcav * 1.6 - fline * 0.4; break;
         case 'attrition': v = 0.2 + (mis + sk) * 2.2 - fcav * 1.2 - (this.weather === 'rain' ? 0.8 : 0) + (t === 'plains' || t === 'desert' ? 0.15 : 0); break;
-        case 'feigned': v = 0.2 + cav * 1.2 + (foe.cmd && ['reckless', 'arrogant'].includes(foe.cmd.flaw) ? 0.6 : 0) - (foe.cmd && foe.cmd.trait === 'tactician' ? 0.6 : 0); break;
+        case 'feigned': v = 0.2 + cav * 1.2 + (seen.cmd && ['reckless', 'arrogant'].includes(seen.cmd.flaw) ? 0.6 : 0) - (seen.cmd?.trait === 'tactician' ? 0.6 : 0); break;
         case 'highground': v = 1.5 + (1 - ratio) * 0.5; break;
         case 'breakcenter': v = 0.4 + shock * 1.6 + (ratio - 1) * 0.8; break;
-        case 'hunt': v = 0.15 + cav * 0.8 + (foe.cmdPos === 'front' || (foe.cmd && foe.cmd.flaw === 'reckless') ? 0.3 : 0); break;
+        case 'hunt': v = 0.15 + cav * 0.8 + (seen.cmd?.flaw === 'reckless' ? .3 : 0); break;
         case 'storm': v = 1 + (ratio - 1.5) * 0.4; break;
         case 'escalade': v = 0.8 + (ratio - 2) * 0.4 - this.walls * 0.1; break;
         case 'towers': v = 1.25 + this.walls * 0.08; break;
@@ -1573,12 +1674,18 @@ class WarSim {
         case 'depth': v = 0.6 + (this.walls >= 3 ? 0.5 : 0); break;
         case 'sally': v = 0.3 + (this.towerAlive ? 0.4 : 0) + (ratio > 0.7 ? 0.3 : 0); break;
       }
-      if (s.att && this.kind === 'field' && (t === 'hills' || t === 'mountains') && !s.foe.plan) {
+      if (s.att && this.kind === 'field' && (t === 'hills' || t === 'mountains')) {
         if (k === 'balanced' || k === 'assault' || k === 'breakcenter') v -= 0.4;
         if (k === 'flanking' || k === 'attrition' || k === 'feigned') v += 0.25;
       }
       v += this.affinity(s, k) * 0.35;
-      v += (this.r() - 0.5) * (1.1 - s.ai) * 0.8;
+      const personality = s.cmd?.personality;
+      if (['careful','loyal','austere'].includes(personality) && ['defensive','highground','depth','balanced'].includes(k)) v += .12;
+      if (['bold','ambitious','proud'].includes(personality) && ['assault','breakcenter','storm'].includes(k)) v += .12;
+      if (s.ready.fat > 45 && ['assault','flanking','feigned'].includes(k)) v -= .3;
+      if (s.ready.ammo < 30 && k === 'attrition') v -= 1;
+      const competence = clamp(s.ai*.65 + (s.cmd?.skills?.command || s.cmd?.rank || 1)*.07,.2,.95);
+      v += (planRandom() - 0.5) * (1.1 - competence) * 1.1;
       sc[k] = v;
     }
     return Object.entries(sc).sort((a, b) => b[1] - a[1])[0][0];
@@ -1587,9 +1694,10 @@ class WarSim {
   // ——————————— تشغيل آلي كامل (للحسم السريع ومعارك الذكاء) ———————————
   runAuto() {
     this.autoAll = true;
-    this.begin();
+    if (this.phase < 0) this.begin();
     let guard = 0;
     while (!this.over && guard++ < 60) {
+      this.commitPhase();
       this.step();
       let ev;
       while ((ev = this.takeInterrupt())) this.choose(ev, this.aiChoose(this.sides[ev.side], ev));
@@ -1606,6 +1714,7 @@ class WarSim {
 
   // ——————————— النتيجة للحملة ———————————
   result() {
+    if (this._result) return this._result;
     const fates = {};
     for (const s of this.sides) {
       const won = this.winner === s.i;
@@ -1621,7 +1730,8 @@ class WarSim {
         if (this.r() < risk) fates[g.id] = this.r() < 0.6 ? 'captured' : 'killed';
       }
     }
-    return {
+    this.resolvedFates = { ...fates };
+    return this._result = {
       winner: this.winner, reason: this.reason,
       sides: this.sides.map((s) => ({ gens: s.gens.map((g) => g.id).filter(Boolean), units: s.units.map((u) => ({ ref: u.ref, type: u.type, men: Math.max(0, u.men), men0: u.men0, kills: Math.round(u.kills), gen: u.gen })) })),
       fates,

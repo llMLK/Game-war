@@ -1,0 +1,45 @@
+/* Phase D: treasury, building and caravan surfaces only. */
+.eco-view {direction:rtl;min-width:0;line-height:1.7}
+.eco-hero {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:8px 0 16px}
+.eco-stat,.eco-card {background:rgba(212,174,93,.07);border:1px solid #76613b;border-radius:9px;padding:12px;min-width:0}
+.eco-stat b {display:block;font-size:1.4em;color:#ead6a6}
+.eco-stat small {display:block;color:#c8b995}
+.eco-columns {display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.eco-row {display:flex;gap:12px;justify-content:space-between;border-bottom:1px solid #51482e;padding:8px 0;align-items:baseline}
+.eco-row span {overflow-wrap:anywhere;min-width:0}.eco-row bdi {white-space:nowrap;flex-shrink:0;font-weight:bold}
+.eco-row.sum {border-top:1px solid #ab8950;font-weight:bold;margin-top:6px}
+.eco-view details {margin:12px 0;border:1px solid #655536;border-radius:7px;padding:8px 12px}
+.eco-view summary {cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:bold;color:#dec17e}
+.eco-note {color:#c8c0a8;font-size:.91em;margin:8px 0;line-height:1.8}
+.eco-invest {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.eco-invest button {text-align:right;display:flex;flex-direction:column;align-items:stretch;gap:5px;min-height:90px;white-space:normal;padding:12px}
+.eco-invest button > * {min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere}
+.eco-filters {display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px}
+.eco-filters select {min-height:44px;background:#292419;color:#eee2c6;border:1px solid #786541;border-radius:5px;padding:5px 10px;min-width:0;max-width:100%}
+.eco-view button {min-height:44px;white-space:normal}
+.eco-view button::after {inset:0}
+.modal:has(.eco-view) button::after {inset:0}
+.eco-view .seg {flex-wrap:wrap;min-width:0}
+.eco-view .seg button {flex:1 1 115px;min-width:0}
+.eco-change {border-right:3px solid #b99a57;padding:8px 12px;margin:8px 0;background:#a8893010}
+.eco-comparison {display:grid;grid-template-columns:1fr auto 1fr;gap:12px;text-align:center;align-items:center;margin:10px 0}
+.eco-comparison b {display:block;font-size:1.3em}
+.eco-route-status {margin:12px 0;padding:10px;border-right:3px solid #bf9250;background:#ab873015}
+.eco-occupation-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.eco-view h3{margin:0 0 8px}.eco-view .eco-card .eco-row{gap:6px}.eco-view .steps{padding-inline-start:22px}
+.sheet:has(#eco-treasury){width:min(650px,calc(100% - 16px));max-width:calc(100% - 16px)}
+.sheet:has(#eco-treasury) .sheet-body{grid-template-columns:minmax(0,1fr)}
+.sheet:has(#eco-treasury) .sheet-body > .seg{min-width:0;flex-wrap:wrap}
+.sheet:has(#eco-treasury) .sheet-body > .seg button{min-height:44px;min-width:0;flex:1;white-space:normal}
+.sheet:has(#eco-treasury) .sheet-body > .seg button::after{inset:0}
+.sheet:has(.eco-view) .head-btns .icon-btn{min-width:44px;min-height:44px}
+.sheet:has(.eco-view){z-index:10}
+body:has(.undo-bar:not([hidden])) .sheet:has(.eco-view) .sheet-body{padding-bottom:82px}
+.eco-view{container-type:inline-size}
+@container(max-width:480px){.eco-columns{grid-template-columns:1fr}}
+@media(max-width:700px){.sheet:has(#eco-treasury){width:auto;max-width:none}.sheet:has(.eco-view){max-height:calc(100% - 112px - var(--safe-b) - var(--safe-t))}}
+@media(max-width:420px){.sheet:has(#eco-treasury) .sheet-body > .seg .ico{display:none}}
+@media(orientation:portrait) and (max-width:700px){.sheet:has(.eco-view){height:calc(100% - 124px - var(--safe-b) - var(--safe-t));max-height:calc(100% - 124px - var(--safe-b) - var(--safe-t))}.camp-ui:has(.sheet:not([hidden]) .eco-view) .map-tools{display:none}}
+@media(max-width:650px){.eco-occupation-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.eco-columns,.eco-invest{grid-template-columns:1fr}.eco-hero{gap:5px}.eco-stat{padding:8px}.eco-stat b{font-size:1.1em}.eco-view .pop-lines{min-width:0}.eco-comparison{gap:6px}.eco-filters select{flex:1}}
+@media(max-height:450px) and (orientation:landscape){.eco-stat{padding:6px}.eco-hero{margin-bottom:8px}.eco-columns{gap:10px}.eco-row{padding:5px 0}}
+@media(max-height:450px) and (orientation:landscape){body:has(.sheet:not([hidden]) .eco-view) .undo-bar{left:8px;right:auto;transform:none;bottom:72px;max-width:calc(50vw - 24px)}}

@@ -76,7 +76,8 @@ Object.assign(Game, {
   previewRecruit(fid, n, type, merc) {
     const d = UNITS[type];
     const r = { type, men: d.men, exp: merc ? 1 : 0, merc: !!merc };
-    return { cost: this.recruitCost(type, merc), men: d.men, manpower: merc ? 0 : d.men, upkeep: this.unitUpkeep(r), power: Math.round(this.regPower(r)), mpLeft: Math.floor(n.manpower) - (merc ? 0 : d.men) };
+    const conditions = this.recruitmentConditions ? this.recruitmentConditions(n, merc) : { note: '' };
+    return { cost: this.localRecruitCost ? this.localRecruitCost(type, merc, n) : this.recruitCost(type, merc), men: d.men, manpower: merc ? 0 : d.men, upkeep: this.unitUpkeep(r), power: Math.round(this.regPower(r)), mpLeft: Math.floor(n.manpower) - (merc ? 0 : d.men), note: conditions.note };
   },
 });
 
@@ -118,28 +119,28 @@ const UndoBar = {
 // الأفعال القابلة للتراجع
 Object.assign(Game, {
   recruitU(fid, n, type, armyId) {
+    const a = this.targetArmy(fid, n, armyId), gold0 = this.f(fid).gold, men0 = n.manpower;
     const err = this.recruit(fid, n, type, armyId);
     if (err) return err;
-    const a = this.targetArmy(fid, n, armyId) || this.armiesOfAt(fid, n.id).find((x) => x.regs.length && x.regs[x.regs.length - 1].type === type);
     const r = a && a.regs[a.regs.length - 1];
-    const mp0 = a ? a.mp : 0, cost = this.recruitCost(type);
+    const mp0 = a ? a.mp : 0, cost = gold0 - this.f(fid).gold, menUsed = men0 - n.manpower;
     Undo.push({
       label: `تجنيد ${UNITS[type].name} في ${n.name}`,
-      valid: () => a && this.S.armies.includes(a) && a.regs.includes(r) && a.node === n.id && a.mp >= mp0 && r.men === UNITS[type].men && !a.siege,
-      undo: () => { a.regs.splice(a.regs.indexOf(r), 1); this.f(fid).gold += cost; n.manpower += UNITS[type].men; },
+      valid: () => a && this.S.armies.includes(a) && a.regs.includes(r) && a.node === n.id && n.owner === fid && a.mp >= mp0 && r.men === UNITS[type].men && !a.siege,
+      undo: () => { a.regs.splice(a.regs.indexOf(r), 1); this.f(fid).gold += cost; n.manpower = Math.min(this.mpCap(n), n.manpower + menUsed); },
     });
     return null;
   },
   hireMercU(fid, n, idx, armyId) {
     const m = this.f(fid).mercs[idx];
+    const a = this.targetArmy(fid, n, armyId), gold0 = this.f(fid).gold;
     const err = this.hireMerc(fid, n, idx, armyId);
     if (err) return err;
-    const a = this.armiesOfAt(fid, n.id).find((x) => x.regs.some((r) => r.merc && r.type === m.type && r.men === UNITS[m.type].men));
-    const r = a && [...a.regs].reverse().find((x) => x.merc && x.type === m.type);
-    const mp0 = a ? a.mp : 0, cost = this.recruitCost(m.type, true);
+    const r = a && a.regs[a.regs.length - 1];
+    const mp0 = a ? a.mp : 0, cost = gold0 - this.f(fid).gold;
     Undo.push({
       label: `استئجار مرتزقة ${UNITS[m.type].name}`,
-      valid: () => a && this.S.armies.includes(a) && a.regs.includes(r) && a.node === n.id && a.mp >= mp0 && r.men === UNITS[m.type].men,
+      valid: () => a && this.S.armies.includes(a) && a.regs.includes(r) && a.node === n.id && n.owner === fid && a.mp >= mp0 && r.men === UNITS[m.type].men,
       undo: () => { a.regs.splice(a.regs.indexOf(r), 1); this.f(fid).gold += cost; this.f(fid).mercs.splice(Math.min(idx, this.f(fid).mercs.length), 0, m); },
     });
     return null;
@@ -191,4 +192,62 @@ Object.assign(Game, {
     });
     return null;
   },
+
+  unitActionPreview(a, idx, kind, amount) {
+    const r = a?.regs[idx], n = a && this.node(a.node);
+    if (!r || !this.S.armies.includes(a)) return { err: 'الوحدة لم تعد موجودة' };
+    const men = Math.floor(Number(amount));
+    if (!['disband', 'split', 'consolidate'].includes(kind)) return { err: 'اختر طريقة تنظيم الوحدة' };
+    if (kind !== 'consolidate' && (!Number.isFinite(men) || men < 1 || men > r.men)) return { err: 'اختر عدداً بين 1 وعدد رجال الوحدة' };
+    const recovered = kind === 'disband' && !r.merc && n.owner === a.fid ? Math.min(Math.round(men * 0.7), Math.max(0, Math.floor(this.mpCap(n) - n.manpower))) : 0;
+    const others = a.regs.filter((other) => other !== r && other.type === r.type && !!other.merc === !!r.merc && other.men < UNITS[r.type].men);
+    const room = others.reduce((sum, other) => sum + UNITS[r.type].men - other.men, 0);
+    let err = null;
+    if (kind === 'split' && men === r.men) err = 'لفصل وحدة جديدة اختر جزءاً من الرجال؛ لنقل الوحدة كلها استخدم تقسيم الجيش';
+    if (kind === 'split' && a.regs.length >= MAX_REGS) err = 'الجيش مكتمل؛ ادمج وحدات أو انقلها إلى قائد آخر';
+    if (kind === 'consolidate' && room <= 0) err = 'لا وحدة أخرى من النوع نفسه وبعقد الخدمة نفسه تحتاج رجالاً';
+    const upkeepBefore = this.unitUpkeep(r), upkeepAfter = kind === 'disband' ? this.unitUpkeep({ ...r, men: r.men - men }) : upkeepBefore;
+    return { err, men: kind === 'consolidate' ? Math.min(room, r.men) : men, recovered, upkeep: Math.max(0, upkeepBefore - upkeepAfter), remains: kind === 'disband' ? r.men - men : r.men, others };
+  },
+  manageUnitU(a, idx, kind, amount) {
+    const pv = this.unitActionPreview(a, idx, kind, amount);
+    if (pv.err) return pv.err;
+    const r = a.regs[idx], n = this.node(a.node), at = a.node, mp0 = a.mp;
+    const before = a.regs.map((unit) => ({ unit, data: { ...unit } }));
+    const manpower0 = n.manpower;
+    if (kind === 'disband') { r.men -= pv.men; n.manpower += pv.recovered; }
+    else if (kind === 'split') { r.men -= pv.men; a.regs.splice(idx + 1, 0, { ...r, men: pv.men }); }
+    else {
+      for (const target of pv.others) {
+        const moved = Math.min(r.men, UNITS[r.type].men - target.men);
+        target.exp = ((target.exp || 0) * target.men + (r.exp || 0) * moved) / Math.max(1, target.men + moved);
+        target.drill = ((target.drill || 0) * target.men + (r.drill || 0) * moved) / Math.max(1, target.men + moved);
+        target.men += moved; r.men -= moved;
+        if (!r.men) break;
+      }
+    }
+    a.regs = a.regs.filter((unit) => unit.men > 0);
+    const signature = JSON.stringify(a.regs), returned = n.manpower - manpower0;
+    const label = `${kind === 'disband' ? 'تسريح' : kind === 'split' ? 'فصل' : 'دمج'} ${pv.men} من ${UNITS[r.type].name}`;
+    Undo.push({ label, valid: () => this.S.armies.includes(a) && a.node === at && a.mp >= mp0 && n.owner === a.fid && JSON.stringify(a.regs) === signature && n.manpower >= returned,
+      undo: () => { a.regs = before.map(({ unit, data }) => { Object.assign(unit, data); return unit; }); n.manpower -= returned; } });
+    return null;
+  },
 });
+
+// تحقق من المدخلات قبل أن ينفق التقسيم ثمن قائد أو ينقل جنوداً مرتين.
+{
+  const split = Game.splitArmy;
+  Game.splitArmy = function (a, picks, dest) {
+    if (!a || !this.S.armies.includes(a)) return { err: 'الجيش لم يعد موجوداً' };
+    if (!dest || (dest.kind === 'army' && dest.armyId === a.id)) return { err: 'اختر جيشاً آخر' };
+    const seen = new Set(), clean = [];
+    for (const pick of picks || []) {
+      if (seen.has(pick.idx) || !a.regs[pick.idx] || !Number.isFinite(pick.men)) return { err: 'اختيار الوحدات غير صالح' };
+      seen.add(pick.idx); clean.push(pick);
+    }
+    const g = dest.kind === 'new' && dest.genId ? this.gen(dest.genId) : null;
+    if (g && g.fid !== a.fid) return { err: 'القائد ليس من مملكتك' };
+    return split.call(this, a, clean, dest);
+  };
+}

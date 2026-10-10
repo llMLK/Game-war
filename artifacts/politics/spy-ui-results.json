@@ -1,0 +1,202 @@
+{
+  "checks": [
+    {
+      "viewport": [
+        1440,
+        900
+      ],
+      "incitement": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true,
+        "targets": true,
+        "actionVisible": true
+      },
+      "sabotage": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true,
+        "targets": true,
+        "actionVisible": true
+      },
+      "outcome": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true,
+        "targets": true,
+        "actionVisible": true
+      },
+      "reloadAndNoDuplicateCharge": true
+    },
+    {
+      "viewport": [
+        1024,
+        768
+      ],
+      "incitement": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true,
+        "targets": true,
+        "actionVisible": true
+      },
+      "sabotage": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true,
+        "targets": true,
+        "actionVisible": true
+      },
+      "outcome": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true,
+        "targets": true,
+        "actionVisible": true
+      },
+      "reloadAndNoDuplicateCharge": true
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "incitement": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true,
+        "targets": true,
+        "actionVisible": true
+      },
+      "sabotage": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true,
+        "targets": true,
+        "actionVisible": true
+      },
+      "outcome": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true,
+        "targets": true,
+        "actionVisible": true
+      },
+      "reloadAndNoDuplicateCharge": true
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "incitement": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true,
+        "targets": true,
+        "actionVisible": true
+      },
+      "sabotage": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true,
+        "targets": true,
+        "actionVisible": true
+      },
+      "outcome": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true,
+        "targets": true,
+        "actionVisible": true
+      },
+      "reloadAndNoDuplicateCharge": true
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "incitement": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true,
+        "targets": true,
+        "actionVisible": true
+      },
+      "sabotage": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true,
+        "targets": true,
+        "actionVisible": true
+      },
+      "outcome": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true,
+        "targets": true,
+        "actionVisible": true
+      },
+      "reloadAndNoDuplicateCharge": true
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "incitement": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true,
+        "targets": true,
+        "actionVisible": true
+      },
+      "sabotage": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true,
+        "targets": true,
+        "actionVisible": true
+      },
+      "outcome": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true,
+        "targets": true,
+        "actionVisible": true
+      },
+      "reloadAndNoDuplicateCharge": true
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "incitement": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true,
+        "targets": true,
+        "actionVisible": true
+      },
+      "sabotage": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true,
+        "targets": true,
+        "actionVisible": true
+      },
+      "outcome": {
+        "fits": true,
+        "overflow": false,
+        "rtl": true,
+        "targets": true,
+        "actionVisible": true
+      },
+      "reloadAndNoDuplicateCharge": true
+    }
+  ],
+  "saveReloads": 7,
+  "errors": []
+}

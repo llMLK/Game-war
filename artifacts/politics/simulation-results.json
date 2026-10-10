@@ -1,0 +1,4239 @@
+{
+  "method": "Seeded saved campaign randomness; actual political APIs and AI decision loop. Controlled diplomacy runs hold territorial ownership and army strength constant, advance real endRound, and exclude random world events. Full campaign samples separately execute military, recruitment, building and world hooks.",
+  "matrices": [
+    {
+      "trait": "proud",
+      "war": {
+        "p": 0.8281001728946396,
+        "band": "مرجح",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            8.8
+          ],
+          [
+            "كلفة بدء حرب جديدة",
+            -35
+          ],
+          [
+            "ميزان القوة وحلفاء الخصم",
+            9.2
+          ],
+          [
+            "قدرة الجيوش على حملة",
+            10.8
+          ],
+          [
+            "نفقات الحملة واحتياطي الخزينة",
+            6.9
+          ],
+          [
+            "الطموح والحذر",
+            7.6
+          ],
+          [
+            "هدف إقليمي محدد",
+            20
+          ]
+        ],
+        "score": 28.3,
+        "blocked": null,
+        "why": "كلفة بدء حرب جديدة، هدف إقليمي محدد، قدرة الجيوش على حملة"
+      },
+      "alliance": {
+        "p": 0.2744377878410785,
+        "band": "محتمل",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            -10
+          ],
+          [
+            "التزام الحلف يحتاج مصلحة",
+            -24
+          ],
+          [
+            "القدرة على النصرة",
+            12
+          ],
+          [
+            "طبع الوفاء والحذر",
+            4.5
+          ]
+        ],
+        "score": -17.5,
+        "blocked": null,
+        "why": "التزام الحلف يحتاج مصلحة، القدرة على النصرة، العلاقة الحالية"
+      },
+      "trade": {
+        "p": 0.7052078857372237,
+        "band": "مرجح",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            -10
+          ],
+          [
+            "منفعة التجارة وطبع الحكم",
+            17.7
+          ],
+          [
+            "وصول الطرق",
+            8
+          ]
+        ],
+        "score": 15.7,
+        "blocked": null,
+        "why": "منفعة التجارة وطبع الحكم، العلاقة الحالية، وصول الطرق"
+      },
+      "vassal": {
+        "p": 0.02,
+        "band": "غير مقبول",
+        "parts": [
+          [
+            "فقدان استقلال السياسة الخارجية",
+            -52
+          ],
+          [
+            "ميزان القوة",
+            -25
+          ],
+          [
+            "بعد الحماية أو التهديد",
+            8
+          ],
+          [
+            "الحلفاء المتاحون للدفاع",
+            0
+          ],
+          [
+            "خسائر الحرب والإرهاق",
+            0
+          ],
+          [
+            "حصار المدن وخطر زوال الدولة",
+            0
+          ],
+          [
+            "الحاجة إلى الحماية",
+            0
+          ],
+          [
+            "عملية الحكم والثقة",
+            0
+          ],
+          [
+            "الثأر",
+            0
+          ]
+        ],
+        "blocked": null,
+        "due": 215,
+        "why": "بعد الحماية أو التهديد"
+      }
+    },
+    {
+      "trait": "pragmatic",
+      "war": {
+        "p": 0.8281001728946396,
+        "band": "مرجح",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            8.8
+          ],
+          [
+            "كلفة بدء حرب جديدة",
+            -35
+          ],
+          [
+            "ميزان القوة وحلفاء الخصم",
+            9.2
+          ],
+          [
+            "قدرة الجيوش على حملة",
+            10.8
+          ],
+          [
+            "نفقات الحملة واحتياطي الخزينة",
+            6.9
+          ],
+          [
+            "الطموح والحذر",
+            7.6
+          ],
+          [
+            "هدف إقليمي محدد",
+            20
+          ]
+        ],
+        "score": 28.3,
+        "blocked": null,
+        "why": "كلفة بدء حرب جديدة، هدف إقليمي محدد، قدرة الجيوش على حملة"
+      },
+      "alliance": {
+        "p": 0.2744377878410785,
+        "band": "محتمل",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            -10
+          ],
+          [
+            "التزام الحلف يحتاج مصلحة",
+            -24
+          ],
+          [
+            "القدرة على النصرة",
+            12
+          ],
+          [
+            "طبع الوفاء والحذر",
+            4.5
+          ]
+        ],
+        "score": -17.5,
+        "blocked": null,
+        "why": "التزام الحلف يحتاج مصلحة، القدرة على النصرة، العلاقة الحالية"
+      },
+      "trade": {
+        "p": 0.7052078857372237,
+        "band": "مرجح",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            -10
+          ],
+          [
+            "منفعة التجارة وطبع الحكم",
+            17.7
+          ],
+          [
+            "وصول الطرق",
+            8
+          ]
+        ],
+        "score": 15.7,
+        "blocked": null,
+        "why": "منفعة التجارة وطبع الحكم، العلاقة الحالية، وصول الطرق"
+      },
+      "vassal": {
+        "p": 0.03732688734412946,
+        "band": "غير مقبول",
+        "parts": [
+          [
+            "فقدان استقلال السياسة الخارجية",
+            -42
+          ],
+          [
+            "ميزان القوة",
+            -25
+          ],
+          [
+            "بعد الحماية أو التهديد",
+            8
+          ],
+          [
+            "الحلفاء المتاحون للدفاع",
+            0
+          ],
+          [
+            "خسائر الحرب والإرهاق",
+            0
+          ],
+          [
+            "حصار المدن وخطر زوال الدولة",
+            0
+          ],
+          [
+            "الحاجة إلى الحماية",
+            0
+          ],
+          [
+            "عملية الحكم والثقة",
+            7
+          ],
+          [
+            "الثأر",
+            0
+          ]
+        ],
+        "blocked": null,
+        "due": 215,
+        "why": "بعد الحماية أو التهديد، عملية الحكم والثقة"
+      }
+    },
+    {
+      "trait": "expansionist",
+      "war": {
+        "p": 0.8766531498417947,
+        "band": "مرجح",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            8.8
+          ],
+          [
+            "كلفة بدء حرب جديدة",
+            -35
+          ],
+          [
+            "ميزان القوة وحلفاء الخصم",
+            9.2
+          ],
+          [
+            "قدرة الجيوش على حملة",
+            10.8
+          ],
+          [
+            "نفقات الحملة واحتياطي الخزينة",
+            6.9
+          ],
+          [
+            "الطموح والحذر",
+            14.6
+          ],
+          [
+            "هدف إقليمي محدد",
+            20
+          ]
+        ],
+        "score": 35.3,
+        "blocked": null,
+        "why": "كلفة بدء حرب جديدة، هدف إقليمي محدد، الطموح والحذر"
+      },
+      "alliance": {
+        "p": 0.2744377878410785,
+        "band": "محتمل",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            -10
+          ],
+          [
+            "التزام الحلف يحتاج مصلحة",
+            -24
+          ],
+          [
+            "القدرة على النصرة",
+            12
+          ],
+          [
+            "طبع الوفاء والحذر",
+            4.5
+          ]
+        ],
+        "score": -17.5,
+        "blocked": null,
+        "why": "التزام الحلف يحتاج مصلحة، القدرة على النصرة، العلاقة الحالية"
+      },
+      "trade": {
+        "p": 0.7052078857372237,
+        "band": "مرجح",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            -10
+          ],
+          [
+            "منفعة التجارة وطبع الحكم",
+            17.7
+          ],
+          [
+            "وصول الطرق",
+            8
+          ]
+        ],
+        "score": 15.7,
+        "blocked": null,
+        "why": "منفعة التجارة وطبع الحكم، العلاقة الحالية، وصول الطرق"
+      },
+      "vassal": {
+        "p": 0.02442309005410721,
+        "band": "غير مقبول",
+        "parts": [
+          [
+            "فقدان استقلال السياسة الخارجية",
+            -42
+          ],
+          [
+            "ميزان القوة",
+            -25
+          ],
+          [
+            "بعد الحماية أو التهديد",
+            8
+          ],
+          [
+            "الحلفاء المتاحون للدفاع",
+            0
+          ],
+          [
+            "خسائر الحرب والإرهاق",
+            0
+          ],
+          [
+            "حصار المدن وخطر زوال الدولة",
+            0
+          ],
+          [
+            "الحاجة إلى الحماية",
+            0
+          ],
+          [
+            "عملية الحكم والثقة",
+            0
+          ],
+          [
+            "الثأر",
+            0
+          ]
+        ],
+        "blocked": null,
+        "due": 215,
+        "why": "بعد الحماية أو التهديد"
+      }
+    },
+    {
+      "trait": "cautious",
+      "war": {
+        "p": 0.7512996014504352,
+        "band": "مرجح",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            8.8
+          ],
+          [
+            "كلفة بدء حرب جديدة",
+            -35
+          ],
+          [
+            "ميزان القوة وحلفاء الخصم",
+            9.2
+          ],
+          [
+            "قدرة الجيوش على حملة",
+            10.8
+          ],
+          [
+            "نفقات الحملة واحتياطي الخزينة",
+            6.9
+          ],
+          [
+            "الطموح والحذر",
+            -0.8
+          ],
+          [
+            "هدف إقليمي محدد",
+            20
+          ]
+        ],
+        "score": 19.900000000000002,
+        "blocked": null,
+        "why": "كلفة بدء حرب جديدة، هدف إقليمي محدد، قدرة الجيوش على حملة"
+      },
+      "alliance": {
+        "p": 0.30647169180207895,
+        "band": "محتمل",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            -10
+          ],
+          [
+            "التزام الحلف يحتاج مصلحة",
+            -24
+          ],
+          [
+            "القدرة على النصرة",
+            12
+          ],
+          [
+            "طبع الوفاء والحذر",
+            7.3
+          ]
+        ],
+        "score": -14.7,
+        "blocked": null,
+        "why": "التزام الحلف يحتاج مصلحة، القدرة على النصرة، العلاقة الحالية"
+      },
+      "trade": {
+        "p": 0.7052078857372237,
+        "band": "مرجح",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            -10
+          ],
+          [
+            "منفعة التجارة وطبع الحكم",
+            17.7
+          ],
+          [
+            "وصول الطرق",
+            8
+          ]
+        ],
+        "score": 15.7,
+        "blocked": null,
+        "why": "منفعة التجارة وطبع الحكم، العلاقة الحالية، وصول الطرق"
+      },
+      "vassal": {
+        "p": 0.02442309005410721,
+        "band": "غير مقبول",
+        "parts": [
+          [
+            "فقدان استقلال السياسة الخارجية",
+            -42
+          ],
+          [
+            "ميزان القوة",
+            -25
+          ],
+          [
+            "بعد الحماية أو التهديد",
+            8
+          ],
+          [
+            "الحلفاء المتاحون للدفاع",
+            0
+          ],
+          [
+            "خسائر الحرب والإرهاق",
+            0
+          ],
+          [
+            "حصار المدن وخطر زوال الدولة",
+            0
+          ],
+          [
+            "الحاجة إلى الحماية",
+            0
+          ],
+          [
+            "عملية الحكم والثقة",
+            0
+          ],
+          [
+            "الثأر",
+            0
+          ]
+        ],
+        "blocked": null,
+        "due": 215,
+        "why": "بعد الحماية أو التهديد"
+      }
+    },
+    {
+      "trait": "opportunistic",
+      "war": {
+        "p": 0.8281001728946396,
+        "band": "مرجح",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            8.8
+          ],
+          [
+            "كلفة بدء حرب جديدة",
+            -35
+          ],
+          [
+            "ميزان القوة وحلفاء الخصم",
+            9.2
+          ],
+          [
+            "قدرة الجيوش على حملة",
+            10.8
+          ],
+          [
+            "نفقات الحملة واحتياطي الخزينة",
+            6.9
+          ],
+          [
+            "الطموح والحذر",
+            7.6
+          ],
+          [
+            "هدف إقليمي محدد",
+            20
+          ]
+        ],
+        "score": 28.3,
+        "blocked": null,
+        "why": "كلفة بدء حرب جديدة، هدف إقليمي محدد، قدرة الجيوش على حملة"
+      },
+      "alliance": {
+        "p": 0.2744377878410785,
+        "band": "محتمل",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            -10
+          ],
+          [
+            "التزام الحلف يحتاج مصلحة",
+            -24
+          ],
+          [
+            "القدرة على النصرة",
+            12
+          ],
+          [
+            "طبع الوفاء والحذر",
+            4.5
+          ]
+        ],
+        "score": -17.5,
+        "blocked": null,
+        "why": "التزام الحلف يحتاج مصلحة، القدرة على النصرة، العلاقة الحالية"
+      },
+      "trade": {
+        "p": 0.7052078857372237,
+        "band": "مرجح",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            -10
+          ],
+          [
+            "منفعة التجارة وطبع الحكم",
+            17.7
+          ],
+          [
+            "وصول الطرق",
+            8
+          ]
+        ],
+        "score": 15.7,
+        "blocked": null,
+        "why": "منفعة التجارة وطبع الحكم، العلاقة الحالية، وصول الطرق"
+      },
+      "vassal": {
+        "p": 0.02442309005410721,
+        "band": "غير مقبول",
+        "parts": [
+          [
+            "فقدان استقلال السياسة الخارجية",
+            -42
+          ],
+          [
+            "ميزان القوة",
+            -25
+          ],
+          [
+            "بعد الحماية أو التهديد",
+            8
+          ],
+          [
+            "الحلفاء المتاحون للدفاع",
+            0
+          ],
+          [
+            "خسائر الحرب والإرهاق",
+            0
+          ],
+          [
+            "حصار المدن وخطر زوال الدولة",
+            0
+          ],
+          [
+            "الحاجة إلى الحماية",
+            0
+          ],
+          [
+            "عملية الحكم والثقة",
+            0
+          ],
+          [
+            "الثأر",
+            0
+          ]
+        ],
+        "blocked": null,
+        "due": 215,
+        "why": "بعد الحماية أو التهديد"
+      }
+    },
+    {
+      "trait": "loyal",
+      "war": {
+        "p": 0.8281001728946396,
+        "band": "مرجح",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            8.8
+          ],
+          [
+            "كلفة بدء حرب جديدة",
+            -35
+          ],
+          [
+            "ميزان القوة وحلفاء الخصم",
+            9.2
+          ],
+          [
+            "قدرة الجيوش على حملة",
+            10.8
+          ],
+          [
+            "نفقات الحملة واحتياطي الخزينة",
+            6.9
+          ],
+          [
+            "الطموح والحذر",
+            7.6
+          ],
+          [
+            "هدف إقليمي محدد",
+            20
+          ]
+        ],
+        "score": 28.3,
+        "blocked": null,
+        "why": "كلفة بدء حرب جديدة، هدف إقليمي محدد، قدرة الجيوش على حملة"
+      },
+      "alliance": {
+        "p": 0.3330451148264414,
+        "band": "محتمل",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            -10
+          ],
+          [
+            "التزام الحلف يحتاج مصلحة",
+            -24
+          ],
+          [
+            "القدرة على النصرة",
+            12
+          ],
+          [
+            "طبع الوفاء والحذر",
+            9.5
+          ]
+        ],
+        "score": -12.5,
+        "blocked": null,
+        "why": "التزام الحلف يحتاج مصلحة، القدرة على النصرة، العلاقة الحالية"
+      },
+      "trade": {
+        "p": 0.7052078857372237,
+        "band": "مرجح",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            -10
+          ],
+          [
+            "منفعة التجارة وطبع الحكم",
+            17.7
+          ],
+          [
+            "وصول الطرق",
+            8
+          ]
+        ],
+        "score": 15.7,
+        "blocked": null,
+        "why": "منفعة التجارة وطبع الحكم، العلاقة الحالية، وصول الطرق"
+      },
+      "vassal": {
+        "p": 0.02442309005410721,
+        "band": "غير مقبول",
+        "parts": [
+          [
+            "فقدان استقلال السياسة الخارجية",
+            -42
+          ],
+          [
+            "ميزان القوة",
+            -25
+          ],
+          [
+            "بعد الحماية أو التهديد",
+            8
+          ],
+          [
+            "الحلفاء المتاحون للدفاع",
+            0
+          ],
+          [
+            "خسائر الحرب والإرهاق",
+            0
+          ],
+          [
+            "حصار المدن وخطر زوال الدولة",
+            0
+          ],
+          [
+            "الحاجة إلى الحماية",
+            0
+          ],
+          [
+            "عملية الحكم والثقة",
+            0
+          ],
+          [
+            "الثأر",
+            0
+          ]
+        ],
+        "blocked": null,
+        "due": 215,
+        "why": "بعد الحماية أو التهديد"
+      }
+    },
+    {
+      "trait": "treacherous",
+      "war": {
+        "p": 0.8281001728946396,
+        "band": "مرجح",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            8.8
+          ],
+          [
+            "كلفة بدء حرب جديدة",
+            -35
+          ],
+          [
+            "ميزان القوة وحلفاء الخصم",
+            9.2
+          ],
+          [
+            "قدرة الجيوش على حملة",
+            10.8
+          ],
+          [
+            "نفقات الحملة واحتياطي الخزينة",
+            6.9
+          ],
+          [
+            "الطموح والحذر",
+            7.6
+          ],
+          [
+            "هدف إقليمي محدد",
+            20
+          ]
+        ],
+        "score": 28.3,
+        "blocked": null,
+        "why": "كلفة بدء حرب جديدة، هدف إقليمي محدد، قدرة الجيوش على حملة"
+      },
+      "alliance": {
+        "p": 0.20952718439930262,
+        "band": "ضعيف",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            -10
+          ],
+          [
+            "التزام الحلف يحتاج مصلحة",
+            -24
+          ],
+          [
+            "القدرة على النصرة",
+            12
+          ],
+          [
+            "طبع الوفاء والحذر",
+            -1.9
+          ]
+        ],
+        "score": -23.9,
+        "blocked": null,
+        "why": "التزام الحلف يحتاج مصلحة، القدرة على النصرة، العلاقة الحالية"
+      },
+      "trade": {
+        "p": 0.7052078857372237,
+        "band": "مرجح",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            -10
+          ],
+          [
+            "منفعة التجارة وطبع الحكم",
+            17.7
+          ],
+          [
+            "وصول الطرق",
+            8
+          ]
+        ],
+        "score": 15.7,
+        "blocked": null,
+        "why": "منفعة التجارة وطبع الحكم، العلاقة الحالية، وصول الطرق"
+      },
+      "vassal": {
+        "p": 0.02442309005410721,
+        "band": "غير مقبول",
+        "parts": [
+          [
+            "فقدان استقلال السياسة الخارجية",
+            -42
+          ],
+          [
+            "ميزان القوة",
+            -25
+          ],
+          [
+            "بعد الحماية أو التهديد",
+            8
+          ],
+          [
+            "الحلفاء المتاحون للدفاع",
+            0
+          ],
+          [
+            "خسائر الحرب والإرهاق",
+            0
+          ],
+          [
+            "حصار المدن وخطر زوال الدولة",
+            0
+          ],
+          [
+            "الحاجة إلى الحماية",
+            0
+          ],
+          [
+            "عملية الحكم والثقة",
+            0
+          ],
+          [
+            "الثأر",
+            0
+          ]
+        ],
+        "blocked": null,
+        "due": 215,
+        "why": "بعد الحماية أو التهديد"
+      }
+    },
+    {
+      "trait": "commercial",
+      "war": {
+        "p": 0.8281001728946396,
+        "band": "مرجح",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            8.8
+          ],
+          [
+            "كلفة بدء حرب جديدة",
+            -35
+          ],
+          [
+            "ميزان القوة وحلفاء الخصم",
+            9.2
+          ],
+          [
+            "قدرة الجيوش على حملة",
+            10.8
+          ],
+          [
+            "نفقات الحملة واحتياطي الخزينة",
+            6.9
+          ],
+          [
+            "الطموح والحذر",
+            7.6
+          ],
+          [
+            "هدف إقليمي محدد",
+            20
+          ]
+        ],
+        "score": 28.3,
+        "blocked": null,
+        "why": "كلفة بدء حرب جديدة، هدف إقليمي محدد، قدرة الجيوش على حملة"
+      },
+      "alliance": {
+        "p": 0.2744377878410785,
+        "band": "محتمل",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            -10
+          ],
+          [
+            "التزام الحلف يحتاج مصلحة",
+            -24
+          ],
+          [
+            "القدرة على النصرة",
+            12
+          ],
+          [
+            "طبع الوفاء والحذر",
+            4.5
+          ]
+        ],
+        "score": -17.5,
+        "blocked": null,
+        "why": "التزام الحلف يحتاج مصلحة، القدرة على النصرة، العلاقة الحالية"
+      },
+      "trade": {
+        "p": 0.8351013734437561,
+        "band": "مرجح",
+        "parts": [
+          [
+            "العلاقة الحالية",
+            -10
+          ],
+          [
+            "منفعة التجارة وطبع الحكم",
+            31.2
+          ],
+          [
+            "وصول الطرق",
+            8
+          ]
+        ],
+        "score": 29.2,
+        "blocked": null,
+        "why": "منفعة التجارة وطبع الحكم، العلاقة الحالية، وصول الطرق"
+      },
+      "vassal": {
+        "p": 0.02442309005410721,
+        "band": "غير مقبول",
+        "parts": [
+          [
+            "فقدان استقلال السياسة الخارجية",
+            -42
+          ],
+          [
+            "ميزان القوة",
+            -25
+          ],
+          [
+            "بعد الحماية أو التهديد",
+            8
+          ],
+          [
+            "الحلفاء المتاحون للدفاع",
+            0
+          ],
+          [
+            "خسائر الحرب والإرهاق",
+            0
+          ],
+          [
+            "حصار المدن وخطر زوال الدولة",
+            0
+          ],
+          [
+            "الحاجة إلى الحماية",
+            0
+          ],
+          [
+            "عملية الحكم والثقة",
+            0
+          ],
+          [
+            "الثأر",
+            0
+          ]
+        ],
+        "blocked": null,
+        "due": 215,
+        "why": "بعد الحماية أو التهديد"
+      }
+    }
+  ],
+  "campaigns": [
+    {
+      "summary": {
+        "name": "equalRivals",
+        "samples": 24,
+        "turns": 36,
+        "peaceReached": 24,
+        "medianFirstPeace": 8,
+        "warStarts": 27,
+        "endingVassals": 20,
+        "allianceBreaks": 8,
+        "stillAtWar": 12,
+        "invalidOffers": 0
+      },
+      "samples": [
+        {
+          "seed": 1,
+          "firstPeace": 15,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": true,
+          "memoryEntries": 27
+        },
+        {
+          "seed": 2,
+          "firstPeace": 6,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": true,
+          "memoryEntries": 23
+        },
+        {
+          "seed": 3,
+          "firstPeace": 12,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": false,
+          "memoryEntries": 25
+        },
+        {
+          "seed": 4,
+          "firstPeace": 8,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": false,
+          "memoryEntries": 6
+        },
+        {
+          "seed": 5,
+          "firstPeace": 7,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": false,
+          "memoryEntries": 28
+        },
+        {
+          "seed": 6,
+          "firstPeace": 6,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": true,
+          "memoryEntries": 23
+        },
+        {
+          "seed": 7,
+          "firstPeace": 9,
+          "warStarts": 3,
+          "vassals": 0,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": false,
+          "memoryEntries": 16
+        },
+        {
+          "seed": 8,
+          "firstPeace": 8,
+          "warStarts": 3,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": false,
+          "memoryEntries": 19
+        },
+        {
+          "seed": 9,
+          "firstPeace": 9,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": true,
+          "memoryEntries": 26
+        },
+        {
+          "seed": 10,
+          "firstPeace": 8,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": true,
+          "memoryEntries": 30
+        },
+        {
+          "seed": 11,
+          "firstPeace": 8,
+          "warStarts": 1,
+          "vassals": 0,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": true,
+          "memoryEntries": 28
+        },
+        {
+          "seed": 12,
+          "firstPeace": 6,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": false,
+          "memoryEntries": 21
+        },
+        {
+          "seed": 13,
+          "firstPeace": 17,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": true,
+          "memoryEntries": 13
+        },
+        {
+          "seed": 14,
+          "firstPeace": 8,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": false,
+          "memoryEntries": 19
+        },
+        {
+          "seed": 15,
+          "firstPeace": 4,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": true,
+          "memoryEntries": 23
+        },
+        {
+          "seed": 16,
+          "firstPeace": 5,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": true,
+          "memoryEntries": 17
+        },
+        {
+          "seed": 17,
+          "firstPeace": 7,
+          "warStarts": 1,
+          "vassals": 0,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": true,
+          "memoryEntries": 15
+        },
+        {
+          "seed": 18,
+          "firstPeace": 8,
+          "warStarts": 2,
+          "vassals": 0,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": false,
+          "memoryEntries": 12
+        },
+        {
+          "seed": 19,
+          "firstPeace": 12,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": false,
+          "memoryEntries": 14
+        },
+        {
+          "seed": 20,
+          "firstPeace": 3,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": true,
+          "memoryEntries": 31
+        },
+        {
+          "seed": 21,
+          "firstPeace": 9,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": false,
+          "memoryEntries": 7
+        },
+        {
+          "seed": 22,
+          "firstPeace": 3,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": false,
+          "memoryEntries": 26
+        },
+        {
+          "seed": 23,
+          "firstPeace": 4,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": true,
+          "memoryEntries": 26
+        },
+        {
+          "seed": 24,
+          "firstPeace": 9,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -15.100000000000001,
+            "b": -18.885642354401032
+          },
+          "stillAtWar": false,
+          "memoryEntries": 27
+        }
+      ]
+    },
+    {
+      "summary": {
+        "name": "dominantVsWeak",
+        "samples": 24,
+        "turns": 36,
+        "peaceReached": 24,
+        "medianFirstPeace": 1,
+        "warStarts": 30,
+        "endingVassals": 23,
+        "allianceBreaks": 16,
+        "stillAtWar": 6,
+        "invalidOffers": 0
+      },
+      "samples": [
+        {
+          "seed": 1,
+          "firstPeace": 4,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": true,
+          "memoryEntries": 13
+        },
+        {
+          "seed": 2,
+          "firstPeace": 2,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": true,
+          "memoryEntries": 28
+        },
+        {
+          "seed": 3,
+          "firstPeace": 1,
+          "warStarts": 2,
+          "vassals": 2,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": false,
+          "memoryEntries": 29
+        },
+        {
+          "seed": 4,
+          "firstPeace": 0,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": true,
+          "memoryEntries": 33
+        },
+        {
+          "seed": 5,
+          "firstPeace": 2,
+          "warStarts": 3,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": false,
+          "memoryEntries": 26
+        },
+        {
+          "seed": 6,
+          "firstPeace": 0,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": true,
+          "memoryEntries": 27
+        },
+        {
+          "seed": 7,
+          "firstPeace": 1,
+          "warStarts": 3,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": false,
+          "memoryEntries": 17
+        },
+        {
+          "seed": 8,
+          "firstPeace": 0,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": false,
+          "memoryEntries": 19
+        },
+        {
+          "seed": 9,
+          "firstPeace": 2,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": false,
+          "memoryEntries": 22
+        },
+        {
+          "seed": 10,
+          "firstPeace": 2,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": false,
+          "memoryEntries": 24
+        },
+        {
+          "seed": 11,
+          "firstPeace": 0,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": false,
+          "memoryEntries": 8
+        },
+        {
+          "seed": 12,
+          "firstPeace": 0,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": true,
+          "memoryEntries": 24
+        },
+        {
+          "seed": 13,
+          "firstPeace": 0,
+          "warStarts": 3,
+          "vassals": 0,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": false,
+          "memoryEntries": 19
+        },
+        {
+          "seed": 14,
+          "firstPeace": 1,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": false,
+          "memoryEntries": 26
+        },
+        {
+          "seed": 15,
+          "firstPeace": 4,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": false,
+          "memoryEntries": 24
+        },
+        {
+          "seed": 16,
+          "firstPeace": 0,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": false,
+          "memoryEntries": 23
+        },
+        {
+          "seed": 17,
+          "firstPeace": 0,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": false,
+          "memoryEntries": 14
+        },
+        {
+          "seed": 18,
+          "firstPeace": 0,
+          "warStarts": 2,
+          "vassals": 0,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": false,
+          "memoryEntries": 18
+        },
+        {
+          "seed": 19,
+          "firstPeace": 2,
+          "warStarts": 4,
+          "vassals": 0,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": true,
+          "memoryEntries": 23
+        },
+        {
+          "seed": 20,
+          "firstPeace": 1,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": false,
+          "memoryEntries": 25
+        },
+        {
+          "seed": 21,
+          "firstPeace": 0,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": false,
+          "memoryEntries": 34
+        },
+        {
+          "seed": 22,
+          "firstPeace": 2,
+          "warStarts": 0,
+          "vassals": 2,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": false,
+          "memoryEntries": 21
+        },
+        {
+          "seed": 23,
+          "firstPeace": 1,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": false,
+          "memoryEntries": 5
+        },
+        {
+          "seed": 24,
+          "firstPeace": 0,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 2,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": 37.76880160085875
+          },
+          "stillAtWar": false,
+          "memoryEntries": 35
+        }
+      ]
+    },
+    {
+      "summary": {
+        "name": "twoFronts",
+        "samples": 24,
+        "turns": 36,
+        "peaceReached": 24,
+        "medianFirstPeace": 2,
+        "warStarts": 28,
+        "endingVassals": 19,
+        "allianceBreaks": 6,
+        "stillAtWar": 9,
+        "invalidOffers": 0
+      },
+      "samples": [
+        {
+          "seed": 1,
+          "firstPeace": 1,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 21
+        },
+        {
+          "seed": 2,
+          "firstPeace": 2,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 28
+        },
+        {
+          "seed": 3,
+          "firstPeace": 12,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 26
+        },
+        {
+          "seed": 4,
+          "firstPeace": 3,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 29
+        },
+        {
+          "seed": 5,
+          "firstPeace": 7,
+          "warStarts": 3,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 21
+        },
+        {
+          "seed": 6,
+          "firstPeace": 0,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 29
+        },
+        {
+          "seed": 7,
+          "firstPeace": 1,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 28
+        },
+        {
+          "seed": 8,
+          "firstPeace": 3,
+          "warStarts": 3,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 19
+        },
+        {
+          "seed": 9,
+          "firstPeace": 3,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 26
+        },
+        {
+          "seed": 10,
+          "firstPeace": 0,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 9
+        },
+        {
+          "seed": 11,
+          "firstPeace": 2,
+          "warStarts": 2,
+          "vassals": 0,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 27
+        },
+        {
+          "seed": 12,
+          "firstPeace": 2,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 29
+        },
+        {
+          "seed": 13,
+          "firstPeace": 4,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 23
+        },
+        {
+          "seed": 14,
+          "firstPeace": 2,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 31
+        },
+        {
+          "seed": 15,
+          "firstPeace": 2,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 23
+        },
+        {
+          "seed": 16,
+          "firstPeace": 3,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 27
+        },
+        {
+          "seed": 17,
+          "firstPeace": 0,
+          "warStarts": 0,
+          "vassals": 0,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 24
+        },
+        {
+          "seed": 18,
+          "firstPeace": 0,
+          "warStarts": 2,
+          "vassals": 0,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 18
+        },
+        {
+          "seed": 19,
+          "firstPeace": 12,
+          "warStarts": 3,
+          "vassals": 0,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 19
+        },
+        {
+          "seed": 20,
+          "firstPeace": 5,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 24
+        },
+        {
+          "seed": 21,
+          "firstPeace": 9,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 27
+        },
+        {
+          "seed": 22,
+          "firstPeace": 3,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 34
+        },
+        {
+          "seed": 23,
+          "firstPeace": 1,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 5
+        },
+        {
+          "seed": 24,
+          "firstPeace": 1,
+          "warStarts": 2,
+          "vassals": 0,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 14.899999999999999,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 16
+        }
+      ]
+    },
+    {
+      "summary": {
+        "name": "commonEnemyAlliance",
+        "samples": 24,
+        "turns": 36,
+        "peaceReached": 24,
+        "medianFirstPeace": 7,
+        "warStarts": 19,
+        "endingVassals": 21,
+        "allianceBreaks": 11,
+        "stillAtWar": 16,
+        "invalidOffers": 0
+      },
+      "samples": [
+        {
+          "seed": 1,
+          "firstPeace": 4,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 13
+        },
+        {
+          "seed": 2,
+          "firstPeace": 6,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 26
+        },
+        {
+          "seed": 3,
+          "firstPeace": 12,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 26
+        },
+        {
+          "seed": 4,
+          "firstPeace": 8,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 28
+        },
+        {
+          "seed": 5,
+          "firstPeace": 7,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 25
+        },
+        {
+          "seed": 6,
+          "firstPeace": 6,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 23
+        },
+        {
+          "seed": 7,
+          "firstPeace": 9,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 27
+        },
+        {
+          "seed": 8,
+          "firstPeace": 3,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 18
+        },
+        {
+          "seed": 9,
+          "firstPeace": 3,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 25
+        },
+        {
+          "seed": 10,
+          "firstPeace": 2,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 25
+        },
+        {
+          "seed": 11,
+          "firstPeace": 8,
+          "warStarts": 1,
+          "vassals": 0,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 31
+        },
+        {
+          "seed": 12,
+          "firstPeace": 2,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 26
+        },
+        {
+          "seed": 13,
+          "firstPeace": 17,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 21
+        },
+        {
+          "seed": 14,
+          "firstPeace": 9,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 28
+        },
+        {
+          "seed": 15,
+          "firstPeace": 4,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 21
+        },
+        {
+          "seed": 16,
+          "firstPeace": 3,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 25
+        },
+        {
+          "seed": 17,
+          "firstPeace": 7,
+          "warStarts": 0,
+          "vassals": 0,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 23
+        },
+        {
+          "seed": 18,
+          "firstPeace": 8,
+          "warStarts": 2,
+          "vassals": 0,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 16
+        },
+        {
+          "seed": 19,
+          "firstPeace": 12,
+          "warStarts": 3,
+          "vassals": 1,
+          "allianceBreaks": 2,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 22
+        },
+        {
+          "seed": 20,
+          "firstPeace": 5,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 29
+        },
+        {
+          "seed": 21,
+          "firstPeace": 9,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 25
+        },
+        {
+          "seed": 22,
+          "firstPeace": 3,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 26
+        },
+        {
+          "seed": 23,
+          "firstPeace": 11,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 24
+        },
+        {
+          "seed": 24,
+          "firstPeace": 9,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 28
+        }
+      ]
+    },
+    {
+      "summary": {
+        "name": "prolongedWar",
+        "samples": 24,
+        "turns": 36,
+        "peaceReached": 24,
+        "medianFirstPeace": 0,
+        "warStarts": 31,
+        "endingVassals": 20,
+        "allianceBreaks": 11,
+        "stillAtWar": 12,
+        "invalidOffers": 0
+      },
+      "samples": [
+        {
+          "seed": 1,
+          "firstPeace": 0,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": true,
+          "memoryEntries": 20
+        },
+        {
+          "seed": 2,
+          "firstPeace": 0,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": true,
+          "memoryEntries": 33
+        },
+        {
+          "seed": 3,
+          "firstPeace": 1,
+          "warStarts": 2,
+          "vassals": 2,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": false,
+          "memoryEntries": 29
+        },
+        {
+          "seed": 4,
+          "firstPeace": 0,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": true,
+          "memoryEntries": 33
+        },
+        {
+          "seed": 5,
+          "firstPeace": 0,
+          "warStarts": 4,
+          "vassals": 0,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": false,
+          "memoryEntries": 27
+        },
+        {
+          "seed": 6,
+          "firstPeace": 0,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": true,
+          "memoryEntries": 27
+        },
+        {
+          "seed": 7,
+          "firstPeace": 0,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": true,
+          "memoryEntries": 23
+        },
+        {
+          "seed": 8,
+          "firstPeace": 0,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": false,
+          "memoryEntries": 19
+        },
+        {
+          "seed": 9,
+          "firstPeace": 2,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": false,
+          "memoryEntries": 22
+        },
+        {
+          "seed": 10,
+          "firstPeace": 0,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": false,
+          "memoryEntries": 17
+        },
+        {
+          "seed": 11,
+          "firstPeace": 1,
+          "warStarts": 3,
+          "vassals": 0,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": false,
+          "memoryEntries": 26
+        },
+        {
+          "seed": 12,
+          "firstPeace": 0,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": true,
+          "memoryEntries": 24
+        },
+        {
+          "seed": 13,
+          "firstPeace": 0,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": true,
+          "memoryEntries": 23
+        },
+        {
+          "seed": 14,
+          "firstPeace": 1,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": false,
+          "memoryEntries": 28
+        },
+        {
+          "seed": 15,
+          "firstPeace": 2,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": false,
+          "memoryEntries": 24
+        },
+        {
+          "seed": 16,
+          "firstPeace": 0,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": true,
+          "memoryEntries": 25
+        },
+        {
+          "seed": 17,
+          "firstPeace": 0,
+          "warStarts": 0,
+          "vassals": 0,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": false,
+          "memoryEntries": 26
+        },
+        {
+          "seed": 18,
+          "firstPeace": 0,
+          "warStarts": 2,
+          "vassals": 0,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": false,
+          "memoryEntries": 19
+        },
+        {
+          "seed": 19,
+          "firstPeace": 0,
+          "warStarts": 5,
+          "vassals": 0,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": true,
+          "memoryEntries": 23
+        },
+        {
+          "seed": 20,
+          "firstPeace": 0,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": true,
+          "memoryEntries": 28
+        },
+        {
+          "seed": 21,
+          "firstPeace": 1,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": true,
+          "memoryEntries": 33
+        },
+        {
+          "seed": 22,
+          "firstPeace": 1,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": false,
+          "memoryEntries": 28
+        },
+        {
+          "seed": 23,
+          "firstPeace": 1,
+          "warStarts": 3,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": true,
+          "memoryEntries": 23
+        },
+        {
+          "seed": 24,
+          "firstPeace": 0,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 2,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 36.28861829789624
+          },
+          "stillAtWar": false,
+          "memoryEntries": 35
+        }
+      ]
+    },
+    {
+      "summary": {
+        "name": "exhaustedPeace",
+        "samples": 24,
+        "turns": 36,
+        "peaceReached": 24,
+        "medianFirstPeace": 0,
+        "warStarts": 36,
+        "endingVassals": 19,
+        "allianceBreaks": 9,
+        "stillAtWar": 8,
+        "invalidOffers": 0
+      },
+      "samples": [
+        {
+          "seed": 1,
+          "firstPeace": 0,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": true,
+          "memoryEntries": 21
+        },
+        {
+          "seed": 2,
+          "firstPeace": 0,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": true,
+          "memoryEntries": 31
+        },
+        {
+          "seed": 3,
+          "firstPeace": 1,
+          "warStarts": 2,
+          "vassals": 2,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": false,
+          "memoryEntries": 31
+        },
+        {
+          "seed": 4,
+          "firstPeace": 0,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": true,
+          "memoryEntries": 31
+        },
+        {
+          "seed": 5,
+          "firstPeace": 0,
+          "warStarts": 3,
+          "vassals": 0,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": false,
+          "memoryEntries": 23
+        },
+        {
+          "seed": 6,
+          "firstPeace": 0,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": true,
+          "memoryEntries": 33
+        },
+        {
+          "seed": 7,
+          "firstPeace": 0,
+          "warStarts": 3,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": false,
+          "memoryEntries": 20
+        },
+        {
+          "seed": 8,
+          "firstPeace": 0,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": false,
+          "memoryEntries": 19
+        },
+        {
+          "seed": 9,
+          "firstPeace": 2,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": false,
+          "memoryEntries": 28
+        },
+        {
+          "seed": 10,
+          "firstPeace": 0,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": false,
+          "memoryEntries": 10
+        },
+        {
+          "seed": 11,
+          "firstPeace": 2,
+          "warStarts": 2,
+          "vassals": 0,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": false,
+          "memoryEntries": 29
+        },
+        {
+          "seed": 12,
+          "firstPeace": 0,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": true,
+          "memoryEntries": 24
+        },
+        {
+          "seed": 13,
+          "firstPeace": 0,
+          "warStarts": 3,
+          "vassals": 0,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": false,
+          "memoryEntries": 20
+        },
+        {
+          "seed": 14,
+          "firstPeace": 1,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": false,
+          "memoryEntries": 28
+        },
+        {
+          "seed": 15,
+          "firstPeace": 2,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": false,
+          "memoryEntries": 27
+        },
+        {
+          "seed": 16,
+          "firstPeace": 0,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": false,
+          "memoryEntries": 24
+        },
+        {
+          "seed": 17,
+          "firstPeace": 0,
+          "warStarts": 0,
+          "vassals": 0,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": false,
+          "memoryEntries": 26
+        },
+        {
+          "seed": 18,
+          "firstPeace": 0,
+          "warStarts": 2,
+          "vassals": 0,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": false,
+          "memoryEntries": 19
+        },
+        {
+          "seed": 19,
+          "firstPeace": 0,
+          "warStarts": 5,
+          "vassals": 0,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": true,
+          "memoryEntries": 23
+        },
+        {
+          "seed": 20,
+          "firstPeace": 0,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": false,
+          "memoryEntries": 25
+        },
+        {
+          "seed": 21,
+          "firstPeace": 2,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": false,
+          "memoryEntries": 24
+        },
+        {
+          "seed": 22,
+          "firstPeace": 3,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": true,
+          "memoryEntries": 30
+        },
+        {
+          "seed": 23,
+          "firstPeace": 1,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": false,
+          "memoryEntries": 9
+        },
+        {
+          "seed": 24,
+          "firstPeace": 1,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": 47.9,
+            "b": 34.48139889659593
+          },
+          "stillAtWar": true,
+          "memoryEntries": 28
+        }
+      ]
+    },
+    {
+      "summary": {
+        "name": "threatenedVassal",
+        "samples": 24,
+        "turns": 36,
+        "peaceReached": 24,
+        "medianFirstPeace": 8,
+        "warStarts": 18,
+        "endingVassals": 20,
+        "allianceBreaks": 9,
+        "stillAtWar": 14,
+        "invalidOffers": 0
+      },
+      "samples": [
+        {
+          "seed": 1,
+          "firstPeace": 4,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 13
+        },
+        {
+          "seed": 2,
+          "firstPeace": 6,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 26
+        },
+        {
+          "seed": 3,
+          "firstPeace": 12,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 26
+        },
+        {
+          "seed": 4,
+          "firstPeace": 8,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 27
+        },
+        {
+          "seed": 5,
+          "firstPeace": 7,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 25
+        },
+        {
+          "seed": 6,
+          "firstPeace": 6,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 25
+        },
+        {
+          "seed": 7,
+          "firstPeace": 9,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 22
+        },
+        {
+          "seed": 8,
+          "firstPeace": 8,
+          "warStarts": 3,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 21
+        },
+        {
+          "seed": 9,
+          "firstPeace": 3,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 22
+        },
+        {
+          "seed": 10,
+          "firstPeace": 2,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 25
+        },
+        {
+          "seed": 11,
+          "firstPeace": 8,
+          "warStarts": 1,
+          "vassals": 0,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 30
+        },
+        {
+          "seed": 12,
+          "firstPeace": 2,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 23
+        },
+        {
+          "seed": 13,
+          "firstPeace": 17,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 21
+        },
+        {
+          "seed": 14,
+          "firstPeace": 9,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 31
+        },
+        {
+          "seed": 15,
+          "firstPeace": 4,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 19
+        },
+        {
+          "seed": 16,
+          "firstPeace": 3,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 25
+        },
+        {
+          "seed": 17,
+          "firstPeace": 7,
+          "warStarts": 0,
+          "vassals": 0,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 24
+        },
+        {
+          "seed": 18,
+          "firstPeace": 8,
+          "warStarts": 2,
+          "vassals": 0,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 12
+        },
+        {
+          "seed": 19,
+          "firstPeace": 12,
+          "warStarts": 2,
+          "vassals": 0,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 25
+        },
+        {
+          "seed": 20,
+          "firstPeace": 5,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 29
+        },
+        {
+          "seed": 21,
+          "firstPeace": 9,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 21
+        },
+        {
+          "seed": 22,
+          "firstPeace": 3,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 22
+        },
+        {
+          "seed": 23,
+          "firstPeace": 11,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 26
+        },
+        {
+          "seed": 24,
+          "firstPeace": 9,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 28
+        }
+      ]
+    },
+    {
+      "summary": {
+        "name": "limitedAlly",
+        "samples": 24,
+        "turns": 36,
+        "peaceReached": 24,
+        "medianFirstPeace": 7,
+        "warStarts": 17,
+        "endingVassals": 20,
+        "allianceBreaks": 9,
+        "stillAtWar": 13,
+        "invalidOffers": 0
+      },
+      "samples": [
+        {
+          "seed": 1,
+          "firstPeace": 4,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 13
+        },
+        {
+          "seed": 2,
+          "firstPeace": 6,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 26
+        },
+        {
+          "seed": 3,
+          "firstPeace": 12,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 26
+        },
+        {
+          "seed": 4,
+          "firstPeace": 8,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 21
+        },
+        {
+          "seed": 5,
+          "firstPeace": 7,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 24
+        },
+        {
+          "seed": 6,
+          "firstPeace": 6,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 29
+        },
+        {
+          "seed": 7,
+          "firstPeace": 9,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 22
+        },
+        {
+          "seed": 8,
+          "firstPeace": 3,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 18
+        },
+        {
+          "seed": 9,
+          "firstPeace": 3,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 21
+        },
+        {
+          "seed": 10,
+          "firstPeace": 2,
+          "warStarts": 2,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 25
+        },
+        {
+          "seed": 11,
+          "firstPeace": 8,
+          "warStarts": 1,
+          "vassals": 0,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 30
+        },
+        {
+          "seed": 12,
+          "firstPeace": 2,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 23
+        },
+        {
+          "seed": 13,
+          "firstPeace": 17,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 14
+        },
+        {
+          "seed": 14,
+          "firstPeace": 9,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 25
+        },
+        {
+          "seed": 15,
+          "firstPeace": 4,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 19
+        },
+        {
+          "seed": 16,
+          "firstPeace": 3,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 25
+        },
+        {
+          "seed": 17,
+          "firstPeace": 7,
+          "warStarts": 0,
+          "vassals": 0,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 20
+        },
+        {
+          "seed": 18,
+          "firstPeace": 8,
+          "warStarts": 2,
+          "vassals": 0,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 16
+        },
+        {
+          "seed": 19,
+          "firstPeace": 12,
+          "warStarts": 2,
+          "vassals": 0,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 20
+        },
+        {
+          "seed": 20,
+          "firstPeace": 5,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 29
+        },
+        {
+          "seed": 21,
+          "firstPeace": 9,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 28
+        },
+        {
+          "seed": 22,
+          "firstPeace": 3,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 0,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 28
+        },
+        {
+          "seed": 23,
+          "firstPeace": 11,
+          "warStarts": 1,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": true,
+          "memoryEntries": 24
+        },
+        {
+          "seed": 24,
+          "firstPeace": 9,
+          "warStarts": 0,
+          "vassals": 1,
+          "allianceBreaks": 1,
+          "invalidOffers": 0,
+          "initialUrge": {
+            "u": -3.100000000000001,
+            "b": -16.711381702103758
+          },
+          "stillAtWar": false,
+          "memoryEntries": 28
+        }
+      ]
+    },
+    {
+      "summary": {
+        "name": "repeatedEspionage",
+        "turns": 30,
+        "operations": 16,
+        "distinctTargets": 5,
+        "nicaea": 0
+      },
+      "operations": [
+        {
+          "turn": 0,
+          "target": "iconium",
+          "op": "incite",
+          "ok": false,
+          "found": true
+        },
+        {
+          "turn": 3,
+          "target": "trebizond",
+          "op": "incite",
+          "ok": true,
+          "found": true
+        },
+        {
+          "turn": 6,
+          "target": "caralis",
+          "op": "incite",
+          "ok": false,
+          "found": true
+        },
+        {
+          "turn": 9,
+          "target": "iconium",
+          "op": "incite",
+          "ok": true,
+          "found": true
+        },
+        {
+          "turn": 12,
+          "target": "trebizond",
+          "op": "incite",
+          "ok": false,
+          "found": false
+        },
+        {
+          "turn": 13,
+          "target": "caralis",
+          "op": "incite",
+          "ok": true,
+          "found": false
+        },
+        {
+          "turn": 14,
+          "target": "amorium",
+          "op": "incite",
+          "ok": true,
+          "found": true
+        },
+        {
+          "turn": 17,
+          "target": "iconium",
+          "op": "incite",
+          "ok": true,
+          "found": false
+        },
+        {
+          "turn": 18,
+          "target": "attalia",
+          "op": "incite",
+          "ok": false,
+          "found": false
+        },
+        {
+          "turn": 19,
+          "target": "trebizond",
+          "op": "incite",
+          "ok": true,
+          "found": true
+        },
+        {
+          "turn": 22,
+          "target": "caralis",
+          "op": "incite",
+          "ok": false,
+          "found": false
+        },
+        {
+          "turn": 23,
+          "target": "amorium",
+          "op": "incite",
+          "ok": false,
+          "found": false
+        },
+        {
+          "turn": 24,
+          "target": "iconium",
+          "op": "incite",
+          "ok": true,
+          "found": false
+        },
+        {
+          "turn": 25,
+          "target": "attalia",
+          "op": "incite",
+          "ok": false,
+          "found": false
+        },
+        {
+          "turn": 26,
+          "target": "trebizond",
+          "op": "incite",
+          "ok": true,
+          "found": true
+        },
+        {
+          "turn": 29,
+          "target": "caralis",
+          "op": "incite",
+          "ok": false,
+          "found": false
+        }
+      ]
+    },
+    {
+      "summary": {
+        "name": "highUnrest",
+        "turns": 30,
+        "operations": 20,
+        "distinctTargets": 10,
+        "nicaea": 0
+      },
+      "operations": [
+        {
+          "turn": 0,
+          "target": "iconium",
+          "op": "incite",
+          "ok": true,
+          "found": true
+        },
+        {
+          "turn": 3,
+          "target": "caesarea",
+          "op": "incite",
+          "ok": false,
+          "found": false
+        },
+        {
+          "turn": 4,
+          "target": "trebizond",
+          "op": "incite",
+          "ok": true,
+          "found": true
+        },
+        {
+          "turn": 7,
+          "target": "syracuse",
+          "op": "incite",
+          "ok": true,
+          "found": true
+        },
+        {
+          "turn": 10,
+          "target": "caesarea",
+          "op": "incite",
+          "ok": false,
+          "found": false
+        },
+        {
+          "turn": 11,
+          "target": "trebizond",
+          "op": "incite",
+          "ok": true,
+          "found": true
+        },
+        {
+          "turn": 14,
+          "target": "syracuse",
+          "op": "incite",
+          "ok": true,
+          "found": false
+        },
+        {
+          "turn": 15,
+          "target": "caralis",
+          "op": "incite",
+          "ok": false,
+          "found": true
+        },
+        {
+          "turn": 18,
+          "target": "trebizond",
+          "op": "incite",
+          "ok": false,
+          "found": false
+        },
+        {
+          "turn": 19,
+          "target": "attalia",
+          "op": "incite",
+          "ok": true,
+          "found": false
+        },
+        {
+          "turn": 20,
+          "target": "amorium",
+          "op": "incite",
+          "ok": false,
+          "found": false
+        },
+        {
+          "turn": 21,
+          "target": "caesarea",
+          "op": "incite",
+          "ok": false,
+          "found": false
+        },
+        {
+          "turn": 22,
+          "target": "caralis",
+          "op": "incite",
+          "ok": false,
+          "found": false
+        },
+        {
+          "turn": 23,
+          "target": "corinth",
+          "op": "incite",
+          "ok": false,
+          "found": false
+        },
+        {
+          "turn": 24,
+          "target": "ancyra",
+          "op": "incite",
+          "ok": false,
+          "found": false
+        },
+        {
+          "turn": 25,
+          "target": "trebizond",
+          "op": "incite",
+          "ok": false,
+          "found": false
+        },
+        {
+          "turn": 26,
+          "target": "attalia",
+          "op": "incite",
+          "ok": false,
+          "found": false
+        },
+        {
+          "turn": 27,
+          "target": "amorium",
+          "op": "incite",
+          "ok": true,
+          "found": false
+        },
+        {
+          "turn": 28,
+          "target": "cherson",
+          "op": "incite",
+          "ok": false,
+          "found": false
+        },
+        {
+          "turn": 29,
+          "target": "caralis",
+          "op": "incite",
+          "ok": false,
+          "found": false
+        }
+      ]
+    }
+  ],
+  "integration": [
+    {
+      "scenario": "umayyad",
+      "sample": 1,
+      "turn": 12,
+      "alive": [
+        "umayyad",
+        "byzantine",
+        "khazar",
+        "k34"
+      ],
+      "wars": 2,
+      "battles": 4,
+      "peace": 2,
+      "contribution": 8,
+      "spy": 2
+    },
+    {
+      "scenario": "umayyad",
+      "sample": 2,
+      "turn": 12,
+      "alive": [
+        "umayyad",
+        "byzantine",
+        "khazar",
+        "k40"
+      ],
+      "wars": 0,
+      "battles": 3,
+      "peace": 2,
+      "contribution": 6,
+      "spy": 1
+    },
+    {
+      "scenario": "umayyad",
+      "sample": 3,
+      "turn": 12,
+      "alive": [
+        "umayyad",
+        "byzantine",
+        "khazar"
+      ],
+      "wars": 0,
+      "battles": 0,
+      "peace": 2,
+      "contribution": 0,
+      "spy": 0
+    },
+    {
+      "scenario": "threeKingdoms",
+      "sample": 1,
+      "turn": 12,
+      "alive": [
+        "shu",
+        "wei",
+        "wu"
+      ],
+      "wars": 0,
+      "battles": 3,
+      "peace": 4,
+      "contribution": 6,
+      "spy": 2
+    },
+    {
+      "scenario": "threeKingdoms",
+      "sample": 2,
+      "turn": 12,
+      "alive": [
+        "shu",
+        "wei",
+        "wu"
+      ],
+      "wars": 0,
+      "battles": 4,
+      "peace": 2,
+      "contribution": 8,
+      "spy": 0
+    },
+    {
+      "scenario": "threeKingdoms",
+      "sample": 3,
+      "turn": 12,
+      "alive": [
+        "shu",
+        "wei",
+        "wu"
+      ],
+      "wars": 0,
+      "battles": 1,
+      "peace": 2,
+      "contribution": 2,
+      "spy": 2
+    }
+  ]
+}

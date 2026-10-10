@@ -1,0 +1,692 @@
+{
+  "checks": [
+    {
+      "viewport": [
+        1440,
+        900
+      ],
+      "intel": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "intel",
+        "phase": -1,
+        "tick": 0
+      },
+      "plan": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "plan",
+        "phase": -1,
+        "tick": 0
+      },
+      "formation": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "form",
+        "phase": -1,
+        "tick": 0
+      },
+      "prepare": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "break",
+        "phase": 0,
+        "tick": 0
+      },
+      "card": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "break",
+        "phase": 0,
+        "tick": 0
+      },
+      "report": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 3,
+        "tick": 1
+      },
+      "story": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 3,
+        "tick": 1
+      },
+      "factors": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 3,
+        "tick": 1
+      },
+      "siege": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 2,
+        "tick": 1
+      }
+    },
+    {
+      "viewport": [
+        1024,
+        768
+      ],
+      "intel": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "intel",
+        "phase": -1,
+        "tick": 0
+      },
+      "plan": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "plan",
+        "phase": -1,
+        "tick": 0
+      },
+      "formation": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "form",
+        "phase": -1,
+        "tick": 0
+      },
+      "prepare": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "break",
+        "phase": 0,
+        "tick": 0
+      },
+      "card": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "break",
+        "phase": 0,
+        "tick": 0
+      },
+      "report": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 3,
+        "tick": 1
+      },
+      "story": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 3,
+        "tick": 1
+      },
+      "factors": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 3,
+        "tick": 1
+      },
+      "siege": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 2,
+        "tick": 1
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "intel": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "intel",
+        "phase": -1,
+        "tick": 0
+      },
+      "plan": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "plan",
+        "phase": -1,
+        "tick": 0
+      },
+      "formation": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "form",
+        "phase": -1,
+        "tick": 0
+      },
+      "prepare": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "break",
+        "phase": 0,
+        "tick": 0
+      },
+      "card": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "break",
+        "phase": 0,
+        "tick": 0
+      },
+      "report": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 3,
+        "tick": 1
+      },
+      "story": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 3,
+        "tick": 1
+      },
+      "factors": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 3,
+        "tick": 1
+      },
+      "siege": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 2,
+        "tick": 1
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "intel": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "intel",
+        "phase": -1,
+        "tick": 0
+      },
+      "plan": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "plan",
+        "phase": -1,
+        "tick": 0
+      },
+      "formation": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "form",
+        "phase": -1,
+        "tick": 0
+      },
+      "prepare": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "break",
+        "phase": 0,
+        "tick": 0
+      },
+      "card": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "break",
+        "phase": 0,
+        "tick": 0
+      },
+      "report": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 3,
+        "tick": 1
+      },
+      "story": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 3,
+        "tick": 1
+      },
+      "factors": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 3,
+        "tick": 1
+      },
+      "siege": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 2,
+        "tick": 1
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "intel": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "intel",
+        "phase": -1,
+        "tick": 0
+      },
+      "plan": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "plan",
+        "phase": -1,
+        "tick": 0
+      },
+      "formation": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "form",
+        "phase": -1,
+        "tick": 0
+      },
+      "prepare": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "break",
+        "phase": 0,
+        "tick": 0
+      },
+      "card": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "break",
+        "phase": 0,
+        "tick": 0
+      },
+      "report": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 3,
+        "tick": 1
+      },
+      "story": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 3,
+        "tick": 1
+      },
+      "factors": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 3,
+        "tick": 1
+      },
+      "siege": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 2,
+        "tick": 1
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "intel": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "intel",
+        "phase": -1,
+        "tick": 0
+      },
+      "plan": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "plan",
+        "phase": -1,
+        "tick": 0
+      },
+      "formation": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "form",
+        "phase": -1,
+        "tick": 0
+      },
+      "prepare": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "break",
+        "phase": 0,
+        "tick": 0
+      },
+      "card": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "break",
+        "phase": 0,
+        "tick": 0
+      },
+      "report": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 3,
+        "tick": 1
+      },
+      "story": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 3,
+        "tick": 1
+      },
+      "factors": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 3,
+        "tick": 1
+      },
+      "siege": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 2,
+        "tick": 1
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "intel": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "intel",
+        "phase": -1,
+        "tick": 0
+      },
+      "plan": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "plan",
+        "phase": -1,
+        "tick": 0
+      },
+      "formation": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "form",
+        "phase": -1,
+        "tick": 0
+      },
+      "prepare": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "break",
+        "phase": 0,
+        "tick": 0
+      },
+      "card": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "break",
+        "phase": 0,
+        "tick": 0
+      },
+      "report": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 3,
+        "tick": 1
+      },
+      "story": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 3,
+        "tick": 1
+      },
+      "factors": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 3,
+        "tick": 1
+      },
+      "siege": {
+        "fits": true,
+        "overflow": false,
+        "footer": true,
+        "minButton": 44,
+        "dir": "rtl",
+        "stage": "report",
+        "phase": 2,
+        "tick": 1
+      }
+    }
+  ],
+  "saveReload": {
+    "passes": 2,
+    "preserved": [
+      "fatigue",
+      "morale",
+      "cohesion",
+      "ammunition",
+      "supply",
+      "strain",
+      "battles",
+      "army casualties",
+      "garrison condition",
+      "leader relationships"
+    ]
+  },
+  "errors": []
+}

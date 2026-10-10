@@ -1,239 +1,139 @@
 'use strict';
-// واجهة القادة: بطاقات بدرجات هيبة، وملف كامل، ومجلس الحرب وفرصه، وصفحة التفاوض قبل التعيين.
-
-Object.assign(Explain, {
-  genWage(g) {
-    const d = Game.wageDemand(g);
-    const x = { icon: 'coins', title: `راتب ${g.name}`, value: `${Game.genSalary(g)} كل دور` };
-    x.state = g.status === 'pool' ? 'في البلاط بلا جيش: يُدفع له نصف راتبه المتفق عليه.' : 'يُدفع كل دور ما دام في خدمتك.';
-    x.now = [['المتفق عليه', g.wage != null ? g.wage : d.total], ['ما يراه حقه الآن', d.total, d.total > (g.wage || 0) * 1.15 ? 'neg' : '']];
-    x.from = [...d.parts.map(([k, v]) => [k, signed(v), v >= 0 ? '' : 'pos']), ['المطلوب', d.total, 'sum']];
-    x.note = 'الأغلى لا يعني الأفضل في كل شيء: قائد رخيص متخصص في أرض المعركة قد يفوق أسطورة في غير أرضه.';
-    return x;
-  },
-  capacity(fid) {
-    const c = Game.cmdCapacity(fid);
-    const x = { icon: 'seal', title: 'مجلس الحرب', value: `${Game.cmdCount(fid)} من ${c.slots}` };
-    x.state = 'عدد القادة الذين تستطيع دولتك إدارتهم. لا يُشترى بالمال: يتسع مع رتبة الدولة ومؤسستها العسكرية وهيبتها.';
-    x.from = [...c.parts.map(([k, v]) => [k, '+' + v, 'pos']), ['المقاعد', c.slots, 'sum']];
-    x.improve = ['إمارة (أقل من 4 مدن) 3 مقاعد، مملكة 6، إمبراطورية (10 مدن فأكثر) 8.', 'ديوان الجند في العاصمة: مقعد لكل مستوى.', 'سمعة 70 فأكثر: مقعد.', 'الحاكم لا يشغل مقعداً، والضباط لا يُحسبون.'];
-    return x;
-  },
-});
-
-// شريط صغير بدرجة الهيبة
-function prestigeChip(g) {
-  const p = Game.prestigeOf(g);
-  return h('button', { class: 'pchip ' + p.cls, onclick: (e) => { e.stopPropagation(); Help.explain(e.currentTarget, { icon: 'laurel', title: `الهيبة: ${p.name}`, value: `${Math.round(g.fame || 0)} نقطة`, state: 'تأتي من سيرته التاريخية ومن انتصاراته وفتوحه وألقابه في هذه الحملة. الأسطوري لا يعني النصر المضمون: يعني أن الرجال يعرفون اسمه.', from: PRESTIGE.map((x) => [x.name, `${x.min}+`, x === p ? 'sum' : '']) }); } }, p.name);
+// Leader presentation. All recruitment decisions and saved state belong to leader-system.js.
+function prestigeChip(g){
+ const p=Game.prestigeOf(g);
+ return h('span',{class:'pchip '+p.cls,title:'مكانة مكتسبة من الخبرة والسمعة'},p.name);
 }
-
-Object.assign(Panels, {
-  // بطاقة قائد مختصرة: الصورة والاسم واللقب والدرجة والموهبة والراتب والولاء
-  genCard(g, extra) {
-    if (!g.rec && !Game.isOfficer(g)) Game.enrichGen(g);
-    const ruler = Game.isRuler && Game.isRuler(g), heir = Game.isHeir && Game.isHeir(g);
-    const own = g.fid === Game.S.player;
-    const p = Game.prestigeOf(g);
-    const A = ARCH[g.arch || g.trait || 'none'] || ARCH.none;
-    const title = g.titles && g.titles.length ? g.titles[g.titles.length - 1].t : null;
-    return h('div', { class: 'gcard tier ' + p.cls + (ruler ? ' ruler' : ''), onclick: () => this.cmdProfile(g) },
-      h('div', { class: 'gc-row' },
-        Portrait.el(g, 54),
-        h('div', { class: 'gc-main' },
-          h('div', { class: 'gtop' }, h('b', null, ruler ? icon('crown', 'crown-i') : null, g.name), stars(g.rank), prestigeChip(g)),
-          title ? h('div', { class: 'gc-title' }, title) : null,
-          h('div', { class: 'gline' }, h('span', { class: 'arch' }, A.name), traitChip(g), ruler ? h('span', { class: 'tag' }, 'الحاكم') : null, heir ? h('span', { class: 'tag' }, icon('seal'), 'ولي العهد') : null,
-            own && !ruler && g.loy != null && Game.employed(g) ? xstat('genloy', g.loy, () => Explain.genLoyalty(g), { label: g.loy < 32 ? 'طامح' : g.loy < 45 ? 'ساخط' : 'الولاء', cls: g.loy < 32 ? 'bad' : g.loy < 45 ? 'warn' : '' }) : null,
-            own && !ruler && Game.employed(g) ? xstat('upkeep', Game.genSalary(g), () => Explain.genWage(g), { icon: 'coins', label: 'راتب' }) : null,
-            g.ask ? h('span', { class: 'tag warn' }, icon('bell'), 'يطلب') : null),
-        ),
-      ),
-      extra || null,
-    );
-  },
-
-  // الملف الكامل للقائد
-  cmdProfile(g) {
-    if (!g.rec && !Game.isOfficer(g)) Game.enrichGen(g);
-    const P = Game.S.player, own = g.fid === P;
-    const e = Game.catOf(g);
-    const A = ARCH[g.arch || 'none'] || ARCH.none;
-    const age = Game.cmdAge(g);
-    const rec = g.rec || {};
-    const url = Game.wikiUrl(e);
-    const src = g.src === 'hist' ? 'سيرة موثقة' : g.src === 'novel' ? 'من رواية لاحقة، لا ذكر له في السجلات' : Game.isOfficer(g) ? 'ضابط من عامة الجند' : 'شخصية متخيَّلة من صنع اللعبة';
-    const line = Voices.current(g);
-    const lineBox = line ? h('div', { class: 'quote' }, h('p', null, '«', h('span', { class: 'qt' }, line.text), '»'), h('span', { class: 'muted small' }, 'لماذا يقول هذا: ', line.why)) : null;
-    if (line && Voices.sampler) lineBox.appendChild(h('button', { class: 'chip', onclick: async (ev) => { const b = ev.currentTarget; b.disabled = true; const t = await Voices.rephrase(line); if (t) lineBox.querySelector('.qt').textContent = t; b.remove(); } }, 'صياغة أخرى بالذكاء الاصطناعي'));
-    const L = (k, v) => h('div', { class: 'pl' }, h('span', null, k), h('span', { class: 'v' }, rich(v)));
-    const acts = [];
-    if (own && g.ask && g.ask.k === 'raise') {
-      acts.push({ label: `وافق: راتبه ${g.ask.to}`, primary: true, onClick: () => { Game.answerAsk(g, true); UI.toast(`${g.name} راضٍ`); App.scene.refresh(); } });
-      acts.push({ label: 'ارفض الزيادة', onClick: () => { Game.answerAsk(g, false); UI.toast(`${g.name} يتذكر الرفض`); App.scene.refresh(); } });
-    }
-    if (own && Game.employed(g) && !Game.isRuler(g)) {
-      acts.push({ label: `كرّمه ${Game.honorCost(g)}`, icon: 'star', disabled: Game.f(P).gold < Game.honorCost(g), why: 'الذهب لا يكفي', onClick: () => { const er = Game.honorGeneral(P, g); UI.toast(er || `كرّمتَ ${g.name}`); App.scene.refresh(); } });
-      acts.push({ label: 'إعفاؤه من الخدمة', ghost: true, onClick: () => UI.ask({ title: `إعفاء ${g.name}؟`, icon: 'close', body: h('p', null, 'يعتزل مكرّماً ويفرغ مقعده في مجلس الحرب. لا يعود، ورفاقه يحزنون قليلاً.'), buttons: [{ label: 'أعفِه', danger: true, value: true }, { label: 'تراجع', value: false }] }).then((ok) => { if (!ok) return; const er = Game.retireGeneral(g); UI.toast(er || `${g.name} يعتزل`); if (!er) App.scene.afterAction(); }) });
-    }
-    acts.push({ label: 'إغلاق', ghost: !acts.length ? false : true });
-    UI.modal({
-      title: Game.genTitle(g), icon: 'helmet', cls: 'wide cmd-profile',
-      body: h('div', null,
-        h('div', { class: 'cp-head tier ' + Game.prestigeOf(g).cls },
-          Portrait.el(g, 112),
-          h('div', null,
-            h('div', { class: 'gtop' }, stars(g.rank), prestigeChip(g), h('span', { class: 'arch' }, A.name)),
-            h('p', { class: 'small' }, `${Game.fname(g.fid)}${age != null ? ` · العمر ${age}` : ' · العمر غير معروف'}${g.status === 'army' ? ' · في الميدان' : g.status === 'gov' ? ' · حاكم مدينة' : g.status === 'pool' ? ' · في البلاط' : g.status === 'captive' ? ' · أسير' : g.status === 'dead' ? ' · راحل' : ''}`),
-            h('p', { class: 'small muted' }, src, url ? ' · ' : null, url ? h('a', { href: url, target: '_blank', rel: 'noopener' }, 'ويكيبيديا') : null),
-          ),
-        ),
-        e && e.bio ? h('p', { class: 'bio' }, h('b', null, 'من التاريخ: '), e.bio) : g.src !== 'hist' ? h('p', { class: 'bio muted small' }, 'لا سيرة تاريخية: ما يلي من هذه الحملة وحدها.') : null,
-        lineBox,
-        h('div', { class: 'cp-grid' },
-          h('div', { class: 'pop-lines' },
-            L('يتقن', A.strong), L('يضعف في', A.weak), L('الأسلوب', STYLES[g.style] || '-'), L('العقيدة', DOCTRINES[g.doctrine] || '-'),
-            g.terrain && g.terrain.length ? L('أرضه المفضلة', g.terrain.map((t) => TERRAIN_AR[t]).join('، ')) : null,
-            g.units && g.units.length ? L('يحسن قيادة', g.units.map((u) => UNITCLS_AR[u]).join('، ')) : null,
-            L('القيادة', `${g.lead || 1} من 5`), L('الطموح', ['قانع', 'عادي', 'طموح', 'طموح جداً'][g.ambition || 0]),
-            g.flaw ? L('عيبه', `${FLAWS[g.flaw].name}: ${FLAWS[g.flaw].desc}`) : null,
-          ),
-          h('div', { class: 'pop-lines' },
-            L('المعارك', `${rec.battles || 0} (نصر ${rec.wins || 0}، هزيمة ${rec.losses || 0})`),
-            L('المدن التي فتحها', (rec.cities || []).length ? rec.cities.slice(-4).join('، ') : 'لا شيء بعد'),
-            L('الجراح', rec.wounds || 0), L('وقع في الأسر', rec.captured || 0),
-            (rec.beaten || []).length ? L('هزم', rec.beaten.slice(-3).join('، ')) : null,
-            (rec.famous || []).length ? L('معارك مشهورة', [...new Set(rec.famous)].slice(-3).join('، ')) : null,
-            (g.titles || []).length ? L('ألقابه', g.titles.map((t) => t.t).join('، ')) : null,
-            (g.scars || []).length ? L('ندوبه', g.scars.slice(-2).join('، ')) : null,
-            Game.friendsOf(g).length ? L('رفاق السلاح', Game.friendsOf(g).map((x) => x.name).join('، ')) : null,
-            g.rival && Game.gen(g.rival) ? L('خصمه', Game.gen(g.rival).name) : null,
-          ),
-        ),
-        (g.mem || []).length ? h('details', { class: 'mem' }, h('summary', null, `ذاكرته (${g.mem.length})`), h('ul', { class: 'steps small' }, g.mem.slice().reverse().slice(0, 8).map((m) => h('li', null, `${WX.when(m.turn)}: ${m.text}`, m.loy ? h('span', { class: m.loy > 0 ? 'good' : 'bad' }, ` (الولاء ${signed(m.loy)})`) : null)))) : null,
-      ),
-      buttons: acts, dismissable: true,
-    });
-  },
-
-  // مجلس الحرب: المقاعد والنفوذ والفرص المعلقة
-  councilBox(scene) {
-    const P = scene.P;
-    const cap = Game.cmdCapacity(P), n = Game.cmdCount(P), d = Game.draftOf(P);
-    const ops = Game.oppsOf(P);
-    const box = h('div', { class: 'box council' },
-      h('div', { class: 'sec-h' }, icon('seal'), 'مجلس الحرب',
-        xstat('genloy', `${n} من ${cap.slots}`, () => Explain.capacity(P), { icon: 'helmet', label: 'المقاعد', cls: n >= cap.slots ? 'warn' : '' }),
-        xstat('genloy', d, () => ({ icon: 'seal', title: 'نفوذ مجلس الحرب', value: `${d} من ${DRAFT_MAX}`, state: 'مورد محدود لاستبعاد مرشح والحصول على غيره. لا يُشترى.', improve: ['فتح مدينة مهمة (عاصمة أو كبيرة).', 'نصر كبير.', 'ارتفاع رتبة الدولة.', 'ختام فصل من الحملة.'] }), { icon: 'scroll', label: 'النفوذ' })),
-    );
-    if (ops.length) {
-      for (const op of ops) box.appendChild(h('button', { class: 'opp-row', onclick: () => this.oppDialog(scene, op) }, icon('helmet'), h('b', null, `فرصة استقطاب: ${OPP_WHY[op.why] || op.why}`), h('span', { class: 'muted small' }, op.cands.filter(Boolean).map((c) => c.n).join(' أو '))));
-    } else box.appendChild(h('p', { class: 'hint' }, 'لا فرص الآن. تأتي الفرص من فتح مدينة مهمة، أو نصر كبير، أو ارتفاع رتبة الدولة، أو بناء ديوان الجند، أو فقد قائد.'));
-    return box;
-  },
-
-  // الفرصة: مرشحان، تختار أحدهما
-  oppDialog(scene, op) {
-    const P = scene.P;
-    let close;
-    const card = (c, i) => {
-      if (!c) return h('div', { class: 'cand gone' }, h('p', { class: 'muted' }, 'رحل هذا المرشح.'));
-      const v = Game.candView(c, P);
-      const e = c.cat ? Game.catFind(c.n) : null;
-      const A = ARCH[v.arch] || ARCH.none;
-      return h('div', { class: 'cand tier ' + Game.prestigeOf(v).cls },
-        Portrait.el(v, 96),
-        h('b', { class: 'cn' }, v.name), h('div', { class: 'gtop' }, stars(v.rank), prestigeChip(v)),
-        h('span', { class: 'arch' }, A.name), traitChip(v),
-        h('p', { class: 'small' }, e ? e.bio : 'شخصية متخيَّلة من صنع اللعبة: لا سيرة تاريخية لها.'),
-        h('p', { class: 'small muted' }, `يطلب ${v.demand.total} كل دور${Game.cmdAge(v) != null ? ` · العمر ${Game.cmdAge(v)}` : ''}`),
-        h('div', { class: 'row-btns' },
-          actBtn([icon('talk'), 'فاوضه'], { cls: 'btn primary', err: Game.cmdRoom(P) <= 0 ? `مجلس الحرب ممتلئ (${Game.cmdCount(P)} من ${Game.cmdCapacity(P).slots}): أعفِ قائداً أو وسّع المجلس` : null, onClick: () => { close(); this.negotiateDialog(scene, op, i); } }),
-          actBtn([icon('retreat'), 'استبدله'], { cls: 'btn', err: Game.draftOf(P) <= 0 ? 'لا نفوذ في مجلس الحرب لاستبدال مرشح' : null, onClick: () => { const er = Game.replaceCand(P, op.id, i); if (er) { UI.toast(er); return; } close(); this.oppDialog(scene, op); } }),
-        ));
-    };
-    close = UI.modal({
-      title: `فرصة استقطاب: ${OPP_WHY[op.why] || op.why}`, icon: 'helmet', cls: 'wide',
-      body: h('div', null, h('p', { class: 'hint' }, `اختر أحدهما فقط. ${Game.draftOf(P) ? `لديك ${Game.draftOf(P)} من نفوذ مجلس الحرب لاستبدال مرشح.` : ''} الفرصة تبقى حتى تستعملها.`), h('div', { class: 'cands' }, op.cands.map(card))),
-      buttons: [{ label: 'لاحقاً', ghost: true }], dismissable: true,
-    });
-  },
-
-  // التفاوض قبل التعيين: عرض براتب، ورد فعل حي، ووعد اختياري
-  negotiateDialog(scene, op, i) {
-    const P = scene.P;
-    const c = op.cands[i];
-    if (!c) return;
-    const v = Game.candView(c, P);
-    const dem = v.demand.total;
-    let wage = dem, promise = false;
-    const val = h('b', { class: 'nv' }), react = h('span', { class: 'react' });
-    const upd = () => {
-      val.textContent = wage;
-      const r = Game.offerReaction(c, P, wage, promise);
-      react.textContent = r.name; react.className = 'react ' + r.k;
-    };
-    const range = h('input', { type: 'range', min: Math.max(2, Math.round(dem * 0.6)), max: Math.round(dem * 1.3) + 1, step: 1, value: dem });
-    range.addEventListener('input', () => { wage = +range.value; upd(); });
-    const canPromise = v.ambition >= 2 || v.fame >= 45;
-    const prom = canPromise ? h('label', { class: 'check-row' }, h('input', { type: 'checkbox', onchange: (e) => { promise = e.target.checked; upd(); } }), ' عِده بقيادة جيش كبير خلال أربعة أدوار (يقبل أجراً أقل، وإن أخلفت الوعد غضب)') : null;
-    upd();
-    const close = UI.modal({
-      title: `التفاوض مع ${v.name}`, icon: 'talk', cls: 'wide',
-      body: h('div', { class: 'nego' },
-        h('div', { class: 'cp-head tier ' + Game.prestigeOf(v).cls }, Portrait.el(v, 96), h('div', null, h('div', { class: 'gtop' }, stars(v.rank), prestigeChip(v), h('span', { class: 'arch' }, (ARCH[v.arch] || ARCH.none).name)), traitChip(v), h('p', { class: 'small' }, (ARCH[v.arch] || ARCH.none).strong))),
-        h('div', { class: 'pop-lines' }, ...v.demand.parts.map(([k, x]) => h('div', { class: 'pl' }, h('span', null, rich(k)), h('span', { class: 'v' }, signed(x)))), h('div', { class: 'pl sum' }, h('span', null, 'راتبه المطلوب كل دور'), h('span', { class: 'v' }, String(dem)))),
-        h('div', { class: 'nego-row' }, h('span', null, 'عرضك كل دور: '), val, h('span', null, ' · رأيه: '), react),
-        range, prom,
-        h('p', { class: 'hint' }, 'كلما اقترب العرض من توقعاته تحسّن قبوله. الطموح يريد أكثر، ومن هو من أهل دولتك يقبل أقل. إن رفض مرتين رحل. الراتب السخي يرفع ولاءه من البداية.'),
-      ),
-      buttons: [
-        { label: 'قدّم العرض', primary: true, keep: true, onClick: (cl) => {
-          const r = Game.proposeContract(P, op.id, i, wage, promise);
-          if (r.err) { UI.toast(r.err); return; }
-          if (r.ok) { cl(); UI.toast(`${r.g.name} يدخل خدمتك براتب ${r.g.wage}`); if (Game.track) Game.track('hire'); scene.afterAction(); this.cmdProfile(r.g); return; }
-          UI.toast(r.msg); if (r.gone) { cl(); scene.afterAction(); }
-        } },
-        { label: 'رجوع', onClick: () => this.oppDialog(scene, op) },
-      ],
-    });
-    void close;
-  },
-
-  // اختيار قائد للجيش الجديد: من في البلاط بلا كلفة إضافية، أو ترقية ضابط
-  generalPicker(fid, opts = {}) {
-    return new Promise((resolve) => {
-      const pool = Game.poolOf(fid).filter((g) => !Game.isOfficer(g)).sort((a, b) => b.rank - a.rank);
-      const list = h('div', { class: 'glist' });
-      let close;
-      for (const g of pool) list.appendChild(h('div', { class: 'gpick-wrap' }, this.genCard(g, h('button', { class: 'btn primary sm', onclick: (e) => { e.stopPropagation(); close(); resolve(g.id); } }, icon('helmet'), 'عيّنه'))));
-      if (!pool.length) list.appendChild(h('p', { class: 'muted' }, 'لا قادة في البلاط. الفرص في مجلس الحرب تأتي بقادة جدد، ويمكنك ترقية ضابط.'));
-      close = UI.modal({
-        title: opts.title || 'اختر قائداً', icon: 'helmet', cls: 'wide',
-        body: h('div', null, h('p', { class: 'hint' }, 'قادة البلاط يتقاضون نصف رواتبهم وهم ينتظرون؛ تعيينهم لا يكلّف شيئاً إضافياً غير راتبهم الكامل. الضابط رجل بلا موهبة، أوامره أقل دقة، ولا يشغل مقعداً في المجلس.'), list),
-        buttons: [
-          opts.allowOfficer !== false ? { label: 'ترقية ضابط', sub: '40 ذهباً', disabled: Game.f(fid).gold < 40, why: 'الذهب لا يكفي (40)', onClick: () => resolve('officer') } : null,
-          { label: 'إلغاء', onClick: () => resolve(null) },
-        ],
-      });
-    });
-  },
+function leaderModal(opts){
+ const prior=document.activeElement;
+ let close;
+ const key=e=>{
+  const layers=document.querySelectorAll('.modal-layer');if(layers[layers.length-1]!==layer)return;
+  if(e.key==='Escape'){e.preventDefault();close();}
+  if(e.key==='Tab'){
+   const all=[...layer.querySelectorAll('button:not([disabled]),input:not([disabled]),summary,[tabindex="0"]')].filter(x=>x.getClientRects().length);
+   if(!all.length)return;
+   if(e.shiftKey&&document.activeElement===all[0]){e.preventDefault();all.at(-1).focus();}
+   else if(!e.shiftKey&&document.activeElement===all.at(-1)){e.preventDefault();all[0].focus();}
+  }
+ };
+ close=UI.modal({...opts,cls:'leader-modal '+(opts.cls||''),dismissable:true,onClose:()=>{document.removeEventListener('keydown',key);if(prior?.isConnected)prior.focus();opts.onClose?.();}});
+ const layer=document.querySelector('.modal-layer:last-child'),box=layer.querySelector('.modal');
+ box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-label',opts.title);box.setAttribute('dir','rtl');
+ document.addEventListener('keydown',key);layer.querySelector('button,input,summary')?.focus({preventScroll:true});return close;
+}
+function leaderFact(label,value,cls=''){return h('div',{class:'leader-fact '+cls},h('span',null,label),h('b',null,rich(value)));}
+function leaderSkills(g){
+ const p=Game.leaderIdentity(g);
+ return h('div',{class:'leader-skills'},Object.entries(LEADER_SKILLS).map(([k,name])=>h('div',{class:'leader-skill'},h('span',null,name),h('span',{class:'skill-track','aria-hidden':'true'},h('i',{style:`width:${p.skills[k]*20}%`})),h('bdi',null,`${p.skills[k]}/5`))));
+}
+function leaderPerks(g){return h('div',{class:'leader-perks'},Game.leaderPerks(g).map(p=>h('div',null,h('b',null,p.name),h('p',null,p.text))));}
+function leaderStatus(g){return {army:'في الميدان',gov:'والي مدينة',pool:'في المجلس',captive:'في الأسر',dead:'راحل',retired:'معتزل',exiled:'منفي',cand:'يطلب الخدمة'}[g.status]||'في الخدمة';}
+function leaderHeader(g,size=112){
+ const p=Game.leaderIdentity(g);
+ return h('div',{class:'leader-head '+Game.prestigeOf(g).cls},Portrait.el(g,size),h('div',{class:'leader-heading'},h('div',{class:'leader-eyebrow'},prestigeChip(g),h('span',null,p.identity)),h('h3',null,g.name),h('p',{class:'leader-sub'},p.name,' · ',leaderStatus(g)),h('span',{class:'leader-stars',title:'خبرة تنفيذ الأوامر وقيادة الرجال'},stars(g.rank))));
+}
+Object.assign(Explain,{
+ genWage(g){const d=Game.wageDemand(g);return {icon:'coins',title:`عطاء ${g.name}`,value:`${Game.genSalary(g)} كل دور`,state:g.status==='pool'?'يتقاضى نصف العطاء أثناء انتظار التكليف.':'يتقاضى عطاءه الكامل في الخدمة.',now:[['المتفق عليه',g.wage??d.total],['توقعه الحالي',d.total]],improve:d.reasons,note:'السمعة والخبرة والشخصية وحال الدولة تؤثر في توقعه. العطاء السخي يساعد الولاء؛ لا يضمنه.'};},
+ capacity(fid){const c=Game.cmdCapacity(fid);return {icon:'seal',title:'مجلس القيادة',value:`${Game.cmdCount(fid)} من ${c.slots}`,state:'مقاعد تتسع مع الدولة وديوان الجند. لا توجد وسيلة لشراء وفود الاستقطاب.',from:c.parts.map(([k,v])=>[k,'+'+v]),improve:['أربعة أدوار على الأقل بين الوفود؛ الفرصة تبقى ثمانية أدوار.','ثلاثة من نفوذ الاستبدال كحد أقصى؛ استبدال واحد فقط في كل وفد.','فتح مدينة مهمة أو تقدم الدولة يكسب نفوذاً؛ الفتح المتكرر للمدينة نفسها لا يعيده.'],note:'الحاكم والضابط المكلّف لا يشغلان مقعداً. لكل وفد مرشحان، وتختار واحداً.'};},
 });
-
-// شاشة المملكة: مجلس الحرب أعلى قائمة القادة
-(() => {
-  const kingdomBody = Panels.kingdomBody;
-  Panels.kingdomBody = function (scene, body) {
-    kingdomBody.call(this, scene, body);
-    if ((scene.kingTab || 'goals') === 'gens') {
-      const seg = body.querySelector('.seg');
-      const box = this.councilBox(scene);
-      if (seg && seg.nextSibling) body.insertBefore(box, seg.nextSibling); else body.appendChild(box);
-    }
+Object.assign(Panels,{
+ genCard(g,extra){
+  Game.ensureLeader(g);const p=Game.leaderIdentity(g);
+  return h('div',{class:'gcard leader-card '+Game.prestigeOf(g).cls,tabindex:0,role:'button','aria-label':'ملف '+g.name,onclick:()=>this.cmdProfile(g),onkeydown:e=>{if(e.target===e.currentTarget&&['Enter',' '].includes(e.key)){e.preventDefault();this.cmdProfile(g);}}},
+   h('div',{class:'leader-card-main'},Portrait.el(g,70),h('div',{class:'leader-card-copy'},h('div',{class:'leader-eyebrow'},prestigeChip(g),h('span',null,p.identity)),h('h3',null,g.name),h('p',null,p.name,' · ',leaderStatus(g)),h('div',{class:'leader-card-stats'},h('span',null,stars(g.rank)),Game.employed(g)&&!Game.isRuler(g)?h('span',null,`الولاء ${Math.round(g.loy??50)} · العطاء ${Game.genSalary(g)}`):null))),
+   g.ask?h('div',{class:'leader-request-flag'},icon('bell'),Game.leaderRequestText(g.ask)):null,extra||null);
+ },
+ cmdProfile(g){
+  Game.enrichGen(g);Game.ensureLeader(g);const own=g.fid===Game.S.player,p=Game.leaderIdentity(g),ability=Game.leaderAbility(g),voice=Voices.current(g),rec=g.rec||{},bond=g.bond;
+  const actions=h('div',{class:'leader-actions'});let close;
+  const refresh=()=>{close();App.scene?.afterAction?.();this.cmdProfile(g);};
+  const act=(label,fn,cls='')=>actions.appendChild(h('button',{class:'btn '+cls,onclick:()=>{const e=fn();if(e?.pending)return;if(e)UI.toast(e);else refresh();}},label));
+  if(own&&Game.employed(g)&&!Game.isRuler(g)){
+   if(g.ask?.k==='raise')act(`وافق على عطاء ${g.ask.to}`,()=>Game.answerAsk(g,true),'primary');
+   if(g.ask)act('رفض الطلب',()=>Game.answerAsk(g,false));
+   act(`تكريم · ${Game.honorCost(g)} ذهب`,()=>Game.honorGeneral(g.fid,g));
+   if(!Game.isHeir(g))act('إعفاء من الخدمة',()=>{
+    UI.ask({title:`إعفاء ${g.name}؟`,body:h('p',null,'يغادر المجلس ولا يعود إلى وفود الاستقطاب. يتأثر رفاقه بفقد خدمته، ولا تحصل على فرصة بديلة.'),buttons:[{label:'إعفاء القائد',danger:true,value:true},{label:'تراجع',value:false}]}).then(ok=>{if(!ok)return;const e=Game.retireGeneral(g);if(e)UI.toast(e);else refresh();});return {pending:true};
+   });
+  }
+  const ties=Object.entries(g.relationships).map(([id,r])=>({g:Game.gen(id),kind:r.kind})).filter(x=>x.g);
+  for(const f of Game.friendsOf(g))if(!ties.some(x=>x.g.id===f.id))ties.push({g:f,kind:'friend'});
+  close=leaderModal({title:'سجل القائد',cls:'leader-profile',body:h('div',null,
+   leaderHeader(g,136),h('p',{class:'leader-bio'},Game.leaderBio(g)),
+   h('div',{class:'leader-meta'},h('span',null,Game.fname(g.fid)),h('span',null,Game.cmdAge(g)!=null?`العمر ${Game.cmdAge(g)}`:'العمر غير محدد'),h('span',null,Game.catOf(g)?'من رجال عصره':'قائد محلي')),
+   voice?h('blockquote',{class:'leader-quote'},h('p',null,'«',voice.text,'»'),h('footer',null,(g.status==='dead'?'من ذاكرته: ':'')+voice.why)):null,
+   g.ask&&own?h('div',{class:'leader-request'},h('b',null,'طلب معلق'),h('p',null,Game.leaderRequestText(g.ask)),h('small',null,`حتى الدور ${(g.ask.until??g.ask.turn+4)+1}. تجاهله يترك ضغينة.`)):null,
+   h('div',{class:'leader-columns'},h('section',null,h('h4',null,'موهبته وحدوده'),leaderFact('يتقن',ability.strong),leaderFact('يضعف في',ability.weak,'weak'),g.flaw?leaderFact('طبعه الصعب',FLAWS[g.flaw]?.desc||FLAWS[g.flaw]?.name):null,leaderSkills(g),leaderPerks(g)),
+    h('section',null,h('h4',null,'العهد مع الحاكم'),h('div',{class:'leader-bonds'},leaderFact('الثقة',bond.trust),leaderFact('الاحترام',bond.respect),leaderFact('الطموح',bond.ambition),leaderFact('الرأي في الحاكم',bond.opinion),leaderFact('الامتنان',bond.gratitude),leaderFact('الضغائن',bond.resentment)),leaderFact('الولاء',Math.round(g.loy??50)),Game.employed(g)&&!Game.isRuler(g)?leaderFact('العطاء المتفق عليه',`${g.wage??Game.wageDemand(g).total} كل دور`):null,
+     h('p',{class:'leader-note'},g.status==='pool'?'يدفع له نصف العطاء حتى يتولى مهمة.':'العلاقة تتغير مع المسؤولية والوفاء والتقدير والخسائر.'),ties.length?h('div',{class:'leader-ties'},ties.map(x=>h('button',{class:'chip',onclick:()=>{close();this.cmdProfile(x.g);}},`${x.kind==='rival'?'منافس':'رفيق'}: ${x.g.name} · ${leaderStatus(x.g)}`))):h('p',{class:'leader-note'},'تنشأ رفقة السلاح مع الخدمة المشتركة.'))),
+   h('section',{class:'leader-record'},h('h4',null,'ما صنعته هذه الحملة'),h('div',{class:'leader-bonds'},leaderFact('المعارك',`${rec.battles||0} · نصر ${rec.wins||0} · هزيمة ${rec.losses||0}`),leaderFact('الخبرة',Math.floor(g.xp||0)),leaderFact('الجراح',rec.wounds||0),leaderFact('الأسر',rec.captured||0)),h('p',{class:'leader-note'},ability.progress),h('p',{class:'leader-note'},'القيادة العالية تسرّع الإتقان؛ التموين أو الاستطلاع العالي يمنح حركة إضافية عند إتقانه. الإداري يقدّر الولاية، والثبات يخفف أثر الهزيمة، والنفوذ يزيد أثر المنافسة في المجلس.'),(g.titles||[]).length?h('p',null,'ألقابه: '+g.titles.map(t=>t.t).join('، ')):null),
+   (g.dialogue||[]).length?h('details',{class:'leader-memories'},h('summary',null,'ذاكرة العهد'),h('ol',null,g.dialogue.slice(-8).reverse().map(d=>h('li',null,h('b',null,`الدور ${d.turn+1} · ${d.why}`),h('p',null,d.text))))):null,
+   actions),buttons:[{label:'إغلاق السجل',ghost:true}]});
+ },
+ councilBox(scene){
+  const fid=scene.P,ops=Game.oppsOf(fid),capacity=Game.cmdCapacity(fid);
+  return h('section',{class:'leader-council'},h('div',{class:'leader-council-title'},h('div',null,h('span',{class:'leader-eyebrow'},'ديوان الرجال'),h('h3',null,'مجلس القيادة')),h('b',null,`${Game.cmdCount(fid)} / ${capacity.slots}`)),
+   h('p',null,'وفدان معلّقان كحد أقصى. كل وفد يعرض رجلين؛ اختيار أحدهما ينهي الفرصة. يأتي الاستقطاب بإنجازات الحملة.'),
+   h('div',{class:'leader-council-metrics'},h('span',null,`نفوذ الاستبدال ${Game.draftOf(fid)} / 3`),h('button',{class:'chip',onclick:e=>Help.explain(e.currentTarget,Explain.capacity(fid))},'المقاعد والقواعد'),h('button',{class:'chip',onclick:()=>this.leaderMemorials(fid)},'سجل الغائبين')),
+   ops.length?h('div',{class:'leader-delegations'},ops.map(op=>h('button',{class:'btn leader-delegation',onclick:()=>this.oppDialog(scene,op)},h('b',null,OPP_WHY[op.why]||op.why),h('span',null,`باقي ${Math.max(0,op.expires-Game.S.turn)} أدوار · ${op.cands.filter(Boolean).map(c=>c.n).join(' / ')}`)))):h('p',{class:'leader-note'},'لا وفد ينتظر الآن. فتح مدينة مهمة أو تقدم الدولة أو نصر بارز قد يجذب رجالاً بعد انقضاء مهلة الاستقطاب.'));
+ },
+ leaderMemorials(fid){
+  const list=(Game.S.leaders?.memorials||[]).filter(m=>m.fid===fid).slice().reverse();let close;
+  close=leaderModal({title:'سجل الغائبين',cls:'leader-profile',body:h('div',{class:'leader-memorials'},h('p',{class:'leader-bio'},'تبقى أعمال الرجال بعد غيابهم. يذكر المجلس من فقده في هذه الحملة.'),list.length?list.map(m=>h('button',{class:'leader-memorial',onclick:()=>{const g=Game.gen(m.id);if(g){close();this.cmdProfile(g);}}},h('b',null,m.name),h('span',null,`${{killed:'رحل',retired:'اعتزل',exiled:'نُفي',betrayed:'غادر إلى راية أخرى'}[m.fate]||'غاب'} · الدور ${m.turn+1}`),h('small',null,`${m.title} · ${m.wins} انتصارات`))):h('p',null,'لم يسجل المجلس فقداً بعد.')),buttons:[{label:'إغلاق'}]});
+ },
+ oppDialog(scene,op){
+  if(!Game.oppsOf(scene.P).includes(op)){UI.toast('انتهت الفرصة');return;}
+  let close;
+  const card=(c,i)=>{
+   if(!c)return h('article',{class:'leader-candidate departed'},h('h3',null,'غادر المرشح'),h('p',null,'يمكنك التفاوض مع المرشح الباقي.'));
+   const g=Game.candView(c,scene.P),p=Game.leaderIdentity(g),a=Game.leaderAbility(g),room=Game.cmdRoom(scene.P)>0;
+   return h('article',{class:'leader-candidate '+Game.prestigeOf(g).cls,'data-candidate':i},
+    leaderHeader(g,144),h('p',{class:'leader-bio'},Game.leaderBio(g)),
+    h('p',{class:'leader-context'},Game.catOf(g)?`قادماً إلى مجلس ${Game.fname(scene.P)} في عام ${Game.year()}؛ ${p.need}.`:`من رجال ${Game.node(g.home)?.name||'الإقليم'}؛ خبرة محلية ومكانة ناشئة.`),
+    leaderSkills(g),leaderFact('نقطة قوة',a.strong),leaderFact('نقطة ضعف',a.weak,'weak'),leaderPerks(g),
+    h('div',{class:'leader-candidate-bottom'},h('div',{class:'leader-offer-facts'},leaderFact('يتوقع كل دور',`${g.demand.total} ذهب`),leaderFact('الثقة الأولية',p.trust>=60?'راسخة نسبياً':p.trust<45?'حذرة جداً':'حذرة'),leaderFact('الطموح',p.ambition>=70?'مرتفع':p.ambition<40?'معتدل':'حاضر')),
+     h('button',{class:'btn primary leader-negotiate',disabled:!room,onclick:()=>{close();this.negotiateDialog(scene,op,i);}},room?'التفاوض مع '+g.name:'المجلس ممتلئ'),
+     h('button',{class:'btn ghost leader-reroll',disabled:Game.draftOf(scene.P)<1||op.rerolls>=1,onclick:()=>{const e=Game.replaceCand(scene.P,op.id,i);if(e)UI.toast(e);else{close();this.oppDialog(scene,op);}}},op.rerolls?'استُخدم استبدال الوفد':'استبدال · نفوذ واحد')));
   };
-  const focusAlert = CampaignScene.prototype.focusAlert;
-  CampaignScene.prototype.focusAlert = function (a) {
-    if (a.win === 'opps') { this.openKingdom('gens'); const op = Game.oppsOf(this.P)[0]; if (op) Panels.oppDialog(this, op); return; }
-    if (a.win && a.win.startsWith('gen:')) { const g = Game.gen(a.win.slice(4)); if (g) Panels.cmdProfile(g); return; }
-    return focusAlert.call(this, a);
-  };
+  close=leaderModal({title:'وفد إلى مجلس القيادة',cls:'leader-recruitment',body:h('div',null,
+   h('div',{class:'leader-intro'},h('span',{class:'leader-eyebrow'},OPP_WHY[op.why]||op.why),h('h3',null,'رجلان. عهد واحد.'),h('p',null,`اختر من يناسب حملتك. ينصرف الآخر، ولك استبدال مرشح واحد في هذا الوفد. ينتهي الوفد بعد ${Math.max(0,op.expires-Game.S.turn)} أدوار.`)),
+   Game.cmdRoom(scene.P)<=0?h('p',{class:'leader-request'},'مجلسك ممتلئ. وسّع قدرته أو أعفِ قائداً قبل تقديم عرض.'):null,
+   h('nav',{class:'leader-compare-nav','aria-label':'مقارنة المرشحين'},op.cands.map((c,i)=>c?h('button',{class:'chip',onclick:e=>{const body=e.currentTarget.closest('.modal-body'),target=body.querySelector(`[data-candidate="${i}"]`),nav=body.querySelector('.leader-compare-nav');body.scrollTop+=target.getBoundingClientRect().top-body.getBoundingClientRect().top-nav.offsetHeight-12;}},h('b',null,c.n),h('small',null,`${Game.candView(c,scene.P).demand.total} ذهب / دور`)):null)),
+   h('div',{class:'leader-candidates'},op.cands.map(card))),buttons:[{label:'العودة إلى المجلس',ghost:true}]});
+ },
+ negotiateDialog(scene,op,i){
+  const c=op.cands[i];if(!c)return;const g=Game.candView(c,scene.P),dem=g.demand.total;
+  let wage=dem,promise=false;
+  const value=h('output',{class:'leader-wage','for':'leader-wage'}),reaction=h('p',{class:'leader-reaction','aria-live':'polite'}),message=h('p',{class:'leader-neg-message','aria-live':'polite'}),attempts=h('p',{class:'leader-note'});
+  const update=()=>{value.textContent=`${wage} ذهب / دور`;const r=Game.offerReaction(c,scene.P,wage,promise);reaction.textContent=r.name;reaction.dataset.reaction=r.k;attempts.textContent=`باقي ${2-(op.tries[i]||0)} عروض. المقدم عند القبول ${wage} ذهب؛ في انتظار التكليف يدفع نصف العطاء.`;};
+  const slider=h('input',{id:'leader-wage',type:'range',min:Math.max(1,Math.floor(dem*.55)),max:Math.floor(dem*1.5),step:1,value:dem,'aria-label':'عرض العطاء لكل دور',oninput:e=>{wage=+e.target.value;update();}});
+  update();
+  leaderModal({title:'التفاوض على العهد',cls:'leader-negotiation',body:h('div',null,leaderHeader(g,96),
+   leaderFact('العطاء المتوقع',`${dem} ذهب كل دور`),
+   h('div',{class:'leader-salary'},h('label',{'for':'leader-wage'},'عرضك للقائد'),value,slider,reaction,message),
+   Game.leaderIdentity(g).ambition>=60?h('label',{class:'leader-promise'},h('input',{type:'checkbox',onchange:e=>{promise=e.target.checked;update();}}),h('span',null,'عهد بقيادة جيش من خمس وحدات خلال أربعة أدوار. يعزز القبول، وإخلافه يضر الثقة.')):null,
+   attempts,h('blockquote',{class:'leader-quote'},h('p',null,`«${Game.leaderIdentity(g).need}؛ ثم نتفق على العطاء».`)),h('p',{class:'leader-note'},'يقدّر عرضه بناءً على '+g.demand.reasons.join('، ')+'.'),h('p',{class:'leader-note'},'القبول تقدير لا ضمان. العرض المتدني جداً يدفعه إلى الرحيل فوراً. الراتب العالي لا يشتري وفاءً مطلقاً.')),
+   buttons:[{label:'قدّم العرض',primary:true,keep:true,onClick:cl=>{
+    const r=Game.proposeContract(scene.P,op.id,i,wage,promise);
+    if(r.err){message.textContent=r.err;message.scrollIntoView({block:'nearest'});return;}
+    if(r.ok){cl();scene.afterAction();this.cmdProfile(r.g);return;}
+    message.textContent=r.msg;update();if(!r.gone)message.scrollIntoView({block:'nearest'});
+    if(r.gone){cl();scene.afterAction();if(Game.oppsOf(scene.P).includes(op))this.oppDialog(scene,op);UI.toast(r.msg,4500);}
+   }},{label:'العودة للوفد',onClick:()=>this.oppDialog(scene,op)}]});
+ },
+ generalPicker(fid,opts={}){
+  return new Promise(resolve=>{
+   const pool=Game.poolOf(fid).filter(g=>!Game.isOfficer(g)),list=h('div',{class:'glist'});let close,selected=false;
+   const done=id=>{selected=true;close();resolve(id);};
+   for(const g of pool)list.appendChild(this.genCard(g,h('button',{class:'btn primary',onclick:e=>{e.stopPropagation();done(g.id);}},'عهد القيادة')));
+   close=leaderModal({title:opts.title||'اختر قائداً',cls:'leader-profile',body:h('div',null,h('p',{class:'leader-note'},'قادة المجلس ينتظرون تكليفك. الضابط المكلّف بديل محدود بلا موهبة، لا يكتسب مراتب القادة ولا يشغل مقعداً.'),list),onClose:()=>{if(!selected)resolve(null);},buttons:[opts.allowOfficer!==false?{label:'تكليف ضابط · 40 ذهب',disabled:Game.f(fid).gold<40,why:'الذهب لا يكفي',keep:true,onClick:()=>done('officer')}:null,{label:'إلغاء'}]});
+  });
+ },
+});
+(()=>{
+ const kingdomBody=Panels.kingdomBody;
+ Panels.kingdomBody=function(scene,body){kingdomBody.call(this,scene,body);if((scene.kingTab||'goals')==='gens'){const seg=body.querySelector('.seg'),box=this.councilBox(scene);if(seg?.nextSibling)body.insertBefore(box,seg.nextSibling);else body.appendChild(box);}};
+ const focus=CampaignScene.prototype.focusAlert;
+ CampaignScene.prototype.focusAlert=function(a){if(a.win==='opps'){this.openKingdom('gens');const op=Game.oppsOf(this.P)[0];if(op)Panels.oppDialog(this,op);return;}if(a.win?.startsWith('gen:')){const g=Game.gen(a.win.slice(4));if(g)Panels.cmdProfile(g);return;}return focus.call(this,a);};
 })();

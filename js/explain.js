@@ -209,7 +209,7 @@ const Explain = {
   // الأرض عند نقطة من الخريطة: اسمها وأثرها في الحركة والمعركة، والطريق القريب
   terrainAt(w) {
     const sc = Game.sc;
-    if ((sc.seas || []).some((poly) => pip(poly, w.x, w.y))) return { icon: 'wave', title: 'بحر', state: 'لا تعبره الجيوش إلا من ميناء لك أو بقيادة ربّان، وتكلفه الطرق المائية نقاطاً أكثر.' };
+    if (mapIsSea(sc,w.x,w.y)) return { icon: 'wave', title: 'بحر', state: 'لا تعبره الجيوش إلا من ميناء لك أو بقيادة ربّان، وتكلفه الطرق المائية نقاطاً أكثر.' };
     const nodes = Game.S.nodes.map((n) => ({ n, d: Math.hypot(n.x - w.x, n.y - w.y) })).sort((a, b) => a.d - b.d);
     const near = nodes[0];
     const desert = (sc.deserts || []).some((poly) => pip(poly, w.x, w.y));

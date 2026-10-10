@@ -1,0 +1,102 @@
+{
+  "results": [
+    {
+      "viewport": [
+        1440,
+        900
+      ],
+      "cityCount": 66,
+      "failures": [],
+      "labelOverlaps": 0,
+      "labels": 36,
+      "scrollWidth": 1440,
+      "modalFits": true
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "cityCount": 66,
+      "failures": [],
+      "labelOverlaps": 0,
+      "labels": 12,
+      "scrollWidth": 844,
+      "modalFits": true
+    },
+    {
+      "viewport": [
+        740,
+        360
+      ],
+      "cityCount": 66,
+      "failures": [],
+      "labelOverlaps": 0,
+      "labels": 10,
+      "scrollWidth": 740,
+      "modalFits": true
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "cityCount": 66,
+      "failures": [],
+      "labelOverlaps": 0,
+      "labels": 3,
+      "scrollWidth": 568,
+      "modalFits": true
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "cityCount": 66,
+      "failures": [],
+      "labelOverlaps": 0,
+      "labels": 17,
+      "scrollWidth": 390,
+      "modalFits": true
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "cityCount": 66,
+      "failures": [],
+      "labelOverlaps": 0,
+      "labels": 14,
+      "scrollWidth": 360,
+      "modalFits": true
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "cityCount": 66,
+      "failures": [],
+      "labelOverlaps": 0,
+      "labels": 10,
+      "scrollWidth": 320,
+      "modalFits": true
+    },
+    {
+      "viewport": [
+        1024,
+        768
+      ],
+      "cityCount": 66,
+      "failures": [],
+      "labelOverlaps": 0,
+      "labels": 37,
+      "scrollWidth": 1024,
+      "modalFits": true
+    }
+  ],
+  "overviewFailures": [],
+  "errors": []
+}

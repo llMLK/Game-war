@@ -16,7 +16,7 @@ const ECON = {
   garrisonPerMan: 0.04,
   upkeepMul: 2.2, mercMul: 1.8,
   // الإدارة تتصاعد: كل مدينة بعد المجانية أغلى من التي قبلها، والبعد عن العاصمة يزيدها
-  adminFree: 6, adminBase: 4, adminStep: 2, adminDist: 2, armyOverhead: 12,
+  adminFree: 6, adminBase: 4, adminStep: 0.35, adminDist: 1.2, armyOverhead: 12,
   supplyPerUnitHop: 2,
   fortUpkeep: { walls: [0, 1, 3, 6, 12], barracks: 4, port: 3, granary: 2, diwan: 6 },
   foodCap: 300, foodSale: 0.5,
@@ -38,8 +38,9 @@ const Game = {
   // ——————————————————— الإنشاء ———————————————————
   newGame(scId, player, diff) {
     const sc = SCENARIOS[scId];
+    mapDimensions(sc);
     const S = {
-      v: 3, scenario: scId, turn: 0, player, difficulty: diff, nextId: 1,
+      v: 5, atlas: 3, scenario: scId, turn: 0, player, difficulty: diff, nextId: 1,
       factions: {}, nodes: [], armies: [], gens: {}, tributes: [], log: [], over: null,
       alerts: [], scars: [], chron: [], aid: 1,
     };
@@ -71,7 +72,8 @@ const Game = {
     for (const n of sc.nodes) {
       S.nodes.push({
         id: n.id, name: n.name, x: n.x, y: n.y, owner: n.owner, origOwner: n.owner, pop: n.pop,
-        walls: n.walls, market: n.market || 0, farm: 0, granary: 0, roads: 0, port: 0, barracks: n.capital ? 1 : 0,
+        walls: n.walls, market: n.market || 0, farm: 0, granary: 0, roads: 0, port: n.port || 0, barracks: n.capital ? 1 : 0,
+        region: n.region || null, resource: n.resource || null,
         loyalty: 75, capital: !!n.capital, terrain: n.terrain, stores: 3 + n.walls, garrison: [],
         capturedTurn: -99, unrest: 0, manpower: 0, parley: -1, built: -1, festival: -99,
       });
@@ -172,7 +174,7 @@ const Game = {
     const S = this.S;
     S.tributes = S.tributes || [];
     S.alerts = S.alerts || []; S.scars = S.scars || []; S.chron = S.chron || []; S.aid = S.aid || 1;
-    S.v = 3;
+    S.v = 5;
     for (const id in S.factions) {
       const d = this.newFaction(id, '', '', false);
       const f = S.factions[id];
@@ -180,17 +182,22 @@ const Game = {
     }
     // مزامنة المدن مع تعريف السيناريو (مدن أضيفت في إصدارات لاحقة)
     const sc = SCENARIOS[S.scenario];
+    const migrateAtlas = S.scenario === 'umayyad' && (S.atlas || 0) < 3;
+    for (const [id, def] of Object.entries(sc.factions)) if (S.factions[id]) S.factions[id].color = def.color;
+    mapDimensions(sc);
     for (const d of sc.nodes) {
       const n = S.nodes.find((x) => x.id === d.id);
-      if (n) { n.terrain = d.terrain; n.x = d.x; n.y = d.y; continue; }
+      if (n) { n.name=d.name; n.terrain = d.terrain; n.x = d.x; n.y = d.y; n.region=d.region||null; n.resource=d.resource||null; if(!S.atlas && S.scenario==='umayyad') n.capital=!!d.capital; if(migrateAtlas) n.port=Math.max(n.port||0,d.port||0); continue; }
       const nn = {
-        id: d.id, name: d.name, x: d.x, y: d.y, owner: 'neutral', origOwner: 'neutral', pop: d.pop, walls: d.walls,
-        loyalty: 70, capital: false, terrain: d.terrain, stores: 3 + d.walls, garrison: [],
+        id: d.id, name: d.name, x: d.x, y: d.y, owner: this.f(d.owner) && this.f(d.owner).alive ? d.owner : 'neutral', origOwner: d.owner, pop: d.pop, walls: d.walls,
+        loyalty: 70, capital: !!d.capital, terrain: d.terrain, stores: 3 + d.walls, garrison: [], region:d.region||null, resource:d.resource||null, port:d.port||0,
       };
       S.nodes.push(nn);
       this.fillGarrison(nn, true);
     }
     S.nodes = S.nodes.filter((n) => sc.nodes.some((d) => d.id === n.id));
+    if(!S.atlas && S.scenario==='umayyad') this.event('int','اتسع الأطلس. حُفظت جيوشك ومدنك القديمة، وأُلحقت الأقاليم الجديدة بدولها.',{imp:3});
+    S.atlas=3;
     for (const n of S.nodes) {
       for (const [k, v] of Object.entries({ granary: 0, roads: 0, market: 0, farm: 0, barracks: 0, port: 0, unrest: 0, festival: -99, parley: -1, built: -1, capturedTurn: -99 })) if (n[k] === undefined) n[k] = v;
       if (n.manpower === undefined) n.manpower = this.mpCap(n);
@@ -203,6 +210,7 @@ const Game = {
       if (!a.from) a.from = a.node;
     }
     if (this.initWorld) this.initWorld();
+    if (this.migrateAtlasRoute) this.migrateAtlasRoute();
     if (this.enrichGen) for (const g of Object.values(S.gens)) if (!g.rec) { this.enrichGen(g); if (!this.isOfficer(g) && g.wage == null) g.wage = this.wageDemand(g).total; }
   },
 
@@ -489,7 +497,12 @@ const Game = {
     const d = UNITS[r.type];
     return r.men * d.hp * (d.atk + d.def + (d.missile || 0) * 1.5 + (d.charge || 0) * 0.3) * (1 + 0.1 * (r.exp || 0)) / 100;
   },
-  genPower(g) { return g ? this.regPower({ type: 'general', men: this.genMen(g) }) * (1 + 0.15 * g.rank) : 0; },
+  genPower(g) {
+    if (!g) return 0;
+    const a = this.army(g.army), men = Math.min(20, Math.floor(this.menOf(a?.regs || []) * 0.12));
+    // Same modest guard equipment and army-size cap as WarSim, not the old heroic unit.
+    return men * 14 * (8 + 7 + 6 * 0.3) * 1.1 / 100;
+  },
   armyPower(a) {
     if (!a) return 0;
     return a.regs.reduce((t, r) => t + this.regPower(r), 0) + this.genPower(this.armyGen(a));
@@ -568,6 +581,9 @@ const Game = {
 
   // ——————————————————— الاقتصاد ———————————————————
   merchantAt(n) { return this.armiesOfAt(n.owner, n.id).some((a) => this.hasTrait(a, 'merchant')); },
+  resourceOf(n) { return (n.resource && WEST_ATLAS.resources[n.resource]) || {name:'اقتصاد محلي',food:1,market:1}; },
+  foundingSize(fid) { return this.sc.nodes.filter(n=>n.owner===fid).length; },
+  expansionPressure(fid) { return Math.max(0, this.nodesOf(fid).length - Math.max(7,this.foundingSize(fid))) * 1.8; },
   // كفاءة التحصيل حسب الولاء: 100 = كامل، 50 = 70٪، 20 = 52٪
   loyEff(n) { return Math.min(1, 0.4 + n.loyalty / 166); },
   // دخل المدينة خطوة خطوة: كل عامل يظهر بقيمته بالذهب، ومجموع الخطوات هو الدخل نفسه تماماً
@@ -582,13 +598,15 @@ const Game = {
     add('tax', 'ضرائب السكان', tax0, `${n.pop.toLocaleString('en')} نسمة`);
     if (TAXES[f.tax].income !== 1) add('taxpol', `سياسة الضرائب ${TAXES[f.tax].name}`, tax0 * (TAXES[f.tax].income - 1));
     const taxPart = v;
-    if (n.market) add('market', `السوق (المستوى ${n.market})`, n.pop / 1000 * ECON.marketPer1k * n.market);
+    if (n.market) add('market', `السوق (المستوى ${n.market})`, n.pop / 1000 * ECON.marketPer1k * (1+0.78*(n.market-1)) * this.resourceOf(n).market, this.resourceOf(n).name);
     const marketPart = v - taxPart;
     if (n.capital) add('capital', 'مقر الحكم', ECON.capital);
     out.gross = v;
     const lf = this.loyEff(n);
     if (lf < 1) add('loyalty', `ضعف التحصيل (الولاء ${n.loyalty})`, v * (lf - 1), `يصل ${Math.round(lf * 100)}٪ من المستحق`);
     if (n.unrest > 0) add('unrest', `اضطراب بعد الفتح (${n.unrest} أدوار)`, v * (ECON.unrestK - 1), 'الجباة لا يصلون إلى كل الأحياء');
+    const distance = this.capitalDist(n);
+    if(distance > 3) add('province','نفقات محلية قبل إرسال الجباية',v * -Math.min(.3,(distance-3)*.025),'البريد والخدمات الإقليمية تستهلك جزءاً من الإيراد؛ الطرق والحكّام يحسنون الاتصال.');
     if (this.merchantAt(n) || this.governorOf(n, 'merchant')) add('gov', 'حاكم إداري', v * 0.3);
     const ov = this.overstack(n, n.owner);
     if (ov > 0) add('crowd', `ازدحام الجيوش (${ov} فوق الإمداد)`, v * (Math.max(0.5, 1 - 0.05 * ov) - 1));
@@ -624,8 +642,8 @@ const Game = {
     if (this.besieger(n.id)) { out.steps.push({ label: 'محاصرة: الحقول خارج الأسوار', v: 0 }); return out; }
     let v = 0;
     const add = (label, d) => { if (Math.abs(d) < 0.05) return; out.steps.push({ label, v: d }); v += d; };
-    add('الحقول حول المدينة', 5 + n.pop / 8000);
-    if (n.farm) add(`المزارع (المستوى ${n.farm})`, n.farm * 6);
+    add('الحقول حول المدينة', (5 + n.pop / 8000) * this.resourceOf(n).food);
+    if (n.farm) add(`المزارع (المستوى ${n.farm})`, n.farm * 6 * this.resourceOf(n).food);
     if (n.unrest > 0) add('اضطراب', v * -0.5);
     if (this.nodeMods) { const m = this.nodeMods(n); if (m.food !== 1) add('أحداث تضرب الحقول', v * (m.food - 1)); }
     out.total = Math.max(0, Math.round(v));
@@ -674,9 +692,11 @@ const Game = {
     let k = 0;
     for (const { n, d } of withD.slice(ECON.adminFree)) {
       k++;
-      let c = ECON.adminBase + ECON.adminStep * k + ECON.adminDist * Math.max(0, d - 2);
+      const newLands = Math.max(0, ns.length-this.foundingSize(fid));
+      let c = ECON.adminBase + ECON.adminStep * k + ECON.adminDist * Math.max(0, d - 2) + newLands * .65;
       const gov = this.governorAt(n);
       if (gov) c = Math.round(c / 2);
+      c = Math.round(c);
       out.push({ n, d, c, gov: !!gov });
     }
     return out;
@@ -769,7 +789,7 @@ const Game = {
     if (n.origOwner !== n.owner && this.f(n.origOwner) && this.f(n.origOwner).alive && this.f(n.origOwner).vendetta && this.f(n.origOwner).vendetta[n.owner]) parts.push(['ثأر أهلها القدامى', -8, 'vendetta']);
     if (f.gold < 0) parts.push(['الخزينة فارغة: رواتب متأخرة', -10, 'broke']);
     const size = this.nodesOf(n.owner).length;
-    if (size > 7) parts.push([`ضغط الاتساع (${size} مدن)`, -Math.round((size - 7) * 2.5), 'size']);
+    if (this.expansionPressure(n.owner)>0) parts.push([`أقاليم جديدة تحتاج إدارة (${size} مدن)`, -Math.round(this.expansionPressure(n.owner)), 'size']);
     const d = this.capitalDist(n);
     if (d > 3) parts.push([`البعد عن العاصمة (${d} خطوات)`, -Math.min(12, (d - 3) * 3), 'far']);
     if (here.some((a) => this.hasFlaw(a, 'harsh'))) parts.push(['قائد قاسٍ مقيم', -8, 'harsh']);
@@ -1189,7 +1209,7 @@ const Game = {
     const skill = DIFFS[this.S.difficulty].aiSkill;
     const side = (fid, regs, gens, armies, defending) => {
       const other = fid === enc.attFid ? enc.defFid : enc.attFid;
-      let intel = fid === P ? this.intelLevel(P, other) : 3;
+      let intel = this.intelLevel ? this.intelLevel(fid, other) : 1;
       if (fid === P && regs.some((r) => UNITS[r.type].cls === 'cav')) intel = Math.min(3, intel + 1);
       if (fid === P && gens.some((g) => g.trait === 'tactician')) intel = Math.min(3, intel + 1);
       const pers = this.pers ? this.pers(fid) : { aggr: 1 };
@@ -1234,6 +1254,7 @@ const Game = {
     const cfg = this.simConfig(enc);
     for (const sd of cfg.sides) sd.player = false;
     const res = new WarSim(cfg).runAuto();
+    if (res.winner == null) return 'cancel';
     const out = this.applySim(enc, res) || { winner: 1, fates: {}, report: null };
     out.auto = true;
     return out;
@@ -1247,7 +1268,7 @@ const Game = {
     const attArmies = sides.attArmies, defArmies = sides.defArmies;
     const winFid = winner === 0 ? enc.attFid : enc.defFid;
     const loseFid = winner === 0 ? enc.defFid : enc.attFid;
-    const { pa, pd } = { pa: this.menOf(sides.attRegs), pd: this.menOf(sides.defRegs) };
+    const [pa, pd] = enc.totalBefore || [this.menOf(sides.attRegs), this.menOf(sides.defRegs)];
     // مصائر القادة
     for (const gid in out.fates) {
       const g = this.gen(gid);
@@ -1332,7 +1353,7 @@ const Game = {
     a.siege = null;
     const ok = (n) => n && this.friendly(n.owner, a.fid) && !this.besiegers(n.id).some((b) => this.atWar(b.fid, a.fid)) && !avoid.includes(n.id);
     let dest = null;
-    if (prefer && ok(this.node(prefer)) && prefer !== a.node) dest = this.node(prefer);
+    if (prefer && ok(this.node(prefer)) && prefer !== a.node && this.adj(a.node).includes(prefer)) dest = this.node(prefer);
     if (!dest && ok(this.node(a.node))) return true;
     if (!dest) {
       const seen = new Set([a.node]);
@@ -1381,6 +1402,7 @@ const Game = {
     node.capturedTurn = this.S.turn;
     node.work = null;
     node.garrison = [];
+    node.ready = Ready.base();
     this.fillGarrison(node, false);
     node.stores = Math.min(2, this.storesMax(node));
     node.manpower = Math.floor(node.manpower * 0.3);
@@ -1434,7 +1456,7 @@ const Game = {
       node.unrest = Math.max(1, node.unrest - 2);
       this.addRel(fid, old, 8);
       f.rep = Math.min(100, f.rep + 4);
-      f.gold = Math.max(0, f.gold - 50);
+      f.gold -= 50;
       this.event('int', `${f.name} تعلن الأمان لأهل ${node.name}.`, { fids: [fid], node: node.id, imp: 1 });
     } else {
       node.loyalty = how === 'surrender' ? 52 : 40;
@@ -1600,11 +1622,9 @@ const Game = {
     for (const n of this.nodesOf(by)) if (n.origOwner === victim) n.loyalty = Math.max(0, n.loyalty - 12);
     // جيوش الضحية في حداد ثم ثأر
     for (const a of this.armiesOf(victim)) a.mood = { k: 'shaken', t: 1 };
-    let avenger = null;
-    if (V && V.alive && victim !== 'neutral' && R() < 0.55) {
-      avenger = this.addGeneral(victim, 'ابن ' + g.name.split(' ').slice(-1)[0] + ' الثائر', 'brave', R() < 0.5 ? 'reckless' : null, Math.max(1, g.rank - 1));
-      avenger.vendetta = by;
-    }
+    // A loss changes surviving relationships; it must not mint a replacement hero.
+    const avenger = this.friendsOf ? this.friendsOf(g)[0] || null : null;
+    if (avenger) avenger.vendetta = by;
     this.event('pol', `${B.name} تعدم القائد ${g.name}! ${V ? V.name + ' تقسم على الثأر.' : ''}${avenger ? ` ظهر ${avenger.name} يطلب الانتقام.` : ''}`, { fids: [by, victim], imp: 3 });
     this.chronicle('execute', `${B.name} تعدم القائد الأسير ${g.name}.${avenger ? ` ${avenger.name} يقسم على الثأر.` : ''}`, { fids: [by, victim], imp: 3 });
     if (victim === this.S.player) this.alert('crit', `${B.name} أعدمت قائدك ${g.name}${avenger ? `، ${avenger.name} يطلب الثأر` : ''}`, { icon: 'skull' });
@@ -1638,8 +1658,8 @@ const Game = {
       const f = S.factions[id];
       if (!f.alive || id === 'neutral') continue;
       const e = this.economy(id);
-      f.gold += e.netGold;
-      f.food += e.netFood;
+      if (this.settleEconomy) this.settleEconomy(id, e);
+      else { f.gold += e.netGold; f.food += e.netFood; }
       if (f.food < 0) {
         f.food = 0;
         for (const a of this.armiesOf(id)) { for (const r of a.regs) r.men = Math.round(r.men * 0.94); a.mood = { k: 'hungry', t: 1 }; }
@@ -1700,7 +1720,7 @@ const Game = {
         n.manpower = Math.min(this.mpCap(n), n.manpower + this.mpRegen(n));
         this.fillGarrison(n, false);
         n.stores = Math.min(this.storesMax(n), n.stores + 1);
-        n.pop = Math.round(n.pop * (1.004 + n.farm * 0.004));
+        n.pop = this.populationNext ? this.populationNext(n) : Math.round(n.pop * (1.004 + n.farm * 0.004));
       }
       if (n.unrest > 0) n.unrest--;
       if (n.owner === 'neutral') continue;
@@ -1726,11 +1746,14 @@ const Game = {
         for (const r of a.regs) {
           if (r.merc) continue;
           const max = UNITS[r.type].men;
-          const want = Math.min(max - r.men, Math.ceil(max * rate), Math.floor(n.manpower));
+          const price = this.replacementPrice ? this.replacementPrice(r) : 0.4;
+          const want = Math.min(max - r.men, Math.ceil(max * rate), Math.floor(n.manpower), Math.floor(Math.max(0, this.f(a.fid).gold - spent) / price));
           if (want <= 0) continue;
-          r.men += want; n.manpower -= want; spent += want;
+          r.men += want; n.manpower -= want; spent += want * price;
         }
-        this.f(a.fid).gold -= Math.round(spent * 0.4);
+        const replacementCost = Math.round(spent);
+        this.f(a.fid).gold -= replacementCost;
+        if (replacementCost && this.recordFinance) this.recordFinance(a.fid, -replacementCost, 'reinforcement', 'تعويض خسائر الجيوش');
       }
       const g = this.armyGen(a);
       if (g) g.men = this.genMen(g);

@@ -1,0 +1,118 @@
+{
+  "results": [
+    {
+      "viewport": [
+        1440,
+        900
+      ],
+      "mousePan": true,
+      "wheel": true,
+      "pinch": true,
+      "touchPan": true,
+      "atlasSearch": true,
+      "armyTap": true,
+      "armyTargetsClear": true,
+      "criticalAlertFits": true
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "mousePan": true,
+      "wheel": true,
+      "pinch": true,
+      "touchPan": true,
+      "atlasSearch": true,
+      "armyTap": true,
+      "armyTargetsClear": true,
+      "criticalAlertFits": true
+    },
+    {
+      "viewport": [
+        740,
+        360
+      ],
+      "mousePan": true,
+      "wheel": true,
+      "pinch": true,
+      "touchPan": true,
+      "atlasSearch": true,
+      "armyTap": true,
+      "armyTargetsClear": true,
+      "criticalAlertFits": true
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "mousePan": true,
+      "wheel": true,
+      "pinch": true,
+      "touchPan": true,
+      "atlasSearch": true,
+      "armyTap": true,
+      "armyTargetsClear": true,
+      "criticalAlertFits": true
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "mousePan": true,
+      "wheel": true,
+      "pinch": true,
+      "touchPan": true,
+      "atlasSearch": true,
+      "armyTap": true,
+      "armyTargetsClear": true,
+      "criticalAlertFits": true
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "mousePan": true,
+      "wheel": true,
+      "pinch": true,
+      "touchPan": true,
+      "atlasSearch": true,
+      "armyTap": true,
+      "armyTargetsClear": true,
+      "criticalAlertFits": true
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "mousePan": true,
+      "wheel": true,
+      "pinch": true,
+      "touchPan": true,
+      "atlasSearch": true,
+      "armyTap": true,
+      "armyTargetsClear": true,
+      "criticalAlertFits": true
+    },
+    {
+      "viewport": [
+        1024,
+        768
+      ],
+      "mousePan": true,
+      "wheel": true,
+      "pinch": true,
+      "touchPan": true,
+      "atlasSearch": true,
+      "armyTap": true,
+      "armyTargetsClear": true,
+      "criticalAlertFits": true
+    }
+  ],
+  "easternScenario": true,
+  "errors": []
+}

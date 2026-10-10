@@ -5,6 +5,7 @@
 class MenuScene {
   constructor() {
     const sc = SCENARIOS[pick(Object.keys(SCENARIOS))];
+    mapDimensions(sc);
     this.sc = sc;
     const cols = {};
     for (const [id, f] of Object.entries(sc.factions)) cols[id] = f.color;
@@ -57,9 +58,9 @@ function showMainMenu() {
   const menu = h('div', { class: 'menu' },
     h('div', { class: 'menu-card' },
       h('div', { class: 'title' },
-        h('div', { class: 'emblem' }, icon('horse')),
+        h('div', { class: 'emblem' }, icon('dynasty')),
         h('h1', null, 'سيوف الممالك'),
-        h('p', null, 'حرب استراتيجية في العصور القديمة، الخطة تهزم العدد'),
+        h('p', null, 'أطلس حرب، ومجلس حكم، وتاريخ تصنعه قراراتك'),
       ),
       h('div', { class: 'menu-btns' },
         hasSave ? h('button', { class: 'btn primary big', onclick: () => continueCampaign() },
@@ -86,7 +87,7 @@ function goFullscreen() {
   const el = document.documentElement;
   const p = el.requestFullscreen ? el.requestFullscreen() : el.webkitRequestFullscreen ? el.webkitRequestFullscreen() : null;
   Promise.resolve(p).then(() => {
-    try { if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(() => {}); } catch (e) { /* */ }
+    // Both orientations are playable; never rotate the user's device for them.
   }).catch(() => UI.toast('ملء الشاشة غير متاح هنا'));
 }
 
@@ -181,7 +182,7 @@ function showGuide() {
     body: h('div', { class: 'tips' },
       GUIDE.map(([t, d]) => h('div', { class: 'tip' }, h('b', null, t), h('p', null, d))),
       h('div', { class: 'tip' }, h('b', null, 'الوحدات'), RECRUITABLE.map((t) => h('p', null, h('b', null, UNITS[t].name + ': '), UNITS[t].desc))),
-      h('div', { class: 'tip' }, h('b', null, 'الحملة'), h('p', null, 'كل دور = فصل. جنّد وابنِ في مدنك، حرّك جيوشك خطوة واحدة، حاصر المدن المسوّرة أو اقتحمها، ثم فاوض على الصلح أو الأحلاف. المدن المحتلة حديثاً تثور إن تُركت بلا جيش.')),
+      h('div', { class: 'tip' }, h('b', null, 'الحملة'), h('p', null, 'كل دور فصل. الحركة تستهلك نقاطاً بحسب الطريق والأرض. المدينة المعادية توقف العبور حتى تفتحها. استعمل الأطلس للانتقال بين الأقاليم، وقارن كلفة البناء وعائده قبل الاستثمار.')),
     ),
     buttons: [{ label: 'إغلاق', primary: true }],
     dismissable: true,

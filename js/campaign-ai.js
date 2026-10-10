@@ -14,7 +14,7 @@ Object.assign(Game, {
     }
     const n = plan.node;
     const fromName = this.node(a.node).name;
-    const snap = { node: a.node, from: a.from, mp: a.mp, siege: a.siege };
+    const snap = { node: a.node, from: a.from, mp: a.mp, siege: a.siege, ready: { ...this.readyOf(a) } };
     this.moveAlong(a, plan);
     switch (plan.kind) {
       case 'move':
@@ -55,7 +55,9 @@ Object.assign(Game, {
       out = await this.hooks.encounter(enc);
       if (out === 'settled' || out === 'cancel') return out;
     } else out = this.autoResolve(enc);
+    if (out === 'settled' || out === 'cancel' || !out) return out || 'cancel';
     await this.finishEncounter(enc, out);
+    this.save();
     return out.winner;
   },
 

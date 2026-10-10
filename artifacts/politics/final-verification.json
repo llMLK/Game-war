@@ -1,0 +1,70 @@
+{
+  "checkedAt": "2026-10-10T12:32:41.644Z",
+  "phase": "E",
+  "scope": "Diplomacy, peace, alliances, vassalage, espionage and political AI; previous phases preserved",
+  "logic": {
+    "politics": 23,
+    "espionage": 15,
+    "allies": 12,
+    "battles": 31,
+    "leaders": 29,
+    "mapRoutes": 10,
+    "economy": 18,
+    "economyTrade": 12,
+    "total": 150
+  },
+  "simulation": {
+    "controlledCampaigns": 192,
+    "controlledTurns": 6912,
+    "espionageTurns": 60,
+    "fullCampaigns": 6,
+    "fullGameplayRounds": 72,
+    "battles": 15,
+    "peace": 14,
+    "spy": 7
+  },
+  "ui": {
+    "viewports": [
+      [
+        1440,
+        900
+      ],
+      [
+        1024,
+        768
+      ],
+      [
+        390,
+        844
+      ],
+      [
+        360,
+        740
+      ],
+      [
+        320,
+        568
+      ],
+      [
+        844,
+        390
+      ],
+      [
+        568,
+        320
+      ]
+    ],
+    "surfaces": 12,
+    "fullPreviewPassed": true,
+    "finalContributionAndSurrenderPassed": true,
+    "spyFooterPassed": true,
+    "pageReloads": 16
+  },
+  "syntax": "All four new production JavaScript modules pass node --check",
+  "whitespace": "git diff --check exit 0; only existing line-ending notices",
+  "lastProductionChange": "Moved espionage execution into modal footer; updated its disabled state and verified affected UI at all seven sizes",
+  "limitations": [
+    "Edge desktop touchscreen/viewport emulation; no physical-device testing",
+    "Controlled political simulations hold territory and forces constant; six integrated campaign samples cover twelve rounds each"
+  ]
+}

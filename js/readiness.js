@@ -5,7 +5,7 @@
 // - الجيش المحاصِر ليس في أتم جاهزيته، وإن هوجم يختار: إبقاء الحصار والقتال بجزء منه، أو فكّ الحصار والقتال بكله.
 
 Object.assign(Game, {
-  readyOf(a) { return (a && a.ready) || Ready.base(); },
+  readyOf(a) { return { ...Ready.base(), ...((a && a.ready) || {}) }; },
   hasMissile(a) { return !!a && a.regs.some((r) => UNITS[r.type].range && r.type !== 'catapult'); },
   readyScore(a) {
     const g = this.armyGen(a);
@@ -16,11 +16,45 @@ Object.assign(Game, {
     const w = armies.map((a) => ({ a, m: this.menOf(a.regs) }));
     const tot = w.reduce((t, x) => t + x.m, 0);
     if (!tot) return 1;
-    return w.reduce((t, x) => t + (0.55 + 0.45 * this.readyScore(x.a).total / 100) * x.m / tot, 0);
+    return w.reduce((t, x) => {
+      const r = this.readyOf(x.a);
+      return t + (1 - r.fat * 0.006) * (0.65 + r.coh * 0.0035) * (0.65 + r.sup * 0.0035) * (0.6 + Math.min(90, r.mor) / 225) * x.m / tot;
+    }, 0);
   },
   garrisonReady(n) {
     const sieged = this.besiegers(n.id).length > 0;
-    return { fat: sieged ? 10 : 0, mor: 70 - (n.stores < 0 ? 20 : 0), ammo: 100, coh: 100, sup: n.stores < 0 ? 20 : n.stores <= 1 && sieged ? 60 : 100 };
+    const r = { ...Ready.base(), ...(n.ready || {}) };
+    if (sieged) r.fat = Math.max(10, r.fat);
+    if (n.stores < 0) { r.mor = Math.min(50, r.mor); r.sup = Math.min(20, r.sup); }
+    else if (n.stores <= 1 && sieged) r.sup = Math.min(60, r.sup);
+    return r;
+  },
+  // Military supply only: an occupied hostile city cannot relay wagons to a distant friend.
+  militarySupplyHops(a) {
+    const seen = new Set([a.node]); let layer = [a.node];
+    const safe = (id) => !this.S.armies.some((b) => b.node === id && this.atWar(b.fid, a.fid));
+    const friendly = (id) => this.friendly(this.node(id)?.owner, a.fid) && safe(id);
+    if (!a.siege && friendly(a.node)) return 0;
+    for (let d = 1; d <= 6; d++) {
+      const next = [];
+      for (const id of layer) for (const x of this.adj(id)) {
+        if (seen.has(x)) continue;
+        seen.add(x);
+        if (friendly(x)) return d;
+        if (safe(x) && !this.atWar(this.node(x)?.owner, a.fid)) next.push(x);
+      }
+      layer = next;
+    }
+    return 6;
+  },
+  readyReasons(a) {
+    const r = this.readyOf(a), hops = this.militarySupplyHops(a), n = this.node(a.node);
+    return [hops === 0 ? 'إمداد محلي من مدينة صديقة آمنة' : hops === 6 ? 'لا طريق إمداد آمن قريب؛ المؤن والتعافي محدودان' : `الإمداد على بعد ${hops} طرق آمنة`,
+      a.siege ? 'نوبات الحصار تمنع الراحة الكاملة' : null,
+      ['desert', 'mountains', 'forest'].includes(n?.terrain) ? 'المسير في هذه الأرض يستهلك جهدًا إضافيًا' : null,
+      r.battles ? `خاض ${r.battles} معارك هذا الدور؛ لا تعافٍ بين المواجهات` : null,
+      r.fat > 40 ? 'التعب يقلل الضرب ودقة الأوامر' : null,
+      r.ammo < 30 && this.hasMissile(a) ? 'مخزون السهام محدود؛ تغيير الخطة لا يعيده' : null].filter(Boolean);
   },
 
   // ——— الجيش المحاصِر حين يُهاجَم ———
@@ -50,7 +84,7 @@ Object.assign(Game, {
       const r = { ...this.readyOf(a) };
       const f = this.f(a.fid);
       const n = this.node(a.node);
-      const hops = this.supplyHops(a);
+      const hops = this.militarySupplyHops(a);
       const rested = a.mp >= this.mpMax(a) && !a.siege;
       const home = hops === 0 && n.owner === a.fid && !this.besieger(n.id);
       const logi = this.hasTrait(a, 'logistician') ? 1.5 : 1;
@@ -78,8 +112,19 @@ Object.assign(Game, {
         r.mor += clamp(72 - r.mor, -4, rested ? 8 : 4);
       }
       if (r.sup < 40) r.mor -= 4;
-      for (const k of ['fat', 'mor', 'ammo', 'coh', 'sup']) r[k] = Math.round(clamp(r[k], 0, 100));
+      r.strain = Math.max(0, r.strain - (home && rested ? 40 : a.siege ? 12 : rested ? 25 : 18));
+      r.battles = 0;
+      for (const k of ['fat', 'mor', 'ammo', 'coh', 'sup', 'strain']) r[k] = Math.round(clamp(r[k], 0, 100));
       a.ready = r;
+    }
+    for (const n of this.S.nodes) {
+      const r = this.garrisonReady(n), sieged = this.besiegers(n.id).length > 0;
+      r.fat = Math.max(sieged ? 10 : 0, r.fat - (sieged ? 8 : 30));
+      r.coh = Math.min(sieged ? 85 : 100, r.coh + (sieged ? 5 : 20));
+      r.ammo = Math.min(100, r.ammo + (sieged ? (n.stores > 0 ? 8 : 0) : 40));
+      r.sup = sieged ? Math.min(r.sup, n.stores < 0 ? 20 : n.stores <= 1 ? 60 : 90) : Math.min(100, r.sup + 30);
+      r.mor = Math.min(sieged ? 70 : 75, r.mor + (sieged ? 3 : 12));
+      r.strain = Math.max(0, r.strain - (sieged ? 12 : 30)); r.battles = 0; n.ready = r;
     }
   },
 });
@@ -125,12 +170,23 @@ Object.assign(Game, {
         const g = this.gen(x.id);
         if (!g) continue;
         Object.assign(x, { arch: g.arch, style: g.style, doctrine: g.doctrine, terrain: g.terrain || [], units: g.units || [], wounded: !!(g.wounded && g.wounded > this.S.turn) });
+        if (this.leaderIdentity) {
+          const id = this.leaderIdentity(g);
+          Object.assign(x, { skills: id.skills, personality: id.key, loyalty: g.loy, trust: g.bond?.trust, ambition: g.bond?.ambition });
+        }
       }
     }
+    cfg.sides[0].readyReasons = s.attArmies.flatMap((a) => this.readyReasons(a));
+    cfg.sides[1].readyReasons = s.defArmies.flatMap((a) => this.readyReasons(a));
     return cfg;
   };
   const applySim = Game.applySim;
   Game.applySim = function (enc, res) {
+    if (res && typeof res === 'object' && res._campaignApplied) return res._campaignApplied;
+    if (!res || res === 'cancel' || res.winner == null) return null;
+    const before = this.encSides(enc);
+    enc.menBefore = Object.fromEntries([...before.attArmies, ...before.defArmies].map((a) => [a.id, this.menOf(a.regs)]));
+    enc.totalBefore = [this.menOf(before.attRegs), this.menOf(before.defRegs)];
     const out = applySim.call(this, enc, res);
     if (!out) return out;
     if (res.breached && enc.type === 'assault') this.node(enc.node).lastBreach = this.S.turn;
@@ -142,6 +198,9 @@ Object.assign(Game, {
       if (!st) return;
       for (const a of armies) a.ready = Ready.after(this.readyOf(a), st);
     });
+    if (enc.withGarrison && res.sides[0]?.after) s.node.ready = Ready.after(this.garrisonReady(s.node), res.sides[0].after);
+    if (enc.garrison && res.sides[1]?.after) s.node.ready = Ready.after(this.garrisonReady(s.node), res.sides[1].after);
+    Object.defineProperty(res, '_campaignApplied', { value: out, configurable: true });
     return out;
   };
   const finishEncounter = Game.finishEncounter;
@@ -160,15 +219,44 @@ Object.assign(Game, {
   };
   const split = Game.splitArmy;
   Game.splitArmy = function (a, picks, dest) {
+    const sourceReady = this.readyOf(a);
+    const target = dest.kind === 'army' ? this.army(dest.armyId) : null;
+    const oldMen = target ? this.menOf(target.regs) : 0;
+    const oldReady = target ? this.readyOf(target) : null;
     const r = split.call(this, a, picks, dest);
-    if (r && r.army) r.army.ready = { ...this.readyOf(a) };
+    if (r && r.army) {
+      const moved = this.menOf(r.army.regs) - oldMen;
+      r.army.ready = oldMen ? Ready.mix([{ r: oldReady, w: oldMen }, { r: sourceReady, w: moved }]) : { ...sourceReady };
+    }
     return r;
   };
   const merge = Game.mergeInto;
   Game.mergeInto = function (src, dst) {
-    const mix = Ready.mix([{ r: this.readyOf(src), w: this.menOf(src.regs) }, { r: this.readyOf(dst), w: this.menOf(dst.regs) }]);
+    const sourceReady = this.readyOf(src), oldReady = this.readyOf(dst), oldMen = this.menOf(dst.regs);
     const err = merge.call(this, src, dst);
-    if (!err) dst.ready = mix;
+    if (!err) dst.ready = Ready.mix([{ r: sourceReady, w: this.menOf(dst.regs) - oldMen }, { r: oldReady, w: oldMen }]);
     return err;
+  };
+  const move = Game.moveAlong;
+  Game.moveAlong = function (a, plan) {
+    const r = this.readyOf(a), cost = Math.max(0, Number(plan.cost) || 0);
+    const harsh = (plan.path || []).some((id) => ['mountains', 'desert', 'forest'].includes(this.node(id)?.terrain));
+    const logi = this.hasTrait(a, 'logistician') ? 0.7 : 1;
+    const result = move.call(this, a, plan);
+    r.fat = clamp(r.fat + Math.ceil(cost * (harsh ? 4 : 2) * logi), 0, 100);
+    r.sup = clamp(r.sup - Math.ceil(cost * (harsh ? 2 : 1) * logi), 0, 100);
+    a.ready = r;
+    return result;
+  };
+  const normalize = Game.normalizeState;
+  Game.normalizeState = function () {
+    normalize.call(this);
+    const clean = (r) => {
+      const b = Ready.base(), n = { ...b, ...(r || {}) };
+      for (const k of Object.keys(b)) n[k] = Number.isFinite(n[k]) ? Math.round(clamp(n[k], 0, k === 'battles' ? 9999 : 100)) : b[k];
+      return n;
+    };
+    for (const a of this.S.armies) a.ready = clean(a.ready);
+    for (const n of this.S.nodes) n.ready = clean(n.ready);
   };
 }

@@ -367,7 +367,7 @@ Object.assign(Game, {
       g.rec.cities.push(node.name);
       this.addFame(g, major ? 8 : 4);
       if (major && !g.titles.some((t) => t.t.startsWith('فاتح'))) this.addTitle(g, `فاتح ${node.name}`);
-      if (g.promise && g.promise.k === 'army') { this.remember(g, 'kept', 'وفيت بوعده بقيادة جيش', 5, 16); g.promise = null; }
+      if (g.promise && g.promise.k === 'army' && a.regs.length >= 5) { this.remember(g, 'kept', 'وفيت بوعده بقيادة جيش', 5, 16); g.promise = null; }
     }
     // فتح مدينة مهمة يفتح فرصة ويمنح نفوذاً
     if (major) { this.grantOpp(fid, 'city', 'city:' + node.id); this.addDraft(fid, 1, `فتح ${node.name}`); }
@@ -513,7 +513,7 @@ Object.assign(Game, {
   const finishEncounter = Game.finishEncounter;
   Game.finishEncounter = async function (enc, out) {
     const sides = this.encSides(enc);
-    for (const a of [...sides.attArmies, ...sides.defArmies]) a._men0 = this.menOf(a.regs);
+    for (const a of [...sides.attArmies, ...sides.defArmies]) a._men0 = enc.menBefore?.[a.id] ?? this.menOf(a.regs);
     const gens = { attGens: sides.attGens.slice(), defGens: sides.defGens.slice() };
     const r = await finishEncounter.call(this, enc, out);
     try {

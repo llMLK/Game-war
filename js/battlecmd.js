@@ -8,10 +8,59 @@
 
 const RISK = ['منخفض', 'متوسط', 'مرتفع'];
 const RISK_CLS = ['good', 'warn', 'bad'];
-const PH_AR = { contact: 'الالتحام الأول', main: 'الاشتباك الرئيسي', crisis: 'الأزمة', collapse: 'الحسم' };
+const PH_AR = { approach: 'الاستطلاع والتهيؤ', contact: 'الالتحام الأول', main: 'الاشتباك الرئيسي', crisis: 'حسم الاحتياط', collapse: 'الحسم' };
 const pctTxt = (p) => Math.round(p * 100) + '٪';
 
 const ORDERS = {
+  scout: {
+    name: 'استطلاع الأجنحة', icon: 'eye', phases: ['approach'], once: true,
+    term: 'ترسل الكشافة لرصد موضع الاحتياط ومسالك الالتفاف قبل الالتحام.',
+    need() { return null; },
+    info(sim, s) { return { does: 'تكشف الخطة المقابلة، وترفع فرص الالتفاف 8 نقاط مئوية حتى نهاية الالتحام الأول.', nums: [['الاستطلاع الحالي', s.intel + ' من 3']], risk: 0, riskWhy: 'ينفق أمرًا كان يمكن استعماله لتحصين الصفوف أو حفظ الجهد' }; },
+    apply(sim, s) { s.intel = 3; s.scouted = true; s.buffs.scout = { until: 1 }; return `كشافة ${s.name} تكشف خطة «${PLANS[s.foe.plan].name}» ومواقع العبور.`; },
+  },
+  fortify: {
+    name: 'تثبيت موضع القتال', icon: 'shield', phases: ['approach'], field: true, once: true,
+    term: 'تنظم المشاة التروس والحواجز الخفيفة قبل وصول العدو. يلائم انتظار الهجوم.',
+    need() { return null; },
+    info() { return { does: 'الخسائر الواردة أقل 10٪ حتى نهاية الالتحام الأول ما دامت الصفوف ثابتة. الرمي أقل 15٪ أثناء التهيؤ.', nums: [['تقليل الخسائر', '10٪'], ['المدة', 'مرحلتان']], risk: 0, riskWhy: 'يفقد أثره على أي قطاع تأمره بالتقدم، ويؤخر الرماة وهم يجهزون الموضع' }; },
+    apply(sim, s) { s.buffs.fortify = { until: 1 }; for (const k of SECTS) s.sec[k].stance = 'hold'; return `${s.name} تهيئ موضعًا ثابتًا لاستقبال الهجوم.`; },
+  },
+  conserve: {
+    name: 'حفظ السهام والجهد', icon: 'tent', phases: ['approach', 'contact'],
+    term: 'تقصر الرمي على الأهداف القريبة، وتبطئ التقدم كي تحتفظ بقوة للقتال الطويل.',
+    need() { return null; },
+    info() { return { does: 'الرماة لا يرمون في هذه المرحلة، والتعب المكتسب أقل 3 كل نبضة. لا يعيد سهامًا أُنفقت.', nums: [['الرمي', 'متوقف هذه المرحلة'], ['التعب المكتسب', 'أقل 3']], risk: 1, riskWhy: 'يمنح رماة العدو وقتًا للعمل دون رد مماثل' }; },
+    apply(sim, s) { s.buffs.conserve = { until: sim.phase }; return `${s.name} تحفظ سهامها وجهدها للاشتباك التالي.`; },
+  },
+  protect: {
+    name: 'حماية القلب', icon: 'shield', phases: ['contact', 'main', 'crisis'], field: true,
+    term: 'تشد الصف الأوسط وتمنع الفراغات حول الراية، ولو خف الضغط على العدو.',
+    need(sim, s) { return sim.secMen(s, 'C') ? null : 'لم يبق رجال في القلب'; },
+    info(sim, s) { return { does: 'خسائر القلب أقل 20٪ وضربه أقل 12٪ في هذه المرحلة، ويستعيد 6 معنويات.', nums: [['رجال القلب', sim.secMen(s, 'C')], ['تقليل الخسائر', '20٪']], risk: 0, riskWhy: 'يمنع كسر القلب ولا يحمي جناحًا مكشوفًا؛ يقل ضغطك الهجومي' }; },
+    apply(sim, s) { s.buffs.protect = { until: sim.phase }; s.sec.C.stance = 'hold'; s.sec.C.morale = Math.min(100, s.sec.C.morale + 6); return `${s.name} تغلق الفجوات حول رايتها في القلب.`; },
+  },
+  watch: {
+    name: 'تأمين الجناح', icon: 'eye', phases: ['contact', 'main'], field: true, arg: 'sector',
+    term: 'توجه الحرس والرسل نحو الجناح الذي تتوقع التفاف العدو عليه.',
+    need(sim, s) { return sim.roleMen(s, ['line', 'cav']) >= 20 ? null : 'يحتاج عشرين رجلًا من الرماح أو الفرسان'; },
+    info(sim, s, arg) { return { does: `يخفض احتمال التفاف العدو على ${sim.secName(arg || 'L')} 25 نقطة مئوية، طوال هذه المرحلة.`, nums: [['إضعاف الالتفاف', '25 نقطة مئوية']], risk: 1, riskWhy: 'إذا اختار العدو جهة أخرى ضاع الأمر، وقوة القطاع الهجومية أقل 8٪' }; },
+    apply(sim, s, arg) { const k = arg || 'L'; s.buffs.watch = { until: sim.phase, sec: k }; return `${s.name} ترصد المسالك حول ${sim.secName(k)}.`; },
+  },
+  raid: {
+    name: 'الإغارة على الأمتعة', icon: 'horse', phases: ['main'], field: true, once: true, cost: 2,
+    term: 'يرسل الفرسان فرقة نحو أمتعة الخصم لتشتيت حراسه وإتلاف بعض مؤنه.',
+    need(sim, s) { return !['plains', 'desert', 'coast'].includes(sim.terrain) ? 'المسالك لا تسمح بالوصول إلى الأمتعة هنا' : sim.roleMen(s, ['cav', 'skirm']) < 35 ? 'تحتاج 35 فارسًا على الأقل' : null; },
+    info(sim, s) { const p = sim.raidChance(s); return { does: 'النجاح يفقد العدو 18 إمدادًا و5 معنويات. الفرسان يتعبون 12، والفشل يقتل 8٪ من الفرقة.', nums: [['فرصة الوصول', 'نحو ' + pctTxt(p)], ['كلفة القيادة', 'أمران']], chance: p, risk: 2, riskWhy: 'احتياط العدو وحراسة أجنحته يصدّان الفرقة؛ هذه ليست ضربة مباشرة على صفوفه' }; },
+    apply(sim, s) {
+      const ok = sim.r() < sim.raidChance(s);
+      for (const k of SECTS) if (sim.roleMen(s, ['cav', 'skirm'], [k])) s.sec[k].fat += 12;
+      if (ok) { s.foe.ready.sup = Math.max(0, s.foe.ready.sup - 18); for (const k of SECTS) s.foe.sec[k].morale -= 5; sim.led(s, 'supplyRaid', 18); }
+      else for (const u of s.units.filter((u) => sim.alive(u) && ['cav', 'skirm'].includes(u.role))) u.men = Math.max(0, u.men - Math.ceil(u.men * 0.08));
+      sim.decisions.push({ side: s.i, kind: ok ? 'raidSuccess' : 'raidFailed', phase: sim.phase, weight: ok ? 0 : 2, text: ok ? 'بلغت الفرقة الأمتعة وأتلفت مؤنًا' : 'صد الاحتياط فرقة الإغارة فخسرت فرسانًا' });
+      return ok ? `فرسان ${s.name} يبددون أمتعة الخصم ويضعفون إمداده.` : `حرس الأمتعة يردون فرسان ${s.name} بخسائر.`;
+    },
+  },
   volley: {
     name: 'مناوشة بالسهام', icon: 'volley', phases: ['contact', 'main'],
     term: 'المناوشة: الرماة يواصلون الرمي بدل الانشغال بالالتحام، ويتراجعون خلف الصف إن اقترب العدو.',
@@ -69,7 +118,7 @@ const ORDERS = {
     apply(sim, s) { s.buffs.highground = { until: sim.phase }; for (const k of SECTS) s.sec[k].stance = 'hold'; s.noPursuit = true; return `${s.name} تتمسك بالمرتفع.`; },
   },
   flank: {
-    name: 'التفاف الفرسان', icon: 'flank', phases: ['contact', 'main'], field: true, arg: 'wing',
+    name: 'التفاف الفرسان', icon: 'flank', phases: ['contact', 'main'], field: true, arg: 'wing', cost: 2,
     term: 'الالتفاف: الفرسان يدورون حول جناح العدو ليضربوه من الجانب أو الخلف، فتنهار معنوياته.',
     need(sim, s) {
       if ((FLANK_TERRAIN[sim.terrain] || 1) < 0.5) return `${TERRAIN[sim.terrain] ? TERRAIN[sim.terrain].name : 'الأرض'} لا تسمح بالدوران`;
@@ -94,7 +143,7 @@ const ORDERS = {
     },
   },
   envelop: {
-    name: 'الإطباق المزدوج', icon: 'flank', phases: ['main', 'crisis'], field: true, unlock: 'cav', once: true,
+    name: 'الإطباق المزدوج', icon: 'flank', phases: ['main', 'crisis'], field: true, unlock: 'cav', once: true, cost: 2,
     term: 'الإطباق المزدوج: الجناحان يلتفان معاً حول قلب العدو من الجهتين. يفتحه فارس الخيل أو الداهية.',
     need(sim, s) {
       const g = s.cmd;
@@ -108,7 +157,7 @@ const ORDERS = {
     info(sim, s) {
       const c = sim.envelopChance(s);
       return {
-        does: 'الجناحان يطبقان على قلب العدو. إن نجح: معنويات قلبه −35 وخسائر فورية، ويُضرب من الجانبين.',
+        does: 'الجناحان يطبقان على قلب العدو. إن نجح: معنويات قلبه −22 وخسائر فورية، ويُضرب من الجانبين.',
         nums: [['فرسان الجناحين', sim.roleMen(s, ['cav', 'skirm'], ['L', 'R'])], ['احتياط العدو', sim.secMen(s.foe, 'Res')], ['فرصة النجاح', 'نحو ' + pctTxt(c)]],
         risk: 2, riskWhy: 'إن فشل تعب الجناحان وخسرا 15٪ من فرسانهما', chance: c,
       };
@@ -120,7 +169,7 @@ const ORDERS = {
       sim.cue({ t: 'flank', side: s.i, from: 'L', to: 'C', ok: true });
       if (sim.r() < p) {
         const foe = s.foe;
-        foe.sec.C.flanked = true; foe.sec.C.morale -= 35;
+        foe.sec.C.flanked = true; foe.sec.C.morale -= 22;
         const pw = ['L', 'R'].reduce((t, k) => t + sim.secUnits(s, k).filter((u) => u.role === 'cav' || u.role === 'skirm').reduce((x, u) => x + sim.unitMelee(u), 0), 0);
         const d = sim.applyLoss(foe, 'C', pw * 0.12 / 14, 'flank');
         sim.led(s, 'flank', d + 90);
@@ -236,9 +285,9 @@ const ORDERS = {
   waves: {
     name: 'موجات متعاقبة', icon: 'ladder', phases: ['main', 'crisis'], siege: 'att',
     term: 'الموجات: فرق تصعد وأخرى ترتاح بالتناوب، فلا يجد المدافعون لحظة راحة.',
-    need(sim, s) { return sim.resMen(s) || SECTS.some((k) => sim.depth(s, k) > 0) ? null : 'لا رجال كافون للتناوب'; },
-    info(sim, s) { return { does: 'تعب رجالك −15 الآن، وتعب المدافعين +3 كل جولة في هذه المرحلة.', nums: [['تعبك الآن', Math.round(sim.avgFat(s))], ['تعب المدافعين', Math.round(sim.avgFat(s.foe))]], risk: 0, riskWhy: 'لا خطر يذكر' }; },
-    apply(sim, s) { for (const k of SECTS) s.sec[k].fat = Math.max(0, s.sec[k].fat - 15); s.buffs.waves = { until: sim.phase }; return `${s.name} ترسل موجة بعد موجة.`; },
+    need(sim, s) { return s.ready.sup < 8 ? 'تحتاج الموجات 8 مؤن' : sim.resMen(s) || SECTS.some((k) => sim.depth(s, k) > 0) ? null : 'لا رجال كافون للتناوب'; },
+    info(sim, s) { return { does: 'تعب رجالك −15 الآن، وتعب المدافعين +3 كل جولة في هذه المرحلة. تستهلك الموجات 8 إمداد.', nums: [['تعبك الآن', Math.round(sim.avgFat(s))], ['إمدادك', s.ready.sup]], risk: 1, riskWhy: 'فرق التبديل تتلقى ضربات أكثر 5٪ أثناء صعودها؛ لا يصلح مع مؤن قليلة' }; },
+    apply(sim, s) { for (const k of SECTS) s.sec[k].fat = Math.max(0, s.sec[k].fat - 15); s.ready.sup=Math.max(0,s.ready.sup-8); s.buffs.waves = { until: sim.phase }; return `${s.name} ترسل موجة بعد موجة وتستهلك مؤنًا إضافية.`; },
   },
   oil: {
     name: 'الزيت والحجارة', icon: 'fire', phases: ['contact', 'main'], siege: 'def',
@@ -248,13 +297,13 @@ const ORDERS = {
     apply(sim, s) { s.buffs.oil = { until: sim.phase }; return 'الزيت المغلي والحجارة تنهال من الأسوار.'; },
   },
   withdraw: {
-    name: 'انسحاب منظم', icon: 'retreat', phases: ['contact', 'main', 'crisis', 'collapse'], final: true,
+    name: 'انسحاب منظم', icon: 'retreat', phases: ['contact', 'main', 'crisis', 'collapse'], final: true, cost: 1,
     term: 'الانسحاب المنظم: الجيش يتراجع صفاً خلف صف، فتقل المطاردة. إن فشل التنفيذ صار هزيمة مضطربة.',
-    need(sim, s) { return sim.kind === 'siege' && !s.att ? 'المدافعون لا مكان لهم خارج الأسوار' : null; },
+    need(sim, s) { return sim.kind === 'siege' && !s.att ? 'المدافعون لا مكان لهم خارج الأسوار' : s.ready.coh < 25 ? 'التماسك لا يكفي؛ الانسحاب الاضطراري متاح' : null; },
     info(sim, s) {
       const p = sim.execChance(s, 'withdraw');
       const cav = sim.roleMen(s.foe, ['cav', 'skirm']);
-      const k = 0.08 + Math.min(0.14, cav / 1200);
+      const k = sim.pursuitRate(s.foe);
       const men = sim.liveMen(s);
       return {
         does: `ينتهي القتال الآن وتُحسب هزيمة. إن انتظم الانسحاب خسرت نحو ${Math.round(men * k * 0.35)} رجلاً في المطاردة بدل ${Math.round(men * k)}.`,
@@ -264,9 +313,61 @@ const ORDERS = {
     },
     apply(sim, s) { sim.withdraw(s); return null; },
   },
+  retreat: {
+    name: 'انسحاب اضطراري', icon: 'retreat', phases: ['contact','main','crisis','collapse'], final: true, free: true,
+    term: 'تفك الاشتباك فورًا بلا انتظار تنظيم الصفوف. ينقذ الباقين من قتال أطول، لكنه يفتحهم للمطاردة.',
+    need(sim,s) { return sim.kind === 'siege' && !s.att ? 'الحامية محاصرة؛ قرار الأمان يظهر إذا سقطت الأسوار' : null; },
+    info(sim,s) { return { does:'تنتهي المعركة بهزيمة. لا يحتاج نقطة قيادة؛ خسائر المطاردة أكبر من الانسحاب المنظم والمعنويات تنخفض 8.', nums:[['الرجال الباقون',sim.liveMen(s)],['القيادة المطلوبة',0]],risk:2,riskWhy:'الصفوف تتفرق؛ الفرسان المعادون قد يلحقون بالمؤخرة ويأسرون القائد'}; },
+    apply(sim,s) { sim.withdraw(s,true); return null; },
+  },
 };
 
+// A clear role and a counter accompany every order. Postures are mutually exclusive.
+const ORDER_GUIDE = {
+  scout: ['الكشافة والفرسان', 'قبل اختيار جهة الالتفاف', 'ينفق وقت التهيؤ ولا يمنع ضربات العدو'],
+  fortify: ['الرماح والمشاة', 'حين تتوقع هجومًا مباشرًا', 'الرمي البعيد يستنزف الموضع الثابت'],
+  conserve: ['الرماة والجيش المتعب', 'حين تحتاج الاحتفاظ بقوتك للحسم', 'ضغط العدو المبكر يمنعه من الراحة الآمنة'],
+  protect: ['مشاة القلب', 'حين يترنح الوسط أو يتقدم العدو لكسره', 'الالتفاف يتجاوز قلبًا قويًا'],
+  watch: ['الرماح والفرسان', 'حين تتوقع التفافًا على جهة بعينها', 'العدو يستطيع الهجوم من الجهة الأخرى'],
+  raid: ['الفرسان والخيالة الرماة', 'ضد جيش بعيد عن الإمداد بلا احتياط قوي', 'الاحتياط وحراسة الأجنحة يصدان الإغارة'],
+  volley: ['الرماة والخيالة الرماة', 'قبل اقتراب الفرسان أو حين يتوقف العدو', 'الفرسان السريعون والمطر يضعفانه'],
+  shieldwall: ['الرماحة', 'لاستقبال انقضاض الفرسان', 'السيّافة والرمي المستمر يتغلبان على الثبات'],
+  highground: ['المشاة والرماة المدافعون', 'لإجبار العدو على صعود مرتفع', 'الاستنزاف بالسهام أو الانسحاب يحرمانك من الحسم'],
+  flank: ['فرسان الجناح المختار', 'في أرض واسعة ضد جناح غير محمي', 'الرماح والاحتياط وتأمين الجناح يخفضون النجاح'],
+  envelop: ['فرسان الجناحين', 'عندما يثبت قلبك ويضعف احتياط العدو', 'احتياط العدو يرد الجناحين ويكشف ضعفك العددي'],
+  reserve: ['رجال الاحتياط والقطاع الذي تسنده', 'لإنقاذ قطاع أو استغلال انهيار الخصم', 'إرسال الجميع مبكرًا يتركك بلا جواب لأزمة لاحقة'],
+  press: ['مشاة الصدام والفرسان', 'لحسم قتال يميل لصالحك قبل وصول العدو للاحتياط', 'الجدار الثابت يطيل القتال حتى تُنهك'],
+  rally: ['الصفوف المترددة', 'حين تكون المعنويات منخفضة والقائد سليمًا', 'خطر إصابة القائد يزداد؛ لا يعوض نقص الرجال'],
+  rotate: ['صفوف لها عمق أو احتياط', 'بعد تعب الصف الأمامي', 'ضغط العدو أثناء التبديل يزيد الخسائر'],
+  focus: ['مهندسو الحصار والمشاة', 'حين تريد توسيع ثغرة واحدة', 'المدافع يستطيع جمع رجاله في الموضع نفسه'],
+  waves: ['المشاة والاحتياط', 'لاستمرار الاقتحام مع تعب الصف الأول', 'يحتاج رجالًا في الخلف ويستهلك إمدادهم'],
+  oil: ['حامية الأسوار', 'قبل أن يعبر المهاجمون الثغرة', 'المدافعون يفقدون أثره عند انهيار السور'],
+  withdraw: ['الجيش كله وخاصة المؤخرة', 'عندما تكون خسارة الميدان أقل كلفة من استمرار القتال', 'الفرسان السريعون والتماسك المنخفض يزيدان المطاردة'],
+  retreat: ['الناجون من الجيش', 'عند نفاد القيادة أو انهيار التماسك', 'مطاردة الفرسان وعدم وجود مؤخرة منظمة يزيدان الخسائر'],
+};
+for (const k of ['press', 'shieldwall', 'highground', 'protect', 'conserve']) ORDERS[k].group = 'posture';
+for (const k of ['flank', 'envelop', 'raid']) ORDERS[k].deferred = true;
+
 Object.assign(WarSim.prototype, {
+  factorSnapshot(s) {
+    const r = s.initialReady || s.ready;
+    const troops = s.units.filter((u) => u.type !== 'general');
+    const men = troops.reduce((n, u) => n + u.men0, 0);
+    const quality = men ? troops.reduce((n, u) => n + this.unitMelee({ ...u, men: u.men0 }), 0) / men : 0;
+    const ground = this.kind === 'siege' ? (!s.att ? `أسوار من المستوى ${this.walls}` : 'اقتحام تحت دفاعات الأسوار') : !s.att && ['hills', 'mountains'].includes(this.terrain) ? 'يمسك المرتفع' : s.att && this.terrain === 'river' ? 'يعبر النهر تحت الضغط' : this.terrain === 'forest' ? 'مناورة الفرسان محدودة' : this.terrain === 'mountains' ? 'جبهة ضيقة' : 'ميدان مفتوح';
+    return [
+      { key: 'men', label: 'الجنود المشاركون', value: men + ' رجل', help: 'لا يشمل رجالًا تُركوا على خطوط الحصار. العدد يغذي قوة الصفوف والاحتياط.' },
+      { key: 'quality', label: 'جودة التجهيز والخبرة', value: Math.round(quality * 10) / 10, help: 'قوة الالتحام للرجل قبل الأرض والأوامر. ترفعها الوحدات المناسبة والخبرة، ولا تشمل مهارة القائد.' },
+      { key: 'leader', label: 'القيادة', value: s.cmd ? s.cmd.name : 'بلا قائد', help: `نقاط القيادة ${this.cmdPoints(s)} في المرحلة. الخبرة تساعد التنفيذ وتثبت الصفوف، ولا تضاعف عدد الرجال.` },
+      { key: 'ground', label: 'الموقع والدفاع', value: ground, help: 'المرتفع يحمي المدافع، وضيق الجبهة يقلل قدرة العدد على الالتفاف. معدات الحصار ضرورية لاختراق الأسوار.' },
+      { key: 'morale', label: 'المعنويات عند الدخول', value: Math.round(s.morale0 || r.mor) + ' من 100', help: 'انخفاضها يقلل الضرب ويزيد احتمال الفرار. النصر والراحة والقيادة المنضبطة يحسنانها.' },
+      { key: 'fatigue', label: 'التعب المحمول', value: Math.round(r.fat) + ' من 100', help: `يبدأ الجيش بكامل تعب القتال السابق. يبقى ${Math.round((1 - r.fat * 0.006) * 100)}٪ من أثر الضرب قبل سائر العوامل.` },
+      { key: 'cohesion', label: 'تماسك الصفوف', value: Math.round(r.coh) + '٪', help: 'يحدد قوة الصفوف ودقة الأوامر. الخسائر والفرار يقللانه، والراحة في مدينة صديقة تعيده.' },
+      { key: 'supply', label: 'الإمداد والسهام', value: Math.round(r.sup) + '٪ إمداد، ' + Math.round(r.ammo) + '٪ سهام', help: 'كل معركة تنفق مؤنًا. نقص الإمداد يضعف الضرب ويزيد التعب؛ نفاد السهام يوقف الرمي.' },
+      { key: 'strain', label: 'إجهاد القيادة', value: Math.round(r.strain || 0) + ' من 100', help: 'يتراكم مع كل معركة ويقل في الدور التالي. عند 65 لا يبقى إلا أمر واحد في المرحلة.' },
+      { key: 'plan', label: 'الخطة', value: PLANS[s.plan] ? PLANS[s.plan].name : 'لم تُحدد', help: PLANS[s.plan] ? PLANS[s.plan].desc : 'اختر الخطة والتشكيل قبل بدء القتال.' },
+    ];
+  },
   // ——— أدوات حساب البطاقات ———
   roleMen(s, roles, secs) { return s.units.filter((u) => this.alive(u) && roles.includes(u.role) && (!secs || secs.includes(u.sec))).reduce((t, u) => t + u.men, 0); },
   roleShare(s, roles) { return this.roleMen(s, roles) / Math.max(1, this.liveMen(s)); },
@@ -288,7 +389,7 @@ Object.assign(WarSim.prototype, {
   // فرصة التنفيذ الجيد بلا رمي نرد (للعرض)
   execChance(s, order) {
     const g = s.cmd;
-    let p = 0.72 + (g ? 0.05 * (g.rank - 1) : -0.05) - this.cohK(s) * 0.25 - (s.cmdAlive === false ? 0.15 : 0) - (s.cmdHurt ? 0.08 : 0);
+    let p = 0.72 + (g ? 0.05 * (g.rank - 1) : -0.05) - this.cohK(s) * 0.25 - (s.cmdAlive === false ? 0.15 : 0) - (s.cmdHurt ? 0.08 : 0) - s.ready.strain * 0.0025;
     const T = { withdraw: { defender: 0.1, tactician: 0.15, logistician: 0.1, brave: -0.05 } }, F = { withdraw: { reckless: -0.3, cautious: 0.1 } };
     if (g) p += ((T[order] || {})[g.trait] || 0) + ((F[order] || {})[g.flaw] || 0) + ({ cautious: 0.1, defensive: 0.05, aggressive: -0.08 }[g.doctrine] || 0) + ({ disciplined: 0.08, careful: 0.05 }[g.style] || 0);
     return clamp(p + 0.18, 0.1, 0.97);
@@ -305,6 +406,8 @@ Object.assign(WarSim.prototype, {
     const bonus = g ? ({ cavalier: 0.2, tactician: 0.15, swift: 0.1 }[g.trait] || 0) * 0.5 + 0.02 * (g.rank - 1) : -0.03;
     let c = 0.3 + 0.45 * (fp - cp) / Math.max(1, fp + cp) + 0.05 + bonus - this.cohK(s) * 0.1;
     if (foe.flankWatch === tk) c -= 0.25;
+    if (this.bf(foe, 'watch') && this.bf(foe, 'watch').sec === tk) c -= 0.25;
+    if (this.bf(s, 'scout')) c += 0.08;
     if (foe.plan === 'breakcenter') c += 0.12;
     return clamp(c, 0.05, 0.9);
   },
@@ -320,7 +423,12 @@ Object.assign(WarSim.prototype, {
 
   // ——— البطاقات ———
   // عدد الأوامر في المرحلة: واحد، واثنان لقائد بثلاث نجوم أو داهية سليم
-  cmdPoints(s) { const g = s.cmd; return 1 + (g && s.cmdAlive !== false && !s.cmdWounded && (g.rank >= 3 || g.trait === 'tactician') ? 1 : 0); },
+  cmdPoints(s) {
+    const g = s.cmd;
+    if (s.ready.strain >= 65 || s.ready.coh < 40 || s.cmdAlive === false) return 1;
+    return 2 + (g && !s.cmdWounded && s.ready.strain < 35 && (g.rank >= 3 || g.trait === 'tactician') ? 1 : 0);
+  },
+  raidChance(s) { return clamp(0.5 + this.roleShare(s, ['cav', 'skirm']) * 0.25 - this.resMen(s.foe) / Math.max(1, this.liveMen(s.foe)) * 0.6 - (this.bf(s.foe, 'watch') ? 0.15 : 0) - this.cohK(s) * 0.2, 0.12, 0.8); },
   ordersFor(s) {
     const ph = this.phaseKey();
     const out = [];
@@ -329,12 +437,14 @@ Object.assign(WarSim.prototype, {
       if (o.siege && (this.kind !== 'siege' || o.siege !== (s.att ? 'att' : 'def'))) continue;
       if (o.unlock && !this.unlocked(s, o)) continue;
       let err = null;
-      if (!o.phases.includes(ph)) err = `متاح في: ${o.phases.map((p) => PH_AR[p]).join('، ')}`;
+      if (!this.awaitingOrders) err = 'بدأ تنفيذ هذه المرحلة؛ الأوامر الجديدة عند بدايتها التالية';
+      else if (!o.phases.includes(ph)) err = `متاح في: ${o.phases.map((p) => PH_AR[p]).join('، ')}`;
       else if (s.used[k] === this.phase) err = 'صدر هذا الأمر في هذه المرحلة';
       else if (o.once && s.used[k] != null) err = 'مرة واحدة في المعركة';
       else if (o.max && (s.usedN || {})[k] >= o.max) err = `مرتان في المعركة على الأكثر`;
       else err = o.need(this, s);
-      if (!err && (s.cp || 0) <= 0 && !o.final) err = 'استنفدت أوامر هذه المرحلة';
+      if (!err && (s.cp || 0) < (o.cost || 1) && !o.free) err = `يحتاج ${o.cost || 1} من نقاط القيادة، المتبقي ${s.cp || 0}`;
+      if (!err && o.group && Object.keys(s.used).some((key) => s.used[key] === this.phase && ORDERS[key].group === o.group)) err = 'اخترت بالفعل توجيهًا آخر للصفوف في هذه المرحلة';
       out.push({ k, o, err, info: err ? null : o.info(this, s) });
     }
     return out;
@@ -350,13 +460,18 @@ Object.assign(WarSim.prototype, {
     const o = ORDERS[k];
     const x = this.ordersFor(s).find((y) => y.k === k);
     if (!o || !x || x.err) return x ? x.err : 'أمر غير معروف';
-    if (!o.final) s.cp = (s.cp || 0) - 1;
+    if (!o.free) s.cp = (s.cp || 0) - (o.cost || 1);
     s.used[k] = this.phase;
     s.usedN = s.usedN || {}; s.usedN[k] = (s.usedN[k] || 0) + 1;
     s.orders++;
     this.decisions.push({ side: s.i, kind: 'order:' + k, text: o.name, phase: this.phase, weight: 0 });
     s.orderLog = s.orderLog || [];
     s.orderLog.push({ k, phase: this.phase });
+    if (o.deferred) {
+      this.queuedOrders.push({ side: s.i, k, arg });
+      this.line(s, `أُعد أمر «${o.name}» للتنفيذ عند بدء المرحلة.`, '', 'orderQueued');
+      return null;
+    }
     const txt = o.apply(this, s, arg);
     if (txt) this.line(s, txt, s.player ? 'good' : '');
     return null;
@@ -371,22 +486,29 @@ Object.assign(WarSim.prototype, {
       while ((s.cp || 0) > 0 && opts.length && !this.over) this.issue(s, opts.splice(Math.floor(this.r() * opts.length), 1)[0].k);
       return;
     }
+    const seen = this.observe(s);
     let guard = 0;
-    while ((s.cp || 0) > 0 && guard++ < 3 && !this.over) {
+    while (((s.cp || 0) > 0 || (this.avgMorale(s) < 18 && this.liveMen(s) / seen.men < .5)) && guard++ < 3 && !this.over) {
       const opts = this.ordersFor(s).filter((x) => !x.err);
       if (!opts.length) return;
       const g = s.cmd, f = g && g.flaw;
-      const ratio = this.liveMen(s) / Math.max(1, this.liveMen(s.foe));
+      const ratio = this.liveMen(s) / seen.men;
       const minMor = Math.min(...SECTS.filter((k) => this.secUnits(s, k).length).map((k) => s.sec[k].morale), 100);
       const val = (x) => {
         const i = x.info || {};
         switch (x.k) {
-          case 'volley': return 0.4 + this.roleShare(s, ['missile', 'skirm']) * 2 - this.roleShare(s.foe, ['cav']) - (this.weather === 'rain' ? 0.8 : 0);
-          case 'shieldwall': return this.phaseKey() === 'contact' ? this.roleShare(s.foe, ['cav']) * 2.5 + this.roleShare(s, ['line']) - 0.3 : 0.2;
+          case 'scout': return s.intel < 3 ? 1.5 : 0.7;
+          case 'fortify': return ratio < 1.1 || s.plan === 'defensive' || s.plan === 'highground' ? 1.4 : 0.5;
+          case 'conserve': return this.roleShare(s, ['missile', 'skirm']) < 0.25 ? clamp((s.ready.fat - 20) / 50, 0, 1.1) : -1;
+          case 'protect': return s.sec.C.morale < 45 ? 1.6 : seen.plan === 'breakcenter' ? 1.2 : 0.3;
+          case 'watch': return seen.plan === 'flanking' || seen.plan === 'feigned' ? 1.2 : seen.cav > .4 ? .75 : .2;
+          case 'raid': return seen.supply < 70 && this.roleShare(s,['cav','skirm']) > .35 ? 1 : .3;
+          case 'volley': return 0.4 + this.roleShare(s, ['missile', 'skirm']) * 2 - seen.cav - (this.weather === 'rain' ? 0.8 : 0);
+          case 'shieldwall': return this.phaseKey() === 'contact' ? seen.cav * 2.5 + this.roleShare(s, ['line']) - 0.3 : 0.2;
           case 'highground': return 1.2;
-          case 'flank': return (i.chance || 0) * 2 - 0.5 + (f === 'cautious' ? -0.1 : 0);
-          case 'envelop': return (i.chance || 0) * 2.4 - 0.7;
-          case 'reserve': return minMor < 45 ? 1.4 + (50 - minMor) / 20 : this.phaseKey() === 'crisis' ? 1 : 0.1;
+          case 'flank': return ((s.scouted ? i.chance : .5 + this.roleShare(s,['cav','skirm'])*.2 - seen.cav*.15) || 0) * 2 - 0.5 + (f === 'cautious' ? -0.1 : 0);
+          case 'envelop': return ((s.scouted ? i.chance : .5 - seen.line*.25) || 0) * 2.4 - 0.7;
+          case 'reserve': return minMor < 55 ? 1.4 + (55 - minMor) / 20 : this.phaseKey() === 'crisis' ? 1.4 : this.phase >= 1 && ratio < .85 ? .85 : .1;
           case 'press': return (ratio > 1.2 ? 0.8 : 0.2) + (f === 'reckless' || (g && g.doctrine === 'aggressive') ? 0.4 : 0) - (this.avgFat(s) > 55 ? 1 : 0) + (s.aggr - 1);
           case 'rally': return minMor < 50 ? 0.9 + (g && g.trait === 'brave' ? 0.3 : 0) - (g && g.style === 'careful' ? 0.3 : 0) : 0;
           case 'rotate': { const k = this.tiredSec(s); return k ? (s.sec[k].fat - 35) / 25 : 0; }
@@ -395,13 +517,17 @@ Object.assign(WarSim.prototype, {
           case 'focus': return 1.4;
           // الحذر يرى الهزيمة مبكراً فينسحب ليحفظ رجاله
           case 'withdraw': return (this.avgMorale(s) < 25 && ratio < 0.6) || (f === 'cautious' && this.phase >= 2 && this.avgMorale(s) < 30 && ratio < 0.7) ? 1.2 + (f === 'cautious' ? 0.3 : 0) - (f === 'reckless' ? 0.6 : 0) : -9;
+          case 'retreat': return this.avgMorale(s) < 18 && ratio < .5 ? 1.7 : -9;
           default: return 0;
         }
       };
-      const noise = (1.1 - (s.ai == null ? 0.6 : s.ai)) * 0.6;
-      const best = opts.map((x) => ({ x, v: val(x) + (this.r() - 0.5) * noise })).sort((a, b) => b.v - a.v)[0];
+      const competence=clamp(s.ai*.65+(g?.skills?.command||g?.rank||1)*.07,.2,.95);
+      const noise = (1.1 - competence) * .9;
+      const bold=['bold','ambitious','proud'].includes(g?.personality),careful=['careful','austere'].includes(g?.personality);
+      const best = opts.map((x) => ({ x, v: val(x) + (bold && ['press','flank','envelop'].includes(x.k) ? .12 : careful && ['protect','shieldwall','withdraw'].includes(x.k) ? .15 : 0) + (this.r() - 0.5) * noise })).sort((a, b) => b.v - a.v)[0];
       if (!best || best.v < 0.6) return;
-      const arg = best.x.k === 'reserve' ? this.weakestSec(s) : best.x.k === 'flank' ? this.bestFlankWing(s) : undefined;
+      const ownWing=['L','R'].sort((a,b)=>this.roleMen(s,['cav','skirm'],[b])-this.roleMen(s,['cav','skirm'],[a]))[0];
+      const arg = best.x.k === 'reserve' ? this.weakestSec(s) : best.x.k === 'flank' ? (s.scouted?this.bestFlankWing(s):ownWing) : best.x.k === 'watch' ? (this.r()<.5?'L':'R') : undefined;
       this.issue(s, best.x.k, arg);
       if (best.x.o.final) return;
     }
@@ -414,13 +540,14 @@ Object.assign(WarSim.prototype, {
     const fat = us.reduce((t, u) => t + (s.sec[u.sec] ? s.sec[u.sec].fat : 0) * u.men, 0) / men;
     const ms = us.filter((u) => u.missile && u.type !== 'catapult');
     const a0 = ms.reduce((t, u) => t + (u.ammoFull || 0) * u.men, 0);
-    const ammoPct = a0 ? 100 * ms.reduce((t, u) => t + Math.max(0, u.ammo) * u.men, 0) / a0 : null;
+    const ammoPct = a0 ? 100 * ms.reduce((t, u) => t + (Math.max(0, u.ammo) + (u.reserveAmmo || 0)) * u.men, 0) / a0 : null;
     const won = this.winner === s.i;
     const lost = s.men0 - this.totalMen(s);
     return {
       won, fat: Math.round(fat), mor: Math.round(this.avgMorale(s)), ammo: ammoPct == null ? null : Math.round(ammoPct),
       lossPct: Math.round(100 * lost / Math.max(1, s.men0)), broken: SECTS.filter((k) => s.sec[k].state === 'broken').length,
       routed: !won && !s.orderly && this.reason !== 'terms', orderly: !!s.orderly, cmdHurt: !!(s.cmdWounded && s.cmdAlive !== false),
+      phases: Math.max(1, this.phase + 1), orders: s.orders, supply: s.ready.sup,
     };
   },
 });
@@ -432,6 +559,8 @@ Object.assign(WarSim.prototype, {
     const u = mk.call(this, side, type, men, exp, ref, k, gen);
     const d = UNITS[type];
     u.ammoFull = d.range ? (type === 'catapult' ? 8 : d.cls === 'cav' ? 4 : 5) : 0;
+    u.reserveAmmo = type !== 'catapult' && u.ammo >= 3 ? 1 : 0;
+    u.ammo -= u.reserveAmmo;
     return u;
   };
   const res = WarSim.prototype.result;
@@ -449,16 +578,17 @@ Object.assign(WarSim.prototype, {
 
 // ——————————————— الجاهزية ———————————————
 const Ready = {
-  base() { return { fat: 0, mor: 72, ammo: 100, coh: 100, sup: 100 }; },
+  base() { return { fat: 0, mor: 72, ammo: 100, coh: 100, sup: 100, strain: 0, battles: 0 }; },
   // الجاهزية مجموع موزون يمكن شرحه: الراحة والمعنويات والتماسك والإمداد والسهام
   score(r, o = {}) {
-    r = r || this.base();
+    r = { ...this.base(), ...(r || {}) };
     const parts = [
       ['الراحة', 100 - r.fat, 0.25, 'fat'],
-      ['المعنويات', Math.min(100, Math.round(r.mor / 75 * 100)), 0.25, 'mor'],
+      ['المعنويات', Math.min(100, Math.round(r.mor / 75 * 100)), 0.2, 'mor'],
       ['التماسك', r.coh, 0.2, 'coh'],
       ['الإمداد', r.sup, 0.15, 'sup'],
-      ['السهام', o.missile === false ? 100 : r.ammo, 0.15, 'ammo'],
+      ['السهام', o.missile === false ? 100 : r.ammo, 0.1, 'ammo'],
+      ['تركيز القيادة', 100 - r.strain, 0.1, 'strain'],
     ];
     let t = parts.reduce((s, p) => s + p[1] * p[2], 0);
     if (o.hurt) t -= 8;
@@ -468,23 +598,24 @@ const Ready = {
   after(before, st) {
     const b = { ...this.base(), ...(before || {}) };
     const r = { ...b };
-    // نصف تعب اليوم تقريباً يزول بعد القتال، والباقي يُحمل إلى المعركة التالية
-    // المحاكاة تبدأ بـ60٪ من التعب المحمول، فما زاد عليه هو تعب هذا اليوم
-    r.fat = clamp(Math.round(b.fat + Math.max(0, st.fat - b.fat * 0.6) * 0.55), 0, 95);
-    r.mor = st.won ? clamp(Math.round(st.mor * 0.6 + 32), 35, 92) : clamp(Math.round(st.mor * 0.5 + 18), 8, 58);
-    if (st.ammo != null) r.ammo = clamp(st.ammo, 0, 100);
-    r.coh = clamp(Math.round(b.coh - st.lossPct * 0.8 - st.broken * 6 - (st.routed ? 15 : 0) + (st.won ? 4 : 0)), 5, 100);
-    // الهزيمة المضطربة تترك بعض الأمتعة في الميدان
-    r.sup = clamp(b.sup - (st.routed ? 15 : st.won ? 0 : 5), 5, 100);
+    const rounds = Math.max(1, st.phases || 1);
+    r.fat = clamp(Math.round(Math.max(st.fat, b.fat + 12 + rounds * 2 + b.battles * 4)), 0, 100);
+    r.mor = st.won ? clamp(Math.round(Math.min(b.mor + 6, st.mor + 10)), 15, 88) : clamp(Math.round(st.mor + (st.orderly ? 10 : 3)), 5, 55);
+    if (st.ammo != null) r.ammo = clamp(Math.min(b.ammo, st.ammo), 0, 100);
+    r.coh = clamp(Math.round(b.coh - 5 - st.lossPct * 0.7 - st.broken * 5 - (st.routed ? 12 : 0) - b.battles * 3), 5, 100);
+    r.sup = clamp(Math.min(b.sup, st.supply == null ? b.sup : st.supply) - 6 - rounds * 2 - (st.routed ? 10 : 0), 0, 100);
+    r.strain = clamp(b.strain + 10 + rounds * 2 + Math.ceil((st.orders || 0) / 2) + (st.routed ? 8 : 0), 0, 100);
+    r.battles = b.battles + 1;
     return r;
   },
   mix(list) {
     // جيوش متعددة في معركة واحدة: متوسط موزون بالرجال
     const tot = list.reduce((t, x) => t + x.w, 0);
     if (!tot) return this.base();
-    const r = { fat: 0, mor: 0, ammo: 0, coh: 0, sup: 0 };
+    const r = { fat: 0, mor: 0, ammo: 0, coh: 0, sup: 0, strain: 0 };
     for (const x of list) for (const k in r) r[k] += (x.r[k] == null ? this.base()[k] : x.r[k]) * x.w / tot;
     for (const k in r) r[k] = Math.round(r[k]);
+    r.battles = Math.max(0, ...list.filter((x) => x.w > 0).map((x) => x.r.battles || 0));
     return r;
   },
 };
@@ -526,7 +657,7 @@ Object.assign(WarSim.prototype, {
     const fgood = Object.entries(foe.ledger).filter(([k, v]) => LEDGER_TXT[k] && v >= 8 && k !== 'rout' && k !== 'pursuit').sort((a, b) => b[1] - a[1]);
     const cost = fgood.slice(0, 2).map(([k, v]) => LEDGER_TXT[k](v, foe, this));
     for (const d of this.decisions.filter((x) => x.side === s.i && x.weight > 0).sort((a, b) => b.weight - a.weight).slice(0, 2)) cost.push(d.text);
-    const R0 = s.ready;
+    const R0 = s.initialReady || s.ready;
     if (R0.fat >= 30) cost.push(`دخل المعركة متعباً (التعب ${Math.round(R0.fat)} من 100)`);
     if (R0.coh <= 70) cost.push(`دخل المعركة بتماسك ${Math.round(R0.coh)} من 100 بعد قتال سابق`);
     if (R0.ammo <= 50 && this.roleMen(s, ['missile', 'skirm']) > 0) cost.push(`سهام قليلة منذ البداية (${Math.round(R0.ammo)}٪)`);
@@ -544,7 +675,8 @@ Object.assign(WarSim.prototype, {
       if (q) bits.push('ونُفّذ بعض أوامره بإتقان');
       if (bad) bits.push('وتعثر تنفيذ بعضها');
       if ((s.orderLog || []).some((o) => ORDERS[o.k].unlock)) bits.push('واستعمل مناورة لا يعرفها إلا أمثاله');
-      if (s.cmdAlive === false) bits.push(s.cmdFate === 'captured' ? 'ثم أُسر' : 'ثم سقط في الميدان');
+      const fate = this.resolvedFates?.[g.id] || (s.cmdAlive === false ? s.cmdFate || 'killed' : null);
+      if (fate) bits.push(fate === 'captured' ? 'ثم أُسر' : 'ثم سقط في الميدان');
       else if (s.cmdWounded && !s.cmdHurt) bits.push('وجُرح أثناء القتال');
       else if (s.cmdHurt) bits.push('وقاتل وهو جريح من معركة سابقة');
       role = bits.join(' ') + '.';
@@ -554,7 +686,7 @@ Object.assign(WarSim.prototype, {
     const after = this.sideAfter(s);
     const before = Ready.score(R0, { hurt: s.cmdHurt }).total;
     const rNext = Ready.after(R0, after);
-    return { worked, cost: cost.slice(0, 4), role, lostBy, after, readyBefore: before, readyAfter: Ready.score(rNext, { hurt: after.cmdHurt }).total, readyNext: rNext };
+    return { worked, cost: cost.slice(0, 4), role, lostBy, after, readyBefore: before, readyAfter: Ready.score(rNext, { hurt: after.cmdHurt }).total, readyNext: rNext, factors: s.initialFactors || this.factorSnapshot(s) };
   },
   // حكم أدق من منظور كل طرف
   verdictFor(i, rep) {

@@ -189,7 +189,7 @@ Object.assign(Game, {
       if (!WX.alive(lord)) { V.overlord = null; continue; }
       // الجزية
       const trib = Math.max(0, Math.round(this.economy(v).gold * 0.15));
-      V.gold -= trib; this.f(lord).gold += trib;
+      if (!this.settleEconomy) { V.gold -= trib; this.f(lord).gold += trib; }
       // حروب المتبوع حروب التابع، وأعداء التابع أعداء المتبوع
       for (const c of this.aliveMajors()) {
         if (c === v || c === lord || this.f(c).kind === 'horde') continue;
@@ -307,7 +307,7 @@ Object.assign(Game, {
       g.avenging = true;
       r.army.regs.push(this.newReg('cavalry'), this.newReg('spear'));
       f.gold -= 120;
-      this.chronicle('war', `${g.name} يقود جيشاً ليأخذ بثأر أبيه من ${this.fname(g.vendetta)}.`, { fids: [g.fid, g.vendetta], imp: 3 });
+      this.chronicle('war', `${g.name} يقود جيشاً وفاءً بعهد الثأر من ${this.fname(g.vendetta)}.`, { fids: [g.fid, g.vendetta], imp: 3 });
       if (g.vendetta === this.S.player) this.alert('imp', `${g.name} يقود جيشاً طالباً الثأر منك`, { icon: 'drop', node: site.id });
     }
   },

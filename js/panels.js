@@ -27,7 +27,7 @@ function unitHelp(e, r) {
   const d = UNITS[r.type];
   Help.show(e.currentTarget, null, {
     title: d.name, value: r.men + ' رجل',
-    lines: [['الهجوم', d.atk], ['الدفاع', d.def], d.missile ? ['الرمي', d.missile] : null, d.charge ? ['الانقضاض', d.charge] : null, r.exp ? ['الخبرة', '★'.repeat(r.exp)] : null, d.upkeep ? ['الكلفة كل دور', d.upkeep * (r.merc ? 1.8 : 1)] : null].filter(Boolean),
+    lines: [['الهجوم', d.atk], ['الدفاع', d.def], d.missile ? ['الرمي', d.missile] : null, d.charge ? ['الانقضاض', d.charge] : null, r.exp ? ['الخبرة', '★'.repeat(r.exp)] : null, d.upkeep ? ['الكلفة كل دور', Game.unitUpkeep(r)] : null].filter(Boolean),
     note: d.desc + (r.merc ? ' (مرتزقة)' : ''),
   });
 }
@@ -125,6 +125,7 @@ const Panels = {
       kv.appendChild(xstat('manpower', Math.floor(n.manpower), () => Explain.cityManpower(n), { cls: n.manpower < 60 ? 'warn' : '', label: 'رجال' }));
     } else if (intel >= 1) kv.appendChild(hstat('pop', n.pop.toLocaleString('en')));
     body.appendChild(kv);
+    if(n.region){const def=Game.sc.nodes.find(x=>x.id===n.id);body.appendChild(h('p',{class:'resource-note'},n.region+' · '+Game.resourceOf(n).name+(def&&def.context?' · '+def.context:'')));}
     // ——— التحذيرات ———
     if (bs.length) {
       const sf = bs[0].fid;
@@ -290,7 +291,7 @@ const Panels = {
     const r = a.regs[i];
     UI.modal({
       title: 'تسريح الوحدة؟', icon: 'close',
-      body: h('p', null, `${UNITS[r.type].name} (${r.men} رجل)، يوفّر ${Math.round(UNITS[r.type].upkeep * (r.merc ? 1.8 : 1))} ذهباً كل دور.${r.merc ? '' : ' يعود معظم الرجال إلى القوى البشرية للمدينة.'}`),
+      body: h('p', null, `${UNITS[r.type].name} (${r.men} رجل)، يوفّر ${Game.unitUpkeep(r)} ذهباً كل دور.${r.merc ? '' : ' يعود معظم الرجال إلى القوى البشرية للمدينة.'}`),
       buttons: [
         { label: 'سرّح', danger: true, onClick: () => { Game.disband(a, i); scene.afterAction(Game.node(a.node)); } },
         { label: 'إلغاء' },
@@ -906,6 +907,7 @@ const Panels = {
       if (!cs.length) body.appendChild(h('p', { class: 'hint' }, 'لا أسرى لديك. يقع القادة في الأسر حين تُباد جيوشهم أو يسقط حرسهم.'));
       for (const g of cs) body.appendChild(h('div', { class: 'acard' }, this.genCard(g, h('p', { class: 'small' }, `من ${Game.fname(g.fid)} · أسير منذ ${Game.S.turn - g.since} أدوار`)), ib('scales', 'قرّر مصيره', { class: 'btn', onclick: () => this.captiveDialog(scene, g) })));
     } else if (tab === 'budget') {
+      if(this.treasuryBody){this.treasuryBody(scene,body);return;}
       const e = Game.economy(P);
       body.appendChild(h('div', { class: 'kv' },
         xstat('gold', F.gold, () => Explain.treasury(P), { label: 'الخزينة' }),
@@ -1372,6 +1374,7 @@ const Panels = {
         if (closeFn) closeFn();
         if (Game.track) Game.track('battle:auto');
         const out = Game.autoResolve(enc);
+        if (out === 'cancel') { UI.toast('لم يبدأ اقتحام؛ واصل الحصار وجهّز وسيلة لعبور الأسوار.'); resolve('cancel'); return; }
         this.autoResult(enc, out, () => resolve(out));
       };
       const buttons = [

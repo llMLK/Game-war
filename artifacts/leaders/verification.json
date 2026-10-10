@@ -1,0 +1,300 @@
+{
+  "results": [
+    {
+      "viewport": [
+        1440,
+        900
+      ],
+      "recruit": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      },
+      "negotiate": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      },
+      "profile": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      },
+      "profileBottom": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      }
+    },
+    {
+      "viewport": [
+        1024,
+        768
+      ],
+      "recruit": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      },
+      "negotiate": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      },
+      "profile": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      },
+      "profileBottom": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "recruit": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      },
+      "negotiate": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      },
+      "profile": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      },
+      "profileBottom": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "recruit": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      },
+      "negotiate": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      },
+      "profile": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      },
+      "profileBottom": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "recruit": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      },
+      "negotiate": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      },
+      "profile": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      },
+      "profileBottom": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "recruit": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      },
+      "negotiate": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      },
+      "profile": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      },
+      "profileBottom": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "recruit": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      },
+      "negotiate": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      },
+      "profile": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      },
+      "profileBottom": {
+        "fits": true,
+        "bodyFits": true,
+        "footerFits": true,
+        "layoutOverflow": [],
+        "dir": "rtl",
+        "forbidden": false,
+        "minButton": 44
+      }
+    }
+  ],
+  "profilesChecked": 40,
+  "errors": []
+}

@@ -73,7 +73,7 @@ const WORLD_DATA = {
     routes: [
       { key: 'silk', name: 'طريق الحرير', path: ['kufa', 'mosul', 'raqqa', 'aleppo', 'antioch', 'tarsus'] },
       { key: 'fur', name: 'طريق الفراء', path: ['atil', 'samandar', 'derbent', 'dvin', 'trebizond'] },
-      { key: 'incense', name: 'طريق البخور', path: ['kufa', 'palmyra', 'damascus', 'antioch'] },
+      { key: 'incense', name: 'طريق البخور', path: ['sanaa', 'mecca', 'medina', 'aqaba', 'damascus', 'homs', 'aleppo', 'antioch'] },
     ],
   },
 };
@@ -347,10 +347,20 @@ Object.assign(Game, {
     this.S.route = r ? { key: r.key, name: r.name, path: r.path.filter((id) => this.node(id)), bad: 0, dead: false } : null;
   },
   routeDef(key) { return (this.wd().routes || []).find((r) => r.key === key) || null; },
+  // Keep progress and escorts when an older atlas route contains removed links.
+  migrateAtlasRoute() {
+    const r = this.S.route;
+    if (!r || !Array.isArray(r.path)) return;
+    const valid = (path) => path.length > 1 && path.every((id, i) => this.node(id) && (!i || this.edge(path[i - 1], id)));
+    if (valid(r.path)) return;
+    const def = this.routeDef(r.key);
+    if (def && valid(def.path)) r.path = [...def.path];
+  },
   // حالة مقطع من طريق القوافل مع سببه وعلاجه. القوافل تعود وحدها حين يزول السبب
   routeSegState(a, b) {
     const A = this.node(a), B = this.node(b);
     if (!A || !B) return { ok: false, cause: 'gone', text: 'مقطع مفقود' };
+    if (!this.edge(a, b)) return { ok: false, cause: 'gone', text: 'لا يوجد طريق مباشر بين المدينتين', fix: 'افتح الأطلس لعرض وصلات الطريق الحالية.' };
     const r = this.S.route;
     if (r && r.dead) return { ok: false, cause: 'collapse', text: 'الطريق كله منقطع: التجار يبحثون عن بديل', fix: 'حدث تاريخي: لا يُستأنف هذا الطريق. تابع سباق الطريق الجديد في أحداث العالم واستثمر فيه.', story: true };
     for (const n of [A, B]) {
