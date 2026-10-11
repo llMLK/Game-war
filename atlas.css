@@ -78,4 +78,15 @@ button:focus-visible,input:focus-visible{outline:2px solid #e2c481;outline-offse
  .atlas-dialog .modal-head{margin-bottom:6px}.atlas-dialog .atlas-hint{font-size:12px}
 }
 @media(max-width:350px) and (orientation:portrait){.nav-btn{min-width:42px}.end-turn{width:calc(100% - 184px)}.hud-pill{padding:0 5px}.hud-pill.gold small,.hud-pill.food small{font-size:9px}}
+
+/* Phase F: stable, reachable touch controls; feedback never intercepts a tap. */
+.end-turn > *{pointer-events:none}
+.end-turn > span{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.end-turn:active:not(:disabled){transform:none}
+.end-turn{touch-action:manipulation}
+.end-turn small{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.end-turn[aria-busy="true"]{background:#735629;color:#fff4df;cursor:progress;font-size:12.5px}
+.turn-status{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);pointer-events:none}
+.undo-bar .chip{min-width:44px;min-height:44px;flex-shrink:0}
+.undo-bar > span{min-width:0}
 @media(orientation:portrait) and (max-height:650px){.sheet{height:41%;max-height:calc(100% - 260px)}.sheet-head{padding:6px 10px}.sheet-body{padding:10px}}

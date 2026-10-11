@@ -84,13 +84,29 @@ Object.assign(Game, {
 // ——— التراجع: للأفعال العادية فقط، وما دام لم يتغير شيء يجعله استغلالاً ———
 const Undo = {
   stack: [],
-  push(e) { e.turn = Game.S.turn; this.stack.push(e); if (this.stack.length > 12) this.stack.shift(); UndoBar.show(); },
-  valid(e) { return e && e.turn === Game.S.turn && (!e.valid || e.valid()); },
-  top() { while (this.stack.length && !this.valid(this.stack[this.stack.length - 1])) this.stack.pop(); return this.stack[this.stack.length - 1] || null; },
+  dismissed: new Set(),
+  serial: 0,
+  state: null,
+  turn: null,
+  // مراجع التراجع تخص هذه الحملة وهذا الدور فقط، ولا تُحفظ مع بيانات اللعبة.
+  sync() {
+    const state = Game.S || null, turn = state ? state.turn : null;
+    if (this.state === state && this.turn === turn) return;
+    this.stack = []; this.dismissed.clear(); this.state = state; this.turn = turn;
+  },
+  pruneDismissed() {
+    const live = new Set(this.stack.map((e) => e.undoToken));
+    for (const token of this.dismissed) if (!live.has(token)) this.dismissed.delete(token);
+  },
+  push(e) { this.sync(); e.turn = Game.S.turn; e.undoToken = ++this.serial; this.stack.push(e); if (this.stack.length > 12) this.stack.shift(); this.pruneDismissed(); UndoBar.show(); },
+  valid(e) { return e && Game.S && e.turn === Game.S.turn && (!e.valid || e.valid()); },
+  top() { this.sync(); while (this.stack.length && !this.valid(this.stack[this.stack.length - 1])) this.stack.pop(); this.pruneDismissed(); return this.stack[this.stack.length - 1] || null; },
+  dismiss(token) { const e = this.top(); if (e && e.undoToken === token) this.dismissed.add(token); UndoBar.show(); },
   run() {
     const e = this.top();
     if (!e) return;
     this.stack.pop();
+    this.pruneDismissed();
     e.undo();
     Game.validate();
     Game.save();
@@ -99,22 +115,32 @@ const Undo = {
     Sheets.render();
     UndoBar.show();
   },
-  clear() { this.stack = []; UndoBar.show(); },
+  clear() { this.stack = []; this.dismissed.clear(); this.state = Game.S || null; this.turn = this.state ? this.state.turn : null; UndoBar.show(); },
 };
 const UndoBar = {
   el: null,
   show() {
-    const e = Game.S ? Undo.top() : null;
-    if (!e) { if (this.el) this.el.hidden = true; return; }
+    const e = Undo.top();
+    if (!e || Undo.dismissed.has(e.undoToken)) { if (this.el) this.el.hidden = true; return; }
     if (!this.el || !document.body.contains(this.el)) {
-      this.el = h('div', { class: 'undo-bar' });
+      this.label = h('span');
+      this.el = h('div', { class: 'undo-bar', role: 'status' }, this.label,
+        h('button', { type: 'button', class: 'chip on', 'aria-label': 'تراجع عن الفعل الأخير', onclick: (event) => { event.stopPropagation(); Undo.run(); } }, icon('retreat'), 'تراجع'),
+        h('button', { type: 'button', class: 'chip ghost', title: 'إخفاء', 'aria-label': 'إخفاء إشعار التراجع', onclick: (event) => { event.stopPropagation(); Undo.dismiss(this.token); } }, icon('close')));
       (App.ui || document.body).appendChild(this.el);
     }
+    this.token = e.undoToken;
+    this.el.dataset.undoToken = String(e.undoToken);
+    this.label.textContent = e.label;
     this.el.hidden = false;
-    this.el.innerHTML = '';
-    this.el.append(h('span', null, e.label), h('button', { class: 'chip on', onclick: () => Undo.run() }, icon('retreat'), 'تراجع'), h('button', { class: 'chip ghost', title: 'إخفاء', onclick: () => { this.el.hidden = true; } }, icon('close')));
   },
 };
+
+// لا يجوز أن تعمل مراجع فعل قديم على حملة محمّلة أو جديدة؛ فشل التحميل لا يمس الحملة الحالية.
+for (const name of ['load', 'newGame']) {
+  const start = Game[name];
+  Game[name] = function (...args) { const state = start.apply(this, args); if (state) Undo.clear(); return state; };
+}
 
 // الأفعال القابلة للتراجع
 Object.assign(Game, {

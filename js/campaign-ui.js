@@ -11,6 +11,7 @@ class CampaignScene {
     this.selArmy = null;
     this.selNode = null;
     this.busy = false;
+    this.turnFlow = { state: 'idle', detail: '' };
     this.t = 0;
     this.fly = null;
     this.art = new MapArt(Game.sc, { colorOf: (o) => (Game.f(o) ? Game.f(o).color : NEUTRAL.color) });
@@ -593,18 +594,20 @@ class CampaignScene {
       const choice = await Panels.siegeChoice(this, a, n);
       if (choice === 'cancel') return;
       this.busy = true;
+      this.activityReason = `جارٍ إكمال الحصار عند ${n.name}`;
       try {
         const r = await Game.executeMove(a, n.id, { declare });
         if (r.err) UI.toast(r.err);
         else if (choice === 'assault') await Game.resolveEnc(Game.makeEnc('assault', Game.besiegers(n.id).filter((b) => b.fid === this.P), n.id));
-      } finally { this.busy = false; }
+      } finally { this.busy = false; this.activityReason = ''; }
       this.cancelMove(true);
       this.afterAction(n, choice === 'assault' ? null : 'siege');
       return;
     }
     this.busy = true;
+    this.activityReason = `جارٍ إكمال حركة الجيش نحو ${n.name}`;
     let r;
-    try { r = await Game.executeMove(a, n.id, { declare }); } finally { this.busy = false; }
+    try { r = await Game.executeMove(a, n.id, { declare }); } finally { this.busy = false; this.activityReason = ''; }
     if (r.err) { UI.toast(r.err); return; }
     if (r.cancel) { this.refresh(); return; }
     const alive = Game.S.armies.includes(a);
@@ -614,11 +617,13 @@ class CampaignScene {
 
   async runEnc(enc) {
     this.busy = true;
-    try { await Game.resolveEnc(enc); } finally { this.busy = false; }
+    this.activityReason = 'جارٍ إكمال المعركة ونتائجها';
+    try { await Game.resolveEnc(enc); } finally { this.busy = false; this.activityReason = ''; }
   }
 
   // بعد كل إجراء: تحقق، حفظ، تحديث
   afterAction(focus, win) {
+    if (!this.busy && !this.turnFlow.recovery && (this.turnFlow.state === 'completed' || this.turnFlow.state === 'blocked')) this.turnStatus('idle');
     Game.validate();
     if (Game.track) Game.track('action');
     Game.save();
@@ -658,7 +663,12 @@ class CampaignScene {
       this.hud.diplo, this.hud.king, this.hud.chron,
       nb('menu', 'القائمة', 'القائمة', () => Panels.menu(this)),
     ));
-    this.hud.end = h('button', { class: 'btn primary end-turn', onclick: () => this.endTurn() });
+    // Keep the touch target and its children alive across HUD refreshes.
+    this.hud.endLabel = h('span', null, 'إنهاء الدور');
+    this.hud.endDetail = h('small', { hidden: true });
+    this.hud.end = h('button', { class: 'btn primary end-turn', type: 'button', onclick: () => this.endTurn() }, this.hud.endLabel, this.hud.endDetail);
+    this.hud.endStatus = h('span', { class: 'turn-status', role: 'status', 'aria-live': 'polite', 'aria-atomic': 'true' });
+    this.root.appendChild(this.hud.endStatus);
     this.root.appendChild(this.hud.end);
     const zoom=(f)=>{this.fly=null;const v=this.visCenter();this.cam.zoomAt(v.x,v.y,f);};
     this.root.appendChild(h('div',{class:'map-tools'},
@@ -711,10 +721,7 @@ class CampaignScene {
       this.hud.chap.hidden = !ch;
       if (ch) { this.hud.chap.innerHTML = ''; this.hud.chap.append(icon('book'), ch.short); }
     }
-    const idle = Game.armiesOf(P).filter((a) => a.mp >= Game.mpMax(a) && a.regs.length && !a.siege).length;
-    this.hud.end.innerHTML = '';
-    this.hud.end.appendChild(h('span', null, 'إنهاء الدور'));
-    if (idle) this.hud.end.appendChild(h('small', null, `${idle} ${idle === 1 ? 'جيش ينتظر' : 'جيوش تنتظر'}`));
+    this.renderTurnControl();
     const pend = Game.captivesHeldBy(P).length;
     this.setBadge(this.hud.king, pend);
     const call = f.allyCall ? 1 : 0;
@@ -745,42 +752,109 @@ class CampaignScene {
   }
 
   // ——— نهاية الدور ———
+  renderTurnControl() {
+    if (!this.hud || !this.hud.end) return;
+    const flow = this.turnFlow;
+    const active = flow.state === 'processing' || flow.state === 'confirming';
+    const idle = Game.armiesOf(this.P).filter((a) => a.mp >= Game.mpMax(a) && a.regs.length && !a.siege).length;
+    const label = active ? (flow.state === 'confirming' ? 'قرار مطلوب' : 'جارٍ إنهاء الدور…') : 'إنهاء الدور';
+    const detail = flow.detail || (idle ? `${idle} ${idle === 1 ? 'جيش ينتظر' : 'جيوش تنتظر'}` : '');
+    if (this.hud.endLabel.textContent !== label) this.hud.endLabel.textContent = label;
+    if (this.hud.endDetail.textContent !== detail) this.hud.endDetail.textContent = detail;
+    this.hud.endDetail.hidden = !detail;
+    this.hud.end.dataset.state = flow.state;
+    this.hud.end.setAttribute('aria-busy', String(active));
+    this.hud.end.setAttribute('aria-disabled', String(active || !!flow.recovery || !!Game.S.over));
+    this.hud.end.title = detail || label;
+  }
+  turnStatus(state, detail = '') {
+    this.turnFlow.state = state;
+    this.turnFlow.detail = detail;
+    this.renderTurnControl();
+    this.hud.endStatus.textContent = detail;
+  }
+  turnBlocked(reason) {
+    this.turnStatus('blocked', reason);
+    UI.toast(reason);
+  }
+  recoverTurnDialog() {
+    if (UI.anyModal()) return;
+    UI.modal({
+      title: 'تعذر إكمال الدور', icon: 'warning', dismissable: false,
+      body: h('p', null, 'توقفت معالجة الدور بسبب خطأ. لن يُنفّذ الدور مرة أخرى فوق نتيجة جزئية. استعد الحالة التي سبقت الضغطة ثم حاول مجدداً.'),
+      buttons: [{ label: 'استعادة ما قبل إنهاء الدور', primary: true, onClick: () => {
+        if (Game.S !== this.turnFlow.recoveryState) { UI.toast('تغيرت الحملة؛ لن تُستعاد حالة الحملة السابقة'); return; }
+        Game.S = JSON.parse(this.turnFlow.recovery);
+        Game.normalizeState(); Game.validate(); Undo.clear(); Game.save();
+        const scene = new CampaignScene(); scene.introShown = true; App.setScene(scene);
+      } }, { label: 'البقاء هنا', ghost: true }],
+    });
+  }
   async endTurn() {
-    if (this.busy || Game.S.over) return;
+    if (this.turnFlow.recovery) { this.turnBlocked('يلزم استعادة الحالة السابقة بعد خطأ الدور'); this.recoverTurnDialog(); return; }
+    if (this.busy || this.turnFlow.state === 'processing' || this.turnFlow.state === 'confirming') {
+      const reason = this.turnFlow.state === 'processing' || this.turnFlow.state === 'confirming'
+        ? this.turnFlow.detail || 'جارٍ إكمال الدور الحالي'
+        : this.activityReason || 'جارٍ إكمال الإجراء الحالي؛ انتظر نهايته';
+      UI.toast(reason); this.hud.endStatus.textContent = reason; return;
+    }
+    if (Game.S.over) { this.turnBlocked('انتهت الحملة؛ لا يمكن بدء دور جديد'); return; }
+    if (UI.anyModal()) { this.turnBlocked('أكمل النافذة المفتوحة أو أغلقها أولاً'); return; }
+    const campaign = Game.S, checkpoint = JSON.stringify(campaign);
+    const current = () => Game.S === campaign;
     this.busy = true;
-    this.cancelMove(true);
-    const cur = Sheets.current();
-    if (cur) { if (cur.pinned) Sheets.minimize(cur.key); else Sheets.close(cur.key); }
-    Help.hide();
-    if (Game.track) Game.track('endTurn');
-    Undo.clear();
+    this.turnStatus('processing', 'بدأ إنهاء الدور');
     try {
+      this.cancelMove(true);
+      const cur = Sheets.current();
+      if (cur) { if (cur.pinned) Sheets.minimize(cur.key); else Sheets.close(cur.key); }
+      Help.hide();
+      if (Game.track) Game.track('endTurn');
+      Undo.clear();
       for (const fid of Game.majors()) {
         if (fid === this.P || !Game.f(fid).alive) continue;
         this.banner.hidden = false;
         this.banner.textContent = `دور ${Game.fname(fid)}…`;
+        this.turnStatus('processing', this.banner.textContent);
         await wait(160);
+        if (!current()) return;
         await CampaignAI.turn(fid);
+        if (!current()) return;
         this.refresh();
         if (Game.S.over) break;
       }
       this.banner.hidden = true;
       if (!Game.S.over) {
+        this.turnStatus('processing', 'تسوية الموارد وأحداث العالم');
         Game.endRound();
         if (Game.worldTick) await Game.worldTick();
+        if (!current()) return;
         Game.scanAlerts();
       }
       Game.save();
       this.refresh();
-      if (Game.S.over) { Panels.showEnd(this); return; }
+      if (Game.S.over) { this.turnStatus('completed', 'انتهت الحملة'); Panels.showEnd(this); return; }
       this.banner.hidden = false;
       this.banner.textContent = `${Game.season()} ${Game.year()}م`;
       setTimeout(() => { if (!this.busy) this.banner.hidden = true; }, 1500);
-      if (Game.pendingDecisions) await Game.pendingDecisions(this);
+      if (Game.pendingDecisions) {
+        this.turnStatus('confirming', 'مراجعة القرارات العاجلة');
+        await Game.pendingDecisions(this);
+        if (!current()) return;
+      }
       Panels.captivePrompts(this);
+      this.turnStatus('completed', `بدأ دورك ${Game.S.turn + 1}`);
+    } catch (error) {
+      if (!current()) return;
+      console.error('End turn failed', error);
+      this.turnFlow.recovery = checkpoint;
+      this.turnFlow.recoveryState = campaign;
+      this.turnBlocked('توقف الدور بسبب خطأ؛ استعد الحالة السابقة');
+      this.recoverTurnDialog();
     } finally {
       this.busy = false;
-      setTimeout(() => { this.banner.hidden = true; }, 1500);
+      if (current()) this.renderTurnControl();
+      setTimeout(() => { if (!this.busy) this.banner.hidden = true; }, 1500);
     }
   }
 }

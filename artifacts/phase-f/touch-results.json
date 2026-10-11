@@ -1,0 +1,4521 @@
+{
+  "engine": "Playwright/CDP real touch events, Chromium Edge; no physical phone available",
+  "attempts": 127,
+  "passed": 127,
+  "checks": [
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "undoRefreshes": 25,
+      "stackPreserved": true,
+      "newAction": true,
+      "refund": true
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "undoRefreshes": 25,
+      "stackPreserved": true,
+      "newAction": true,
+      "refund": true
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "undoRefreshes": 25,
+      "stackPreserved": true,
+      "newAction": true,
+      "refund": true
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "undoRefreshes": 25,
+      "stackPreserved": true,
+      "newAction": true,
+      "refund": true
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "undoRefreshes": 25,
+      "stackPreserved": true,
+      "newAction": true,
+      "refund": true
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "undoRefreshes": 25,
+      "stackPreserved": true,
+      "newAction": true,
+      "refund": true
+    },
+    {
+      "errorRecovery": true,
+      "noRepeatedSettlement": true
+    }
+  ],
+  "umayyad": true,
+  "saveReload": true,
+  "errors": [],
+  "records": [
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "name": "ordinary",
+      "expected": "start",
+      "feedbackMs": 5.600000023841858,
+      "automationMs": 493,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 5.600000023841858
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "name": "refresh-during-touch",
+      "expected": "start",
+      "feedbackMs": 2.200000047683716,
+      "automationMs": 94,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.200000047683716
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "name": "city-sheet",
+      "expected": "start",
+      "feedbackMs": 2.599999964237213,
+      "automationMs": 74,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.599999964237213
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "name": "minimized-sheet",
+      "expected": "start",
+      "feedbackMs": 3.900000035762787,
+      "automationMs": 76,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 3.900000035762787
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "name": "help-popup",
+      "expected": "start",
+      "feedbackMs": 2.300000011920929,
+      "automationMs": 79,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.300000011920929
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "name": "expanded-hud",
+      "expected": "start",
+      "feedbackMs": 2.399999976158142,
+      "automationMs": 146,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.399999976158142
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "name": "rapid-1",
+      "expected": "start",
+      "feedbackMs": 4.5,
+      "automationMs": 81,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 4.5
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "name": "rapid-2",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 67,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -242.0999999642372
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "name": "rapid-3",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 66,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -330.39999997615814
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "name": "rapid-4",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 63,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -418.39999997615814
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "name": "rapid-5",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 72,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -505.19999998807907
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "name": "rapid-6",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 66,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -592.8999999761581
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "name": "rapid-7",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 70,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -681
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "name": "rapid-8",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 69,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -767.8999999761581
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "name": "rapid-9",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 65,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -856.0999999642372
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "name": "rapid-10",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 73,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -944.3000000119209
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "name": "busy-action",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 73,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "idle",
+        "busy": true,
+        "feedback": "جارٍ إكمال حركة الجيش نحو دمشق",
+        "button": "إنهاء الدور4 جيوش تنتظر",
+        "feedbackMs": -20967
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "name": "busy-action",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 495,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "idle",
+        "busy": true,
+        "feedback": "جارٍ إكمال المعركة ونتائجها",
+        "button": "إنهاء الدور4 جيوش تنتظر",
+        "feedbackMs": -22634.5
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "name": "modal-overlay",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 82,
+      "hit": {
+        "end": false,
+        "tag": "modal-layer"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "idle",
+        "busy": false,
+        "feedback": "",
+        "button": "إنهاء الدور4 جيوش تنتظر",
+        "feedbackMs": 0
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "name": "campaign-ended",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 64,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "blocked",
+        "busy": false,
+        "feedback": "انتهت الحملة؛ لا يمكن بدء دور جديد",
+        "button": "إنهاء الدورانتهت الحملة؛ لا يمكن بدء دور جديد",
+        "feedbackMs": 1.5
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "name": "screenshot-processing",
+      "expected": "start",
+      "feedbackMs": 3.900000035762787,
+      "automationMs": 77,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 3.900000035762787
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "name": "ordinary",
+      "expected": "start",
+      "feedbackMs": 3.199999988079071,
+      "automationMs": 285,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 3.199999988079071
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "name": "refresh-during-touch",
+      "expected": "start",
+      "feedbackMs": 2.800000011920929,
+      "automationMs": 94,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.800000011920929
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "name": "city-sheet",
+      "expected": "start",
+      "feedbackMs": 2.899999976158142,
+      "automationMs": 70,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.899999976158142
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "name": "minimized-sheet",
+      "expected": "start",
+      "feedbackMs": 2.399999976158142,
+      "automationMs": 64,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.399999976158142
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "name": "help-popup",
+      "expected": "start",
+      "feedbackMs": 3.5,
+      "automationMs": 66,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 3.5
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "name": "expanded-hud",
+      "expected": "start",
+      "feedbackMs": 2.600000023841858,
+      "automationMs": 80,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.600000023841858
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "name": "rapid-1",
+      "expected": "start",
+      "feedbackMs": 3,
+      "automationMs": 98,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 3
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "name": "rapid-2",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 72,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -265.30000001192093
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "name": "rapid-3",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 70,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -372.5
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "name": "rapid-4",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 82,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -464.39999997615814
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "name": "rapid-5",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 84,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -573.8000000119209
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "name": "rapid-6",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 74,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -682.3000000119209
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "name": "rapid-7",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 77,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -772.3000000119209
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "name": "rapid-8",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 84,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -882.8000000119209
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "name": "rapid-9",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 75,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -991.1999999880791
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "name": "rapid-10",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 76,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -1099.8999999761581
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "name": "busy-action",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 68,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "idle",
+        "busy": true,
+        "feedback": "جارٍ إكمال حركة الجيش نحو دمشق",
+        "button": "إنهاء الدور4 جيوش تنتظر",
+        "feedbackMs": -43741.5
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "name": "busy-action",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 73,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "idle",
+        "busy": true,
+        "feedback": "جارٍ إكمال المعركة ونتائجها",
+        "button": "إنهاء الدور4 جيوش تنتظر",
+        "feedbackMs": -45260.80000001192
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "name": "modal-overlay",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 329,
+      "hit": {
+        "end": false,
+        "tag": "modal-layer"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "idle",
+        "busy": false,
+        "feedback": "",
+        "button": "إنهاء الدور4 جيوش تنتظر",
+        "feedbackMs": 0
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "name": "campaign-ended",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 88,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "blocked",
+        "busy": false,
+        "feedback": "انتهت الحملة؛ لا يمكن بدء دور جديد",
+        "button": "إنهاء الدورانتهت الحملة؛ لا يمكن بدء دور جديد",
+        "feedbackMs": 1.5999999642372131
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "name": "screenshot-processing",
+      "expected": "start",
+      "feedbackMs": 3.5,
+      "automationMs": 75,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 3.5
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "ordinary",
+      "expected": "start",
+      "feedbackMs": 2.5,
+      "automationMs": 95,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.5
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "refresh-during-touch",
+      "expected": "start",
+      "feedbackMs": 3.300000011920929,
+      "automationMs": 111,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 3.300000011920929
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "city-sheet",
+      "expected": "start",
+      "feedbackMs": 3.699999988079071,
+      "automationMs": 104,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 3.699999988079071
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "minimized-sheet",
+      "expected": "start",
+      "feedbackMs": 4.899999976158142,
+      "automationMs": 78,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 4.899999976158142
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "help-popup",
+      "expected": "start",
+      "feedbackMs": 3.5,
+      "automationMs": 67,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 3.5
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "expanded-hud",
+      "expected": "start",
+      "feedbackMs": 2.5,
+      "automationMs": 66,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.5
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "rapid-1",
+      "expected": "start",
+      "feedbackMs": 1.899999976158142,
+      "automationMs": 480,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 1.899999976158142
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "rapid-2",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 77,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -262.5
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "rapid-3",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 77,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -350.80000001192093
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "rapid-4",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 69,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -439
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "rapid-5",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 70,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -527.9000000357628
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "rapid-6",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 74,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -614.3000000119209
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "rapid-7",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 73,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -702.8000000119209
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "rapid-8",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 69,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -791.9000000357628
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "rapid-9",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 61,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -878.7000000476837
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "rapid-10",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 79,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -968.3000000119209
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "busy-action",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 71,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "idle",
+        "busy": true,
+        "feedback": "جارٍ إكمال حركة الجيش نحو دمشق",
+        "button": "إنهاء الدور4 جيوش تنتظر",
+        "feedbackMs": -68745.10000002384
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "busy-action",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 80,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "idle",
+        "busy": true,
+        "feedback": "جارٍ إكمال المعركة ونتائجها",
+        "button": "إنهاء الدور4 جيوش تنتظر",
+        "feedbackMs": -70147
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "modal-overlay",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 498,
+      "hit": {
+        "end": false,
+        "tag": "modal-layer"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "idle",
+        "busy": false,
+        "feedback": "",
+        "button": "إنهاء الدور4 جيوش تنتظر",
+        "feedbackMs": 0
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "campaign-ended",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 74,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "blocked",
+        "busy": false,
+        "feedback": "انتهت الحملة؛ لا يمكن بدء دور جديد",
+        "button": "إنهاء الدورانتهت الحملة؛ لا يمكن بدء دور جديد",
+        "feedbackMs": 1.5999999642372131
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "name": "screenshot-processing",
+      "expected": "start",
+      "feedbackMs": 3,
+      "automationMs": 69,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 3
+      }
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "name": "ordinary",
+      "expected": "start",
+      "feedbackMs": 2.800000011920929,
+      "automationMs": 321,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.800000011920929
+      }
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "name": "refresh-during-touch",
+      "expected": "start",
+      "feedbackMs": 2.800000011920929,
+      "automationMs": 86,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.800000011920929
+      }
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "name": "city-sheet",
+      "expected": "start",
+      "feedbackMs": 3.600000023841858,
+      "automationMs": 80,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 3.600000023841858
+      }
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "name": "minimized-sheet",
+      "expected": "start",
+      "feedbackMs": 3.199999988079071,
+      "automationMs": 76,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 3.199999988079071
+      }
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "name": "help-popup",
+      "expected": "start",
+      "feedbackMs": 2,
+      "automationMs": 66,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2
+      }
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "name": "expanded-hud",
+      "expected": "start",
+      "feedbackMs": 2.400000035762787,
+      "automationMs": 97,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.400000035762787
+      }
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "name": "rapid-1",
+      "expected": "start",
+      "feedbackMs": 2.5,
+      "automationMs": 127,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.5
+      }
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "name": "rapid-2",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 78,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -266.19999998807907
+      }
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "name": "rapid-3",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 74,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -356.5999999642372
+      }
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "name": "rapid-4",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 66,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -445.0999999642372
+      }
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "name": "rapid-5",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 77,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -536
+      }
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "name": "rapid-6",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 64,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -623.8000000119209
+      }
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "name": "rapid-7",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 77,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -714.5
+      }
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "name": "rapid-8",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 62,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -802.6999999880791
+      }
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "name": "rapid-9",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 65,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -876.5
+      }
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "name": "rapid-10",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 69,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -966
+      }
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "name": "busy-action",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 66,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "idle",
+        "busy": true,
+        "feedback": "جارٍ إكمال حركة الجيش نحو دمشق",
+        "button": "إنهاء الدور4 جيوش تنتظر",
+        "feedbackMs": -92442.30000001192
+      }
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "name": "busy-action",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 282,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "idle",
+        "busy": true,
+        "feedback": "جارٍ إكمال المعركة ونتائجها",
+        "button": "إنهاء الدور4 جيوش تنتظر",
+        "feedbackMs": -93935.80000001192
+      }
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "name": "modal-overlay",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 560,
+      "hit": {
+        "end": false,
+        "tag": "modal-layer"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "idle",
+        "busy": false,
+        "feedback": "",
+        "button": "إنهاء الدور4 جيوش تنتظر",
+        "feedbackMs": 0
+      }
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "name": "campaign-ended",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 78,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "blocked",
+        "busy": false,
+        "feedback": "انتهت الحملة؛ لا يمكن بدء دور جديد",
+        "button": "إنهاء الدورانتهت الحملة؛ لا يمكن بدء دور جديد",
+        "feedbackMs": 1.4000000357627869
+      }
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "name": "screenshot-processing",
+      "expected": "start",
+      "feedbackMs": 3.5,
+      "automationMs": 65,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 3.5
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "name": "ordinary",
+      "expected": "start",
+      "feedbackMs": 3.399999976158142,
+      "automationMs": 274,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 3.399999976158142
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "name": "refresh-during-touch",
+      "expected": "start",
+      "feedbackMs": 3.100000023841858,
+      "automationMs": 94,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 3.100000023841858
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "name": "city-sheet",
+      "expected": "start",
+      "feedbackMs": 3.199999988079071,
+      "automationMs": 103,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 3.199999988079071
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "name": "minimized-sheet",
+      "expected": "start",
+      "feedbackMs": 2.100000023841858,
+      "automationMs": 77,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.100000023841858
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "name": "help-popup",
+      "expected": "start",
+      "feedbackMs": 2.300000011920929,
+      "automationMs": 71,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.300000011920929
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "name": "expanded-hud",
+      "expected": "start",
+      "feedbackMs": 2.100000023841858,
+      "automationMs": 71,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.100000023841858
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "name": "rapid-1",
+      "expected": "start",
+      "feedbackMs": 2,
+      "automationMs": 82,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "name": "rapid-2",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 63,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -250.19999998807907
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "name": "rapid-3",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 73,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -339.60000002384186
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "name": "rapid-4",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 62,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -411.69999998807907
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "name": "rapid-5",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 76,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -501.10000002384186
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "name": "rapid-6",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 62,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -574.3999999761581
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "name": "rapid-7",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 71,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -663.1999999880791
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "name": "rapid-8",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 75,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -753.3000000119209
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "name": "rapid-9",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 73,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -842.6999999880791
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "name": "rapid-10",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 63,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -915.1000000238419
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "name": "busy-action",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 68,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "idle",
+        "busy": true,
+        "feedback": "جارٍ إكمال حركة الجيش نحو دمشق",
+        "button": "إنهاء الدور4 جيوش تنتظر",
+        "feedbackMs": -115363.69999998808
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "name": "busy-action",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 112,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "idle",
+        "busy": true,
+        "feedback": "جارٍ إكمال المعركة ونتائجها",
+        "button": "إنهاء الدور4 جيوش تنتظر",
+        "feedbackMs": -116865.10000002384
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "name": "modal-overlay",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 84,
+      "hit": {
+        "end": false,
+        "tag": "modal-layer"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "idle",
+        "busy": false,
+        "feedback": "",
+        "button": "إنهاء الدور4 جيوش تنتظر",
+        "feedbackMs": 0
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "name": "campaign-ended",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 81,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "blocked",
+        "busy": false,
+        "feedback": "انتهت الحملة؛ لا يمكن بدء دور جديد",
+        "button": "إنهاء الدورانتهت الحملة؛ لا يمكن بدء دور جديد",
+        "feedbackMs": 1.5
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "name": "screenshot-processing",
+      "expected": "start",
+      "feedbackMs": 4.600000023841858,
+      "automationMs": 70,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 4.600000023841858
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "name": "ordinary",
+      "expected": "start",
+      "feedbackMs": 3.199999988079071,
+      "automationMs": 90,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 3.199999988079071
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "name": "refresh-during-touch",
+      "expected": "start",
+      "feedbackMs": 2.200000047683716,
+      "automationMs": 88,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.200000047683716
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "name": "city-sheet",
+      "expected": "start",
+      "feedbackMs": 2.700000047683716,
+      "automationMs": 72,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.700000047683716
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "name": "minimized-sheet",
+      "expected": "start",
+      "feedbackMs": 2.300000011920929,
+      "automationMs": 80,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.300000011920929
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "name": "help-popup",
+      "expected": "start",
+      "feedbackMs": 2.300000011920929,
+      "automationMs": 481,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.300000011920929
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "name": "expanded-hud",
+      "expected": "start",
+      "feedbackMs": 2.299999952316284,
+      "automationMs": 65,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.299999952316284
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "name": "rapid-1",
+      "expected": "start",
+      "feedbackMs": 2.300000011920929,
+      "automationMs": 72,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.300000011920929
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "name": "rapid-2",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 78,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -267.39999997615814
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "name": "rapid-3",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 74,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -356.89999997615814
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "name": "rapid-4",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 61,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -428.69999998807907
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "name": "rapid-5",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 61,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -500.69999998807907
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "name": "rapid-6",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 60,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -572.3999999761581
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "name": "rapid-7",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 62,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -643.8999999761581
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "name": "rapid-8",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 60,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -716.1000000238419
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "name": "rapid-9",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 62,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -787.8000000119209
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "name": "rapid-10",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 62,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 1,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": false,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": -860.1000000238419
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "name": "busy-action",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 65,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "idle",
+        "busy": true,
+        "feedback": "جارٍ إكمال حركة الجيش نحو دمشق",
+        "button": "إنهاء الدور4 جيوش تنتظر",
+        "feedbackMs": -138844.60000002384
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "name": "busy-action",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 74,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "idle",
+        "busy": true,
+        "feedback": "جارٍ إكمال المعركة ونتائجها",
+        "button": "إنهاء الدور4 جيوش تنتظر",
+        "feedbackMs": -140317.90000003576
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "name": "modal-overlay",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 85,
+      "hit": {
+        "end": false,
+        "tag": "modal-layer"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "idle",
+        "busy": false,
+        "feedback": "",
+        "button": "إنهاء الدور4 جيوش تنتظر",
+        "feedbackMs": 0
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "name": "campaign-ended",
+      "expected": "blocked",
+      "feedbackMs": null,
+      "automationMs": 70,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "blocked",
+        "busy": false,
+        "feedback": "انتهت الحملة؛ لا يمكن بدء دور جديد",
+        "button": "إنهاء الدورانتهت الحملة؛ لا يمكن بدء دور جديد",
+        "feedbackMs": 1.5
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "name": "screenshot-processing",
+      "expected": "start",
+      "feedbackMs": 2.399999976158142,
+      "automationMs": 76,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 2.399999976158142
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "name": "world-error",
+      "expected": "start",
+      "feedbackMs": 3.100000023841858,
+      "automationMs": 70,
+      "hit": {
+        "end": true,
+        "tag": "btn primary end-turn"
+      },
+      "before": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0
+      },
+      "after": {
+        "counts": {
+          "settlements": 0,
+          "ai": 0,
+          "world": 0
+        },
+        "turn": 0,
+        "state": "processing",
+        "busy": true,
+        "feedback": "دور الروم…",
+        "button": "جارٍ إنهاء الدور…دور الروم…",
+        "feedbackMs": 3.100000023841858
+      }
+    }
+  ]
+}
