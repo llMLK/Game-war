@@ -15,9 +15,9 @@ const SaveSafety = {
     if (!Number.isInteger(S.turn) || S.turn < 0 || !obj(S.factions) || typeof S.player !== 'string' || !Object.hasOwn(S.factions, S.player) || !obj(S.factions[S.player]) ||
         !Object.hasOwn(SCENARIOS.umayyad.factions, S.player) || !Array.isArray(S.nodes) || !S.nodes.length || !Array.isArray(S.armies) ||
         (S.v > 1 && !obj(S.gens)) || (S.difficulty && !['easy', 'normal', 'hard'].includes(S.difficulty))) return 'بيانات الحملة ناقصة أو تالفة؛ بقي الحفظ دون تعديل';
-    if (Object.values(S.factions).some(f => !obj(f)) ||
-        S.nodes.some(n => !obj(n) || typeof n.id !== 'string' || !obj(S.factions[n.owner])) ||
-        S.armies.some(a => !obj(a) || !obj(S.factions[a.fid]) || !Array.isArray(a.regs)) ||
+    if (Object.values(S.factions).some(f => !obj(f) || (f.name !== undefined && typeof f.name !== 'string')) ||
+        S.nodes.some(n => !obj(n) || typeof n.id !== 'string' || typeof n.owner !== 'string' || !Object.hasOwn(S.factions, n.owner) || !obj(S.factions[n.owner])) ||
+        S.armies.some(a => !obj(a) || typeof a.fid !== 'string' || !Object.hasOwn(S.factions, a.fid) || !obj(S.factions[a.fid]) || !Array.isArray(a.regs)) ||
         (S.gens && Object.values(S.gens).some(g => !obj(g)))) return 'بيانات المدن أو القوات ناقصة؛ بقي الحفظ دون تعديل';
     return null;
   },

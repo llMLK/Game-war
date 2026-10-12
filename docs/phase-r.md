@@ -55,3 +55,7 @@ Root verification ran nine migrated/affected suites in an isolated snapshot: 9/9
 ### Additional R1 identity correction found during final review
 
 The inherited-property guard allowed direct requests with __proto__/constructor/toString to replace the active campaign; an explicit metadata player mismatch was also accepted. Seven focused negative tests reproduced five failures (2/7 passed). Canonical own-faction checks and metadata/player consistency now reject those inputs before migration; an eighth malformed-player-object startup case also passes. No supported campaign behavior or balance parameters changed. This follow-up is recorded separately rather than rewriting R1/R2 history. Only the identity guard hunk of campaign.js is staged here; pending R3 removals remain in the working tree.
+
+### Complete coercion-safe startup boundary
+
+The same negative-input review added six cases: three inherited difficulty names, malformed node-owner/army-faction objects, and non-string faction names. All six failed before the correction (the complete focused suite was 8/14), including two confirmed startup exceptions during storage inspection. Canonical difficulty checks and type/own-key checks now protect the essential lookup/display fields; the 14-case focused suite is rerun. Valid dynamic faction IDs remain allowed when they are actual own save records, so hordes and migrant gameplay are preserved. No full schema redesign or balance change is involved.
