@@ -1,0 +1,7 @@
+Independent save QA | source=C:\Users\Abdul\Game-war | fixture baseline=2deaa02de02b1e87321d01651ec725da19930ede
+PASS [baseline] B04 safe rejection: missing metadata
+PASS [baseline] B04 safe rejection: unknown scenario metadata
+PASS [baseline] B04 safe rejection: discontinued rec schema
+PASS [baseline] B04 safe rejection: discontinued cid schema
+RESULT executed=4 passed=4 failed=0 skipped=0
+NOT AUTOMATED: physical-device Safari/Chrome, real-owner-save acceptance, actual export/download and legacy-version restore, real crash/storage durability, cross-tab races.

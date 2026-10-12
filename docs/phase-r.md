@@ -39,3 +39,7 @@ R1 verification: `tests/phase-r-saves.cjs` (39 cases), `tests/phase-r-ui.cjs` (6
 Stop after R delivery until **«اعتمد R»**. R public/mobile preview awaits separate authorization; the approved F public build remains intact.
 
 R1 actual result: 39/39 save cases, 60/60 browser checks and local preview isolation passed. The baseline archived snapshot recorded 27/28 suite passes; its preview test failed only because its workspace directory is itself under the temporary directory and the correct overwrite rejection text differs. The original failure is preserved, not counted as a pass. Current workspace preview isolation test passed.
+
+### R1 corrective follow-up after independent QA
+
+AGENT 2 supplied commit 07877163acffcc487953e6df7f58ce22d7339a76 with 45 frozen-fixture tests (F baseline 13 passed / 32 failed). R1 was already committed as be5342b, so no history was rewritten. Its missing-envelope-metadata policy was tightened: absent/corrupt title objects are rejected and backed up before replacement; missing display fields inside a title remain safely derived from validated Umayyad state. Independent B04 4/4 and R09 3/3 targeted checks and the 39/39 implementation tests passed. Full independent results will be recorded after integration. Original external QA files/worktree and all owner saves are untouched.

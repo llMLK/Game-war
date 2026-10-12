@@ -28,7 +28,9 @@ const SaveSafety = {
     try { data = JSON.parse(r.raw); } catch { return { bad: 'ملف الحفظ تالف؛ يمكنك تصدير بياناته دون تعديلها', raw: r.raw, key }; }
     const S = data && (data.S || (data.v === 1 ? data : null));
     const meta = data && data.meta;
-    const bad = this.problem(S, meta);
+    const bad = data?.S && (!meta || typeof meta !== 'object' || Array.isArray(meta))
+      ? 'عنوان الحفظ مفقود أو تالف؛ بقيت بياناته دون تعديل ويمكن تصديرها'
+      : this.problem(S, meta);
     // A missing old title is derived from validated campaign data, never the reverse.
     return { S, meta: !bad ? { scenario: S.scenario, player: S.player, fname: S.factions[S.player].name || SCENARIOS.umayyad.factions[S.player].name,
       turn: S.turn, time: Number.isFinite(meta?.time) ? meta.time : 0, over: S.over || null } : null, bad, raw: r.raw, key };

@@ -28,15 +28,15 @@
       "status": "passed"
     },
     {
-      "name": "incomplete title derives from supported state",
+      "name": "incomplete display fields derive from supported state",
       "status": "passed"
     },
     {
-      "name": "incomplete title derives from supported state",
+      "name": "incomplete display fields derive from supported state",
       "status": "passed"
     },
     {
-      "name": "incomplete title derives from supported state",
+      "name": "absent envelope metadata is rejected and protected before replacement",
       "status": "passed"
     },
     {
