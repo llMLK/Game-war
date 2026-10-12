@@ -1,0 +1,9 @@
+PASS direct start requires own supported faction: __proto__
+PASS saved player requires own supported faction: __proto__
+PASS direct start requires own supported faction: constructor
+PASS saved player requires own supported faction: constructor
+PASS direct start requires own supported faction: toString
+PASS saved player requires own supported faction: toString
+PASS explicit metadata/player disagreement rejected before normalization
+PASS malformed player object cannot crash startup or mutate stored bytes
+8/8 identity guard cases passed

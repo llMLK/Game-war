@@ -1,0 +1,8 @@
+FAIL direct start requires own supported faction: __proto__: Expected values to be strictly equal:
+FAIL saved player requires own supported faction: __proto__: Expected values to be strictly equal:
+FAIL direct start requires own supported faction: constructor: Expected values to be strictly equal:
+PASS saved player requires own supported faction: constructor
+FAIL direct start requires own supported faction: toString: Expected values to be strictly equal:
+PASS saved player requires own supported faction: toString
+FAIL explicit metadata/player disagreement rejected before normalization: Expected values to be strictly equal:
+2/7 identity guard cases passed

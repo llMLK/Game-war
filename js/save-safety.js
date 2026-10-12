@@ -7,12 +7,13 @@ const SaveSafety = {
     if (!S || typeof S !== 'object' || Array.isArray(S)) return 'بيانات الحملة ناقصة أو تالفة';
     if (S.scenario !== 'umayyad') return this.message;
     if (meta && meta.scenario !== undefined && meta.scenario !== S.scenario) return 'بيانات عنوان الحفظ لا تطابق الحملة؛ بقي الحفظ دون تعديل';
+    if (meta && meta.player !== undefined && meta.player !== S.player) return 'الفصيل في عنوان الحفظ لا يطابق الحملة؛ بقي الحفظ دون تعديل';
     if (S.v !== undefined && (!Number.isInteger(S.v) || S.v < 1 || S.v > 5)) return 'نسخة الحفظ غير مدعومة؛ احتفظ بملف JSON';
     if (S.schemaVersion !== undefined && (!Number.isInteger(S.schemaVersion) || S.schemaVersion < 1 || S.schemaVersion > 5)) return 'نسخة بنية الحفظ غير مدعومة؛ احتفظ بملف JSON';
     if (S.rec !== undefined || S.cid !== undefined) return 'بنية الإصدار الرابع الملغى غير مدعومة؛ احتفظ بملف JSON';
     const obj = v => v && typeof v === 'object' && !Array.isArray(v);
-    if (!Number.isInteger(S.turn) || S.turn < 0 || !obj(S.factions) || !obj(S.factions[S.player]) ||
-        !SCENARIOS.umayyad.factions[S.player] || !Array.isArray(S.nodes) || !S.nodes.length || !Array.isArray(S.armies) ||
+    if (!Number.isInteger(S.turn) || S.turn < 0 || !obj(S.factions) || typeof S.player !== 'string' || !Object.hasOwn(S.factions, S.player) || !obj(S.factions[S.player]) ||
+        !Object.hasOwn(SCENARIOS.umayyad.factions, S.player) || !Array.isArray(S.nodes) || !S.nodes.length || !Array.isArray(S.armies) ||
         (S.v > 1 && !obj(S.gens)) || (S.difficulty && !['easy', 'normal', 'hard'].includes(S.difficulty))) return 'بيانات الحملة ناقصة أو تالفة؛ بقي الحفظ دون تعديل';
     if (Object.values(S.factions).some(f => !obj(f)) ||
         S.nodes.some(n => !obj(n) || typeof n.id !== 'string' || !obj(S.factions[n.owner])) ||

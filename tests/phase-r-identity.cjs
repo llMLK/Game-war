@@ -1,0 +1,10 @@
+'use strict';
+const assert=require('node:assert/strict'),{createContext}=require('./harness.cjs');
+let passed=0,failed=0;function test(name,fn){try{fn();passed++;console.log('PASS '+name)}catch(e){failed++;console.log('FAIL '+name+': '+e.message.split('\n')[0])}}
+for(const player of ['__proto__','constructor','toString']){
+ test('direct start requires own supported faction: '+player,()=>{const c=createContext(715);c.run("Game.newGame('umayyad','umayyad','normal');globalThis.previous=Game.S;");assert.equal(c.run(`Game.newGame('umayyad','${player}','normal')`),null);assert.equal(c.run('Game.S===previous'),true)});
+ test('saved player requires own supported faction: '+player,()=>{const c=createContext(715);c.run("Game.newGame('umayyad','umayyad','normal');globalThis.previous=Game.S;const d=store.get(SAVE_PREFIX+'auto');");c.run(`d.S.player=d.meta.player='${player}';store.set(SAVE_PREFIX+'1',d);globalThis.normalized=0;Game.normalizeState=()=>{normalized++}`);assert.equal(c.run("Game.load('1')"),null);assert.equal(c.run('normalized'),0);assert.equal(c.run('Game.S===previous'),true)});
+}
+test('explicit metadata/player disagreement rejected before normalization',()=>{const c=createContext(715);c.run("Game.newGame('umayyad','umayyad','normal');globalThis.previous=Game.S;const d=store.get(SAVE_PREFIX+'auto');d.meta.player='byzantine';store.set(SAVE_PREFIX+'1',d);globalThis.normalized=0;Game.normalizeState=()=>{normalized++}");assert.equal(c.run("Game.load('1')"),null);assert.equal(c.run('normalized'),0);assert.equal(c.run('Game.S===previous'),true)});
+test('malformed player object cannot crash startup or mutate stored bytes',()=>{const c=createContext(715);c.run("Game.newGame('umayyad','umayyad','normal');const d=store.get(SAVE_PREFIX+'auto');d.S.player={toString:null,valueOf:null};delete d.meta.player;store.set(SAVE_PREFIX+'auto',d)");const raw=c.saved.get('swords-kingdoms-v2:auto');assert.equal(c.run('Game.hasSave()'),false);assert.equal(c.run("Game.load('auto')"),null);assert.equal(c.saved.get('swords-kingdoms-v2:auto'),raw)});
+console.log(`${passed}/${passed+failed} identity guard cases passed`);process.exitCode=failed?1:0;

@@ -37,7 +37,7 @@ const Game = {
 
   // ——————————————————— الإنشاء ———————————————————
   newGame(scId, player, diff) {
-    if (scId !== 'umayyad' || !SCENARIOS.umayyad.factions[player] || !DIFFS[diff]) {
+    if (scId !== 'umayyad' || typeof player !== 'string' || !Object.hasOwn(SCENARIOS.umayyad.factions, player) || !DIFFS[diff]) {
       this.lastSaveError = 'هذه النسخة تدعم الحملة الأموية سنة 715م فقط'; return null;
     }
     this.lastSaveError = SaveSafety.beforeAutosave();
