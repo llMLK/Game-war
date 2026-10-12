@@ -165,7 +165,7 @@ Object.assign(Game, {
   const normalize=Game.normalizeState;
   Game.normalizeState=function(){const out=normalize.apply(this,arguments);for(const fid of Object.keys(this.S.factions))this.financeState(fid);for(const n of this.S.nodes)if(!n.economicOccupation&&n.origOwner!==n.owner&&n.capturedTurn>=0&&this.S.turn-n.capturedTurn<10)n.economicOccupation={mode:'annex',since:n.capturedTurn};return out;};
   const newGame=Game.newGame;
-  Game.newGame=function(){const out=newGame.apply(this,arguments);for(const fid of Object.keys(this.S.factions))this.financeState(fid);return out;};
+  Game.newGame=function(){const out=newGame.apply(this,arguments);if(!out)return out;for(const fid of Object.keys(this.S.factions))this.financeState(fid);return out;};
   // These actions spend once. Reversals are shown by treasury reconciliation.
   for(const [method,kind,label]of [['build','construction','مشروع بناء'],['recruit','recruitment','تجنيد الوحدات'],['hireMerc','recruitment','استئجار مرتزقة'],['escortRoute','trade','حراسة طريق القوافل'],['setEdict','policy','إصدار مرسوم'],['festival','stability','احتفال واستقرار'],['spyOp','espionage','عملية استخبارات'],['honorGeneral','leaders','تكريم قائد'],['proposeContract','leaders','مقدم عقد قائد']]){
     const original=Game[method];if(!original)continue;

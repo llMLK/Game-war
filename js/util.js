@@ -88,6 +88,8 @@ function shuffle(arr, r = R) {
 const wait = (ms) => new Promise((res) => setTimeout(res, ms));
 
 const store = {
+  readText(k) { try { return { ok: true, raw: localStorage.getItem(k) }; } catch { return { ok: false, raw: null }; } },
+  writeText(k, text) { try { localStorage.setItem(k, text); return true; } catch { return false; } },
   get(k) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch (e) { return null; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } },
   del(k) { try { localStorage.removeItem(k); } catch (e) { /* تجاهل */ } },

@@ -1,0 +1,364 @@
+{
+  "baseline": "2deaa02de02b1e87321d01651ec725da19930ede",
+  "method": "Immutable archived F tree; temporary copied test/server URLs use port 8107; all default artifacts confined to temporary snapshot. Playwright mobile emulation; no personal saves or physical phones.",
+  "snapshot": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c",
+  "started": "2026-10-11T20:41:39.758Z",
+  "results": [
+    {
+      "script": "map-routes",
+      "kind": "logic",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 0.6,
+      "passLines": 10,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\map-routes.log",
+      "tail": "PASS all scenarios have valid, unique, bidirectional graph edges and bounded cities\nPASS expanded atlas remains a single connected network including maritime islands\nPASS every caravan template follows actual route segments\nPASS western maritime endpoints allow a normal army to embark in both directions\nPASS Tarsus and Tartus are distinct cities and the Cilician pass has two strategic approaches\nPASS Tarsus reaches the enemy pass but cannot skip a hostile checkpoint to Amorium\nPASS controlling the pass opens the route to Amorium with normal points on the next turn\nPASS allied access opens transit generically, while exhausted armies remain stationary\nPASS Tartus has a connected land approach without an accidental forced sea crossing\nPASS winter mountain passes consume the turn without becoming permanent movement locks\n\nMap routes: 10 passed, 0 failed.\n",
+      "logicGroups": 10,
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/map-routes.log"
+    },
+    {
+      "script": "camera",
+      "kind": "logic",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 0.7,
+      "passLines": 12,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\camera.log",
+      "tail": "PASS world and screen transforms round-trip at every supported viewport and zoom\nPASS every settlement can be focused inside the unobstructed frame at all zoom levels\nPASS camera clamps finite coordinates at all extreme bounds and pan directions\nPASS zoom keeps the finger anchor stable whenever the map boundary does not constrain it\nPASS resize preserves the camera location and zoom when they remain legal\nPASS legacy 22-city western save expands to the atlas without resetting armies, turn or conquered cities\nPASS legacy 20-city Three Kingdoms save keeps its city set, units and progression\nPASS atlas expansion never revives an eliminated state through newly added cities\nPASS existing expanded-atlas save retains historical ownership instead of replaying starting borders\nPASS legacy active caravan routes migrate to valid atlas segments without erasing their state\nPASS caravan status rejects nonexistent graph segments even between peaceful cities\nPASS existing legacy harbor cities gain atlas embarkation ports when old ports were zero or absent\n\nCamera and migration: 12 passed, 0 failed.\n",
+      "logicGroups": 12,
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/camera.log"
+    },
+    {
+      "script": "battles",
+      "kind": "logic",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 3.9,
+      "passLines": 31,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\battles.log",
+      "tail": "PASS Preparation is paused before all combat and ignores repeated begin\nPASS Every phase has a command boundary, repeated commit/end cannot execute twice\nPASS Card costs, duplicate orders and incompatible postures enforced\nPASS Manual stepping and Quick Resolve share exact outcomes across 40 seeds\nPASS Formation preview never changes combat RNG or generates arrows\nPASS Empty quivers cause zero arrow damage and ammo never increases\nPASS Event choice is once-only and unavailable choices are rejected\nPASS Guards are capped by soldiers and do not create a hero army\nPASS Reserves stay out until committed; exhausted and fresh rows mix their fatigue\nPASS Emergency retreat costs more than successful organized withdrawal\nPASS Persistent readiness degrades across fights without ammo or supply refills\nPASS Result/report/fates are cached; narrative consumes no battle RNG\nPASS AI observation hides unrevealed plan and supply\nPASS Siege equipment opens breaches, unavailable maneuvers stay unavailable\nPASS Army and garrison readiness survive save/load; old partial saves migrate\nPASS Campaign application is idempotent and preserves the pre-casualty baseline\nPASS Marching costs readiness; safe-city rest recovers it without restoring casualties\nPASS Narrative has >100 unique fact-bound passages and reports factual evidence\nPASS Splitting and partial merging transfer weighted readiness without replenishing source\nPASS Keeping a siege returns only held men, all survivors keep the cost of battle\nPASS No equipment produces a siege postponement, not a fake defeat\nPASS A blocked retreat cannot teleport to a distant friendly preferred city\nPASS No pursuit is honored during sector collapse and after withdrawal\nPASS Hard pursuit causes more losses but exposes cavalry to an actual reserve trap\nPASS AI can use emergency retreat at zero command points\nPASS Wave assault cannot spend absent supplies; specialized plans require their troops\nPASS Campaign passes actual leader personality and abilities to tactical AI\nPASS AI choices respond to personality, condition, composition and phase\nPASS Report commander fate matches the cached campaign outcome\nPASS Exposed skirmishers take melee losses when cavalry catches them\nPASS Rapid assault counters the extra uncontested attrition volley from either side\n31 battle logic groups passed\n",
+      "logicGroups": 31,
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/battles.log"
+    },
+    {
+      "script": "economy",
+      "kind": "logic",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 1.7,
+      "passLines": 18,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\economy.log",
+      "tail": "PASS income and expense categories sum to the live forecast\nPASS administrative paths use actual geography and bounded isolation, never 99 hops\nPASS local administration does not multiply existing city costs after expansion\nPASS population growth smoothly diminishes and preserves oversized old cities\nPASS all building previews equal actual formula changes and do not mutate saved state\nPASS construction charges once, grants no premature yield, completes on its due turn\nPASS investment preference changes with local resources and route position\nPASS leader contracts and assigned officers are charged exactly once\nPASS upkeep and campaign supply use the existing unit and readiness integration formulas\nPASS full endRound ledger reconciles construction, reinforcement and recurring collection\nPASS settlement is idempotent and cannot duplicate income after reload\nPASS tribute and vassal transfers reconcile symmetrically and are not paid twice\nPASS Annexation and Aman previews match execution with declining local costs\nPASS save migration preserves population, buildings, burdens and route disruption\nPASS occupation keeps defender choices and previews their gold and production effects exactly\nPASS saving a large treasury carries no fee or change to normal recurring costs\nPASS equipment replacement is proportional to unit cost and reconciles with the live round\nPASS unclassified events reconcile exactly and reading explanations never collects money\nEconomy: 18 groups passed.\n",
+      "logicGroups": 18,
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/economy.log"
+    },
+    {
+      "script": "economy-trade",
+      "kind": "logic",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 4.2,
+      "passLines": 12,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\economy-trade.log",
+      "tail": "PASS treaties pay only for connected usable links, symmetrically and at the existing cap\nPASS isolated cities reduce income and reconnection restores it without creating money\nPASS ports are required at both ends of maritime trade, with an actionable cause\nPASS merchant paths can reroute around a disrupted port without changing caravan or movement paths\nPASS war, hostile third-party territory, siege and hostile armies interrupt merchant access\nPASS sabotage reports an exact remaining duration and automatically recovers at expiry\nPASS bandit remedies match loyalty thresholds, guards expire, and duplicate causes merge\nPASS quarantine and world events have temporary contextual explanations\nPASS caravan migration does not falsely shut every treaty trade link in the world\nPASS changing city ownership changes the recipient, not the meaning of automatic caravans\nPASS old atlas routes migrate while preserving guards and permanent state in both scenarios\nPASS save/load preserves economic route state and reading forecasts never collects trade twice\n\nEconomy trade: 12 passed.\n",
+      "logicGroups": 12,
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/economy-trade.log"
+    },
+    {
+      "script": "politics",
+      "kind": "logic",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 1.7,
+      "passLines": 23,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\politics.log",
+      "tail": "PASS money offers change willingness monotonically, with contextual reasons\nPASS invalid money, missing payer, excessive tribute and stale prisoners cannot negotiate\nPASS rejection consumes one envoy, persists and cannot be rerolled by changing offers\nPASS pending counter survives reload and applies exactly once with reconciled money\nPASS counter cannot be accepted after peace, expiry, a new war or edited terms\nPASS peace terms apply money, captives, city, truce and memory through actual campaign APIs\nPASS peace settlement itself rejects duplicate execution, even without a counter id\nPASS counter respects current city ownership and excludes impossible final-city concessions\nPASS treaty actions cannot renew truces or farm relations by repeated calls\nPASS trade toggling, marriage and gifts have bounded persistent effects\nPASS one diplomatic proposal interval applies across types and survives reload\nPASS memory deduplicates keys, caps repetition, decays and affects diplomacy\nPASS personalities affect war and trade without bypassing unsafe conditions\nPASS threatened vassal considers survival, allies, distance and exhaustion\nPASS vassalage preserves autonomy, pays once, forbids chains and independent wars\nPASS tribute is not renewed, not immediately collected and ledger collection is idempotent\nPASS many allies share a bounded actual peace payment and cannot collect it twice\nPASS incoming offer survives reload and cannot execute twice or after context changes\nPASS surrender rejection expires instead of permanently disabling negotiations\nPASS surrender and contribution previews never mutate campaign state\nPASS broken and kept treaties produce different persistent memories\nPASS political save roundtrip retains offers, counters, terms, memory, spy effects and war effort\nPASS legacy cooldown and tribute migration is idempotent without adding empty node fields\n23 political logic groups passed\n",
+      "logicGroups": 23,
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/politics.log"
+    },
+    {
+      "script": "political-spy",
+      "kind": "logic",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 2.4,
+      "passLines": 15,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\political-spy.log",
+      "tail": "PASS assessment explains approximate chances, concrete costs, consequences and cooldowns\nPASS same-turn operations and post-detection recovery reject without charging again\nPASS save/reload cannot change outcome or reset operation cooldown and ledger charge\nPASS realm intelligence uses one deterministic draw regardless of an omitted target ID\nPASS incitement weakens loyalty, actual tax and reinforcement/recruitment for exact duration\nPASS loyal stable cities are harder to incite than restive cities\nPASS security and intelligence investment are finite, meaningful, charged once and saved\nPASS road sabotage changes movement without changing road data, then recovers\nPASS each sabotage has live consequences and the stated inclusive duration\nPASS siege-equipment sabotage affects only targeted camp and is persisted/repaired\nPASS another intact allied camp keeps its own siege equipment\nPASS invalid targets and ineffective sabotage are refused before charging\nPASS old-save migration preserves histories, derives cooldowns and is idempotent\nPASS repeated espionage chooses contextual varied targets and does not fixate on Nicaea\nPASS strategic siege and unrest changes alter priorities\n15 espionage groups passed\n",
+      "logicGroups": 15,
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/political-spy.log"
+    },
+    {
+      "script": "leaders",
+      "kind": "logic",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 17.7,
+      "passLines": 29,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\leaders.log",
+      "tail": "PASS Six campaign starts: valid two-candidate opportunities, capacity and state\nPASS Earned keys including turn zero cannot grant twice; cooldown and bank cap\nPASS One replacement per delegation, capped earned tokens, no repeated-city tokens\nPASS Contract hires exactly one, deducts one-turn advance and retires the other name\nPASS Invalid salaries, no funds and full capacity never create leaders or consume attempts\nPASS Salary acceptance rises with offer, prestige and personality change expectations\nPASS Insult ends negotiation, two ordinary refusals exhaust attempts, fixed saved threshold\nPASS Pending offers freeze salary through treasury changes and save/load\nPASS Old saves retain leader IDs, contracts, army references, XP and biography identity\nPASS Legacy invalid candidates and duplicate offers are migrated safely\nPASS Historical candidate timing, affiliation, local fallback and spoiler-free copy\nPASS Rerolls persist after load; dismissed hires do not refresh offers\nPASS Relationships materially change loyalty, honor cannot be bought repeatedly\nPASS Assignment, rivalry, ignored requests and promises have distinct consequences\nPASS Capture, valid rescue, invalid rescue and repeated fate callbacks are safe\nPASS Execution records a loss without generating a fictional replacement; invalid execution does nothing\nPASS Defection produces a memorial and surviving friendship becomes rivalry\nPASS Specialized growth persists, grants mobility only to qualified leaders; officers stay modest\nPASS Late-game treasury does not buy opportunities; repeated losses and recaptures cannot spam\nPASS End-round and world-tick integration stay runnable for both scenarios\nPASS Context and personality change spoken reactions; city service and scars are recorded\nPASS Historical rivals link when hired later and exert political pressure\nPASS Prestige adds social abilities and mentorship rather than only raw bonuses\nPASS Direct event deaths have consequences once; expired opportunities never reopen\nPASS Geography and political context gate recruitment and salary expectations\nPASS A rest request requires a real idle friendly turn, not merely moving home\nPASS Starting armies use their intended historical leaders without stealing rulers\nPASS Campaign randomness is saved: new campaigns vary, reloads retain the same candidates\nPASS Expanded starting empires retain viable leader loyalty and meaningful personal choices\n29/29 leader tests passed\n",
+      "logicGroups": 29,
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/leaders.log"
+    },
+    {
+      "script": "phase-f-undo",
+      "kind": "logic",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 1,
+      "passLines": 13,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\phase-f-undo.log",
+      "tail": "PASS X keeps the undo stack intact and remains dismissed through 25 UI shows\nPASS a genuine new same-turn action shows, but undoing it cannot revive an older dismissed action\nPASS distinct dismissals survive revealing older entries and token IDs are never reused\nPASS the 12-action cap prunes discarded dismissal identities without reviving retained entries\nPASS invalidating a newer action does not resurrect a dismissed valid older action\nPASS clear resets only Undo UI state and a new action can notify immediately\nPASS advancing the turn invalidates UI generation and never restores previous-turn actions\nPASS save/load and a new campaign discard closure-bound undo entries without changing save data\nPASS a failed load preserves the active campaign, undo stack and dismissal identities\nPASS refresh preserves a single DOM bar and stable accessible buttons, including during pointer activation\nPASS real construction Undo still refunds correctly after dismissal and newer action Undo\nPASS real recruitment stays undoable after X and restores soldiers, manpower and gold\nPASS 12 Phase F Undo checks\n",
+      "logicGroups": 12,
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/phase-f-undo.log"
+    },
+    {
+      "script": "political-allies",
+      "kind": "logic",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 5.3,
+      "passLines": 12,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\political-allies.log",
+      "tail": "PASS new alliance has no invented contribution; accepting or arriving earns no points\nPASS same-turn requests are bounded and survive reload without relation farming\nPASS blocked geography and insufficient armies produce concrete refusal\nPASS the ally protects its threatened home and cannot be commandeered by defense requests\nPASS exhausted available armies are not sent on new allied expeditions\nPASS allied siege reinforcement uses existing movement and preserves siege age\nPASS siege contribution requires real supply attrition and cannot multiply by army splitting\nPASS legacy contribution migrates factual casualties and captures without fabricated aid/siege evidence\nPASS mixed allied battle records actual unit damage and loss separately by faction\nPASS contribution survives save/load; settled wars retain their effort for peace comparison\nPASS peace contribution feedback and shared spoils persist and can only pay once\nPASS independent military dispatch performs a useful common-front action with limited forces\n12 allied-action checks passed.\n",
+      "logicGroups": 12,
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/political-allies.log"
+    },
+    {
+      "script": "phase-f-campaign",
+      "kind": "logic",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 5.8,
+      "passLines": 5,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\phase-f-campaign.log",
+      "tail": "PASS identical A–E and Phase F Umayyad initial campaign (all saved fields)\nPASS identical real construction/Undo resources and campaign state\nPASS identical endRound military, economy, buildings, leaders and diplomatic fields\nPASS baseline A–E synthetic save loads identically into Phase F\nPASS Phase F save/load roundtrip and stale Undo cleanup\n",
+      "logicGroups": 5,
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/phase-f-campaign.log"
+    },
+    {
+      "script": "battle-balance",
+      "kind": "simulation",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 25.1,
+      "passLines": 0,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\battle-balance.log",
+      "tail": "{\"name\":\"400 average vs 190 three-star\",\"seeds\":160,\"sideBWinRate\":0.144,\"sideALossPct\":20.4,\"sideBLossPct\":46.6,\"sideBFatigue\":36.1,\"breachRate\":0,\"plans\":{\"defensive\":160}}\n{\"name\":\"400 average vs 190 veteran hill defenders\",\"seeds\":160,\"sideBWinRate\":0.425,\"sideALossPct\":21.8,\"sideBLossPct\":43.4,\"sideBFatigue\":49.4,\"breachRate\":0,\"plans\":{\"highground\":160}}\n{\"name\":\"320 vs 260 defenders: plain, fixed balanced/defensive plans\",\"seeds\":160,\"sideBWinRate\":0.063,\"sideALossPct\":28.5,\"sideBLossPct\":37.3,\"sideBFatigue\":55.3,\"breachRate\":0,\"plans\":{\"defensive\":160}}\n{\"name\":\"320 vs 260 defenders: hills, same plans\",\"seeds\":160,\"sideBWinRate\":0.163,\"sideALossPct\":27,\"sideBLossPct\":36.5,\"sideBFatigue\":59.7,\"breachRate\":0,\"plans\":{\"defensive\":160}}\n{\"name\":\"400 exhausted vs 190 fresh\",\"seeds\":160,\"sideBWinRate\":0.969,\"sideALossPct\":32.8,\"sideBLossPct\":13.8,\"sideBFatigue\":33.8,\"breachRate\":0,\"plans\":{\"defensive\":160}}\n{\"name\":\"400 fresh vs 190 fresh\",\"seeds\":160,\"sideBWinRate\":0.006,\"sideALossPct\":14.2,\"sideBLossPct\":48.2,\"sideBFatigue\":31.8,\"breachRate\":0,\"plans\":{\"defensive\":160}}\n{\"name\":\"Cavalry side B on plains\",\"seeds\":160,\"sideBWinRate\":1,\"sideALossPct\":60.1,\"sideBLossPct\":16.2,\"sideBFatigue\":21.3,\"breachRate\":0,\"plans\":{\"assault\":81,\"flanking\":79}}\n{\"name\":\"Cavalry side B in forest\",\"seeds\":160,\"sideBWinRate\":0.819,\"sideALossPct\":49.8,\"sideBLossPct\":16.7,\"sideBFatigue\":33,\"breachRate\":0,\"plans\":{\"assault\":160}}\n{\"name\":\"Cavalry side B against spear line on plains\",\"seeds\":160,\"sideBWinRate\":0.256,\"sideALossPct\":33,\"sideBLossPct\":33,\"sideBFatigue\":40.5,\"breachRate\":0,\"plans\":{\"flanking\":142,\"assault\":14,\"feigned\":4}}\n{\"name\":\"Strong leader militia vs average leader quality troops\",\"seeds\":160,\"sideBWinRate\":1,\"sideALossPct\":37.5,\"sideBLossPct\":10.4,\"sideBFatigue\":28.5,\"breachRate\":0,\"plans\":{\"breakcenter\":160}}\n{\"name\":\"Equal units: one-star vs two-star\",\"seeds\":160,\"sideBWinRate\":0.681,\"sideALossPct\":32.5,\"sideBLossPct\":28,\"sideBFatigue\":53.4,\"breachRate\":0,\"plans\":{\"defensive\":98,\"balanced\":53,\"breakcenter\":4,\"assault\":3,\"attrition\":2}}\n{\"name\":\"Equal units: three-star vs two-star\",\"seeds\":160,\"sideBWinRate\":0.356,\"sideALossPct\":28.3,\"sideBLossPct\":37.6,\"sideBFatigue\":53.3,\"breachRate\":0,\"plans\":{\"defensive\":98,\"balanced\":53,\"breakcenter\":4,\"assault\":3,\"attrition\":2}}\nConsecutive hill battles (entry state) [{\"battle\":1,\"wins\":0.419,\"men\":190,\"fat\":0,\"morale\":72,\"coh\":100,\"supply\":100,\"ammo\":100,\"strain\":0,\"readiness\":99},{\"battle\":2,\"wins\":0,\"men\":104.8,\"fat\":48.6,\"morale\":43.8,\"coh\":49.9,\"supply\":75.8,\"ammo\":2.6,\"strain\":25.9,\"readiness\":53.5},{\"battle\":3,\"wins\":0,\"men\":54.3,\"fat\":69.9,\"morale\":6.7,\"coh\":5.6,\"supply\":56.3,\"ammo\":0,\"strain\":49.4,\"readiness\":24}]\n{\"name\":\"Matched force in field\",\"seeds\":160,\"sideBWinRate\":0,\"sideALossPct\":16.8,\"sideBLossPct\":51.7,\"sideBFatigue\":50.8,\"breachRate\":0,\"plans\":{\"defensive\":160}}\n{\"name\":\"Fresh garrison, walls 2, full equipment\",\"seeds\":160,\"sideBWinRate\":0.831,\"sideALossPct\":43,\"sideBLossPct\":29.5,\"sideBFatigue\":51.2,\"breachRate\":0.819,\"plans\":{\"walls\":42,\"depth\":118}}\n{\"name\":\"Fresh garrison, walls 1\",\"seeds\":160,\"sideBWinRate\":0.406,\"sideALossPct\":37.1,\"sideBLossPct\":39.4,\"sideBFatigue\":56.9,\"breachRate\":0.931,\"plans\":{\"walls\":22,\"depth\":138}}\n{\"name\":\"Fresh garrison, walls 3\",\"seeds\":160,\"sideBWinRate\":1,\"sideALossPct\":45.8,\"sideBLossPct\":24.4,\"sideBFatigue\":42,\"breachRate\":0.744,\"plans\":{\"walls\":45,\"depth\":115}}\n{\"name\":\"Starved exhausted garrison, walls 2\",\"seeds\":160,\"sideBWinRate\":0,\"sideALossPct\":8.9,\"sideBLossPct\":32.9,\"sideBFatigue\":88.5,\"breachRate\":0.95,\"plans\":{\"walls\":160}}\n{\"name\":\"Walls 2, ladders only\",\"seeds\":160,\"sideBWinRate\":0.988,\"sideALossPct\":47.6,\"sideBLossPct\":16.3,\"sideBFatigue\":39.9,\"breachRate\":0.013,\"plans\":{\"walls\":159,\"depth\":1}}\n{\"name\":\"Walls 2, siege specialist at same rank\",\"seeds\":160,\"sideBWinRate\":0.863,\"sideALossPct\":43.1,\"sideBLossPct\":29.6,\"sideBFatigue\":50,\"breachRate\":0.975,\"plans\":{\"depth\":141,\"walls\":19}}\n{\"name\":\"Siege skill control: fixed plans, no tactical orders\",\"seeds\":160,\"sideBWinRate\":0.675,\"sideALossPct\":35.3,\"sideBLossPct\":32.1,\"sideBFatigue\":44.8,\"breachRate\":0.881,\"plans\":{\"depth\":118,\"walls\":42}}\n{\"name\":\"Siege skill specialist: same fixed decisions\",\"seeds\":160,\"sideBWinRate\":0.506,\"sideALossPct\":34.1,\"sideBLossPct\":35.6,\"sideBFatigue\":45.4,\"breachRate\":0.956,\"plans\":{\"depth\":129,\"walls\":31}}\nTactics {\"name\":\"Mixed force vs spears\",\"winRates\":{\"balanced\":0.969,\"assault\":0.922,\"flanking\":0.688,\"attrition\":0.984,\"breakcenter\":0.563,\"hunt\":0.859},\"unavailable\":[]}\nTactics {\"name\":\"Cavalry vs exposed archers\",\"winRates\":{\"balanced\":0.234,\"assault\":0.75,\"flanking\":0.984,\"attrition\":0.922,\"breakcenter\":0.781,\"hunt\":0.906},\"unavailable\":[]}\nTactics {\"name\":\"Archers vs guarded hillside\",\"winRates\":{\"balanced\":0,\"assault\":0.016,\"attrition\":0.172,\"breakcenter\":0},\"unavailable\":[\"flanking\",\"hunt\"]}\nTactics {\"name\":\"Cavalry in forest vs infantry\",\"winRates\":{\"balanced\":0.688,\"assault\":0.656,\"flanking\":0.938,\"breakcenter\":0.813,\"hunt\":0.938},\"unavailable\":[\"attrition\"]}\nTactics {\"name\":\"Ranged army under cavalry charge\",\"winRates\":{\"balanced\":0,\"assault\":0.094,\"attrition\":0.328,\"breakcenter\":0},\"unavailable\":[\"flanking\",\"hunt\"]}\nTactics {\"name\":\"Mixed troops in rain against assault\",\"winRates\":{\"balanced\":0.766,\"assault\":0.719,\"flanking\":0.813,\"attrition\":0.844,\"breakcenter\":0.172,\"hunt\":0.469},\"unavailable\":[]}\nBalance invariants passed\n",
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/battle-balance.log"
+    },
+    {
+      "script": "map-interactions",
+      "kind": "ui",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 36.9,
+      "passLines": 1,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\map-interactions.log",
+      "tail": "PASS real pointer/touch interactions, army occlusion and critical alerts at 8 sizes; eastern renderer.\n",
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/map-interactions.log"
+    },
+    {
+      "script": "economy-balance",
+      "kind": "simulation",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 15.7,
+      "passLines": 0,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\economy-balance.log",
+      "tail": "\nReserve variant: production\nearly_shu: 5→5 cities; gold 600→1473; net 31→55; income 236→260; admin 0→0; wages 71; military 121\nearly_wei: 6→6 cities; gold 600→531; net 1→5; income 287→294; admin 0→0; wages 88; military 178\nearly_wu: 4→4 cities; gold 600→489; net -16→6; income 206→228; admin 0→0; wages 94; military 112\nearly_umayyad: 38→38 cities; gold 600→10018; net 404→485; income 1479→1571; admin 367→369; wages 132; military 442\nearly_byzantine: 18→18 cities; gold 600→7010; net 280→337; income 802→864; admin 90→90; wages 62; military 261\nearly_khazar: 3→3 cities; gold 600→1582; net 42→51; income 185→194; admin 0→0; wages 5; military 129\nmid_realm: 10→10 cities; gold 12000→13015; net -11→60; income 513→586; admin 31→33; wages 120; military 314\nlate_large_empire: 58→58 cities; gold 12000→162011; net 672→1899; income 3624→4923; admin 454→526; wages 268; military 1635\nlate_small_army_upper_bound: 58→58 cities; gold 12000→294961; net 1854→2988; income 3706→4912; admin 454→526; wages 168; military 635\nlate_saturated_population: 58→58 cities; gold 12000→435477; net 3725→3531; income 6841→6647; admin 618→618; wages 268; military 1635\nprolonged_war: 38→38 cities; gold 12000→-37; net -263→-115; income 1757→1922; admin 339→356; wages 208; military 1182 [NEGATIVE from turn 100]\ntrade_focused: 18→18 cities; gold 11900→50046; net 502→928; income 1255→1711; admin 84→92; wages 82; military 403\nconquest_annex: 5→15 cities; gold 2000→11928; net 31→287; income 236→656; admin 0→83; wages 71; military 183\nconquest_aman: 5→15 cities; gold 2000→10522; net 31→248; income 236→605; admin 0→71; wages 71; military 183\nhigh_payroll: 5→5 cities; gold 600→-9232; net -249→-237; income 236→248; admin 0→0; wages 351; military 121 [NEGATIVE from turn 3]\nlarge_standing_army: 10→10 cities; gold 12000→-29151; net -1039→-1004; income 412→449; admin 31→33; wages 165; military 1196 [NEGATIVE from turn 52]\n\n16 scenarios; 840 simulated turns; 120 actual endRound turns.\nReplacement comparison: [{\"mode\":\"old-flat\",\"startGold\":100000,\"endGold\":89712,\"prices\":{\"spear\":0.4,\"sword\":0.4,\"archer\":0.4,\"cavalry\":0.4,\"horsearcher\":0.4,\"cataphract\":0.4,\"catapult\":0.4},\"lost\":8400,\"recovered\":8400,\"replacementPaid\":3360,\"averageCostPerReplacement\":0.4},{\"mode\":\"production\",\"startGold\":100000,\"endGold\":80352,\"prices\":{\"spear\":0.4,\"sword\":0.68,\"archer\":0.56,\"cavalry\":1.8,\"horsearcher\":1.5333333333333334,\"cataphract\":3.2857142857142856,\"catapult\":5.333333333333333},\"lost\":8400,\"recovered\":8400,\"replacementPaid\":12720,\"averageCostPerReplacement\":1.51}]\nConcerns: [{\"scenario\":\"late_large_empire\",\"severity\":\"hoarding-surplus\",\"detail\":\"A peaceful established empire can accumulate a large stockpile with no ongoing purchases. This is a linear bounded-income surplus, not gold interest or uncapped exponential population growth.\"},{\"scenario\":\"late_small_army_upper_bound\",\"severity\":\"hoarding-surplus\",\"detail\":\"A peaceful established empire can accumulate a large stockpile with no ongoing purchases. This is a linear bounded-income surplus, not gold interest or uncapped exponential population growth.\"},{\"scenario\":\"late_saturated_population\",\"severity\":\"hoarding-surplus\",\"detail\":\"A peaceful established empire can accumulate a large stockpile with no ongoing purchases. This is a linear bounded-income surplus, not gold interest or uncapped exponential population growth.\"},{\"scenario\":\"prolonged_war\",\"severity\":\"stress-deficit\",\"detail\":\"Fixed commitments exceed resources; this replay retains commitments rather than invoking live desertion.\"},{\"scenario\":\"high_payroll\",\"severity\":\"stress-deficit\",\"detail\":\"Fixed commitments exceed resources; this replay retains commitments rather than invoking live desertion.\"},{\"scenario\":\"large_standing_army\",\"severity\":\"stress-deficit\",\"detail\":\"Fixed commitments exceed resources; this replay retains commitments rather than invoking live desertion.\"}]\nSaved C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\artifacts\\economy\\balance-results.json\n",
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/economy-balance.log"
+    },
+    {
+      "script": "map-preview",
+      "kind": "ui",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 44.3,
+      "passLines": 0,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\map-preview.log",
+      "tail": "{\n  \"results\": [\n    {\n      \"viewport\": [\n        1440,\n        900\n      ],\n      \"cityCount\": 66,\n      \"failures\": [],\n      \"labelOverlaps\": 0,\n      \"labels\": 36,\n      \"scrollWidth\": 1440,\n      \"modalFits\": true\n    },\n    {\n      \"viewport\": [\n        844,\n        390\n      ],\n      \"cityCount\": 66,\n      \"failures\": [],\n      \"labelOverlaps\": 0,\n      \"labels\": 12,\n      \"scrollWidth\": 844,\n      \"modalFits\": true\n    },\n    {\n      \"viewport\": [\n        740,\n        360\n      ],\n      \"cityCount\": 66,\n      \"failures\": [],\n      \"labelOverlaps\": 0,\n      \"labels\": 10,\n      \"scrollWidth\": 740,\n      \"modalFits\": true\n    },\n    {\n      \"viewport\": [\n        568,\n        320\n      ],\n      \"cityCount\": 66,\n      \"failures\": [],\n      \"labelOverlaps\": 0,\n      \"labels\": 3,\n      \"scrollWidth\": 568,\n      \"modalFits\": true\n    },\n    {\n      \"viewport\": [\n        390,\n        844\n      ],\n      \"cityCount\": 66,\n      \"failures\": [],\n      \"labelOverlaps\": 0,\n      \"labels\": 17,\n      \"scrollWidth\": 390,\n      \"modalFits\": true\n    },\n    {\n      \"viewport\": [\n        360,\n        740\n      ],\n      \"cityCount\": 66,\n      \"failures\": [],\n      \"labelOverlaps\": 0,\n      \"labels\": 14,\n      \"scrollWidth\": 360,\n      \"modalFits\": true\n    },\n    {\n      \"viewport\": [\n        320,\n        568\n      ],\n      \"cityCount\": 66,\n      \"failures\": [],\n      \"labelOverlaps\": 0,\n      \"labels\": 10,\n      \"scrollWidth\": 320,\n      \"modalFits\": true\n    },\n    {\n      \"viewport\": [\n        1024,\n        768\n      ],\n      \"cityCount\": 66,\n      \"failures\": [],\n      \"labelOverlaps\": 0,\n      \"labels\": 37,\n      \"scrollWidth\": 1024,\n      \"modalFits\": true\n    }\n  ],\n  \"overviewFailures\": [],\n  \"errors\": []\n}\n",
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/map-preview.log"
+    },
+    {
+      "script": "leader-actions",
+      "kind": "ui",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 19.2,
+      "passLines": 1,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\leader-actions.log",
+      "tail": "PASS visible refusal feedback, mobile touch honor, salary request, cancel/confirm dismissal and persistent relationship/contract state\n",
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/leader-actions.log"
+    },
+    {
+      "script": "leader-preview",
+      "kind": "ui",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 52.4,
+      "passLines": 0,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\leader-preview.log",
+      "tail": "{\n  \"viewports\": [\n    [\n      1440,\n      900\n    ],\n    [\n      1024,\n      768\n    ],\n    [\n      390,\n      844\n    ],\n    [\n      360,\n      740\n    ],\n    [\n      320,\n      568\n    ],\n    [\n      844,\n      390\n    ],\n    [\n      568,\n      320\n    ]\n  ],\n  \"profilesChecked\": 40,\n  \"errors\": [],\n  \"report\": \"C:\\\\Users\\\\Abdul\\\\AppData\\\\Local\\\\Temp\\\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\\\artifacts\\\\leaders\\\\verification.json\"\n}\n",
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/leader-preview.log"
+    },
+    {
+      "script": "battle-preview",
+      "kind": "ui",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 93.5,
+      "passLines": 0,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\battle-preview.log",
+      "tail": "{\n  \"viewports\": [\n    [\n      1440,\n      900\n    ],\n    [\n      1024,\n      768\n    ],\n    [\n      390,\n      844\n    ],\n    [\n      360,\n      740\n    ],\n    [\n      320,\n      568\n    ],\n    [\n      844,\n      390\n    ],\n    [\n      568,\n      320\n    ]\n  ],\n  \"saveReload\": {\n    \"passes\": 2,\n    \"preserved\": [\n      \"fatigue\",\n      \"morale\",\n      \"cohesion\",\n      \"ammunition\",\n      \"supply\",\n      \"strain\",\n      \"battles\",\n      \"army casualties\",\n      \"garrison condition\",\n      \"leader relationships\"\n    ]\n  },\n  \"errors\": []\n}\n",
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/battle-preview.log"
+    },
+    {
+      "script": "economy-preview",
+      "kind": "ui",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 148,
+      "passLines": 7,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\economy-preview.log",
+      "tail": "PASS UI 1440x900\nPASS UI 1024x768\nPASS UI 390x844\nPASS UI 360x740\nPASS UI 320x568\nPASS UI 844x390\nPASS UI 568x320\nEconomy visual checks passed: 7 viewports this run; 0 unchanged desktop checks retained; two browser save/load passes.\n",
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/economy-preview.log"
+    },
+    {
+      "script": "politics-final-ui",
+      "kind": "ui",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 76.3,
+      "passLines": 7,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\politics-final-ui.log",
+      "tail": "PASS final political controls 1440x900\nPASS final political controls 1024x768\nPASS final political controls 390x844\nPASS final political controls 360x740\nPASS final political controls 320x568\nPASS final political controls 844x390\nPASS final political controls 568x320\nFinal contribution visuals, coordination, header touch and surrender cooldown checks passed.\n",
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/politics-final-ui.log"
+    },
+    {
+      "script": "politics-preview",
+      "kind": "ui",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 92.4,
+      "passLines": 7,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\politics-preview.log",
+      "tail": "PASS political UI 1440x900\nPASS political UI 1024x768\nPASS political UI 390x844\nPASS political UI 360x740\nPASS political UI 320x568\nPASS political UI 844x390\nPASS political UI 568x320\nPolitical visuals, real touch/slider/select/confirm actions and two page reloads passed.\n",
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/politics-preview.log"
+    },
+    {
+      "script": "political-sim",
+      "kind": "simulation",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 531.2,
+      "passLines": 0,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\political-sim.log",
+      "tail": "SIM {\"name\":\"equalRivals\",\"samples\":24,\"turns\":36,\"peaceReached\":24,\"medianFirstPeace\":8,\"warStarts\":27,\"endingVassals\":20,\"allianceBreaks\":8,\"stillAtWar\":12,\"invalidOffers\":0}\nSIM {\"name\":\"dominantVsWeak\",\"samples\":24,\"turns\":36,\"peaceReached\":24,\"medianFirstPeace\":1,\"warStarts\":30,\"endingVassals\":23,\"allianceBreaks\":16,\"stillAtWar\":6,\"invalidOffers\":0}\nSIM {\"name\":\"twoFronts\",\"samples\":24,\"turns\":36,\"peaceReached\":24,\"medianFirstPeace\":2,\"warStarts\":28,\"endingVassals\":19,\"allianceBreaks\":6,\"stillAtWar\":9,\"invalidOffers\":0}\nSIM {\"name\":\"commonEnemyAlliance\",\"samples\":24,\"turns\":36,\"peaceReached\":24,\"medianFirstPeace\":7,\"warStarts\":19,\"endingVassals\":21,\"allianceBreaks\":11,\"stillAtWar\":16,\"invalidOffers\":0}\nSIM {\"name\":\"prolongedWar\",\"samples\":24,\"turns\":36,\"peaceReached\":24,\"medianFirstPeace\":0,\"warStarts\":31,\"endingVassals\":20,\"allianceBreaks\":11,\"stillAtWar\":12,\"invalidOffers\":0}\nSIM {\"name\":\"exhaustedPeace\",\"samples\":24,\"turns\":36,\"peaceReached\":24,\"medianFirstPeace\":0,\"warStarts\":36,\"endingVassals\":19,\"allianceBreaks\":9,\"stillAtWar\":8,\"invalidOffers\":0}\nSIM {\"name\":\"threatenedVassal\",\"samples\":24,\"turns\":36,\"peaceReached\":24,\"medianFirstPeace\":8,\"warStarts\":18,\"endingVassals\":20,\"allianceBreaks\":9,\"stillAtWar\":14,\"invalidOffers\":0}\nSIM {\"name\":\"limitedAlly\",\"samples\":24,\"turns\":36,\"peaceReached\":24,\"medianFirstPeace\":7,\"warStarts\":17,\"endingVassals\":20,\"allianceBreaks\":9,\"stillAtWar\":13,\"invalidOffers\":0}\nSIM repeatedEspionage 5 distinct targets\nSIM highUnrest 10 distinct targets\nINTEGRATION {\"scenario\":\"umayyad\",\"sample\":1,\"turn\":12,\"alive\":[\"umayyad\",\"byzantine\",\"khazar\",\"k34\"],\"wars\":2,\"battles\":4,\"peace\":2,\"contribution\":8,\"spy\":2}\nINTEGRATION {\"scenario\":\"umayyad\",\"sample\":2,\"turn\":12,\"alive\":[\"umayyad\",\"byzantine\",\"khazar\",\"k40\"],\"wars\":0,\"battles\":3,\"peace\":2,\"contribution\":6,\"spy\":1}\nINTEGRATION {\"scenario\":\"umayyad\",\"sample\":3,\"turn\":12,\"alive\":[\"umayyad\",\"byzantine\",\"khazar\"],\"wars\":0,\"battles\":0,\"peace\":2,\"contribution\":0,\"spy\":0}\nINTEGRATION {\"scenario\":\"threeKingdoms\",\"sample\":1,\"turn\":12,\"alive\":[\"shu\",\"wei\",\"wu\"],\"wars\":0,\"battles\":3,\"peace\":4,\"contribution\":6,\"spy\":2}\nINTEGRATION {\"scenario\":\"threeKingdoms\",\"sample\":2,\"turn\":12,\"alive\":[\"shu\",\"wei\",\"wu\"],\"wars\":0,\"battles\":4,\"peace\":2,\"contribution\":8,\"spy\":0}\nINTEGRATION {\"scenario\":\"threeKingdoms\",\"sample\":3,\"turn\":12,\"alive\":[\"shu\",\"wei\",\"wu\"],\"wars\":0,\"battles\":1,\"peace\":2,\"contribution\":2,\"spy\":2}\nPolitical simulations completed: 192 controlled campaigns / 6912 turns, 60 espionage turns, 72 full gameplay rounds.\n",
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/political-sim.log"
+    },
+    {
+      "script": "politics-spy-ui",
+      "kind": "ui",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 28.4,
+      "passLines": 7,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\politics-spy-ui.log",
+      "tail": "PASS espionage footer 1440x900\nPASS espionage footer 1024x768\nPASS espionage footer 390x844\nPASS espionage footer 360x740\nPASS espionage footer 320x568\nPASS espionage footer 844x390\nPASS espionage footer 568x320\nEspionage fixed footer, real touch, disabled action and reload checks passed.\n",
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/politics-spy-ui.log"
+    },
+    {
+      "script": "phase-f-baseline",
+      "kind": "ui",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 9.4,
+      "passLines": 0,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\phase-f-baseline.log",
+      "tail": "{\n  \"baseline\": \"a721b9d\",\n  \"viewport\": \"390x844\",\n  \"undo\": {\n    \"hiddenAfterX\": true,\n    \"hiddenAfterRefresh\": false,\n    \"stack\": 1\n  },\n  \"race\": {\n    \"replaced\": true,\n    \"events\": [\n      {\n        \"type\": \"pointerdown\",\n        \"target\": \"BUTTON\"\n      },\n      {\n        \"type\": \"touchstart\",\n        \"target\": \"BUTTON\"\n      },\n      {\n        \"type\": \"pointerup\",\n        \"target\": \"BUTTON\"\n      },\n      {\n        \"type\": \"touchend\",\n        \"target\": \"BUTTON\"\n      },\n      {\n        \"type\": \"click\",\n        \"target\": \"BUTTON\"\n      }\n    ],\n    \"settlements\": 1,\n    \"turn\": 1\n  },\n  \"ordinaryTap\": {\n    \"settlements\": 2,\n    \"turn\": 2\n  },\n  \"busy\": {\n    \"settlements\": 2,\n    \"beforeBusy\": 2,\n    \"feedback\": \"\",\n    \"button\": \"إنهاء الدور\\n4 جيوش تنتظر\"\n  }\n}\n",
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/phase-f-baseline.log"
+    },
+    {
+      "script": "phase-f-mobile",
+      "kind": "ui",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 144.7,
+      "passLines": 7,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\phase-f-mobile.log",
+      "tail": "PASS 320x568: Undo25, valid touch, refresh race, delayed AI10, busy, modal, over\nPASS 360x740: Undo25, valid touch, refresh race, delayed AI10, busy, modal, over\nPASS 390x844: Undo25, valid touch, refresh race, delayed AI10, busy, modal, over\nPASS 430x932: Undo25, valid touch, refresh race, delayed AI10, busy, modal, over\nPASS 568x320: Undo25, valid touch, refresh race, delayed AI10, busy, modal, over\nPASS 844x390: Undo25, valid touch, refresh race, delayed AI10, busy, modal, over\nPASS 127 mobile touch attempts; real Umayyad turn and save/reload; error recovery\n",
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/phase-f-mobile.log"
+    },
+    {
+      "script": "phase-f-lifecycle",
+      "kind": "ui",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 25.7,
+      "passLines": 6,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\phase-f-lifecycle.log",
+      "tail": "PASS load during initial AI wait cancels old turn\nPASS load during AI await + independent lock\nPASS load during world tick cannot save/settle replacement\nPASS confirming state blocks duplicate; loaded campaign remains intact\nPASS AI failure restores checkpoint and releases busy\nPASS settlement error guards duplicate and stale checkpoint\n",
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/phase-f-lifecycle.log"
+    },
+    {
+      "script": "phase-f-ui",
+      "kind": "ui",
+      "exitCode": 0,
+      "status": "passed",
+      "seconds": 17.3,
+      "passLines": 4,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\phase-f-ui.log",
+      "tail": "PASS 1440x900 desktop/keyboard, real captives and pending decisions, save\nPASS 1024x768 desktop/keyboard, real captives and pending decisions, save\nPASS 390x844 desktop/keyboard, real captives and pending decisions, save\nPASS 844x390 desktop/keyboard, real captives and pending decisions, save\n",
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/phase-f-ui.log"
+    },
+    {
+      "script": "phase-f-preview",
+      "kind": "ui",
+      "exitCode": 1,
+      "status": "failed",
+      "seconds": 15.2,
+      "passLines": 0,
+      "log": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\baseline-logs\\phase-f-preview.log",
+      "tail": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /fresh directory/. Input:\n\n'Error: Output already exists; refusing to overwrite: C:\\\\Users\\\\Abdul\\\\AppData\\\\Local\\\\Temp\\\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c'\n\n    at main (C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\tests\\phase-f-preview.cjs:27:12)\n    at Object.<anonymous> (C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\tests\\phase-f-preview.cjs:136:1)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\n    at node:internal/main/run_main_module:33:47 {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: Error: Output already exists; refusing to overwrite: C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\n      at buildPreview (C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\tools\\phase-f-preview.cjs:74:36)\n      at C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\tests\\phase-f-preview.cjs:27:25\n      at getActual (node:assert:611:5)\n      at strict.throws (node:assert:759:24)\n      at main (C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\tests\\phase-f-preview.cjs:27:12)\n      at Object.<anonymous> (C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-baseline-4e1ccf1fa07247658f7ab6c93b26357c\\tests\\phase-f-preview.cjs:136:1)\n      at Module._compile (node:internal/modules/cjs/loader:1872:14)\n      at Object..js (node:internal/modules/cjs/loader:2003:10)\n      at Module.load (node:internal/modules/cjs/loader:1594:32)\n      at Module._load (node:internal/modules/cjs/loader:1396:12),\n  expected: /fresh directory/,\n  operator: 'throws',\n  diff: 'simple'\n}\n",
+      "archivedLog": "artifacts/phase-r/baseline-logs/baseline-logs/phase-f-preview.log",
+      "failureClassification": "Temporary-root relocation changes which correct protective guard fires: root is also inside os.tmpdir, so existing-directory overwrite rejection occurs before the expected /fresh directory/ message. Original failed run retained; no overwrite occurred; no runtime/gameplay assertion reached."
+    }
+  ],
+  "excluded": [
+    {
+      "script": "phase-f-published",
+      "reason": "Approved public F deployment is unchanged; R must not redeploy it."
+    },
+    {
+      "script": "phase-f-regression",
+      "reason": "Wrapper duplicates the eight constituent suites all individually executed."
+    },
+    {
+      "script": "build-coast/build-road-drawings/inspect-geometry/harness/battle-fixtures/serve",
+      "reason": "Generators, diagnostic utilities, fixtures and server rather than standalone acceptance suites."
+    }
+  ],
+  "finished": "2026-10-11T20:55:03.585Z",
+  "summary": {
+    "executed": 28,
+    "passed": 27,
+    "failed": 1
+  },
+  "confirmedCoverage": {
+    "logicGroups": 179,
+    "aeRegressionGroups": 150,
+    "cameraGroups": 12,
+    "undoGroups": 12,
+    "campaignGroups": 5,
+    "battleSimulations": 5824,
+    "economyScenarios": 16,
+    "economyTurns": 840,
+    "economyActualEndRoundTurns": 120,
+    "politicalControlledCampaigns": 192,
+    "politicalControlledTurns": 6912,
+    "espionageTurns": 60,
+    "politicalIntegratedRounds": 72,
+    "leaderProfilesChecked": 40
+  }
+}

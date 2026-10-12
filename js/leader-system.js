@@ -337,7 +337,7 @@ Object.assign(Game,{
  const normalize=Game.normalizeState;
  Game.normalizeState=function(){const result=normalize.apply(this,arguments);this.migrateLeaders();return result;};
  const start=Game.newGame;
- Game.newGame=function(){let result;this._leaderStarting=true;try{result=start.apply(this,arguments);}finally{this._leaderStarting=false;}this.migrateLeaders();for(const fid of this.aliveMajors())this.addDraft(fid,1,'بداية الحملة','start');this.save();return result;};
+ Game.newGame=function(){let result;this._leaderStarting=true;try{result=start.apply(this,arguments);}finally{this._leaderStarting=false;}if(!result)return result;this.migrateLeaders();for(const fid of this.aliveMajors())this.addDraft(fid,1,'بداية الحملة','start');this.save();return result;};
  const createArmy=Game.createArmy;
  Game.createArmy=function(fid,node,genId){
   // A missing scenario identity must never silently send another ruler to this post.

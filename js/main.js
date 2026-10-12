@@ -1,10 +1,10 @@
 'use strict';
 // القائمة الرئيسية، المعركة السريعة، والإقلاع
 
-// خلفية القائمة: خريطة مرسومة لأحد العصرين تتحرك ببطء
+// خلفية القائمة: أطلس الحملة الأموية يتحرك ببطء
 class MenuScene {
   constructor() {
-    const sc = SCENARIOS[pick(Object.keys(SCENARIOS))];
+    const sc = SCENARIOS.umayyad;
     mapDimensions(sc);
     this.sc = sc;
     const cols = {};
@@ -54,7 +54,8 @@ function showMainMenu() {
   if (!(App.scene instanceof MenuScene)) App.setScene(new MenuScene());
   App.ui.innerHTML = '';
   const hasSave = Game.hasSave();
-  const saved = hasSave ? Game.readSlot('auto').meta : null;
+  const autoSave = Game.readSlot('auto');
+  const saved = hasSave ? autoSave?.meta : null;
   const menu = h('div', { class: 'menu' },
     h('div', { class: 'menu-card' },
       h('div', { class: 'title' },
@@ -63,6 +64,8 @@ function showMainMenu() {
         h('p', null, 'أطلس حرب، ومجلس حكم، وتاريخ تصنعه قراراتك'),
       ),
       h('div', { class: 'menu-btns' },
+        autoSave?.bad ? h('div', { class: 'hint save-warning', role: 'status' }, h('p', null, autoSave.bad),
+          h('button', { class: 'btn', onclick: () => Panels.saves(null) }, 'الحفظ القديم / تصدير JSON')) : null,
         hasSave ? h('button', { class: 'btn primary big', onclick: () => continueCampaign() },
           'متابعة الحملة', h('small', null, `${SCENARIOS[saved.scenario].name} · ${saved.fname} · ${SEASONS[saved.turn % 4]} ${SCENARIOS[saved.scenario].startYear + Math.floor(saved.turn / 4)}م`)) : null,
         h('button', { class: 'btn big' + (hasSave ? '' : ' primary'), onclick: () => newCampaignFlow() }, 'حملة جديدة', h('small', null, 'بناء الجيش، الحصار، الاحتلال، التفاوض')),
@@ -92,7 +95,7 @@ function goFullscreen() {
 }
 
 function newCampaignFlow() {
-  const state = { sc: 'threeKingdoms', fac: null, diff: 'normal' };
+  const state = { sc: 'umayyad', fac: null, diff: 'normal' };
   const card = h('div', { class: 'menu-card wide' });
   const render = () => {
     card.innerHTML = '';
@@ -101,7 +104,7 @@ function newCampaignFlow() {
     card.append(
       h('h2', null, 'حملة جديدة'),
       h('div', { class: 'label' }, 'العصر'),
-      h('div', { class: 'pick-row' }, Object.values(SCENARIOS).map((s) => h('button', {
+      h('div', { class: 'pick-row' }, [SCENARIOS.umayyad].map((s) => h('button', {
         class: 'pick' + (state.sc === s.id ? ' on' : ''), onclick: () => { state.sc = s.id; state.fac = null; render(); },
       }, h('b', null, s.name), h('span', null, s.sub)))),
       h('div', { class: 'label' }, 'مملكتك'),
@@ -117,7 +120,9 @@ function newCampaignFlow() {
         h('button', { class: 'btn ghost', onclick: () => showMainMenu() }, 'رجوع'),
         h('button', {
           class: 'btn primary', onclick: () => {
-            Game.newGame(state.sc, state.fac, state.diff);
+            if (!Game.newGame(state.sc, state.fac, state.diff)) {
+              UI.modal({ title: 'حماية الحفظ', body: h('p', null, Game.lastSaveError), buttons: [{ label: 'إغلاق' }, { label: 'الحفظ / تصدير JSON', onClick: () => Panels.saves(null) }] }); return;
+            }
             startCampaign();
           },
         }, 'ابدأ الحملة'),
@@ -130,7 +135,7 @@ function newCampaignFlow() {
 }
 
 function continueCampaign() {
-  if (!Game.load('auto')) { UI.toast('لا توجد حملة محفوظة'); return; }
+  if (!Game.load('auto')) { UI.toast(Game.lastSaveError || 'لا توجد حملة محفوظة'); return; }
   startCampaign();
 }
 

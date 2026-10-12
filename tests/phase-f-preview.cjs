@@ -35,7 +35,7 @@ async function main() {
     };
     walk(output);
     assert.deepEqual(actual.sort(), [...collectRuntimeFiles().filter((name) => !['index.html', 'manifest.json'].includes(name)), 'index.html', 'game.html', 'manifest.json', 'preview/bootstrap.js', 'build-info.json', '.nojekyll'].sort());
-    assert.ok(!actual.some((name) => /(?:^|\/)(?:artifacts|docs|tests|tools|\.git)(?:\/|$)|(?:save|token|secret|\.env)/i.test(name)), 'publication contains only runtime files');
+    assert.ok(!actual.some((name) => name !== 'js/save-safety.js' && /(?:^|\/)(?:artifacts|docs|tests|tools|\.git)(?:\/|$)|(?:save|token|secret|\.env)/i.test(name)), 'publication contains only runtime files (save-safety.js is code, not saved player data)');
     for (const file of info.sourceFiles) {
       const expected = file.matchesCommit
         ? execFileSync('git', ['show', `${info.sourceCommit}:${file.path}`], { cwd: ROOT, windowsHide: true })

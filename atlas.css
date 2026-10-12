@@ -80,6 +80,8 @@ button:focus-visible,input:focus-visible{outline:2px solid #e2c481;outline-offse
 @media(max-width:350px) and (orientation:portrait){.nav-btn{min-width:42px}.end-turn{width:calc(100% - 184px)}.hud-pill{padding:0 5px}.hud-pill.gold small,.hud-pill.food small{font-size:9px}}
 
 /* Phase F: stable, reachable touch controls; feedback never intercepts a tap. */
+.save-row .chip{min-width:44px;min-height:44px}
+.save-warning p{margin:0 0 8px}
 .end-turn > *{pointer-events:none}
 .end-turn > span{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .end-turn:active:not(:disabled){transform:none}
