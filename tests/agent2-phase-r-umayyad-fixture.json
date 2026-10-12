@@ -1,0 +1,5416 @@
+{
+  "_fixture": {
+    "synthetic": true,
+    "sourceCommit": "2deaa02de02b1e87321d01651ec725da19930ede",
+    "seed": 211,
+    "note": "Generated in Node VM; no browser storage. Turn/resources set as preservation sentinels; not a simulated 17-turn campaign."
+  },
+  "meta": {
+    "scenario": "umayyad",
+    "player": "umayyad",
+    "fname": "الدولة الأموية",
+    "turn": 17,
+    "time": 0,
+    "over": null
+  },
+  "S": {
+    "v": 5,
+    "atlas": 3,
+    "scenario": "umayyad",
+    "turn": 17,
+    "player": "umayyad",
+    "difficulty": "normal",
+    "nextId": 31,
+    "factions": {
+      "umayyad": {
+        "id": "umayyad",
+        "name": "الدولة الأموية",
+        "color": "#347a68",
+        "gold": 4321,
+        "food": 123,
+        "alive": true,
+        "isPlayer": true,
+        "rel": {
+          "byzantine": -40,
+          "khazar": -40
+        },
+        "status": {
+          "byzantine": "war",
+          "khazar": "war"
+        },
+        "truce": {
+          "byzantine": 0,
+          "khazar": 0
+        },
+        "warTurns": {
+          "byzantine": 0,
+          "khazar": 0
+        },
+        "lostRecently": 0,
+        "rep": 50,
+        "tax": "normal",
+        "treaty": {},
+        "grievance": {},
+        "vendetta": {},
+        "intel": {},
+        "claims": [],
+        "mercs": [
+          {
+            "type": "archer",
+            "exp": 2
+          },
+          {
+            "type": "sword",
+            "exp": 2
+          },
+          {
+            "type": "archer",
+            "exp": 1
+          }
+        ],
+        "lastWarTurn": 0,
+        "goals": null,
+        "ruler": "g1",
+        "heir": null,
+        "finance": {
+          "version": 1,
+          "history": [],
+          "entries": [],
+          "anchor": 600,
+          "lastSettled": -1
+        }
+      },
+      "byzantine": {
+        "id": "byzantine",
+        "name": "الروم",
+        "color": "#6b2f79",
+        "gold": 524,
+        "food": 40,
+        "alive": true,
+        "isPlayer": false,
+        "rel": {
+          "umayyad": -40,
+          "khazar": 50
+        },
+        "status": {
+          "umayyad": "war",
+          "khazar": "alliance"
+        },
+        "truce": {
+          "umayyad": 0,
+          "khazar": 0
+        },
+        "warTurns": {
+          "umayyad": 0,
+          "khazar": 0
+        },
+        "lostRecently": 0,
+        "rep": 50,
+        "tax": "normal",
+        "treaty": {
+          "khazar": {
+            "trade": true,
+            "marriage": false
+          }
+        },
+        "grievance": {},
+        "vendetta": {},
+        "intel": {},
+        "claims": [],
+        "mercs": [
+          {
+            "type": "cavalry",
+            "exp": 1
+          },
+          {
+            "type": "horsearcher",
+            "exp": 1
+          }
+        ],
+        "lastWarTurn": 0,
+        "goals": null,
+        "ruler": "g9",
+        "heir": null,
+        "finance": {
+          "version": 1,
+          "history": [],
+          "entries": [
+            {
+              "turn": 0,
+              "amount": -26,
+              "kind": "leaders",
+              "label": "مقدم عقد قائد"
+            }
+          ],
+          "anchor": 550,
+          "lastSettled": -1
+        }
+      },
+      "khazar": {
+        "id": "khazar",
+        "name": "الخزر",
+        "color": "#986427",
+        "gold": 550,
+        "food": 40,
+        "alive": true,
+        "isPlayer": false,
+        "rel": {
+          "umayyad": -40,
+          "byzantine": 50
+        },
+        "status": {
+          "umayyad": "war",
+          "byzantine": "alliance"
+        },
+        "truce": {
+          "umayyad": 0,
+          "byzantine": 0
+        },
+        "warTurns": {
+          "umayyad": 0,
+          "byzantine": 0
+        },
+        "lostRecently": 0,
+        "rep": 50,
+        "tax": "normal",
+        "treaty": {
+          "byzantine": {
+            "trade": true,
+            "marriage": false
+          }
+        },
+        "grievance": {},
+        "vendetta": {},
+        "intel": {},
+        "claims": [],
+        "mercs": [
+          {
+            "type": "sword",
+            "exp": 1
+          },
+          {
+            "type": "horsearcher",
+            "exp": 2
+          }
+        ],
+        "lastWarTurn": 0,
+        "goals": null,
+        "ruler": "g22",
+        "heir": null,
+        "finance": {
+          "version": 1,
+          "history": [],
+          "entries": [],
+          "anchor": 550,
+          "lastSettled": -1
+        }
+      },
+      "neutral": {
+        "id": "neutral",
+        "name": "المدن المستقلة",
+        "color": "#8a8378",
+        "gold": 550,
+        "food": 40,
+        "alive": true,
+        "isPlayer": false,
+        "rel": {},
+        "status": {},
+        "truce": {},
+        "warTurns": {},
+        "lostRecently": 0,
+        "rep": 50,
+        "tax": "normal",
+        "treaty": {},
+        "grievance": {},
+        "vendetta": {},
+        "intel": {},
+        "claims": [],
+        "mercs": [],
+        "lastWarTurn": 0,
+        "goals": null,
+        "neutral": true,
+        "finance": {
+          "version": 1,
+          "history": [],
+          "entries": [],
+          "anchor": 550,
+          "lastSettled": -1
+        }
+      }
+    },
+    "nodes": [
+      {
+        "id": "constantinople",
+        "name": "القسطنطينية",
+        "x": 1245,
+        "y": 302,
+        "owner": "byzantine",
+        "origOwner": "byzantine",
+        "pop": 40000,
+        "walls": 4,
+        "market": 1,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 1,
+        "region": "الروم",
+        "resource": "harbor",
+        "loyalty": 75,
+        "capital": true,
+        "terrain": "coast",
+        "stores": 7,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 800,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "nicaea",
+        "name": "نيقية",
+        "x": 1290,
+        "y": 337,
+        "owner": "byzantine",
+        "origOwner": "byzantine",
+        "pop": 16000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "الروم",
+        "resource": "craft",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "hills",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 320,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "amorium",
+        "name": "عمورية",
+        "x": 1296,
+        "y": 367,
+        "owner": "byzantine",
+        "origOwner": "byzantine",
+        "pop": 20000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "الأناضول",
+        "resource": "grain",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "plains",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 400,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "ancyra",
+        "name": "أنقرة",
+        "x": 1366,
+        "y": 338,
+        "owner": "byzantine",
+        "origOwner": "byzantine",
+        "pop": 14000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "الأناضول",
+        "resource": "craft",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "hills",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 280,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "caesarea",
+        "name": "قيصرية",
+        "x": 1444,
+        "y": 377,
+        "owner": "byzantine",
+        "origOwner": "byzantine",
+        "pop": 15000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "الأناضول",
+        "resource": "craft",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "mountains",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 300,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "trebizond",
+        "name": "طرابزون",
+        "x": 1572,
+        "y": 304,
+        "owner": "byzantine",
+        "origOwner": "byzantine",
+        "pop": 12000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "البحر الأسود",
+        "resource": "harbor",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 240,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "tarsus",
+        "name": "طرسوس",
+        "x": 1417,
+        "y": 427,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 8000,
+        "walls": 1,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "الثغور",
+        "resource": "harbor",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 4,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 160,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "malatya",
+        "name": "ملطية",
+        "x": 1529,
+        "y": 389,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 11000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "الثغور",
+        "resource": "grain",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "hills",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 220,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "antioch",
+        "name": "أنطاكية",
+        "x": 1459,
+        "y": 451,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 22000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "الشام",
+        "resource": "craft",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "river",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 440,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "aleppo",
+        "name": "حلب",
+        "x": 1518,
+        "y": 449,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 20000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "الشام",
+        "resource": "silk",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "plains",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 400,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "damascus",
+        "name": "دمشق",
+        "x": 1468,
+        "y": 544,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 36000,
+        "walls": 3,
+        "market": 1,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 1,
+        "region": "الشام",
+        "resource": "silk",
+        "loyalty": 75,
+        "capital": true,
+        "terrain": "plains",
+        "stores": 6,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 720,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "palmyra",
+        "name": "تدمر",
+        "x": 1528,
+        "y": 510,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 7000,
+        "walls": 1,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "الشام",
+        "resource": "oasis",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "desert",
+        "stores": 4,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 140,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "raqqa",
+        "name": "الرقة",
+        "x": 1550,
+        "y": 466,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 13000,
+        "walls": 1,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "الجزيرة",
+        "resource": "grain",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "river",
+        "stores": 4,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 260,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "mosul",
+        "name": "الموصل",
+        "x": 1674,
+        "y": 453,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 18000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "الجزيرة",
+        "resource": "grain",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "river",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 360,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "kufa",
+        "name": "الكوفة",
+        "x": 1712,
+        "y": 591,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 26000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "العراق",
+        "resource": "grain",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "river",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 520,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "dvin",
+        "name": "دبيل",
+        "x": 1717,
+        "y": 336,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 13000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "القوقاز",
+        "resource": "craft",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "mountains",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 260,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "tiflis",
+        "name": "تفليس",
+        "x": 1724,
+        "y": 281,
+        "owner": "neutral",
+        "origOwner": "neutral",
+        "pop": 12000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "القوقاز",
+        "resource": "craft",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "forest",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 240,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "cherson",
+        "name": "خرسون",
+        "x": 1388,
+        "y": 188,
+        "owner": "byzantine",
+        "origOwner": "byzantine",
+        "pop": 10000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "البحر الأسود",
+        "resource": "harbor",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 200,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "derbent",
+        "name": "باب الأبواب",
+        "x": 1829,
+        "y": 270,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 11000,
+        "walls": 3,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "القوقاز",
+        "resource": "pass",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "mountains",
+        "stores": 6,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 220,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "balanjar",
+        "name": "بلنجر",
+        "x": 1783,
+        "y": 221,
+        "owner": "khazar",
+        "origOwner": "khazar",
+        "pop": 24000,
+        "walls": 2,
+        "market": 1,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 1,
+        "region": "الخزر",
+        "resource": "herds",
+        "loyalty": 75,
+        "capital": true,
+        "terrain": "hills",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 480,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "samandar",
+        "name": "سمندر",
+        "x": 1827,
+        "y": 271,
+        "owner": "khazar",
+        "origOwner": "khazar",
+        "pop": 12000,
+        "walls": 1,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "الخزر",
+        "resource": "herds",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 4,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 240,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "atil",
+        "name": "معبر الفولغا",
+        "x": 1821,
+        "y": 133,
+        "owner": "khazar",
+        "origOwner": "khazar",
+        "pop": 8000,
+        "walls": 0,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "الخزر",
+        "resource": "herds",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "river",
+        "stores": 3,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 160,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "iconium",
+        "name": "قونية",
+        "x": 1354,
+        "y": 404,
+        "owner": "byzantine",
+        "origOwner": "byzantine",
+        "pop": 14000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "الأناضول",
+        "resource": "grain",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "hills",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 280,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "attalia",
+        "name": "أنطالية",
+        "x": 1301,
+        "y": 436,
+        "owner": "byzantine",
+        "origOwner": "byzantine",
+        "pop": 16000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "الأناضول",
+        "resource": "harbor",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 320,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "smyrna",
+        "name": "إزمير",
+        "x": 1194,
+        "y": 387,
+        "owner": "byzantine",
+        "origOwner": "byzantine",
+        "pop": 18000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "الروم",
+        "resource": "harbor",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 360,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "ephesus",
+        "name": "أفسس",
+        "x": 1212,
+        "y": 426,
+        "owner": "byzantine",
+        "origOwner": "byzantine",
+        "pop": 13000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "الروم",
+        "resource": "craft",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "hills",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 260,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "sinope",
+        "name": "سينوب",
+        "x": 1431,
+        "y": 273,
+        "owner": "byzantine",
+        "origOwner": "byzantine",
+        "pop": 12000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "البحر الأسود",
+        "resource": "harbor",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 240,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "adrianople",
+        "name": "أدرنة",
+        "x": 1177,
+        "y": 282,
+        "owner": "byzantine",
+        "origOwner": "byzantine",
+        "pop": 16000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "الروم",
+        "resource": "grain",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "plains",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 320,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "thessalonica",
+        "name": "تسالونيكي",
+        "x": 1068,
+        "y": 316,
+        "owner": "byzantine",
+        "origOwner": "byzantine",
+        "pop": 25000,
+        "walls": 3,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "الروم",
+        "resource": "harbor",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 6,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 500,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "athens",
+        "name": "أثينا",
+        "x": 1092,
+        "y": 401,
+        "owner": "byzantine",
+        "origOwner": "byzantine",
+        "pop": 12000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "الروم",
+        "resource": "craft",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "hills",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 240,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "corinth",
+        "name": "قورنثوس",
+        "x": 1050,
+        "y": 415,
+        "owner": "byzantine",
+        "origOwner": "byzantine",
+        "pop": 14000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "الروم",
+        "resource": "harbor",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 280,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "syracuse",
+        "name": "سرقوسة",
+        "x": 836,
+        "y": 432,
+        "owner": "byzantine",
+        "origOwner": "byzantine",
+        "pop": 20000,
+        "walls": 3,
+        "market": 1,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "صقلية",
+        "resource": "harbor",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 6,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 400,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "caralis",
+        "name": "قراليس",
+        "x": 654,
+        "y": 361,
+        "owner": "byzantine",
+        "origOwner": "byzantine",
+        "pop": 11000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "سردانية",
+        "resource": "harbor",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 220,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "cyprus",
+        "name": "قبرص",
+        "x": 1376,
+        "y": 493,
+        "owner": "neutral",
+        "origOwner": "neutral",
+        "pop": 15000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "قبرص",
+        "resource": "harbor",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 300,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "homs",
+        "name": "حمص",
+        "x": 1501,
+        "y": 517,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 18000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "الشام",
+        "resource": "grain",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "plains",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 360,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "tartus",
+        "name": "طرطوس",
+        "x": 1459,
+        "y": 498,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 10000,
+        "walls": 1,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "الشام",
+        "resource": "harbor",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 4,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 200,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "jerusalem",
+        "name": "بيت المقدس",
+        "x": 1452,
+        "y": 619,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 22000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "فلسطين",
+        "resource": "craft",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "hills",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 440,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "ramla",
+        "name": "الرملة",
+        "x": 1422,
+        "y": 598,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 14000,
+        "walls": 1,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "فلسطين",
+        "resource": "grain",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "plains",
+        "stores": 4,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 280,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "aqaba",
+        "name": "أيلة",
+        "x": 1430,
+        "y": 671,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 8000,
+        "walls": 1,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "الحجاز",
+        "resource": "harbor",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 4,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 160,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "pelusium",
+        "name": "الفرما",
+        "x": 1356,
+        "y": 623,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 10000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "مصر",
+        "resource": "harbor",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 200,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "fustat",
+        "name": "الفسطاط",
+        "x": 1317,
+        "y": 656,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 34000,
+        "walls": 2,
+        "market": 1,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "مصر",
+        "resource": "grain",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "river",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 680,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "alexandria",
+        "name": "الإسكندرية",
+        "x": 1278,
+        "y": 618,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 30000,
+        "walls": 3,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "مصر",
+        "resource": "harbor",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 6,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 600,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "aswan",
+        "name": "أسوان",
+        "x": 1367,
+        "y": 845,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 11000,
+        "walls": 1,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "مصر",
+        "resource": "grain",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "river",
+        "stores": 4,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 220,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "dongola",
+        "name": "دنقلا",
+        "x": 1294,
+        "y": 1033,
+        "owner": "neutral",
+        "origOwner": "neutral",
+        "pop": 17000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "النوبة",
+        "resource": "grain",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "river",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 340,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "barqa",
+        "name": "برقة",
+        "x": 1005,
+        "y": 576,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 12000,
+        "walls": 1,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "إفريقية",
+        "resource": "herds",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "hills",
+        "stores": 4,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 240,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "tripoli",
+        "name": "طرابلس الغرب",
+        "x": 776,
+        "y": 564,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 16000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "إفريقية",
+        "resource": "harbor",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 320,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "kairouan",
+        "name": "القيروان",
+        "x": 671,
+        "y": 484,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 24000,
+        "walls": 2,
+        "market": 1,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "إفريقية",
+        "resource": "grain",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "plains",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 480,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "tunis",
+        "name": "تونس",
+        "x": 685,
+        "y": 438,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 15000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "إفريقية",
+        "resource": "harbor",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 300,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "tlemcen",
+        "name": "تلمسان",
+        "x": 340,
+        "y": 500,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 14000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "المغرب",
+        "resource": "herds",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "hills",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 280,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "tangier",
+        "name": "طنجة",
+        "x": 206,
+        "y": 471,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 16000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "المغرب",
+        "resource": "harbor",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 320,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "volubilis",
+        "name": "وليلي",
+        "x": 213,
+        "y": 526,
+        "owner": "neutral",
+        "origOwner": "neutral",
+        "pop": 8000,
+        "walls": 1,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "المغرب",
+        "resource": "herds",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "hills",
+        "stores": 4,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 160,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "sevilla",
+        "name": "إشبيلية",
+        "x": 201,
+        "y": 420,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 20000,
+        "walls": 2,
+        "market": 1,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "الأندلس",
+        "resource": "grain",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "river",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 400,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "cordoba",
+        "name": "قرطبة",
+        "x": 253,
+        "y": 414,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 22000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "الأندلس",
+        "resource": "craft",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "river",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 440,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "toledo",
+        "name": "طليطلة",
+        "x": 259,
+        "y": 340,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 18000,
+        "walls": 3,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "الأندلس",
+        "resource": "craft",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "hills",
+        "stores": 6,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 360,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "merida",
+        "name": "ماردة",
+        "x": 190,
+        "y": 371,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 16000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "الأندلس",
+        "resource": "grain",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "river",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 320,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "zaragoza",
+        "name": "سرقسطة",
+        "x": 353,
+        "y": 283,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 16000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "الأندلس",
+        "resource": "grain",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "river",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 320,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "barcelona",
+        "name": "برشلونة",
+        "x": 445,
+        "y": 292,
+        "owner": "neutral",
+        "origOwner": "neutral",
+        "pop": 12000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "الثغر الغربي",
+        "resource": "harbor",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 240,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "narbonne",
+        "name": "أربونة",
+        "x": 470,
+        "y": 234,
+        "owner": "neutral",
+        "origOwner": "neutral",
+        "pop": 16000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "الثغر الغربي",
+        "resource": "harbor",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 320,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "medina",
+        "name": "المدينة",
+        "x": 1568,
+        "y": 833,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 20000,
+        "walls": 1,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "الحجاز",
+        "resource": "oasis",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "desert",
+        "stores": 4,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 400,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "mecca",
+        "name": "مكة",
+        "x": 1575,
+        "y": 931,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 18000,
+        "walls": 1,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "الحجاز",
+        "resource": "oasis",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "mountains",
+        "stores": 4,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 360,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "sanaa",
+        "name": "صنعاء",
+        "x": 1706,
+        "y": 1124,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 18000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "اليمن",
+        "resource": "grain",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "mountains",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 360,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "aden",
+        "name": "عدن",
+        "x": 1730,
+        "y": 1204,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 13000,
+        "walls": 1,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "اليمن",
+        "resource": "harbor",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 4,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 260,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "basra",
+        "name": "البصرة",
+        "x": 1813,
+        "y": 640,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 25000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 1,
+        "barracks": 0,
+        "region": "العراق",
+        "resource": "harbor",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "river",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 500,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "wasit",
+        "name": "واسط",
+        "x": 1755,
+        "y": 576,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 18000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "العراق",
+        "resource": "grain",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "river",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 360,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "hajar",
+        "name": "هجر",
+        "x": 1868,
+        "y": 804,
+        "owner": "umayyad",
+        "origOwner": "umayyad",
+        "pop": 10000,
+        "walls": 1,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "البحرين",
+        "resource": "oasis",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "desert",
+        "stores": 4,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 200,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "alania",
+        "name": "مضيق الداريال",
+        "x": 1719,
+        "y": 249,
+        "owner": "neutral",
+        "origOwner": "neutral",
+        "pop": 8000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": "القوقاز",
+        "resource": "pass",
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "mountains",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 160,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      }
+    ],
+    "armies": [
+      {
+        "id": 14,
+        "fid": "umayyad",
+        "node": "damascus",
+        "from": "damascus",
+        "gen": "g2",
+        "regs": [
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          },
+          {
+            "type": "sword",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "sword",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "cavalry",
+            "men": 30,
+            "exp": 0
+          },
+          {
+            "type": "cavalry",
+            "men": 30,
+            "exp": 0
+          }
+        ],
+        "mp": 4,
+        "siege": null,
+        "mood": null
+      },
+      {
+        "id": 15,
+        "fid": "umayyad",
+        "node": "malatya",
+        "from": "malatya",
+        "gen": "g3",
+        "regs": [
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          },
+          {
+            "type": "sword",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "horsearcher",
+            "men": 30,
+            "exp": 0
+          }
+        ],
+        "mp": 4,
+        "siege": null,
+        "mood": null
+      },
+      {
+        "id": 16,
+        "fid": "umayyad",
+        "node": "sevilla",
+        "from": "sevilla",
+        "gen": "g7",
+        "regs": [
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          },
+          {
+            "type": "sword",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "cavalry",
+            "men": 30,
+            "exp": 0
+          }
+        ],
+        "mp": 4,
+        "siege": null,
+        "mood": null
+      },
+      {
+        "id": 17,
+        "fid": "umayyad",
+        "node": "fustat",
+        "from": "fustat",
+        "gen": "g8",
+        "regs": [
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          },
+          {
+            "type": "sword",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "mp": 3,
+        "siege": null,
+        "mood": null
+      },
+      {
+        "id": 18,
+        "fid": "byzantine",
+        "node": "constantinople",
+        "from": "constantinople",
+        "gen": "g10",
+        "regs": [
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          },
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          },
+          {
+            "type": "sword",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "cavalry",
+            "men": 30,
+            "exp": 0
+          }
+        ],
+        "mp": 4,
+        "siege": null,
+        "mood": null
+      },
+      {
+        "id": 19,
+        "fid": "byzantine",
+        "node": "caesarea",
+        "from": "caesarea",
+        "gen": "g11",
+        "regs": [
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          },
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "cavalry",
+            "men": 30,
+            "exp": 0
+          }
+        ],
+        "mp": 4,
+        "siege": null,
+        "mood": null
+      },
+      {
+        "id": 21,
+        "fid": "byzantine",
+        "node": "syracuse",
+        "from": "syracuse",
+        "gen": "g20",
+        "regs": [
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "cavalry",
+            "men": 30,
+            "exp": 0
+          }
+        ],
+        "mp": 4,
+        "siege": null,
+        "mood": null
+      },
+      {
+        "id": 23,
+        "fid": "khazar",
+        "node": "balanjar",
+        "from": "balanjar",
+        "gen": "g22",
+        "regs": [
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          },
+          {
+            "type": "horsearcher",
+            "men": 30,
+            "exp": 0
+          },
+          {
+            "type": "horsearcher",
+            "men": 30,
+            "exp": 0
+          },
+          {
+            "type": "horsearcher",
+            "men": 30,
+            "exp": 0
+          },
+          {
+            "type": "cavalry",
+            "men": 30,
+            "exp": 0
+          },
+          {
+            "type": "cavalry",
+            "men": 30,
+            "exp": 0
+          }
+        ],
+        "mp": 4,
+        "siege": null,
+        "mood": null
+      },
+      {
+        "id": 25,
+        "fid": "khazar",
+        "node": "samandar",
+        "from": "samandar",
+        "gen": "g24",
+        "regs": [
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "horsearcher",
+            "men": 30,
+            "exp": 0
+          },
+          {
+            "type": "horsearcher",
+            "men": 30,
+            "exp": 0
+          }
+        ],
+        "mp": 4,
+        "siege": null,
+        "mood": null
+      }
+    ],
+    "gens": {
+      "g1": {
+        "id": "g1",
+        "name": "سليمان بن عبد الملك",
+        "fid": "umayyad",
+        "orig": "umayyad",
+        "trait": "merchant",
+        "flaw": "greedy",
+        "rank": 1,
+        "xp": 0,
+        "status": "pool",
+        "army": null,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "سليمان بن عبد الملك",
+        "src": "hist",
+        "born": 674,
+        "died": 717,
+        "lead": 2,
+        "fame": 30,
+        "arch": "merchant",
+        "style": "careful",
+        "doctrine": "cautious",
+        "terrain": [],
+        "units": [],
+        "ambition": 2,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "arab",
+        "wage": 28,
+        "bond": {
+          "trust": 45,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 48,
+          "ambition": 72
+        },
+        "growth": {
+          "path": "merchant",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "umayyad",
+        "observedStatus": "pool",
+        "loy": 100,
+        "age0": 41,
+        "bornTurn": 0
+      },
+      "g2": {
+        "id": "g2",
+        "name": "مسلمة بن عبد الملك",
+        "fid": "umayyad",
+        "orig": "umayyad",
+        "trait": "siege",
+        "flaw": null,
+        "rank": 2,
+        "xp": 0,
+        "status": "army",
+        "army": 14,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "مسلمة بن عبد الملك",
+        "src": "hist",
+        "born": null,
+        "died": 738,
+        "lead": 4,
+        "fame": 54,
+        "arch": "siege",
+        "style": "careful",
+        "doctrine": "siegecraft",
+        "terrain": [],
+        "units": [
+          "mach"
+        ],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "arab",
+        "wage": 33,
+        "bond": {
+          "trust": 58,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 54,
+          "ambition": 42
+        },
+        "growth": {
+          "path": "siege",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "umayyad",
+        "observedStatus": "pool",
+        "loy": 68
+      },
+      "g3": {
+        "id": "g3",
+        "name": "العباس بن الوليد",
+        "fid": "umayyad",
+        "orig": "umayyad",
+        "trait": "cavalier",
+        "flaw": null,
+        "rank": 1,
+        "xp": 0,
+        "status": "army",
+        "army": 15,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "العباس بن الوليد",
+        "src": "hist",
+        "born": null,
+        "died": 750,
+        "lead": 3,
+        "fame": 30,
+        "arch": "cavalier",
+        "style": "fearless",
+        "doctrine": "maneuver",
+        "terrain": [
+          "plains",
+          "desert"
+        ],
+        "units": [
+          "cav"
+        ],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "arab",
+        "wage": 25,
+        "bond": {
+          "trust": 52,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 51,
+          "ambition": 65
+        },
+        "growth": {
+          "path": "cavalier",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "umayyad",
+        "observedStatus": "pool",
+        "loy": 79
+      },
+      "g4": {
+        "id": "g4",
+        "name": "الجراح الحكمي",
+        "fid": "umayyad",
+        "orig": "umayyad",
+        "trait": "brave",
+        "flaw": "reckless",
+        "rank": 1,
+        "xp": 0,
+        "status": "pool",
+        "army": null,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "الجراح الحكمي",
+        "src": "hist",
+        "born": null,
+        "died": 730,
+        "lead": 3,
+        "fame": 30,
+        "arch": "brave",
+        "style": "fearless",
+        "doctrine": "aggressive",
+        "terrain": [],
+        "units": [
+          "inf"
+        ],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "arab",
+        "wage": 25,
+        "bond": {
+          "trust": 58,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 54,
+          "ambition": 42
+        },
+        "growth": {
+          "path": "brave",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "umayyad",
+        "observedStatus": "pool",
+        "loy": 69
+      },
+      "g5": {
+        "id": "g5",
+        "name": "محمد بن مروان",
+        "fid": "umayyad",
+        "orig": "umayyad",
+        "trait": "defender",
+        "flaw": null,
+        "rank": 1,
+        "xp": 0,
+        "status": "pool",
+        "army": null,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "محمد بن مروان",
+        "src": "hist",
+        "born": null,
+        "died": 720,
+        "lead": 3,
+        "fame": 30,
+        "arch": "defender",
+        "style": "disciplined",
+        "doctrine": "defensive",
+        "terrain": [],
+        "units": [
+          "inf"
+        ],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "arab",
+        "wage": 25,
+        "bond": {
+          "trust": 50,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 50,
+          "ambition": 40
+        },
+        "growth": {
+          "path": "defender",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "umayyad",
+        "observedStatus": "pool",
+        "loy": 81
+      },
+      "g6": {
+        "id": "g6",
+        "name": "عمر بن هبيرة",
+        "fid": "umayyad",
+        "orig": "umayyad",
+        "trait": "naval",
+        "flaw": null,
+        "rank": 1,
+        "xp": 0,
+        "status": "pool",
+        "army": null,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "عمر بن هبيرة",
+        "src": "hist",
+        "born": null,
+        "died": 726,
+        "lead": 2,
+        "fame": 30,
+        "arch": "naval",
+        "style": "careful",
+        "doctrine": "maneuver",
+        "terrain": [
+          "river",
+          "coast"
+        ],
+        "units": [],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "arab",
+        "wage": 24,
+        "bond": {
+          "trust": 38,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 44,
+          "ambition": 85
+        },
+        "growth": {
+          "path": "naval",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "umayyad",
+        "observedStatus": "pool",
+        "loy": 72
+      },
+      "g7": {
+        "id": "g7",
+        "name": "عبد العزيز بن موسى",
+        "fid": "umayyad",
+        "orig": "umayyad",
+        "trait": "merchant",
+        "flaw": null,
+        "rank": 1,
+        "xp": 0,
+        "status": "army",
+        "army": 16,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "عبد العزيز بن موسى",
+        "src": "hist",
+        "born": null,
+        "died": 716,
+        "lead": 2,
+        "fame": 28,
+        "arch": "merchant",
+        "style": "careful",
+        "doctrine": "cautious",
+        "terrain": [],
+        "units": [],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "arab",
+        "wage": 20,
+        "bond": {
+          "trust": 52,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 51,
+          "ambition": 50
+        },
+        "growth": {
+          "path": "merchant",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "umayyad",
+        "observedStatus": "pool",
+        "loy": 75
+      },
+      "g8": {
+        "id": "g8",
+        "name": "عبد الملك بن رفاعة",
+        "fid": "umayyad",
+        "orig": "umayyad",
+        "trait": "merchant",
+        "flaw": "cautious",
+        "rank": 1,
+        "xp": 0,
+        "status": "army",
+        "army": 17,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "عبد الملك بن رفاعة",
+        "src": "hist",
+        "born": null,
+        "died": 727,
+        "lead": 2,
+        "fame": 22,
+        "arch": "merchant",
+        "style": "careful",
+        "doctrine": "cautious",
+        "terrain": [],
+        "units": [],
+        "ambition": 0,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "arab",
+        "wage": 16,
+        "bond": {
+          "trust": 52,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 51,
+          "ambition": 50
+        },
+        "growth": {
+          "path": "merchant",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "umayyad",
+        "observedStatus": "pool",
+        "loy": 72
+      },
+      "g9": {
+        "id": "g9",
+        "name": "ثيودوسيوس",
+        "fid": "byzantine",
+        "orig": "byzantine",
+        "trait": "merchant",
+        "flaw": "cautious",
+        "rank": 1,
+        "xp": 0,
+        "status": "pool",
+        "army": null,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "ثيودوسيوس",
+        "src": "hist",
+        "born": null,
+        "died": 754,
+        "lead": 2,
+        "fame": 30,
+        "arch": "merchant",
+        "style": "careful",
+        "doctrine": "cautious",
+        "terrain": [],
+        "units": [],
+        "ambition": 0,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "rum",
+        "wage": 22,
+        "bond": {
+          "trust": 50,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 50,
+          "ambition": 40
+        },
+        "growth": {
+          "path": "merchant",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "byzantine",
+        "observedStatus": "pool",
+        "loy": 100,
+        "age0": 55,
+        "bornTurn": 0
+      },
+      "g10": {
+        "id": "g10",
+        "name": "ليون الإيساوري",
+        "fid": "byzantine",
+        "orig": "byzantine",
+        "trait": "defender",
+        "flaw": null,
+        "rank": 2,
+        "xp": 0,
+        "status": "army",
+        "army": 18,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "ليون الإيساوري",
+        "src": "hist",
+        "born": 685,
+        "died": 741,
+        "lead": 4,
+        "fame": 44,
+        "arch": "defender",
+        "style": "disciplined",
+        "doctrine": "defensive",
+        "terrain": [],
+        "units": [
+          "inf"
+        ],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "rum",
+        "wage": 29,
+        "bond": {
+          "trust": 50,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 50,
+          "ambition": 40
+        },
+        "growth": {
+          "path": "defender",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "byzantine",
+        "observedStatus": "pool",
+        "loy": 67
+      },
+      "g11": {
+        "id": "g11",
+        "name": "أرتاباسدوس",
+        "fid": "byzantine",
+        "orig": "byzantine",
+        "trait": "cavalier",
+        "flaw": "disloyal",
+        "rank": 1,
+        "xp": 0,
+        "status": "army",
+        "army": 19,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "أرتاباسدوس",
+        "src": "hist",
+        "born": null,
+        "died": 743,
+        "lead": 3,
+        "fame": 30,
+        "arch": "cavalier",
+        "style": "fearless",
+        "doctrine": "maneuver",
+        "terrain": [
+          "plains",
+          "desert"
+        ],
+        "units": [
+          "cav"
+        ],
+        "ambition": 2,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "rum",
+        "wage": 28,
+        "bond": {
+          "trust": 38,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 44,
+          "ambition": 85
+        },
+        "growth": {
+          "path": "cavalier",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "byzantine",
+        "observedStatus": "pool",
+        "loy": 51
+      },
+      "g12": {
+        "id": "g12",
+        "name": "سمبات الباغراتي",
+        "fid": "neutral",
+        "orig": "neutral",
+        "trait": "cavalier",
+        "flaw": null,
+        "rank": 1,
+        "xp": 0,
+        "status": "pool",
+        "army": null,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "سمبات الباغراتي",
+        "src": "hist",
+        "born": null,
+        "died": 726,
+        "lead": 2,
+        "fame": 30,
+        "arch": "cavalier",
+        "style": "fearless",
+        "doctrine": "maneuver",
+        "terrain": [
+          "plains",
+          "desert"
+        ],
+        "units": [
+          "cav"
+        ],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "caucasus",
+        "wage": 22,
+        "bond": {
+          "trust": 52,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 51,
+          "ambition": 50
+        },
+        "growth": {
+          "path": "cavalier",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "neutral",
+        "observedStatus": "pool",
+        "loy": 71
+      },
+      "g13": {
+        "id": "g13",
+        "name": "غوارام الكرجي",
+        "fid": "neutral",
+        "orig": "neutral",
+        "trait": "mountaineer",
+        "flaw": null,
+        "rank": 1,
+        "xp": 0,
+        "status": "pool",
+        "army": null,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "غوارام الكرجي",
+        "src": "hist",
+        "born": null,
+        "died": 748,
+        "lead": 2,
+        "fame": 30,
+        "arch": "mountaineer",
+        "style": "disciplined",
+        "doctrine": "defensive",
+        "terrain": [
+          "hills",
+          "mountains"
+        ],
+        "units": [
+          "inf"
+        ],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "caucasus",
+        "wage": 23,
+        "bond": {
+          "trust": 52,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 51,
+          "ambition": 50
+        },
+        "growth": {
+          "path": "mountaineer",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "neutral",
+        "observedStatus": "pool",
+        "loy": 79
+      },
+      "g20": {
+        "id": "g20",
+        "name": "الضابط، حامية سرقوسة",
+        "fid": "byzantine",
+        "orig": "byzantine",
+        "trait": null,
+        "flaw": null,
+        "rank": 1,
+        "xp": 0,
+        "status": "army",
+        "army": 21,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "lead": 1,
+        "fame": 0,
+        "culture": "rum",
+        "src": "local",
+        "arch": "none",
+        "style": "careful",
+        "doctrine": "cautious",
+        "terrain": [],
+        "units": [],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "bond": {
+          "trust": 52,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 51,
+          "ambition": 50
+        },
+        "growth": {
+          "path": "none",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "byzantine",
+        "observedStatus": "pool",
+        "home": "syracuse",
+        "loy": 71
+      },
+      "g22": {
+        "id": "g22",
+        "name": "خاقان الخزر",
+        "fid": "khazar",
+        "orig": "khazar",
+        "trait": "cavalier",
+        "flaw": null,
+        "rank": 1,
+        "xp": 0,
+        "status": "army",
+        "army": 23,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "lead": 2,
+        "fame": 20,
+        "culture": "steppe",
+        "src": "office",
+        "arch": "cavalier",
+        "style": "fearless",
+        "doctrine": "maneuver",
+        "terrain": [
+          "plains",
+          "desert"
+        ],
+        "units": [
+          "cav"
+        ],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "wage": 15,
+        "bond": {
+          "trust": 52,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 51,
+          "ambition": 50
+        },
+        "growth": {
+          "path": "cavalier",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "khazar",
+        "observedStatus": "pool",
+        "home": "balanjar",
+        "loy": 100,
+        "age0": 44,
+        "bornTurn": 0
+      },
+      "g24": {
+        "id": "g24",
+        "name": "الضابط، حامية سمندر",
+        "fid": "khazar",
+        "orig": "khazar",
+        "trait": null,
+        "flaw": null,
+        "rank": 1,
+        "xp": 0,
+        "status": "army",
+        "army": 25,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "lead": 1,
+        "fame": 0,
+        "culture": "steppe",
+        "src": "local",
+        "arch": "none",
+        "style": "careful",
+        "doctrine": "cautious",
+        "terrain": [],
+        "units": [],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "bond": {
+          "trust": 52,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 51,
+          "ambition": 50
+        },
+        "growth": {
+          "path": "none",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "khazar",
+        "observedStatus": "pool",
+        "home": "samandar",
+        "loy": 77
+      },
+      "g28": {
+        "id": "g28",
+        "name": "أناستاسيوس",
+        "fid": "byzantine",
+        "orig": "byzantine",
+        "trait": "naval",
+        "flaw": null,
+        "rank": 1,
+        "xp": 0,
+        "status": "pool",
+        "army": null,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "lead": 3,
+        "fame": 30,
+        "culture": "rum",
+        "cat": "أناستاسيوس",
+        "src": "hist",
+        "born": null,
+        "died": 719,
+        "arch": "naval",
+        "style": "careful",
+        "doctrine": "maneuver",
+        "terrain": [
+          "river",
+          "coast"
+        ],
+        "units": [],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "wage": 26,
+        "bond": {
+          "trust": 48,
+          "respect": 53,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 51,
+          "ambition": 72
+        },
+        "growth": {
+          "path": "naval",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [
+          {
+            "k": "recruited",
+            "turn": 0,
+            "text": "لي مقام أحفظه. أضع خبرتي في خدمتكم؛ والعهد بيننا يحفظه العمل.",
+            "why": "دخول المجلس"
+          }
+        ],
+        "relationships": {},
+        "leaderFlags": {
+          "recruited:": 0
+        },
+        "observedFid": "byzantine",
+        "observedStatus": "pool",
+        "contract": {
+          "signed": 0,
+          "expected": 26,
+          "advance": 26
+        },
+        "loy": 67
+      },
+      "g30": {
+        "id": "g30",
+        "name": "نقيطاس",
+        "fid": "umayyad",
+        "orig": "umayyad",
+        "trait": "swift",
+        "flaw": null,
+        "rank": 1,
+        "xp": 0,
+        "status": "pool",
+        "army": null,
+        "captor": null,
+        "since": 17,
+        "vendetta": null,
+        "cat": "نقيطاس",
+        "src": "fic",
+        "born": null,
+        "died": null,
+        "lead": 2,
+        "fame": 0,
+        "arch": "swift",
+        "style": "cunning",
+        "doctrine": "maneuver",
+        "terrain": [
+          "plains",
+          "desert"
+        ],
+        "units": [
+          "cav"
+        ],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "arab",
+        "wage": 14,
+        "bond": {
+          "trust": 52,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 51,
+          "ambition": 50
+        },
+        "growth": {
+          "path": "swift",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "umayyad",
+        "observedStatus": "pool"
+      }
+    },
+    "tributes": [],
+    "log": [
+      {
+        "turn": 0,
+        "cat": "pol",
+        "text": "بدأت الحملة. من قرطبة إلى دمشق، ومن وادي النيل إلى أبواب القوقاز. اتساع الدولة ثروة ومسؤولية، ومضائق البحر وممرات الجبال مفاتيح الحرب.",
+        "imp": 3,
+        "fids": [],
+        "node": null
+      },
+      {
+        "turn": 0,
+        "cat": "int",
+        "text": "أناستاسيوس يدخل المجلس بعطاء 26 كل دور.",
+        "imp": 2,
+        "fids": [
+          "byzantine"
+        ],
+        "node": null
+      }
+    ],
+    "over": null,
+    "alerts": [
+      {
+        "id": 1,
+        "turn": 0,
+        "level": "imp",
+        "text": "وفد إلى المجلس: بداية الحملة",
+        "node": null,
+        "army": null,
+        "icon": "helmet",
+        "key": "opp:o26",
+        "cond": false,
+        "until": 2,
+        "win": "opps",
+        "crisis": null
+      }
+    ],
+    "scars": [],
+    "chron": [
+      {
+        "turn": 0,
+        "kind": "start",
+        "text": "الدولة الأموية تبدأ طريقها. من قرطبة إلى دمشق، ومن وادي النيل إلى أبواب القوقاز. اتساع الدولة ثروة ومسؤولية، ومضائق البحر وممرات الجبال مفاتيح الحرب.",
+        "fids": [
+          "umayyad"
+        ],
+        "node": null,
+        "imp": 3,
+        "icon": "flag",
+        "story": null
+      }
+    ],
+    "aid": 2,
+    "wars": {
+      "byzantine|umayyad": {
+        "a": "umayyad",
+        "b": "byzantine",
+        "since": 0,
+        "ended": null,
+        "st": {
+          "umayyad": {
+            "kills": 0,
+            "lost": 0,
+            "won": 0,
+            "battles": 0,
+            "took": [],
+            "sieges": 0,
+            "aid": 0
+          },
+          "byzantine": {
+            "kills": 0,
+            "lost": 0,
+            "won": 0,
+            "battles": 0,
+            "took": [],
+            "sieges": 0,
+            "aid": 0
+          }
+        },
+        "politicalId": "war:byzantine|umayyad:0:1"
+      },
+      "khazar|umayyad": {
+        "a": "umayyad",
+        "b": "khazar",
+        "since": 0,
+        "ended": null,
+        "st": {
+          "umayyad": {
+            "kills": 0,
+            "lost": 0,
+            "won": 0,
+            "battles": 0,
+            "took": [],
+            "sieges": 0,
+            "aid": 0
+          },
+          "khazar": {
+            "kills": 0,
+            "lost": 0,
+            "won": 0,
+            "battles": 0,
+            "took": [],
+            "sieges": 0,
+            "aid": 0
+          }
+        },
+        "politicalId": "war:khazar|umayyad:0:2"
+      }
+    },
+    "politics": {
+      "version": 1,
+      "memory": {},
+      "waits": {},
+      "counters": {},
+      "peaces": [],
+      "aiTurns": {},
+      "treaties": {},
+      "offers": {},
+      "serial": 2
+    },
+    "crises": [],
+    "dir": {
+      "calm": 0,
+      "lastStart": -99,
+      "domTurns": 0,
+      "dom": null,
+      "starts": 0,
+      "log": [],
+      "gold": []
+    },
+    "stats": {
+      "acts": {},
+      "cur": {},
+      "hist": [],
+      "dead": 0
+    },
+    "flips": {},
+    "route": {
+      "key": "silk",
+      "name": "طريق الحرير",
+      "path": [
+        "kufa",
+        "mosul",
+        "raqqa",
+        "aleppo",
+        "antioch",
+        "tarsus"
+      ],
+      "bad": 0,
+      "dead": false
+    },
+    "obj": {
+      "tradeKey": "fur"
+    },
+    "leaders": {
+      "version": 2,
+      "factions": {
+        "umayyad": {
+          "earned": {
+            "start": 0,
+            "reroll:start": 0
+          },
+          "retiredNames": [],
+          "lastGrant": 0,
+          "lastHire": -99,
+          "serial": 1,
+          "hires": 0,
+          "lastTick": -1,
+          "lossGrants": 0
+        },
+        "byzantine": {
+          "earned": {
+            "start": 0,
+            "reroll:start": 0
+          },
+          "retiredNames": [
+            "يوحنا، من أفسس"
+          ],
+          "lastGrant": 0,
+          "lastHire": 0,
+          "serial": 1,
+          "hires": 1,
+          "lastTick": -1,
+          "lossGrants": 0
+        },
+        "khazar": {
+          "earned": {
+            "start": 0,
+            "reroll:start": 0
+          },
+          "retiredNames": [],
+          "lastGrant": 0,
+          "lastHire": -99,
+          "serial": 1,
+          "hires": 0,
+          "lastTick": -1,
+          "lossGrants": 0
+        },
+        "neutral": {
+          "earned": {},
+          "retiredNames": [],
+          "lastGrant": -99,
+          "lastHire": -99,
+          "serial": 0,
+          "hires": 0,
+          "lastTick": -1,
+          "lossGrants": 0
+        }
+      },
+      "memorials": [],
+      "seed": 3009858412
+    },
+    "oppKeys": {
+      "umayyad:start": 0,
+      "byzantine:start": 0,
+      "khazar:start": 0
+    },
+    "opps": {
+      "umayyad": [
+        {
+          "id": "o26",
+          "why": "start",
+          "key": "start",
+          "turn": 0,
+          "expires": 8,
+          "cands": [
+            {
+              "n": "هشام بن عبد الملك",
+              "cat": true,
+              "seed": 400063625,
+              "quote": {
+                "total": 17,
+                "reasons": [
+                  "مكانته وخبرته",
+                  "تخصصه القيادي",
+                  "القتال على جبهات متعددة"
+                ],
+                "parts": []
+              }
+            },
+            {
+              "n": "نصر بن سيار",
+              "cat": true,
+              "seed": 714883594,
+              "quote": {
+                "total": 23,
+                "reasons": [
+                  "مكانته وخبرته",
+                  "تخصصه القيادي",
+                  "القتال على جبهات متعددة"
+                ],
+                "parts": []
+              }
+            }
+          ],
+          "tries": {},
+          "rerolls": 0
+        }
+      ],
+      "byzantine": [],
+      "khazar": [
+        {
+          "id": "o29",
+          "why": "start",
+          "key": "start",
+          "turn": 0,
+          "expires": 8,
+          "cands": [
+            {
+              "n": "كوباك، من معبر الفولغا",
+              "cat": false,
+              "src": "local",
+              "home": "atil",
+              "trait": "merchant",
+              "flaw": "cautious",
+              "lead": 1,
+              "seed": 947001154,
+              "culture": "steppe",
+              "quote": {
+                "total": 10,
+                "reasons": [
+                  "مكانته وخبرته",
+                  "تخصصه القيادي",
+                  "ندرة اختصاصه في المجلس"
+                ],
+                "parts": []
+              }
+            },
+            {
+              "n": "قوتلوغ، من معبر الفولغا",
+              "cat": false,
+              "src": "local",
+              "home": "atil",
+              "trait": "defender",
+              "flaw": "cautious",
+              "lead": 1,
+              "seed": 271278281,
+              "culture": "steppe",
+              "quote": {
+                "total": 9,
+                "reasons": [
+                  "مكانته وخبرته",
+                  "تخصصه القيادي",
+                  "ندرة اختصاصه في المجلس"
+                ],
+                "parts": []
+              }
+            }
+          ],
+          "tries": {
+            "1": 1
+          },
+          "rerolls": 0
+        }
+      ],
+      "neutral": []
+    },
+    "draft": {
+      "umayyad": 1,
+      "byzantine": 1,
+      "khazar": 1,
+      "neutral": 0
+    }
+  }
+}

@@ -1,0 +1,5 @@
+PASS identical A–E and Phase F Umayyad initial campaign (all saved fields)
+PASS identical real construction/Undo resources and campaign state
+PASS identical endRound military, economy, buildings, leaders and diplomatic fields
+PASS baseline A–E synthetic save loads identically into Phase F
+PASS Phase F save/load roundtrip and stale Undo cleanup

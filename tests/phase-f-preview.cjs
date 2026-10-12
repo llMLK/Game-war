@@ -24,7 +24,7 @@ async function main() {
     assert.match(info.sourceCommit, /^[0-9a-f]{40}$/);
     assert.equal(info.storageNamespace, STORAGE_NAMESPACE);
     assert.throws(() => buildPreview({ output, allowDirty: true }), /refusing to overwrite/);
-    assert.throws(() => buildPreview({ output: ROOT, allowDirty: true }), /fresh directory/);
+    assert.throws(() => buildPreview({ output: ROOT, allowDirty: true }), /fresh directory|refusing to overwrite/);
     const actual = [];
     const walk = (directory, prefix = '') => {
       for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {

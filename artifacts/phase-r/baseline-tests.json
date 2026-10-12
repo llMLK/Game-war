@@ -359,6 +359,9 @@
     "politicalControlledTurns": 6912,
     "espionageTurns": 60,
     "politicalIntegratedRounds": 72,
-    "leaderProfilesChecked": 40
+    "leaderProfilesChecked": 40,
+    "economyExecutedScenarios": 18,
+    "economyExecutedTurns": 920,
+    "economyExecutedActualEndRoundTurns": 200
   }
 }

@@ -34,3 +34,34 @@ Before/after reports must distinguish suite groups, nested cases, viewport sampl
 All 28 standalone suites ran: 27 exited successfully, one failed. The eight A–E suites retained 150 groups; camera adds 12, Phase F Undo 12 and campaign parity 5, giving 179 logic groups. Successful statistical runs covered 5,824 battle simulations, 16 economic scenarios / 840 turns / 120 actual endRound turns, and 192 political controlled campaigns / 6,912 turns, 60 espionage turns and 72 integrated political rounds. The initial leader profile scan covered 40 profiles.
 
 The original `phase-f-preview.cjs` failure is retained in `baseline-tests.json` and archived stdout/stderr. It checks that using the repository root as output throws text matching `/fresh directory/`. In this temporary snapshot, the repository root is also beneath the system temporary directory, so that path passes the allowed-location check and instead reaches the existing-directory guard: `Output already exists; refusing to overwrite`. This is a mismatch in expected protective error wording caused by test relocation. Overwrite protection held and the test stopped before its subsequent preview/storage browser assertions. Do not classify the entire preview suite as passed, and do not infer a runtime/gameplay/storage-isolation failure from this result. No baseline test assertion was changed to hide it.
+
+## R2 implementation and verified comparison
+
+R1 was committed as `be5342b`, with metadata QA follow-up `a348360`, before any of these existing tests changed. No test group was deleted. Nine files changed: the eight China-dependent suites above and `phase-f-campaign.cjs`. The latter now reads the historical `a721b9d:index.html` before loading historical scripts; the current index legitimately includes the R save guard, which never existed at the historical revision. All five original campaign parity assertions remain.
+
+| Coverage | Before F | R2 | Status before R3 |
+| --- | --- | --- | --- |
+| Leader groups | 29 | 29 | 29/29 passed |
+| Starting leader cases | 6 campaigns/factions | 3 supported factions × normal/hard = 6 | Passed |
+| Leader actual endRound/worldTick samples | 2 × 24 = 48 rounds | 3 × 24 = 72 rounds | Passed |
+| Camera/migration groups | 12 | 12 | 12/12 passed |
+| Camera geography contexts | Western and Chinese | Umayyad/Byzantine/Khazar on supported 66-city atlas | Passed |
+| Chinese legacy loading | Accept 20-city campaign | Reject before normalization; preserve exact manual raw bytes and entire current state | Passed; required compatibility-policy change |
+| Trade groups | 12 | 12 | 12/12 passed |
+| Route groups | 10 | 10 | 10/10 passed |
+| Historical A–E parity groups | 5 | 5 | 5/5 passed |
+| Economic main scenarios/turns | 16 / 840; 120 actual endRound turns | 16 / 840; 120 actual endRound turns | Passed |
+| Economic executed totals, including replacement controls | 18 / 920; 200 actual endRound turns | 18 / 920; 200 actual endRound turns | Passed |
+| Early economy cases | 6 starting factions | 3 supported factions × seeds 42/43 = 6 | Passed |
+| Controlled economic sizes | Five/ten-city Chinese fixtures | Exactly five/ten-city Byzantine fixtures with surplus fixture ownership released | Passed; assert stated city count |
+| Map pointer/touch viewport cases | 8 + Chinese phone renderer | Same 8 + Byzantine and Khazar phone renderer | Execution deferred to full post-R3 runner |
+| Leader mobile/profile viewport cases | 7 + profile scan + Chinese profile/memorial | Same 7 + three supported faction profile scans + Byzantine profile/memorial | Execution deferred to full post-R3 runner |
+| Political controlled matrix | 192 campaigns / 6,912 turns | Unchanged | Execution deferred to full post-R3 runner |
+| Espionage targeted simulations | 60 turns | Unchanged | Execution deferred to full post-R3 runner |
+| Political integrated gameplay | 6 samples × 12 = 72 actual rounds | 3 factions × 2 samples × 24 = 144 actual AI/endRound/worldTick/save rounds | Execution deferred to full post-R3 runner; exceeds 20 turns per sample |
+
+Leader capture/execution/defection/direct-death/peer-honor tests use labeled synthetic friendships between existing Umayyad commanders. The late-hire rivalry fixture injects catalog rivals only inside its isolated VM, and the mentoring fixture models earned prestige at the existing threshold. Production relationships, biographies, parameters and balance are untouched. The original trust, rivalry, memorial, no-replacement, repeated-event and mentorship assertions remain.
+
+Static `assert.*` call-site counts are a secondary audit, not executed-assertion totals: leaders 159→160, camera 34→37, economy balance 12→14, trade 54→54, routes 32→33, map interactions 13→14, leader preview 23→23, political simulation 9→9, historical campaign parity 8→8. No transferred suite loses assertion call sites. Actual group/case results above, rather than these static counts, establish execution coverage.
+
+The six migrated pre-R3 suites all passed in an isolated R1 archive containing the edited tests; evidence is `r2-migrated-tests.json`, `r2-logs/`, and `r2-economy-balance.json`. The 58-city late-economy control values remain identical to baseline (closing treasuries 162,011 / 294,961 / 435,477 for the three late controls); relocated small-realm results are explicitly different fixtures, not a production rebalance. No preview was published or changed.

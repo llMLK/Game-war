@@ -5,10 +5,10 @@ const vm = require('node:vm');
 const path = require('node:path');
 const { createContext } = require('./harness.cjs');
 let passed = 0;
-function fresh(scenario = 'umayyad') {
+function fresh(scenario = 'umayyad',player='umayyad') {
   const ctx = createContext(42);
   if (!ctx.run('!!Game.tradeBreakdown')) vm.runInContext(fs.readFileSync(path.join(__dirname, '../js/economy-trade.js'), 'utf8'), ctx);
-  ctx.run(`Game.newGame('${scenario}','${scenario === 'umayyad' ? 'umayyad' : 'shu'}','normal')`);
+  ctx.run(`Game.newGame('${scenario}','${player}','normal')`);
   ctx.read = code => JSON.parse(ctx.run(`JSON.stringify(${code})`));
   return ctx;
 }
@@ -130,9 +130,9 @@ test('changing city ownership changes the recipient, not the meaning of automati
   assert.match(ctx.run("Game.routeStatus('umayyad').controlText"), /تلقائية/);
 });
 
-test('old atlas routes migrate while preserving guards and permanent state in both scenarios', () => {
-  for (const scenario of ['umayyad','threeKingdoms']) {
-    const ctx = fresh(scenario);
+test('old atlas routes migrate while preserving guards and permanent state for supported factions', () => {
+  for (const player of ['umayyad','byzantine','khazar']) {
+    const ctx = fresh('umayyad',player);
     const first = ctx.run('Game.S.route.path[0]');
     ctx.run(`Game.S.route.path=['removed-city','${first}'];Game.S.route.escort={'${first}':15};Game.S.route.dead=true;Game.S.route.bad=2;Game.S.route.stops={'removed-city|${first}':'war'};Game.normalizeState()`);
     assert.equal(ctx.run('Game.S.route.path.every((id,i)=>Game.node(id)&&(!i||Game.edge(Game.S.route.path[i-1],id)))'), true);

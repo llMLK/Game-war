@@ -21,8 +21,8 @@ const compareMode=process.argv.includes('--compare-reserves');
 let activeRate=baselineMode?0:null, results=[];
 const round = n => Math.round(n * 100) / 100;
 const mean = xs => xs.reduce((a, b) => a + b, 0) / Math.max(1, xs.length);
-function fresh(scenario = 'umayyad', player = 'umayyad') {
-  const c = createContext(seed);
+function fresh(scenario = 'umayyad', player = 'umayyad', caseSeed=seed) {
+  const c = createContext(caseSeed);
   if(activeRate!==null)c.run(`{
     const productionEconomy=Game.economy;
     Game.economy=function(fid){const e=productionEconomy.call(this,fid),f=this.f(fid),ordinary=e.expense-(e.exp.reserves||0),buffer=Math.max(3000,ordinary*6),excess=Math.max(0,(f?.gold||0)-buffer),cost=f?.horde?0:Math.round(excess*${activeRate});
@@ -44,12 +44,15 @@ function develop(c, count, market, farm, armies, regiments) {
   peaceful(c);
   c.run(`{
     const ns=Game.nodesOf(P).concat(Game.S.nodes.filter(n=>n.owner!==P)).slice(0,${count});
+    // Controlled fixtures own exactly the requested cities, including small western realms.
+    for(const n of Game.nodesOf(P))if(!ns.includes(n))n.owner='neutral';
     const old=Game.armiesOf(P),gens=old.map(a=>a.gen).filter(Boolean);
     Game.S.armies=Game.S.armies.filter(a=>a.fid!==P&&!ns.some(n=>n.id===a.node));
     ns.forEach(n=>{n.owner=P;n.origOwner=P;n.market=${market};n.farm=${farm};n.roads=1;n.loyalty=75;n.unrest=0;delete n.economicOccupation;Game.fillGarrison(n,true);});
     for(let i=0;i<${armies};i++){const a=Game.createArmy(P,ns[i%ns.length].id,gens[i]||null);a.regs=Array.from({length:${regiments}},(_,k)=>Game.newReg(['spear','sword','archer','spear','cavalry','archer','cavalry','sword'][k%8]));}
     Game.S.turn=40;Game.f(P).gold=12000;Game.f(P).food=300;Game.f(P).finance=null;Game.financeState(P);
   }`);
+  assert.equal(c.run('Game.nodesOf(P).length'),count,'controlled realm must match stated city count');
 }
 function advanceControlled(c) {
   c.run(`{
@@ -79,12 +82,12 @@ function finish(c, spec, rows, roiBefore) {
   for(let i=0;i<spec.turns;i+=20){const slice=rows.slice(i,Math.min(spec.turns,i+20));windows.push({from:i,to:Math.min(spec.turns,i+20),income:round(mean(slice.map(r=>r.income))),expense:round(mean(slice.map(r=>r.expense))),net:round(mean(slice.map(r=>r.net))),populationGain:rows[Math.min(spec.turns,i+20)].population-rows[i].population,goldGain:rows[Math.min(spec.turns,i+20)].gold-rows[i].gold});}
   const summary={openingGold:start.gold,closingGold:end.gold,minGold:Math.min(...rows.map(r=>r.gold)),firstNegativeTurn:rows.find(r=>r.gold<0)?.turn??null,startIncome:start.income,endIncome:end.income,startExpense:start.expense,endExpense:end.expense,startNet:start.net,endNet:end.net,meanNet:round(mean(rows.slice(1).map(r=>r.settledNet))),reserveManagementPaid:rows.slice(1).reduce((sum,r)=>sum+r.settledReserves,0),endReserveCost:end.reserves,populationGrowthPercent:round((end.population/start.population-1)*100),incomeGrowthPercent:round((end.income/start.income-1)*100),startCities:start.cities,endCities:end.cities,startAdmin:start.admin,endAdmin:end.admin,peakStabilization:Math.max(...rows.map(r=>r.stabilization)),endWages:end.wages,endMilitary:end.military,endTrade:end.trade,endCaravan:end.caravan,capitalCompounding:false};
   const drivers={income:Object.fromEntries(Object.keys(end.inc).map(k=>[k,{start:start.inc[k]||0,end:end.inc[k]||0,change:(end.inc[k]||0)-(start.inc[k]||0)}])),expense:Object.fromEntries(Object.keys(end.exp).map(k=>[k,{start:start.exp[k]||0,end:end.exp[k]||0,change:(end.exp[k]||0)-(start.exp[k]||0)}])),netOneOffCash:round(end.gold-start.gold-rows.slice(1).reduce((sum,r)=>sum+r.settledNet,0)),endTaxShare:round(((end.inc.tax||0)+(end.inc.government||0))/end.income*100),endTradeShare:round(((end.inc.trade||0)+(end.inc.route||0))/end.income*100)};
-  const item={...spec,seed,summary,drivers,windows,roiBefore,roiAfter:investments(c),rows};results.push(item);
+  const item={...spec,seed:spec.seed??seed,summary,drivers,windows,roiBefore,roiAfter:investments(c),rows};results.push(item);
   console.log(`${spec.name}: ${start.cities}→${end.cities} cities; gold ${start.gold}→${end.gold}; net ${start.net}→${end.net}; income ${start.income}→${end.income}; admin ${start.admin}→${end.admin}; wages ${end.wages}; military ${end.military}${summary.firstNegativeTurn!==null?' [NEGATIVE from turn '+summary.firstNegativeTurn+']':''}`);
   return item;
 }
 function run(spec, setup, eachTurn) {
-  const c=fresh(spec.scenario,spec.player);setup?.(c);
+  const c=fresh(spec.scenario,spec.player,spec.seed??seed);setup?.(c);
   const roi=investments(c),rows=[snapshot(c)];
   for(let i=0;i<spec.turns;i++){
     eachTurn?.(c,i);
@@ -97,9 +100,9 @@ function run(spec, setup, eachTurn) {
 function simulate(rate){
 activeRate=rate;results=[];
 console.log('\nReserve variant: '+(rate===null?'production':rate*100+'% VM only'));
-for(const [scenario,players]of [['threeKingdoms',['shu','wei','wu']],['umayyad',['umayyad','byzantine','khazar']]])for(const player of players)run({name:'early_'+player,scenario,player,turns:20,mode:'actual-endRound',description:'Unmodified initial faction, actual endRound with seeded local mechanics; no strategic AI turns or worldTick events.'});
+for(const caseSeed of [42,43])for(const player of ['umayyad','byzantine','khazar'])run({name:'early_'+player+(caseSeed===42?'':'_seed'+caseSeed),scenario:'umayyad',player,seed:caseSeed,turns:20,mode:'actual-endRound',description:'Unmodified supported initial faction, actual endRound with the stated seed; no strategic AI turns or worldTick events.'});
 
-run({name:'mid_realm',scenario:'threeKingdoms',player:'shu',turns:40,mode:'controlled',description:'10 established cities; markets/farms/roads level 1, six armies of five regiments; no new investments.'},c=>develop(c,10,1,1,6,5));
+run({name:'mid_realm',scenario:'umayyad',player:'byzantine',turns:40,mode:'controlled',description:'Synthetic supported 10-city realm; markets/farms/roads level 1, six armies of five regiments; no new investments.'},c=>develop(c,10,1,1,6,5));
 run({name:'late_large_empire',scenario:'umayyad',player:'umayyad',turns:120,mode:'controlled',description:'58 established cities, market level 2/farm level 1/roads, 24 armies of six regiments. Fixed development isolates population-driven income growth.'},c=>develop(c,58,2,1,24,6));
 run({name:'late_small_army_upper_bound',scenario:'umayyad',player:'umayyad',turns:120,mode:'controlled',description:'Same 58-city economy, four armies only, no wars or purchases: deliberate hoarding upper bound, not normal campaign spending.'},c=>develop(c,58,2,1,4,6));
 run({name:'late_saturated_population',scenario:'umayyad',player:'umayyad',turns:120,mode:'controlled',description:'Same 58-city military economy, population placed at each current building-dependent capacity to verify there is no unbounded growth at the ceiling.'},c=>{develop(c,58,2,1,24,6);c.run("for(const n of Game.nodesOf(P)){const base=Game.sc.nodes.find(x=>x.id===n.id).pop;n.pop=Math.round(base*(1.5+.25*n.farm+.12*n.market));}");});
@@ -117,7 +120,8 @@ run({name:'trade_focused',scenario:'umayyad',player:'byzantine',turns:60,mode:'c
   if(choices.length){const x=choices[0];Game.build(P,x.n,x.b);}
 }`);});
 
-for(const mode of ['annex','aman'])run({name:'conquest_'+mode,scenario:'threeKingdoms',player:'shu',turns:60,mode:'controlled',description:`Start with five cities and existing forces; assume one military victory each five turns (ten total), apply real ${mode==='aman'?'clemency':'occupy'} consequences. Excludes combat casualties/recruitment and assumes victories; an optimistic economic bound, not a conquest success prediction.`},c=>{
+for(const mode of ['annex','aman'])run({name:'conquest_'+mode,scenario:'umayyad',player:'byzantine',turns:60,mode:'controlled',description:`Synthetic supported five-city realm with two five-regiment armies; assume one military victory each five turns (ten total), apply real ${mode==='aman'?'clemency':'occupy'} consequences. Excludes combat casualties/recruitment and assumes victories; an optimistic economic bound, not a conquest success prediction.`},c=>{
+  develop(c,5,0,0,2,5);
   c.run("Game.f(P).gold=2000;Game.f(P).finance=null;Game.financeState(P);globalThis.targets=Game.S.nodes.filter(n=>n.owner!==P&&!n.capital).slice(0,10).map(n=>n.id)");
 },(c,i)=>{if(i%5===0&&i/5<10)c.run(`{
   const n=Game.node(targets[${i/5}]),old=n.owner;n.owner=P;n.capturedTurn=Game.S.turn;n.unrest=4;
@@ -125,8 +129,8 @@ for(const mode of ['annex','aman'])run({name:'conquest_'+mode,scenario:'threeKin
   Game.fillGarrison(n,true);Game.applyOccupation(n,P,old,'${mode==='aman'?'clemency':'occupy'}','battle');
 }`);});
 
-run({name:'high_payroll',scenario:'threeKingdoms',player:'shu',turns:40,mode:'controlled',description:'Initial five-city force; eight additional contracted leaders at wage 70 (court half-pay 35), plus existing payroll. No forced dismissals or new revenue; intentionally measures an unaffordable council.'},c=>{c.run("for(let i=0;i<8;i++){const g=Game.addGeneral(P,'قائد محاكاة '+i,'tactician',null,2);g.wage=70;g.status='pool';}");});
-run({name:'large_standing_army',scenario:'threeKingdoms',player:'shu',turns:40,mode:'controlled',description:'10 developed cities, 15 armies of eight regiments each. Retains army size despite insolvency/starvation to quantify unaffordable commitments; live game attrition/desertion would change them.'},c=>develop(c,10,1,1,15,8));
+run({name:'high_payroll',scenario:'umayyad',player:'byzantine',turns:40,mode:'controlled',description:'Synthetic supported five-city force with two five-regiment armies; eight additional contracted leaders at wage 70 (court half-pay 35), plus existing payroll; opening gold 600. No forced dismissals or new revenue; intentionally measures an unaffordable council.'},c=>{develop(c,5,0,0,2,5);c.run("Game.S.turn=0;Game.f(P).gold=600;Game.f(P).finance=null;Game.financeState(P);for(let i=0;i<8;i++){const g=Game.addGeneral(P,'قائد محاكاة '+i,'tactician',null,2);g.wage=70;g.status='pool';}");});
+run({name:'large_standing_army',scenario:'umayyad',player:'byzantine',turns:40,mode:'controlled',description:'Synthetic supported 10-city developed realm, 15 armies of eight regiments each. Retains army size despite insolvency/starvation to quantify unaffordable commitments; live game attrition/desertion would change them.'},c=>develop(c,10,1,1,15,8));
 
 const saturated=results.find(r=>r.name==='late_saturated_population');
 assert.equal(saturated.rows[0].population,saturated.rows.at(-1).population,'population must remain bounded at capacity');
@@ -138,7 +142,7 @@ for(const r of results){
   if(r.summary.firstNegativeTurn!==null&&!r.name.startsWith('early_'))concerns.push({scenario:r.name,severity:'stress-deficit',detail:'Fixed commitments exceed resources; this replay retains commitments rather than invoking live desertion.'});
   if(r.name.startsWith('late_')&&r.summary.closingGold>100000)concerns.push({scenario:r.name,severity:r.summary.reserveManagementPaid?'large-reserve-stockpile':'hoarding-surplus',detail:r.summary.reserveManagementPaid?'The fully developed empire can still keep a large operating reserve, but reserve-management expenses oppose continued accumulation; compare final net and 20-turn windows.':'A peaceful established empire can accumulate a large stockpile with no ongoing purchases. This is a linear bounded-income surplus, not gold interest or uncapped exponential population growth.'});
 }
-const output={version:1,seed,model:'Production economy(), settlement, populationNext(), loyaltyTarget(), construction and occupation; no patched production parameters.',methodology:{opening:'20 actual endRound calls for each of the six starting factions. Strategic AI turns, worldTick crises, missions and leader event processing are excluded.',controlled:'Production settlement once per turn, food clamped to game cap, production population/loyalty progression, workTick and finance reconciliation. Controlled army/city commitments; no interest or automatic reinvestment.',exclusions:['Random AI wars, treaties, conquest outcomes and world events.','Combat casualty/replacement costs, siege starvation and battlefield results in controlled stress cases.','Automatic desertion, revolt, collapse and salary renegotiation in controlled runs; negative treasury is reported, not concealed.','Fixture development starts prebuilt; purchase costs are charged only for trade-focused projects and real occupation fees.'],interpretation:'The controlled cases isolate financial mechanics and are not full campaign-win simulations. A large positive treasury without purchases remains possible; bounded population prevents exponential scaling but does not cap accumulated savings.'},counts:{scenarios:results.length,turns:results.reduce((sum,r)=>sum+r.turns,0),actualEndRoundTurns:results.filter(r=>r.mode==='actual-endRound').reduce((sum,r)=>sum+r.turns,0)},concerns,results};
+const output={version:1,seed,model:'Production economy(), settlement, populationNext(), loyaltyTarget(), construction and occupation; no patched production parameters.',methodology:{opening:'20 actual endRound calls for each supported faction at seeds 42 and 43: six opening cases. Strategic AI turns, worldTick crises, missions and leader event processing are excluded.',controlled:'Production settlement once per turn, food clamped to game cap, production population/loyalty progression, workTick and finance reconciliation. Controlled army/city commitments; no interest or automatic reinvestment. Small western fixtures explicitly release surplus cities to retain their stated five/ten-city size.',exclusions:['Random AI wars, treaties, conquest outcomes and world events.','Combat casualty/replacement costs, siege starvation and battlefield results in controlled stress cases.','Automatic desertion, revolt, collapse and salary renegotiation in controlled runs; negative treasury is reported, not concealed.','Fixture development starts prebuilt; purchase costs are charged only for trade-focused projects and real occupation fees.'],interpretation:'The controlled cases isolate financial mechanics and are not full campaign-win simulations. A large positive treasury without purchases remains possible; bounded population prevents exponential scaling but does not cap accumulated savings.'},counts:{scenarios:results.length,turns:results.reduce((sum,r)=>sum+r.turns,0),actualEndRoundTurns:results.filter(r=>r.mode==='actual-endRound').reduce((sum,r)=>sum+r.turns,0)},concerns,results};
 output.sourceDigest=sourceDigest;
 output.reserveManagementMode=rate===null?'Current production economics.':`VM-only reserve expense ${rate*100}% on gold above max(3000, six turns of ordinary expenses); production reserve cost replaced, not compounded.`;
 output.reserveRate=rate;
@@ -146,6 +150,7 @@ return output;
 }
 const variants=(compareMode?[0,.01,.04]:[activeRate]).map(simulate);
 const output=variants[0];
+assert.deepEqual(output.counts,{scenarios:16,turns:840,actualEndRoundTurns:120},'preserve the complete economic case and turn coverage');
 if(compareMode)output.reserveComparison={sourceDigest,assumption:'Identical cases, seed and frozen code; only substituted reserve cost differs. The fee does not change underlying city output or military needs. Adaptive building purchases may differ as the fee changes payback estimates.',variants:variants.map(v=>({rate:v.reserveRate,counts:v.counts,concerns:v.concerns,results:v.results.map(({rows,...rest})=>rest)}))};
 else if(prior?.reserveComparison)output.reserveComparison=prior.reserveComparison;
 // Same rear-area force and losses, actual campaign replacement/affordability logic.
