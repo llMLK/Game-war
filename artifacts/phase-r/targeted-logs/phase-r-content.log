@@ -1,0 +1,6 @@
+PASS only supported scenario catalogs exist
+PASS exact 63 Umayyad leaders including all 20 legacy identities
+PASS China-exclusive units, icon aliases and names removed; shared elites retained
+PASS supported geography, world, objectives, units, traits and economic formulas preserved exactly
+PASS no China production selectors or generated style remain
+PASS all three supported factions start, save and restore on 66-city world without Chinese portraits

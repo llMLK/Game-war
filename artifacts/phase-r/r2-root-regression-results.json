@@ -1,0 +1,123 @@
+{
+  "sourceCommit": "a348360c1063622920675480c89055fa57bf3abd",
+  "snapshot": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-final-qx4MXv",
+  "method": "Current working-tree snapshot; URL-only test adaptation to private local server. All suite artifacts remain in TEMP and are copied under Phase R evidence. Original F evidence is not overwritten. Synthetic fixtures and Playwright Edge emulation; no real owner saves or physical phones.",
+  "started": "2026-10-12T19:08:07.764Z",
+  "results": [
+    {
+      "script": "camera",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 1.9,
+      "passLines": 12,
+      "log": "artifacts/phase-r/final-logs/camera.log",
+      "tail": "PASS world and screen transforms round-trip at every supported viewport and zoom\nPASS every settlement can be focused inside the unobstructed frame at all zoom levels\nPASS camera clamps finite coordinates at all extreme bounds and pan directions\nPASS zoom keeps the finger anchor stable whenever the map boundary does not constrain it\nPASS resize preserves the camera location and zoom when they remain legal\nPASS legacy 22-city western save expands to the atlas without resetting armies, turn or conquered cities\nPASS unsupported synthetic 20-city Chinese legacy save is rejected and preserved byte-for-byte\nPASS atlas expansion never revives an eliminated state through newly added cities\nPASS existing expanded-atlas save retains historical ownership instead of replaying starting borders\nPASS legacy active caravan routes migrate to valid atlas segments without erasing their state\nPASS caravan status rejects nonexistent graph segments even between peaceful cities\nPASS existing legacy harbor cities gain atlas embarkation ports when old ports were zero or absent\n\nCamera and migration: 12 passed, 0 failed.\n"
+    },
+    {
+      "script": "map-routes",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 0.6,
+      "passLines": 10,
+      "log": "artifacts/phase-r/final-logs/map-routes.log",
+      "tail": "PASS supported campaign has valid, unique, bidirectional graph edges and bounded cities\nPASS expanded atlas remains a single connected network including maritime islands\nPASS every caravan template follows actual route segments\nPASS western maritime endpoints allow a normal army to embark in both directions\nPASS Tarsus and Tartus are distinct cities and the Cilician pass has two strategic approaches\nPASS Tarsus reaches the enemy pass but cannot skip a hostile checkpoint to Amorium\nPASS controlling the pass opens the route to Amorium with normal points on the next turn\nPASS allied access opens transit generically, while exhausted armies remain stationary\nPASS Tartus has a connected land approach without an accidental forced sea crossing\nPASS winter mountain passes consume the turn without becoming permanent movement locks\n\nMap routes: 10 passed, 0 failed.\n"
+    },
+    {
+      "script": "phase-f-campaign",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 8.6,
+      "passLines": 5,
+      "log": "artifacts/phase-r/final-logs/phase-f-campaign.log",
+      "tail": "PASS identical A–E and Phase F Umayyad initial campaign (all saved fields)\nPASS identical real construction/Undo resources and campaign state\nPASS identical endRound military, economy, buildings, leaders and diplomatic fields\nPASS baseline A–E synthetic save loads identically into Phase F\nPASS Phase F save/load roundtrip and stale Undo cleanup\n"
+    },
+    {
+      "script": "economy-trade",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 7.8,
+      "passLines": 12,
+      "log": "artifacts/phase-r/final-logs/economy-trade.log",
+      "tail": "PASS treaties pay only for connected usable links, symmetrically and at the existing cap\nPASS isolated cities reduce income and reconnection restores it without creating money\nPASS ports are required at both ends of maritime trade, with an actionable cause\nPASS merchant paths can reroute around a disrupted port without changing caravan or movement paths\nPASS war, hostile third-party territory, siege and hostile armies interrupt merchant access\nPASS sabotage reports an exact remaining duration and automatically recovers at expiry\nPASS bandit remedies match loyalty thresholds, guards expire, and duplicate causes merge\nPASS quarantine and world events have temporary contextual explanations\nPASS caravan migration does not falsely shut every treaty trade link in the world\nPASS changing city ownership changes the recipient, not the meaning of automatic caravans\nPASS old atlas routes migrate while preserving guards and permanent state for supported factions\nPASS save/load preserves economic route state and reading forecasts never collects trade twice\n\nEconomy trade: 12 passed.\n"
+    },
+    {
+      "script": "leaders",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 26.8,
+      "passLines": 29,
+      "log": "artifacts/phase-r/final-logs/leaders.log",
+      "tail": "pacity and state\nPASS Earned keys including turn zero cannot grant twice; cooldown and bank cap\nPASS One replacement per delegation, capped earned tokens, no repeated-city tokens\nPASS Contract hires exactly one, deducts one-turn advance and retires the other name\nPASS Invalid salaries, no funds and full capacity never create leaders or consume attempts\nPASS Salary acceptance rises with offer, prestige and personality change expectations\nPASS Insult ends negotiation, two ordinary refusals exhaust attempts, fixed saved threshold\nPASS Pending offers freeze salary through treasury changes and save/load\nPASS Old saves retain leader IDs, contracts, army references, XP and biography identity\nPASS Legacy invalid candidates and duplicate offers are migrated safely\nPASS Historical candidate timing, affiliation, local fallback and spoiler-free copy\nPASS Rerolls persist after load; dismissed hires do not refresh offers\nPASS Relationships materially change loyalty, honor cannot be bought repeatedly\nPASS Assignment, rivalry, ignored requests and promises have distinct consequences\nPASS Capture, valid rescue, invalid rescue and repeated fate callbacks are safe\nPASS Execution records a loss without generating a fictional replacement; invalid execution does nothing\nPASS Defection produces a memorial and surviving friendship becomes rivalry\nPASS Specialized growth persists, grants mobility only to qualified leaders; officers stay modest\nPASS Late-game treasury does not buy opportunities; repeated losses and recaptures cannot spam\nPASS End-round and world-tick integration stay runnable for supported factions\nPASS Context and personality change spoken reactions; city service and scars are recorded\nPASS Synthetic catalog rivals link when hired later and exert political pressure\nPASS Prestige adds social abilities and mentorship rather than only raw bonuses\nPASS Direct event deaths have consequences once; expired opportunities never reopen\nPASS Geography and political context gate recruitment and salary expectations\nPASS A rest request requires a real idle friendly turn, not merely moving home\nPASS Starting armies use their intended historical leaders without stealing rulers\nPASS Campaign randomness is saved: new campaigns vary, reloads retain the same candidates\nPASS Expanded starting empires retain viable leader loyalty and meaningful personal choices\n29/29 leader tests passed\n"
+    },
+    {
+      "script": "economy-balance",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 60.1,
+      "passLines": 0,
+      "log": "artifacts/phase-r/final-logs/economy-balance.log",
+      "tail": "0→77; wages 62; military 198\nhigh_payroll: 5→5 cities; gold 600→-6212; net -163→-165; income 353→351; admin 0→0; wages 342; military 130 [NEGATIVE from turn 4]\nlarge_standing_army: 10→10 cities; gold 12000→-21786; net -870→-810; income 604→665; admin 28→29; wages 127; military 1218 [NEGATIVE from turn 55]\n\n16 scenarios; 840 simulated turns; 120 actual endRound turns.\nReplacement comparison: [{\"mode\":\"old-flat\",\"startGold\":100000,\"endGold\":89712,\"prices\":{\"spear\":0.4,\"sword\":0.4,\"archer\":0.4,\"cavalry\":0.4,\"horsearcher\":0.4,\"cataphract\":0.4,\"catapult\":0.4},\"lost\":8400,\"recovered\":8400,\"replacementPaid\":3360,\"averageCostPerReplacement\":0.4},{\"mode\":\"production\",\"startGold\":100000,\"endGold\":80352,\"prices\":{\"spear\":0.4,\"sword\":0.68,\"archer\":0.56,\"cavalry\":1.8,\"horsearcher\":1.5333333333333334,\"cataphract\":3.2857142857142856,\"catapult\":5.333333333333333},\"lost\":8400,\"recovered\":8400,\"replacementPaid\":12720,\"averageCostPerReplacement\":1.51}]\nConcerns: [{\"scenario\":\"late_large_empire\",\"severity\":\"hoarding-surplus\",\"detail\":\"A peaceful established empire can accumulate a large stockpile with no ongoing purchases. This is a linear bounded-income surplus, not gold interest or uncapped exponential population growth.\"},{\"scenario\":\"late_small_army_upper_bound\",\"severity\":\"hoarding-surplus\",\"detail\":\"A peaceful established empire can accumulate a large stockpile with no ongoing purchases. This is a linear bounded-income surplus, not gold interest or uncapped exponential population growth.\"},{\"scenario\":\"late_saturated_population\",\"severity\":\"hoarding-surplus\",\"detail\":\"A peaceful established empire can accumulate a large stockpile with no ongoing purchases. This is a linear bounded-income surplus, not gold interest or uncapped exponential population growth.\"},{\"scenario\":\"prolonged_war\",\"severity\":\"stress-deficit\",\"detail\":\"Fixed commitments exceed resources; this replay retains commitments rather than invoking live desertion.\"},{\"scenario\":\"high_payroll\",\"severity\":\"stress-deficit\",\"detail\":\"Fixed commitments exceed resources; this replay retains commitments rather than invoking live desertion.\"},{\"scenario\":\"large_standing_army\",\"severity\":\"stress-deficit\",\"detail\":\"Fixed commitments exceed resources; this replay retains commitments rather than invoking live desertion.\"}]\nSaved C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-final-qx4MXv\\artifacts\\economy\\balance-results.json\n"
+    },
+    {
+      "script": "map-interactions",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 58.5,
+      "passLines": 1,
+      "log": "artifacts/phase-r/final-logs/map-interactions.log",
+      "tail": "PASS real pointer/touch interactions, army occlusion and critical alerts at 8 sizes; Byzantine and Khazar renderer.\n"
+    },
+    {
+      "script": "leader-preview",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 70.1,
+      "passLines": 0,
+      "log": "artifacts/phase-r/final-logs/leader-preview.log",
+      "tail": "{\n  \"viewports\": [\n    [\n      1440,\n      900\n    ],\n    [\n      1024,\n      768\n    ],\n    [\n      390,\n      844\n    ],\n    [\n      360,\n      740\n    ],\n    [\n      320,\n      568\n    ],\n    [\n      844,\n      390\n    ],\n    [\n      568,\n      320\n    ]\n  ],\n  \"profilesChecked\": 51,\n  \"errors\": [],\n  \"report\": \"C:\\\\Users\\\\Abdul\\\\AppData\\\\Local\\\\Temp\\\\suyuf-r-final-qx4MXv\\\\artifacts\\\\leaders\\\\verification.json\"\n}\n"
+    },
+    {
+      "script": "phase-f-preview",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 105.2,
+      "passLines": 1,
+      "log": "artifacts/phase-r/final-logs/phase-f-preview.log",
+      "tail": "PASS Phase F preview: 51 allowlisted runtime files; exact Git blob SHA256 manifest with clean-filter/EOL equivalence; strict rejection of genuine runtime changes; fresh-output protection; 390×844 touch landing; same-origin save/load and get/set/delete/legacy isolation; official saves unchanged; zero page errors.\n"
+    }
+  ],
+  "excluded": [
+    {
+      "script": "serve",
+      "reason": "infrastructure, private server supplied by this runner"
+    },
+    {
+      "script": "harness/battle-fixtures",
+      "reason": "shared modules exercised by suites"
+    },
+    {
+      "script": "build-coast/build-road-drawings",
+      "reason": "offline regeneration tools would rewrite unchanged atlas assets; geometry is independently checked"
+    },
+    {
+      "script": "phase-f-regression",
+      "reason": "all eight constituent suites executed individually, no duplicate count"
+    },
+    {
+      "script": "phase-f-published",
+      "reason": "public URL must remain approved F, not R; no R publication authorized"
+    }
+  ],
+  "finished": "2026-10-12T19:11:19.678Z",
+  "passed": 9,
+  "failed": 0
+}

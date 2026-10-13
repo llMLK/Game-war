@@ -239,6 +239,6 @@ function drawIcon(ctx, name, x, y, size, color, o = {}) {
 // أيقونة كل وحدة
 const UNIT_ICON = {
   spear: 'spear', sword: 'sword', archer: 'bow', horsearcher: 'horsebow', cavalry: 'horse', catapult: 'catapult',
-  repeater: 'volley', tigerleopard: 'horse', jinfan: 'sword', shamguard: 'horse', cataphract: 'horse', tarkhan: 'horsebow',
+  shamguard: 'horse', cataphract: 'horse', tarkhan: 'horsebow',
   general: 'helmet', militia: 'militia', ram: 'ram', tower: 'tower',
 };

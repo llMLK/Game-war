@@ -13,8 +13,7 @@ const POLITICAL_TRAITS = {
 };
 const POLITICAL_DEFAULTS = {
   umayyad: ['expansionist', 'pragmatic'], byzantine: ['proud', 'cautious', 'commercial'],
-  khazar: ['opportunistic', 'commercial'], shu: ['loyal', 'proud'],
-  wei: ['expansionist', 'treacherous'], wu: ['cautious', 'commercial'],
+  khazar: ['opportunistic', 'commercial'],
 };
 const politicalCopy = (x) => JSON.parse(JSON.stringify(x));
 const politicalCurve = (x, width = 18) => clamp(1 / (1 + Math.exp(-x / width)), 0.02, 0.98);

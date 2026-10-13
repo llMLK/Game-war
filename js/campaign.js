@@ -22,7 +22,6 @@ const ECON = {
   foodCap: 300, foodSale: 0.5,
 };
 const INIT_DIPLO = {
-  threeKingdoms: [['wei', 'shu', 'war'], ['wei', 'wu', 'war'], ['shu', 'wu', 'peace']],
   umayyad: [['umayyad', 'byzantine', 'war'], ['umayyad', 'khazar', 'war'], ['byzantine', 'khazar', 'alliance', true]],
 };
 const GENERIC_NAMES = ['عامر', 'خالد', 'منصور', 'ثابت', 'حمزة', 'سالم', 'نصر', 'ليث', 'زياد', 'مالك', 'حارث', 'عتبة', 'رافع', 'عمرو'];
@@ -1243,7 +1242,7 @@ const Game = {
     return {
       kind: enc.kind, terrain: enc.terrain || s.node.terrain, walls: this.effWalls(s.node), equip: enc.equip || {},
       capital: s.node.capital, stores: s.node.stores, weather: this.battleWeather(s.node),
-      seed: hashStr(s.node.id) + this.S.turn * 131 + (this.S.nextId || 0), title: s.node.name, style: this.sc.id === 'threeKingdoms' ? 'east' : 'west',
+      seed: hashStr(s.node.id) + this.S.turn * 131 + (this.S.nextId || 0), title: s.node.name, style: 'west',
       sides: [side(enc.attFid, s.attRegs, s.attGens, s.attArmies, false), side(enc.defFid, s.defRegs, s.defGens, s.defArmies, true)],
     };
   },

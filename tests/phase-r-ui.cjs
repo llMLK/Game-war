@@ -23,7 +23,7 @@ let browser,server;
   assert.equal(await p.evaluate(()=>Game.S.scenario),'umayyad');assert.equal(await p.evaluate(()=>SaveSafety.backups()[0].raw),raw);assert.equal(await p.evaluate(()=>store.readText(SAVE_PREFIX+'1').raw),raw);
   await p.screenshot({path:path.join(out,`umayyad-${w}x${h}.png`)});
   await p.evaluate(()=>Panels.saves(App.scene));assert.equal(await p.getByRole('button',{name:'احفظ هنا',exact:true}).count(),2);await p.getByText('نسخة احتياطية للحفظ القديم',{exact:true}).scrollIntoViewIfNeeded();await p.screenshot({path:path.join(out,`backup-export-${w}x${h}.png`)});await p.getByRole('button',{name:'إغلاق',exact:true}).tap();
-  const end=await p.locator('.end-turn').boundingBox();assert.ok(end.width>=44&&end.height>=44);assert.ok(await p.evaluate(({x,y,width,height})=>document.elementFromPoint(x+width/2,y+height/2)?.closest('.end-turn')!==null,end));
+  const end=await p.locator('.end-turn').boundingBox();assert.ok(end.width>=44&&end.height>=44);assert.ok(await p.evaluate(({x,y,width,height})=>!!document.elementFromPoint(x+width/2,y+height/2)?.closest('.end-turn'),end));
   await p.evaluate(()=>{Game.normalizeState();Game.save('2')});await p.reload();assert.equal(await p.evaluate(()=>!!Game.load('2')),true);
   const roundtrip=await p.evaluate(()=>{const raw=store.get(SAVE_PREFIX+'2').S;return JSON.stringify(Game.S)===JSON.stringify(raw)});assert.equal(roundtrip,true);
   assert.deepEqual(errors,[]);assert.deepEqual(missing,[]);results.push({viewport:[w,h],checks:12,passed:12,touch:true,rtl:true,exportExact:true,backupFailure:true,manualPreserved:true,assets:true,errors});console.log(`PASS R UI ${w}x${h}: 12 checks`);await context.close();

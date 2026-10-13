@@ -1,0 +1,197 @@
+{
+  "passed": 12,
+  "checks": [
+    "new alliance has no invented contribution; accepting or arriving earns no points",
+    "same-turn requests are bounded and survive reload without relation farming",
+    "blocked geography and insufficient armies produce concrete refusal",
+    "the ally protects its threatened home and cannot be commandeered by defense requests",
+    "exhausted available armies are not sent on new allied expeditions",
+    "allied siege reinforcement uses existing movement and preserves siege age",
+    "siege contribution requires real supply attrition and cannot multiply by army splitting",
+    "legacy contribution migrates factual casualties and captures without fabricated aid/siege evidence",
+    "mixed allied battle records actual unit damage and loss separately by faction",
+    "contribution survives save/load; settled wars retain their effort for peace comparison",
+    "peace contribution feedback and shared spoils persist and can only pay once",
+    "independent military dispatch performs a useful common-front action with limited forces"
+  ],
+  "scenarios": [
+    {
+      "name": "allied defense against an actual simulated assault",
+      "result": "نصر واضح",
+      "allies": [
+        {
+          "fid": "byzantine",
+          "damage": 30,
+          "lost": 27,
+          "battles": 1,
+          "wins": 1,
+          "attacks": 0,
+          "defenses": 1,
+          "reliefs": 0,
+          "sieges": 0,
+          "captures": [],
+          "aid": 0,
+          "events": [
+            {
+              "key": "battle:0:1",
+              "kind": "defense",
+              "turn": 0,
+              "node": "caesarea",
+              "damage": 30,
+              "lost": 27,
+              "battles": 1,
+              "wins": 1,
+              "attacks": 0,
+              "defenses": 1,
+              "reliefs": 0
+            }
+          ],
+          "migrated": true,
+          "points": 60,
+          "active": true,
+          "since": 0,
+          "ended": null,
+          "parts": [
+            [
+              "خسائر أوقعها بالعدو",
+              30
+            ],
+            [
+              "خسائر تحملها",
+              27
+            ],
+            [
+              "معارك خاضها",
+              1
+            ],
+            [
+              "هجمات فعلية",
+              0
+            ],
+            [
+              "معارك دفاعية",
+              1
+            ],
+            [
+              "حصارات فكّها",
+              0
+            ],
+            [
+              "أدوار حصار أضعفت المدينة",
+              0
+            ],
+            [
+              "مدن فتحها",
+              0
+            ],
+            [
+              "تمويل دُفع فعلاً",
+              0
+            ]
+          ]
+        },
+        {
+          "fid": "khazar",
+          "damage": 31,
+          "lost": 32,
+          "battles": 1,
+          "wins": 1,
+          "attacks": 0,
+          "defenses": 1,
+          "reliefs": 0,
+          "sieges": 0,
+          "captures": [],
+          "aid": 0,
+          "events": [
+            {
+              "key": "battle:0:1",
+              "kind": "defense",
+              "turn": 0,
+              "node": "caesarea",
+              "damage": 31,
+              "lost": 32,
+              "battles": 1,
+              "wins": 1,
+              "attacks": 0,
+              "defenses": 1,
+              "reliefs": 0
+            }
+          ],
+          "migrated": true,
+          "points": 61,
+          "active": true,
+          "since": 0,
+          "ended": null,
+          "parts": [
+            [
+              "خسائر أوقعها بالعدو",
+              31
+            ],
+            [
+              "خسائر تحملها",
+              32
+            ],
+            [
+              "معارك خاضها",
+              1
+            ],
+            [
+              "هجمات فعلية",
+              0
+            ],
+            [
+              "معارك دفاعية",
+              1
+            ],
+            [
+              "حصارات فكّها",
+              0
+            ],
+            [
+              "أدوار حصار أضعفت المدينة",
+              0
+            ],
+            [
+              "مدن فتحها",
+              0
+            ],
+            [
+              "تمويل دُفع فعلاً",
+              0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "limited allied force common-front dispatch",
+      "options": [
+        {
+          "ok": true,
+          "army": 23,
+          "node": "tarsus",
+          "distance": 1,
+          "ratio": 27.135211267605637,
+          "score": 29.6,
+          "why": "قوة واحدة تتجه إلى طرسوس عبر 1 مراحل؛ تبقى بقية القوات لأولوياتها.",
+          "limitation": "تراجع طلبك إذا هُددت مدنها أو تعذر الطريق؛ الوصول وحده لا يُحتسب مساهمة.",
+          "from": "byzantine",
+          "kind": "attack"
+        }
+      ],
+      "armies": [
+        {
+          "id": 23,
+          "node": "tarsus",
+          "siege": true
+        },
+        {
+          "id": 25,
+          "node": "derbent",
+          "siege": true
+        }
+      ],
+      "contributionBeforeBattle": 0
+    }
+  ]
+}

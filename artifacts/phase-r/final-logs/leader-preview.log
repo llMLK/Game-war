@@ -1,35 +1,23 @@
-{
-  "viewports": [
-    [
-      1440,
-      900
-    ],
-    [
-      1024,
-      768
-    ],
-    [
-      390,
-      844
-    ],
-    [
-      360,
-      740
-    ],
-    [
-      320,
-      568
-    ],
-    [
-      844,
-      390
-    ],
-    [
-      568,
-      320
-    ]
+browserType.launch: Timeout 180000ms exceeded.
+Call log:
+[2m  - <launching> C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=C:\Users\Abdul\AppData\Local\Temp\playwright_chromiumdev_profile-xCjW63 --remote-debugging-pipe --no-startup-window[22m
+[2m  - <launched> pid=20072[22m
+[2m  - [pid=20072][err] [20072:11392:1012/222208.855:ERROR:components\os_crypt\async\browser\os_crypt_win.cc:63] Failed to encrypt: The system cannot find the file specified. (0x2)[22m
+[2m  - [pid=20072][err] [20072:22268:1012/222208.985:ERROR:chrome\installer\util\google_update_settings_win.cc:544] Failed opening key Software\Microsoft\EdgeUpdate\ClientStateMedium\{56EB18F8-B008-4CBD-B6D2-8C97FE7E9062} to set usagestats; result: 5[22m
+[2m  - [pid=20072][err] [20072:22268:1012/222208.985:ERROR:chrome\installer\util\google_update_settings_win.cc:587] Failed opening key Software\Microsoft\EdgeUpdate\ClientStateMedium\{56EB18F8-B008-4CBD-B6D2-8C97FE7E9062} to set urlstats; result: 5[22m
+[2m  - [pid=20072][err] [20072:22268:1012/222209.368:ERROR:components\password_manager\core\browser\password_store\login_database_async_helper.cc:229] Encryption is not available.[22m
+[2m  - [pid=20072][err] [20072:21660:1012/222209.401:ERROR:components\password_manager\core\browser\password_store\login_database_async_helper.cc:229] Encryption is not available.[22m
+
+    at C:\Users\Abdul\AppData\Local\Temp\suyuf-r-final-LLSFJG\tests\leader-preview.cjs:5:25
+    at Object.<anonymous> (C:\Users\Abdul\AppData\Local\Temp\suyuf-r-final-LLSFJG\tests\leader-preview.cjs:75:3) {
+  log: [
+    '  - <launching> C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=C:\\Users\\Abdul\\AppData\\Local\\Temp\\playwright_chromiumdev_profile-xCjW63 --remote-debugging-pipe --no-startup-window',
+    '  - <launched> pid=20072',
+    '  - [pid=20072][err] [20072:11392:1012/222208.855:ERROR:components\\os_crypt\\async\\browser\\os_crypt_win.cc:63] Failed to encrypt: The system cannot find the file specified. (0x2)',
+    '  - [pid=20072][err] [20072:22268:1012/222208.985:ERROR:chrome\\installer\\util\\google_update_settings_win.cc:544] Failed opening key Software\\Microsoft\\EdgeUpdate\\ClientStateMedium\\{56EB18F8-B008-4CBD-B6D2-8C97FE7E9062} to set usagestats; result: 5',
+    '  - [pid=20072][err] [20072:22268:1012/222208.985:ERROR:chrome\\installer\\util\\google_update_settings_win.cc:587] Failed opening key Software\\Microsoft\\EdgeUpdate\\ClientStateMedium\\{56EB18F8-B008-4CBD-B6D2-8C97FE7E9062} to set urlstats; result: 5',
+    '  - [pid=20072][err] [20072:22268:1012/222209.368:ERROR:components\\password_manager\\core\\browser\\password_store\\login_database_async_helper.cc:229] Encryption is not available.',
+    '  - [pid=20072][err] [20072:21660:1012/222209.401:ERROR:components\\password_manager\\core\\browser\\password_store\\login_database_async_helper.cc:229] Encryption is not available.'
   ],
-  "profilesChecked": 51,
-  "errors": [],
-  "report": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-final-qx4MXv\\artifacts\\leaders\\verification.json"
+  name: 'TimeoutError'
 }

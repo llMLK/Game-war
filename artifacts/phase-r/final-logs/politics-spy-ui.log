@@ -1,0 +1,8 @@
+PASS espionage footer 1440x900
+PASS espionage footer 1024x768
+PASS espionage footer 390x844
+PASS espionage footer 360x740
+PASS espionage footer 320x568
+PASS espionage footer 844x390
+PASS espionage footer 568x320
+Espionage fixed footer, real touch, disabled action and reload checks passed.

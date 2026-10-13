@@ -1,0 +1,56 @@
+[
+  {
+    "name": "load during initial AI wait cancels old turn",
+    "jobs": {
+      "ai": 0,
+      "round": 0,
+      "world": 0
+    },
+    "turn": 7,
+    "gold": 9876,
+    "replaced": true
+  },
+  {
+    "name": "load during AI await + independent lock",
+    "jobs": {
+      "ai": 1,
+      "round": 0,
+      "world": 0
+    },
+    "turn": 7,
+    "gold": 9876,
+    "replaced": true
+  },
+  {
+    "name": "load during world tick cannot save/settle replacement",
+    "jobs": {
+      "ai": 1,
+      "round": 1,
+      "world": 1
+    },
+    "turn": 7,
+    "gold": 9876,
+    "replaced": true
+  },
+  {
+    "name": "confirming state blocks duplicate; loaded campaign remains intact",
+    "jobs": {
+      "ai": 1,
+      "round": 1,
+      "world": 1
+    },
+    "turn": 7,
+    "gold": 9876,
+    "replaced": true
+  },
+  {
+    "name": "AI failure explicitly restores checkpoint",
+    "before": {
+      "turn": 0,
+      "gold": 600
+    }
+  },
+  {
+    "name": "error cannot settle twice or restore over loaded campaign"
+  }
+]

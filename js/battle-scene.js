@@ -143,7 +143,7 @@ class BattleScene {
         const x = 60 + r() * 880, y = wy + cityDir * (30 + r() * 170);
         if (y < 10 || y > BH - 10) continue;
         g.fillStyle = 'rgba(40,28,15,.25)'; g.fillRect(x + 1, y + 1, 12, 8);
-        g.fillStyle = this.cfg.style === 'east' ? '#d9ccb0' : '#e6d6b0'; g.fillRect(x, y, 12, 8);
+        g.fillStyle = '#e6d6b0'; g.fillRect(x, y, 12, 8);
         g.fillStyle = 'rgba(80,90,100,.8)'; g.fillRect(x - 1, y - 2, 14, 3);
       }
       this.wallSegs = [];

@@ -1,0 +1,351 @@
+{
+  "VerifiedAt": "2026-10-13T13:39:06.4297095Z",
+  "FHead": "2deaa02de02b1e87321d01651ec725da19930ede",
+  "AEHead": "a721b9dee0298f74fe49d906dec6c32e1a7bb261",
+  "MainHead": "d32fff038b2feb5bb00a8383d4c89b1284535ab8",
+  "OfficialPagesSource": {
+    "branch": "claude/ai-strategy-war-game-1dghz2",
+    "path": "/"
+  },
+  "PreviewHead": "d791cbaad94cfcbfff455f7fbf1d9845b89472a1",
+  "PublishedBuild": {
+    "schema": 1,
+    "sourceRepository": "https://github.com/llMLK/Game-war",
+    "sourceCommit": "2deaa02de02b1e87321d01651ec725da19930ede",
+    "developmentSnapshot": false,
+    "storageNamespace": "suyuf-preview:phase-f:",
+    "sourceFiles": [
+      {
+        "path": "atlas.css",
+        "sha256": "9f5d55d5156bbe727ef71330c763379a07feeb6a4e7abbaf1114909b3f09a060",
+        "bytes": 10085,
+        "matchesCommit": true
+      },
+      {
+        "path": "battles.css",
+        "sha256": "160252dc66d2e7222dffdead0f731d8bad66a792f09498a5b6ce5644cca5488a",
+        "bytes": 9144,
+        "matchesCommit": true
+      },
+      {
+        "path": "economy.css",
+        "sha256": "5ecc7f30f3175458e09f0e7098995236d5952bc14d87587e151f48b7144ce94a",
+        "bytes": 4322,
+        "matchesCommit": true
+      },
+      {
+        "path": "icon.svg",
+        "sha256": "7988e1561b480f5137b9c97a3ab7327a0bd848bcdf4b5594e5e576c970b49bab",
+        "bytes": 372,
+        "matchesCommit": true
+      },
+      {
+        "path": "index.html",
+        "sha256": "21adc39fbbe957eae9cd2917669bfce9192942ed8a6a65e1edc72de50d27e6c4",
+        "bytes": 2834,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/actions.js",
+        "sha256": "e4358183733924f7699815d49697d33fe91de149d85333dd750e9a2fe3161e62",
+        "bytes": 15230,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/atlas-coast.js",
+        "sha256": "36688e3b6c3bbfcce056414c23cdb8fc220cd8395a46d2634e5825ef53094caf",
+        "bytes": 54801,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/atlas-data.js",
+        "sha256": "537f566944c2c2ffc74945b69b08d8607d579dc477eb02ba9d861bb4a2967ded",
+        "bytes": 14282,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/atlas-routes.js",
+        "sha256": "29c2a60aff9be1173843b8c334c038b7c940dcaae5e598db06e98c14ff88f4ef",
+        "bytes": 1361,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/battle-narrative.js",
+        "sha256": "ef7076859d86dd05cb3228d787d6822f6db3c55bb9fbcbf5ea6847b6209f8cfa",
+        "bytes": 22261,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/battle-scene.js",
+        "sha256": "ddfd8006fbcb3d7c7ae63ae8f6863d8a3834275f84cd415a559841ae3c54cc3a",
+        "bytes": 53998,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/battlecmd.js",
+        "sha256": "e08f926bef82b6b1ad6b7dc2685c347f0e722f638b6411f9e5867e87124d72e4",
+        "bytes": 74767,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/campaign-ai.js",
+        "sha256": "58b35f1735de7e8db47cb81dfd1cde428e480696997f6787368b5ae974775d0c",
+        "bytes": 30787,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/campaign-ui.js",
+        "sha256": "c5a49f89abec20ea3b4a94b6d9217f50f452e4079ec1f0a4cef9e9180ed695d0",
+        "bytes": 50243,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/campaign.js",
+        "sha256": "84428d5849de06ab39d407e0e3e11d8db42b7fc939ea813f3fd1ed8c2ed94780",
+        "bytes": 99105,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/cmd-ui.js",
+        "sha256": "00f6a87c6ddc6a828bd23de423b27f5c53d73becd14865fe034683ed90b76367",
+        "bytes": 19689,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/commander-data.js",
+        "sha256": "7a08f455e536a26c5d6a4c13f464f61aba2574c6e7e5ba56f1a9f992a71944bd",
+        "bytes": 112912,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/commanders.js",
+        "sha256": "c76798d8452db7ca20802602948dc4662728a3f5db857a7ffd882d06e97d913c",
+        "bytes": 37633,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/data.js",
+        "sha256": "56bfa7f38ac84b3d3d1c154dbf0f82b465dbea2a8363616f44898607ed5372bf",
+        "bytes": 37600,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/diplomacy.js",
+        "sha256": "e495f1f43d8efc48a82dc69af1bebdda96d3c9045219ae744c20bc612a0dba2c",
+        "bytes": 16025,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/economy-trade.js",
+        "sha256": "b8e7c15a814408cc24efe30d654222664aa7f19b42202bc8e755e46a70152d36",
+        "bytes": 12729,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/economy-ui.js",
+        "sha256": "4cfdbefcad797ceac0f108c8d79144ff6bde1e641b9a56065d1293de00154fa4",
+        "bytes": 14159,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/economy.js",
+        "sha256": "30bac25bfc187ca1e25c6a091ac291b080b808564e26d2c59fc7a178a7029921",
+        "bytes": 18481,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/engine.js",
+        "sha256": "44f0c8879645e38d9ead16f6ffa58093fd33069c1e07328daf2c9672e3f92847",
+        "bytes": 8678,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/explain.js",
+        "sha256": "cdca3bbe1e2f620a2053528f16d8b6c3580f32150e588ebf0ad0b82df29f1eb2",
+        "bytes": 30341,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/icons.js",
+        "sha256": "6ca5ed1af47cdf37ed5d578206989e24855053eb67a944aae82e2d6b3b3aefc0",
+        "bytes": 17855,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/leader-system.js",
+        "sha256": "3681b26d2ee33faea4f9e543709fb7023fe74bfcaac2a1e019b9a43237e653ea",
+        "bytes": 39549,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/main.js",
+        "sha256": "e2ceab828f694aa5224971b1f92301e9a8370a97be8ff058bfd5d10453d4b7ea",
+        "bytes": 10104,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/map-art.js",
+        "sha256": "31eea2b6fa96952c59f04e425ee43a0094a5bbb5219477dfc9fa1ba6cd990821",
+        "bytes": 51339,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/panels.js",
+        "sha256": "4b3830732c966d4ceca70d8824d76a6f3e23abc9c7443cc21a79f7214d0fd36d",
+        "bytes": 114331,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/pathing.js",
+        "sha256": "44b48e104e7197069baae6fee7d218def0ed99c33e3c11a1b8eec2bcf025eba2",
+        "bytes": 7195,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/political-allies.js",
+        "sha256": "19cb20fdf580a9cac884bc610bccd6daabe4b4eef2e4d69b335e1f8f67067209",
+        "bytes": 21411,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/political-spy.js",
+        "sha256": "8d173aac992458ac7d32ef02550ccb68e6b41ff2e205414e3e591c375a74c942",
+        "bytes": 20131,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/politics-ui.js",
+        "sha256": "4949ffe7956e5d7db622cddd401a20991b92d2efef179a48bf22c2ded3929533",
+        "bytes": 26595,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/politics.js",
+        "sha256": "a17505a64dce885229ae7f78bad3dc97258ab3e87bde17f4870574861d4ba6ed",
+        "bytes": 44176,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/portraits.js",
+        "sha256": "6608149ea5547b23da2f7ef58b2778fe21e5929f599653cb79428887f12f1350",
+        "bytes": 7017,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/readiness.js",
+        "sha256": "7b783d7d821269468804a9976b3f1782b84c6cf2ea4e465de7ea68f4b8caf77e",
+        "bytes": 13570,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/realm.js",
+        "sha256": "5b38abf926e14359e3ad5835b924391324f9c75421960462dc68e40f4959c358",
+        "bytes": 23169,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/siegecraft.js",
+        "sha256": "2f0cb4b0a9ed07fe0d6def93f6fbcbba69095c0504c71aad8ad2a6b8850745b6",
+        "bytes": 10193,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/statecraft-ui.js",
+        "sha256": "3a9817b7d8b5d2a38719ca1c33f9711c61abb079824c6a565956d9e777104103",
+        "bytes": 18152,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/statecraft.js",
+        "sha256": "5c5c3a97b2737c88a046cbc23219efaaaa26d009877ba528bd641d5d243b527d",
+        "bytes": 57043,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/ui.js",
+        "sha256": "18d350459d99f1848bbb63fd07bf489a5db6d47d5711c45408be0a371c17cd8f",
+        "bytes": 13896,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/util.js",
+        "sha256": "823dc67b4f7946c0f2a75f52bd1ea1cc04478841523a16c700ef24297889c4d5",
+        "bytes": 3273,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/voices.js",
+        "sha256": "076803151b496f91eea5b53d67ae2c6ed71fe6bbf17f5ddba83ff54030cdd25f",
+        "bytes": 9098,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/warsim.js",
+        "sha256": "ec84f2191268dfddc4d8dbb50dd4549df7e5af303922a8b171b506fed87948e4",
+        "bytes": 120718,
+        "matchesCommit": true
+      },
+      {
+        "path": "js/world.js",
+        "sha256": "07449972fc6114dc206f1bb2bb4ec9ac14e59f340c9bd98d420c846289e5f91f",
+        "bytes": 137309,
+        "matchesCommit": true
+      },
+      {
+        "path": "leaders.css",
+        "sha256": "a571f75b8c3bef469492b2ec331de5a547e069360ce108a1f864c3932d686c63",
+        "bytes": 13633,
+        "matchesCommit": true
+      },
+      {
+        "path": "manifest.json",
+        "sha256": "b1d0454357fb4eb787ad1066bc4deb02ec09b99bd0679936793a584defb849f2",
+        "bytes": 361,
+        "matchesCommit": true
+      },
+      {
+        "path": "politics.css",
+        "sha256": "90ab46d17a83d4e0ea39c884486cb4548351d284336e3d5b06fd49a793454b79",
+        "bytes": 4925,
+        "matchesCommit": true
+      },
+      {
+        "path": "style.css",
+        "sha256": "f23d35990893d4e1de0f0d14ae659f0ce2a4e2a601323f1592945c92b21a1fbd",
+        "bytes": 53234,
+        "matchesCommit": true
+      }
+    ],
+    "generatedFiles": [
+      {
+        "path": "index.html",
+        "sha256": "932e697eaa3083f68720a61873c07fe024e8c8718961804cdd6ffe5f72d3a4b3",
+        "bytes": 1984
+      },
+      {
+        "path": "game.html",
+        "sha256": "749c7fad124eedf28c0747cc63b0fe19fb1ab5985fdc13425b59c190594aca79",
+        "bytes": 2981
+      },
+      {
+        "path": "manifest.json",
+        "sha256": "db6e08ec51b98aa7fd1b0e6de91c32b59226e77261ce40fbe85f9868519dff09",
+        "bytes": 443
+      },
+      {
+        "path": "preview/bootstrap.js",
+        "sha256": "5679974e3866c60d0d9e8883015992cf01729dd578bd9483ad93fe12c5d1561d",
+        "bytes": 566
+      },
+      {
+        "path": ".nojekyll",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    ]
+  },
+  "FPrState": "open",
+  "FPrMerged": false,
+  "ExplicitNamespaceInBootstrap": true,
+  "AllProtectedRefsUnchanged": true
+}

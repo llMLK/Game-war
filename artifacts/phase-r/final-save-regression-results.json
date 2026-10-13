@@ -1,0 +1,309 @@
+{
+  "sourceCommit": "f13ea76fbce0b46598434d556295ea912fb49a0f",
+  "runtimeBlobs": [
+    {
+      "file": "atlas.css",
+      "gitBlob": "774d799a0d9813c8fc32da97daae1d554b47f3a7"
+    },
+    {
+      "file": "battles.css",
+      "gitBlob": "5e95a41b94c51323135bd38487a97f6bfb0e0c1b"
+    },
+    {
+      "file": "economy.css",
+      "gitBlob": "3b190ca88f148b38f0fb74fc634e3de6e03eceb6"
+    },
+    {
+      "file": "icon.svg",
+      "gitBlob": "dffba49adfc5439930b7ad661d9c97513b66b5c3"
+    },
+    {
+      "file": "index.html",
+      "gitBlob": "426eac46caa5c4194da4d35acd2376bf17c7e107"
+    },
+    {
+      "file": "js/actions.js",
+      "gitBlob": "4eb658fc0450937c8af00be2c03ba03982e74bdb"
+    },
+    {
+      "file": "js/atlas-coast.js",
+      "gitBlob": "dfc93767716e9c63b828153be921f89d904d5b2d"
+    },
+    {
+      "file": "js/atlas-data.js",
+      "gitBlob": "dcf92c14408f3ac75830638b32ab56f540b553b8"
+    },
+    {
+      "file": "js/atlas-routes.js",
+      "gitBlob": "5fa22e921fd066ba92e0ac05e4424180060431f7"
+    },
+    {
+      "file": "js/battle-narrative.js",
+      "gitBlob": "f22756726ac693a882c917a1625a20f8b4e1be1f"
+    },
+    {
+      "file": "js/battle-scene.js",
+      "gitBlob": "db3e605b8838953e6a6da376d7c866e2381318fd"
+    },
+    {
+      "file": "js/battlecmd.js",
+      "gitBlob": "834b571e759d973c733a2642c9117abd2f8f09e9"
+    },
+    {
+      "file": "js/campaign-ai.js",
+      "gitBlob": "10945259166a1bbd59066839864a12bc197f9ec1"
+    },
+    {
+      "file": "js/campaign-ui.js",
+      "gitBlob": "9477ab379d71c8cab4fd129354efca4d99ffe020"
+    },
+    {
+      "file": "js/campaign.js",
+      "gitBlob": "09e3d8b92e2597bb4ba0664f5c09e59974a71ed1"
+    },
+    {
+      "file": "js/cmd-ui.js",
+      "gitBlob": "36e7839e2c452eac0b8d6f9d628f5b41b07d33e9"
+    },
+    {
+      "file": "js/commander-data.js",
+      "gitBlob": "e491de9bed0991bc2d5d33d120b45fa1a655e892"
+    },
+    {
+      "file": "js/commanders.js",
+      "gitBlob": "31a40978d2f76bb1ec9310b8292a6df5b3b1f052"
+    },
+    {
+      "file": "js/data.js",
+      "gitBlob": "e5af40449cb87687cbbf802c695428a90dda930b"
+    },
+    {
+      "file": "js/diplomacy.js",
+      "gitBlob": "d72ed4a0afdaa81deaf38d9ff3ce09bef4fcfd88"
+    },
+    {
+      "file": "js/economy-trade.js",
+      "gitBlob": "837e5f2eed5f7a050016a7059c0758dd575e5dd6"
+    },
+    {
+      "file": "js/economy-ui.js",
+      "gitBlob": "bbcdc69b288291c658246ad19a350152816194ca"
+    },
+    {
+      "file": "js/economy.js",
+      "gitBlob": "2a46792e80c439334ca7fa3b04acca1af5a6ff6b"
+    },
+    {
+      "file": "js/engine.js",
+      "gitBlob": "5596c7c9074789b45455360251a70f7491e41f91"
+    },
+    {
+      "file": "js/explain.js",
+      "gitBlob": "5ad80001e57fcb55c3d0e659e3b0f563a37fad03"
+    },
+    {
+      "file": "js/icons.js",
+      "gitBlob": "f318dd5042d0d3bb34a27621e630545ced96d48c"
+    },
+    {
+      "file": "js/leader-system.js",
+      "gitBlob": "ff8e4aeaa65549487b0a992f434a7e94ba1a806f"
+    },
+    {
+      "file": "js/main.js",
+      "gitBlob": "def7472fb447c251eeace67f6e9b4c995489de3e"
+    },
+    {
+      "file": "js/map-art.js",
+      "gitBlob": "e0c1816ca11d98a50fb36ed19cdde92f6ffa68dd"
+    },
+    {
+      "file": "js/panels.js",
+      "gitBlob": "d4ce634c688258551266fbff215379dd30711bfc"
+    },
+    {
+      "file": "js/pathing.js",
+      "gitBlob": "d3dd5d70741598748ce3e72f644c351cf2b8016b"
+    },
+    {
+      "file": "js/political-allies.js",
+      "gitBlob": "a21c5a56a6fa06a0bc49616b1e759e7624df5e93"
+    },
+    {
+      "file": "js/political-spy.js",
+      "gitBlob": "a8482fb64d145225799a017acc3b68abd7e5ecbf"
+    },
+    {
+      "file": "js/politics-ui.js",
+      "gitBlob": "de538c87a50a40501254e982007a5fa625b568b5"
+    },
+    {
+      "file": "js/politics.js",
+      "gitBlob": "bc94c09111f76ff39b3b54d6adb7ca80a9bb6322"
+    },
+    {
+      "file": "js/portraits.js",
+      "gitBlob": "7045c2259f0c895ad522b42e50cc2e062a466779"
+    },
+    {
+      "file": "js/readiness.js",
+      "gitBlob": "d43a67aff3f7bac1bc3aa5af71365a1dc209975a"
+    },
+    {
+      "file": "js/realm.js",
+      "gitBlob": "ea73a4d3781a4a6bed378fa4734fd743b883c93e"
+    },
+    {
+      "file": "js/save-safety.js",
+      "gitBlob": "7ab2646e06bda7c197af12939c926792568ff5ad"
+    },
+    {
+      "file": "js/siegecraft.js",
+      "gitBlob": "1d436e5c99c4e776240ffeae8f837381590b37cc"
+    },
+    {
+      "file": "js/statecraft-ui.js",
+      "gitBlob": "fc2db43f388127ce6547008367e47517ce463cf8"
+    },
+    {
+      "file": "js/statecraft.js",
+      "gitBlob": "f72c7db58d3eaa3a131a8c6218a1da8e60d7d213"
+    },
+    {
+      "file": "js/ui.js",
+      "gitBlob": "e820a317bcd70e13a6efb049069a6062de25bd2c"
+    },
+    {
+      "file": "js/util.js",
+      "gitBlob": "a5bc815845f4eed736bd8ec02966d4099c845dbf"
+    },
+    {
+      "file": "js/voices.js",
+      "gitBlob": "e1389c04a0dd8c366e185e41f947f68208f0cb6b"
+    },
+    {
+      "file": "js/warsim.js",
+      "gitBlob": "797c18940f8ae1ae1ee125e7b09a2c27510e138b"
+    },
+    {
+      "file": "js/world.js",
+      "gitBlob": "d90a36cd27447198d5024167e87cf7682509af08"
+    },
+    {
+      "file": "leaders.css",
+      "gitBlob": "be18ae00cd50180bda111e1c329938f062a92895"
+    },
+    {
+      "file": "manifest.json",
+      "gitBlob": "b14b94ee37d0158d5d335825036f73f0634a398a"
+    },
+    {
+      "file": "politics.css",
+      "gitBlob": "e0724f65ac12d514fc3d51b83ea87a1673b81b9d"
+    },
+    {
+      "file": "style.css",
+      "gitBlob": "ab187775b96fdd0a5f4169dcc7b5de036a2d7536"
+    }
+  ],
+  "snapshot": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-final-iEboS9",
+  "method": "Current working-tree snapshot; runtime Git blob manifest allows exact post-commit verification even when sourceCommit is the pre-stage HEAD. URL-only test adaptation to private local server. All suite artifacts remain in TEMP and are copied under Phase R evidence. Original F evidence is not overwritten. Synthetic fixtures and Playwright Edge emulation; no real owner saves or physical phones.",
+  "started": "2026-10-13T12:48:22.000Z",
+  "results": [
+    {
+      "script": "phase-r-saves",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 2898.9,
+      "passLines": 39,
+      "log": "artifacts/phase-r/final-save-logs/phase-r-saves.log",
+      "tail": "PASS Umayyad saves roundtrip all normalized fields\nPASS supported Umayyad schema 1\nPASS supported Umayyad schema 2\nPASS supported Umayyad schema 3\nPASS supported Umayyad schema 4\nPASS supported Umayyad schema 5\nPASS incomplete display fields derive from supported state\nPASS incomplete display fields derive from supported state\nPASS absent envelope metadata is rejected and protected before replacement\nPASS safe rejection: unknown scenario\nPASS safe rejection: future schema\nPASS safe rejection: future explicit schema\nPASS safe rejection: invalid schema\nPASS safe rejection: mismatched title\nPASS safe rejection: missing factions\nPASS safe rejection: missing nodes\nPASS safe rejection: missing armies\nPASS safe rejection: missing generals\nPASS safe rejection: invalid node\nPASS safe rejection: invalid army\nPASS safe rejection: invalid player\nPASS safe rejection: cancelled v4 layout\nPASS malformed raw {broken\nPASS malformed raw null\nPASS malformed raw {}\nPASS malformed raw {\"meta\":{}}\nPASS Chinese manual bytes preserved, rejected before normalization\nPASS only Umayyad direct activation, active state untouched\nPASS verified Chinese backup before new campaign; retries idempotent\nPASS v1 Chinese auto retained and separately backed up\nPASS backup failure blocks replacement: quota\nPASS backup failure blocks replacement: denied\nPASS backup failure blocks replacement: truncated-backup\nPASS backup failure blocks replacement: interrupted-index\nPASS backup failure blocks replacement: unreadable-verification\nPASS different autosaves get independent exact backups\nPASS malformed legacy index never replaces auto\nPASS load failure rolls back current state, leaves raw intact\nPASS explicit slot deletion removes only displayed source, not another v1 save\n39/39 save cases passed\n"
+    },
+    {
+      "script": "phase-r-identity",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 15,
+      "passLines": 14,
+      "log": "artifacts/phase-r/final-save-logs/phase-r-identity.log",
+      "tail": "PASS direct start requires own supported faction: __proto__\nPASS saved player requires own supported faction: __proto__\nPASS direct start requires own supported faction: constructor\nPASS saved player requires own supported faction: constructor\nPASS direct start requires own supported faction: toString\nPASS saved player requires own supported faction: toString\nPASS explicit metadata/player disagreement rejected before normalization\nPASS malformed player object cannot crash startup or mutate stored bytes\nPASS direct difficulty is canonical: __proto__\nPASS direct difficulty is canonical: constructor\nPASS direct difficulty is canonical: toString\nPASS malformed node owner remains unavailable without startup exception\nPASS malformed army faction remains unavailable without startup exception\nPASS malformed faction name remains unavailable without startup exception\n14/14 identity guard cases passed\n"
+    },
+    {
+      "script": "phase-r-ui",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 216.8,
+      "passLines": 5,
+      "log": "artifacts/phase-r/final-save-logs/phase-r-ui.log",
+      "tail": "PASS R UI 1365x900: 12 checks\nPASS R UI 320x568: 12 checks\nPASS R UI 390x844: 12 checks\nPASS R UI 568x320: 12 checks\nPASS R UI 844x390: 12 checks\n"
+    },
+    {
+      "script": "phase-r-content",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 1.2,
+      "passLines": 6,
+      "log": "artifacts/phase-r/final-save-logs/phase-r-content.log",
+      "tail": "PASS only supported scenario catalogs exist\nPASS exact 63 Umayyad leaders including all 20 legacy identities\nPASS China-exclusive units, icon aliases and names removed; shared elites retained\nPASS supported geography, world, objectives, units, traits and economic formulas preserved exactly\nPASS no China production selectors or generated style remain\nPASS all three supported factions start, save and restore on 66-city world without Chinese portraits\n"
+    },
+    {
+      "script": "phase-f-campaign",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 9.6,
+      "passLines": 5,
+      "log": "artifacts/phase-r/final-save-logs/phase-f-campaign.log",
+      "tail": "PASS identical A–E and Phase F Umayyad initial campaign (all saved fields)\nPASS identical real construction/Undo resources and campaign state\nPASS identical endRound military, economy, buildings, leaders and diplomatic fields\nPASS baseline A–E synthetic save loads identically into Phase F\nPASS Phase F save/load roundtrip and stale Undo cleanup\n"
+    },
+    {
+      "script": "phase-f-preview",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 91.6,
+      "passLines": 1,
+      "log": "artifacts/phase-r/final-save-logs/phase-f-preview.log",
+      "tail": "PASS Phase F preview: 51 allowlisted runtime files; exact Git blob SHA256 manifest with clean-filter/EOL equivalence; strict rejection of genuine runtime changes; fresh-output protection; 390×844 touch landing; same-origin save/load and get/set/delete/legacy isolation; official saves unchanged; zero page errors.\n"
+    },
+    {
+      "script": "agent2-phase-r-save-safety",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 3590.7,
+      "passLines": 45,
+      "log": "artifacts/phase-r/final-save-logs/agent2-phase-r-save-safety.log",
+      "tail": "s intact\nPASS [phase-r] R02 v1 Chinese rejected before migrate or normalize\nPASS [phase-r] R03 reject without replacing active campaign: metadata Umayyad but state Chinese\nPASS [phase-r] R03 reject without replacing active campaign: metadata Umayyad but state unknown\nPASS [phase-r] R03 reject without replacing active campaign: missing state scenario\nPASS [phase-r] R03 reject without replacing active campaign: future version\nPASS [phase-r] R03 reject without replacing active campaign: string version\nPASS [phase-r] R03 reject without replacing active campaign: missing nodes\nPASS [phase-r] R03 reject without replacing active campaign: missing factions\nPASS [phase-r] R04 Chinese autosave protected before newGame\nPASS [phase-r] R04 Chinese autosave protected before save\nPASS [phase-r] R05 failed backup (quota) cannot overwrite original\nPASS [phase-r] R05 failed backup (silent-drop) cannot overwrite original\nPASS [phase-r] R05 failed backup (read-denied) cannot overwrite original\nPASS [phase-r] R06 retry and process restart preserve original without duplicate backups\nPASS [phase-r] R07 interruption after backup before auto replacement is recoverable on retry\nPASS [phase-r] R08 a second different Chinese autosave cannot destroy the first backup\nPASS [phase-r] R09 new game preserves unreadable/unsupported auto: malformed JSON\nPASS [phase-r] R09 new game preserves unreadable/unsupported auto: missing metadata\nPASS [phase-r] R09 new game preserves unreadable/unsupported auto: future schema\nPASS [phase-r] R10 invalid v2 auto cannot silently fall back to v1 then overwrite v2\nPASS [phase-r] R11 startup metadata guards: unknown v1 scenario\nPASS [phase-r] R11 startup metadata guards: v1 missing factions\nPASS [phase-r] R12 Chinese save UI explains unsupported status and does not offer resume\nPASS [phase-r] R13 new campaign defaults to Umayyad only\nPASS [phase-r] R14 stale direct Chinese newGame request cannot replace active state or auto\nPASS [phase-r] R15 failed manual save UI must not claim success\nPASS [phase-r] R16 normalization exception leaves previously active campaign intact\nPASS [phase-r] R17 missing display metadata never renders undefined or NaN\nRESULT executed=45 passed=45 failed=0 skipped=0\nNOT AUTOMATED: physical-device Safari/Chrome, real-owner-save acceptance, actual export/download and legacy-version restore, real crash/storage durability, cross-tab races.\n"
+    }
+  ],
+  "excluded": [
+    {
+      "script": "serve",
+      "reason": "infrastructure, private server supplied by this runner"
+    },
+    {
+      "script": "harness/battle-fixtures",
+      "reason": "shared modules exercised by suites"
+    },
+    {
+      "script": "build-coast/build-road-drawings",
+      "reason": "offline regeneration tools would rewrite unchanged atlas assets; geometry is independently checked"
+    },
+    {
+      "script": "phase-f-regression",
+      "reason": "all eight constituent suites executed individually, no duplicate count"
+    },
+    {
+      "script": "phase-f-published",
+      "reason": "public URL must remain approved F, not R; no R publication authorized"
+    }
+  ],
+  "finished": "2026-10-13T13:48:15.189Z",
+  "passed": 7,
+  "failed": 0
+}

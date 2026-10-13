@@ -1,0 +1,12 @@
+PASS supported campaign has valid, unique, bidirectional graph edges and bounded cities
+PASS expanded atlas remains a single connected network including maritime islands
+PASS every caravan template follows actual route segments
+PASS western maritime endpoints allow a normal army to embark in both directions
+PASS Tarsus and Tartus are distinct cities and the Cilician pass has two strategic approaches
+PASS Tarsus reaches the enemy pass but cannot skip a hostile checkpoint to Amorium
+PASS controlling the pass opens the route to Amorium with normal points on the next turn
+PASS allied access opens transit generically, while exhausted armies remain stationary
+PASS Tartus has a connected land approach without an accidental forced sea crossing
+PASS winter mountain passes consume the turn without becoming permanent movement locks
+
+Map routes: 10 passed, 0 failed.

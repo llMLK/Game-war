@@ -34,21 +34,6 @@ const UNITS = {
     needs: 'barracks', desc: 'يهدم الأسوار والبوابات ويفرّق الصفوف المتراصة.',
   },
   // ——— وحدات النخبة الخاصة بكل حضارة (تُجنَّد حيث يقيم «قائد نخبة») ———
-  repeater: {
-    name: 'رماة القوس المتكرر', icon: 'volley', cls: 'inf', men: 45, hp: 9, atk: 3, def: 4, speed: 31,
-    cost: 150, upkeep: 5, range: 150, missile: 3.2, reload: 1.7, ammo: 30, forms: ['line', 'loose'],
-    unique: 'shu', desc: 'اختراع جوغه ليانغ: وابل سريع متواصل من مسافة قصيرة.',
-  },
-  tigerleopard: {
-    name: 'فرسان النمر والفهد', icon: 'horse', cls: 'cav', men: 30, hp: 20, atk: 11, def: 9, speed: 56,
-    cost: 220, upkeep: 8, charge: 17, forms: ['line', 'wedge'], unique: 'wei',
-    desc: 'حرس تساو الخاص. أقوى خيالة الممالك الثلاث.',
-  },
-  jinfan: {
-    name: 'قراصنة الأجراس', icon: 'sword', cls: 'inf', men: 45, hp: 13, atk: 10, def: 6, speed: 36,
-    cost: 150, upkeep: 5, armor: 0.3, fordFree: true, forms: ['line', 'loose'], unique: 'wu',
-    desc: 'رجال غان نينغ: سريعون، شرسون، لا تبطئهم الأنهار.',
-  },
   shamguard: {
     name: 'حرس الشام', icon: 'horse', cls: 'cav', men: 30, hp: 18, atk: 10, def: 8, speed: 60,
     cost: 200, upkeep: 7, charge: 15, forms: ['line', 'wedge'], unique: 'umayyad',
@@ -85,7 +70,7 @@ const UNITS = {
 };
 
 const RECRUITABLE = ['spear', 'sword', 'archer', 'horsearcher', 'cavalry', 'catapult'];
-const UNIQUE_OF = { shu: 'repeater', wei: 'tigerleopard', wu: 'jinfan', umayyad: 'shamguard', byzantine: 'cataphract', khazar: 'tarkhan' };
+const UNIQUE_OF = { umayyad: 'shamguard', byzantine: 'cataphract', khazar: 'tarkhan' };
 
 // ——— القادة ———
 // كل سمة تغيّر نظاماً مختلفاً فعلاً (المعركة، الحركة، الاقتصاد، الإمداد، الحصار...)
@@ -196,101 +181,6 @@ const HELP = {
 // ——— السيناريوهات ———
 // القادة: [الاسم، السمة، العيب، الرتبة]
 const SCENARIOS = {
-  threeKingdoms: {
-    id: 'threeKingdoms',
-    name: 'الممالك الثلاث',
-    sub: 'الصين، سنة 208م',
-    intro: 'انهارت أسرة هان، وتقاسمت الأرضَ ثلاثُ ممالك. من يوحّد ما تحت السماء؟',
-    startYear: 208,
-    ground: '#d8c9a0',
-    battleGround: 'green',
-    factions: {
-      shu: {
-        name: 'شو', color: '#3f8a4f', personality: { aggr: 1.0, honor: 1.3, prefs: { spear: 3, sword: 2, archer: 2, cavalry: 2, horsearcher: 0.5, catapult: 0.5 } },
-        desc: 'مملكة الفضيلة. رمّاحة صلبة وقادة أبطال. نخبتها: رماة القوس المتكرر.',
-        generals: [
-          ['ليو باي', 'merchant', null, 2], ['قوان يو', 'brave', 'arrogant', 3], ['جانغ في', 'brave', 'harsh', 2],
-          ['جاو يون', 'cavalier', null, 2], ['جوغه ليانغ', 'elite', null, 3], ['هوانغ جونغ', 'archer', null, 2],
-          ['ما تشاو', 'cavalier', 'reckless', 2], ['وي يان', 'mountaineer', 'arrogant', 1], ['فا جنغ', 'tactician', null, 1],
-          ['جيانغ وي', 'mountaineer', null, 1], ['ما ليانغ', 'logistician', null, 1], ['وانغ بينغ', 'defender', null, 1],
-        ],
-      },
-      wei: {
-        name: 'وي', color: '#3a5f9a', personality: { aggr: 1.25, honor: 0.8, prefs: { spear: 2, sword: 2, archer: 2, cavalry: 3, horsearcher: 1, catapult: 0.7 } },
-        desc: 'أقوى الممالك. خيالة الشمال وجيوش كبيرة. نخبتها: فرسان النمر والفهد.',
-        generals: [
-          ['تساو تساو', 'tactician', 'harsh', 3], ['شياهو دون', 'brave', 'reckless', 2], ['شياهو يوان', 'swift', 'reckless', 2],
-          ['جانغ لياو', 'cavalier', null, 3], ['سيما يي', 'defender', 'disloyal', 2], ['تساو رن', 'defender', null, 2],
-          ['شو هوانغ', 'siege', null, 1], ['جانغ خه', 'mountaineer', null, 2], ['تساو تشون', 'elite', null, 1],
-          ['شون يو', 'merchant', null, 1], ['يو جين', 'logistician', 'disloyal', 1], ['دنغ آي', 'mountaineer', 'cautious', 1],
-        ],
-      },
-      wu: {
-        name: 'وو', color: '#b0392c', personality: { aggr: 0.9, honor: 1.0, prefs: { spear: 2, sword: 2, archer: 3.5, cavalry: 1, horsearcher: 0.5, catapult: 0.8 } },
-        desc: 'سادة النهر. رماة مهرة وأساطيل. نخبتها: قراصنة الأجراس.',
-        generals: [
-          ['سون تشوان', 'merchant', 'cautious', 2], ['جو يو', 'naval', null, 3], ['لو منغ', 'tactician', null, 2],
-          ['غان نينغ', 'elite', 'reckless', 2], ['لو شون', 'defender', null, 2], ['تاي شي تسي', 'archer', null, 2],
-          ['هوانغ غاي', 'naval', null, 1], ['لينغ تونغ', 'brave', null, 1], ['لو سو', 'logistician', null, 1],
-          ['جو تاي', 'defender', null, 1], ['دينغ فنغ', 'swift', null, 1], ['جو هوان', 'siege', 'arrogant', 1],
-        ],
-      },
-    },
-    neutralGenerals: [['جانغ لو', 'defender', null, 1], ['منغ هوو', 'brave', 'reckless', 1], ['شي شيه', 'merchant', null, 1], ['هان سوي', 'desert', 'disloyal', 1], ['ما تنغ', 'cavalier', null, 1]],
-    nodes: [
-      { id: 'chengdu', name: 'تشنغدو', x: 150, y: 470, owner: 'shu', pop: 30000, walls: 2, capital: true, terrain: 'plains' },
-      { id: 'jiangzhou', name: 'جيانغتشو', x: 290, y: 540, owner: 'shu', pop: 14000, walls: 1, terrain: 'river' },
-      { id: 'yongan', name: 'يونغآن', x: 390, y: 470, owner: 'shu', pop: 9000, walls: 1, terrain: 'mountains' },
-      { id: 'jiangling', name: 'جيانغلينغ', x: 520, y: 440, owner: 'shu', pop: 22000, walls: 2, terrain: 'river' },
-      { id: 'changsha', name: 'تشانغشا', x: 560, y: 580, owner: 'shu', pop: 15000, walls: 1, terrain: 'forest' },
-      { id: 'hanzhong', name: 'هانزونغ', x: 260, y: 320, owner: 'neutral', pop: 16000, walls: 2, terrain: 'mountains' },
-      { id: 'nanzhong', name: 'نانزونغ', x: 130, y: 640, owner: 'neutral', pop: 9000, walls: 0, terrain: 'forest' },
-      { id: 'tianshui', name: 'تيانشوي', x: 180, y: 190, owner: 'neutral', pop: 10000, walls: 1, terrain: 'hills' },
-      { id: 'wuwei', name: 'وووي', x: 80, y: 80, owner: 'neutral', pop: 8000, walls: 1, terrain: 'desert' },
-      { id: 'jiaozhou', name: 'جياوتشو', x: 700, y: 660, owner: 'neutral', pop: 11000, walls: 1, terrain: 'coast' },
-      { id: 'changan', name: 'تشانغآن', x: 360, y: 190, owner: 'wei', pop: 26000, walls: 2, terrain: 'plains' },
-      { id: 'luoyang', name: 'لوويانغ', x: 520, y: 140, owner: 'wei', pop: 24000, walls: 2, terrain: 'hills' },
-      { id: 'xuchang', name: 'شوتشانغ', x: 680, y: 170, owner: 'wei', pop: 34000, walls: 3, capital: true, terrain: 'plains' },
-      { id: 'wan', name: 'وان', x: 560, y: 260, owner: 'wei', pop: 13000, walls: 1, terrain: 'plains' },
-      { id: 'xiangyang', name: 'شيانغيانغ', x: 520, y: 345, owner: 'wei', pop: 20000, walls: 2, terrain: 'river' },
-      { id: 'hefei', name: 'خفي', x: 780, y: 300, owner: 'wei', pop: 12000, walls: 2, terrain: 'plains' },
-      { id: 'jianye', name: 'جيانيه', x: 900, y: 420, owner: 'wu', pop: 32000, walls: 3, capital: true, terrain: 'river', market: 1 },
-      { id: 'chaisang', name: 'تشايسانغ', x: 690, y: 450, owner: 'wu', pop: 15000, walls: 2, terrain: 'river' },
-      { id: 'yuzhang', name: 'يوجانغ', x: 740, y: 560, owner: 'wu', pop: 13000, walls: 1, terrain: 'forest' },
-      { id: 'kuaiji', name: 'كوايجي', x: 900, y: 570, owner: 'wu', pop: 16000, walls: 1, terrain: 'coast' },
-    ],
-    edges: [
-      ['chengdu', 'jiangzhou'], ['chengdu', 'hanzhong', 'pass'], ['chengdu', 'nanzhong'], ['jiangzhou', 'yongan'], ['jiangzhou', 'nanzhong'],
-      ['yongan', 'jiangling'], ['yongan', 'hanzhong', 'pass'], ['jiangling', 'changsha'], ['jiangling', 'xiangyang'], ['jiangling', 'chaisang'],
-      ['changsha', 'yuzhang'], ['changsha', 'jiaozhou'], ['hanzhong', 'changan', 'pass'], ['hanzhong', 'tianshui'], ['tianshui', 'changan'],
-      ['tianshui', 'wuwei'], ['changan', 'luoyang'], ['luoyang', 'xuchang'], ['luoyang', 'wan'], ['wan', 'xiangyang'], ['wan', 'xuchang'],
-      ['xuchang', 'hefei'], ['hefei', 'jianye'], ['hefei', 'chaisang'], ['chaisang', 'jianye'], ['chaisang', 'yuzhang'],
-      ['yuzhang', 'kuaiji'], ['kuaiji', 'jianye'], ['jiaozhou', 'yuzhang'], ['xiangyang', 'chaisang'],
-      ['jiangzhou', 'jiangling', 'water'], ['kuaiji', 'jiaozhou', 'water'], ['jianye', 'xiangyang', 'water'],
-    ],
-    armies: [
-      { owner: 'shu', node: 'chengdu', gen: 'ليو باي', regs: ['spear', 'spear', 'sword', 'archer', 'archer', 'cavalry'] },
-      { owner: 'shu', node: 'jiangling', gen: 'قوان يو', regs: ['spear', 'sword', 'archer', 'cavalry'] },
-      { owner: 'wei', node: 'xuchang', gen: 'تساو تساو', regs: ['spear', 'sword', 'sword', 'archer', 'cavalry', 'cavalry'] },
-      { owner: 'wei', node: 'xiangyang', gen: 'تساو رن', regs: ['spear', 'sword', 'archer', 'cavalry'] },
-      { owner: 'wei', node: 'changan', gen: 'شياهو يوان', regs: ['spear', 'archer', 'horsearcher'] },
-      { owner: 'wu', node: 'jianye', gen: 'جو يو', regs: ['spear', 'sword', 'archer', 'archer', 'archer', 'cavalry'] },
-      { owner: 'wu', node: 'chaisang', gen: 'لو منغ', regs: ['spear', 'sword', 'archer', 'archer'] },
-      { owner: 'neutral', node: 'hanzhong', gen: 'جانغ لو', regs: ['spear', 'archer', 'sword'] },
-    ],
-    seas: [
-      [[960, 0], [1000, 0], [1000, 700], [930, 700], [960, 640], [945, 560], [975, 480], [955, 400], [985, 320], [950, 230], [975, 130]],
-      [[600, 700], [640, 690], [760, 695], [930, 700]],
-    ],
-    deserts: [[[0, 0], [260, 0], [240, 60], [150, 140], [60, 160], [0, 150]]],
-    rivers: [
-      [[100, 520], [210, 500], [300, 510], [400, 480], [520, 460], [620, 470], [700, 440], [800, 430], [880, 400], [960, 395]],
-      [[260, 90], [380, 110], [480, 105], [600, 100], [720, 130], [840, 150], [960, 170]],
-      [[520, 460], [540, 380], [560, 300], [600, 240]],
-    ],
-    mountains: [[230, 390], [300, 400], [200, 270], [320, 270], [420, 330], [440, 400], [110, 330], [90, 230], [620, 610], [460, 600], [360, 620], [400, 260], [390, 430]],
-  },
-
   umayyad: {
     id: 'umayyad',
     name: 'الفتوحات الأموية',

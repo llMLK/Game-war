@@ -1,0 +1,24 @@
+PASS money offers change willingness monotonically, with contextual reasons
+PASS invalid money, missing payer, excessive tribute and stale prisoners cannot negotiate
+PASS rejection consumes one envoy, persists and cannot be rerolled by changing offers
+PASS pending counter survives reload and applies exactly once with reconciled money
+PASS counter cannot be accepted after peace, expiry, a new war or edited terms
+PASS peace terms apply money, captives, city, truce and memory through actual campaign APIs
+PASS peace settlement itself rejects duplicate execution, even without a counter id
+PASS counter respects current city ownership and excludes impossible final-city concessions
+PASS treaty actions cannot renew truces or farm relations by repeated calls
+PASS trade toggling, marriage and gifts have bounded persistent effects
+PASS one diplomatic proposal interval applies across types and survives reload
+PASS memory deduplicates keys, caps repetition, decays and affects diplomacy
+PASS personalities affect war and trade without bypassing unsafe conditions
+PASS threatened vassal considers survival, allies, distance and exhaustion
+PASS vassalage preserves autonomy, pays once, forbids chains and independent wars
+PASS tribute is not renewed, not immediately collected and ledger collection is idempotent
+PASS many allies share a bounded actual peace payment and cannot collect it twice
+PASS incoming offer survives reload and cannot execute twice or after context changes
+PASS surrender rejection expires instead of permanently disabling negotiations
+PASS surrender and contribution previews never mutate campaign state
+PASS broken and kept treaties produce different persistent memories
+PASS political save roundtrip retains offers, counters, terms, memory, spy effects and war effort
+PASS legacy cooldown and tribute migration is idempotent without adding empty node fields
+23 political logic groups passed

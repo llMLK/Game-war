@@ -1,0 +1,7 @@
+PASS 320x568: Undo25, valid touch, refresh race, delayed AI10, busy, modal, over
+PASS 360x740: Undo25, valid touch, refresh race, delayed AI10, busy, modal, over
+PASS 390x844: Undo25, valid touch, refresh race, delayed AI10, busy, modal, over
+PASS 430x932: Undo25, valid touch, refresh race, delayed AI10, busy, modal, over
+PASS 568x320: Undo25, valid touch, refresh race, delayed AI10, busy, modal, over
+PASS 844x390: Undo25, valid touch, refresh race, delayed AI10, busy, modal, over
+PASS 127 mobile touch attempts; real Umayyad turn and save/reload; error recovery

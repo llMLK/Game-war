@@ -4,7 +4,7 @@ These notes are for development. References, citation language and source links 
 
 ## Narrative baseline
 
-The western campaign presents the political setting of 715 CE, and the eastern campaign begins in 208 CE. An initial biography describes experience and position known at that point. A later candidate describes his background by his first availability year. It does not forecast later battles, accessions, betrayals or death. Actual campaign records are shown separately from the short biography.
+The supported campaign presents the political setting of 715 CE. Phase R removes the former 208 CE campaign; earlier A–B reports remain historical evidence, not supported content. An initial biography describes experience and position known at that point. A later candidate describes his background by his first availability year. It does not forecast later battles, accessions, betrayals or death. Actual campaign records are shown separately from the short biography.
 
 - Maslama is already an experienced frontier commander by 715; later famous campaigns do not become biography spoilers. His initial fame is renowned rather than a retrospective maximum.
 - Musa and Tariq already have western-campaign reputations. Their availability is short and linked to western territories or the Damascus court. Abd al-Aziz ibn Musa begins with the existing Seville army rather than in a recruitable pool while someone else commands his post.

@@ -1,0 +1,48 @@
+{
+  "viewports": [
+    [
+      1440,
+      900
+    ],
+    [
+      1024,
+      768
+    ],
+    [
+      390,
+      844
+    ],
+    [
+      360,
+      740
+    ],
+    [
+      320,
+      568
+    ],
+    [
+      844,
+      390
+    ],
+    [
+      568,
+      320
+    ]
+  ],
+  "saveReload": {
+    "passes": 2,
+    "preserved": [
+      "fatigue",
+      "morale",
+      "cohesion",
+      "ammunition",
+      "supply",
+      "strain",
+      "battles",
+      "army casualties",
+      "garrison condition",
+      "leader relationships"
+    ]
+  },
+  "errors": []
+}

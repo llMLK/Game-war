@@ -1,97 +1,423 @@
 {
-  "sourceCommit": "a348360c1063622920675480c89055fa57bf3abd",
-  "snapshot": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-final-qx4MXv",
-  "method": "Current working-tree snapshot; URL-only test adaptation to private local server. All suite artifacts remain in TEMP and are copied under Phase R evidence. Original F evidence is not overwritten. Synthetic fixtures and Playwright Edge emulation; no real owner saves or physical phones.",
-  "started": "2026-10-12T19:08:07.764Z",
-  "results": [
+  "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+  "runtimeBlobs": [
     {
-      "script": "camera",
-      "exitCode": 0,
-      "signal": null,
-      "status": "passed",
-      "seconds": 1.9,
-      "passLines": 12,
-      "log": "artifacts/phase-r/final-logs/camera.log",
-      "tail": "PASS world and screen transforms round-trip at every supported viewport and zoom\nPASS every settlement can be focused inside the unobstructed frame at all zoom levels\nPASS camera clamps finite coordinates at all extreme bounds and pan directions\nPASS zoom keeps the finger anchor stable whenever the map boundary does not constrain it\nPASS resize preserves the camera location and zoom when they remain legal\nPASS legacy 22-city western save expands to the atlas without resetting armies, turn or conquered cities\nPASS unsupported synthetic 20-city Chinese legacy save is rejected and preserved byte-for-byte\nPASS atlas expansion never revives an eliminated state through newly added cities\nPASS existing expanded-atlas save retains historical ownership instead of replaying starting borders\nPASS legacy active caravan routes migrate to valid atlas segments without erasing their state\nPASS caravan status rejects nonexistent graph segments even between peaceful cities\nPASS existing legacy harbor cities gain atlas embarkation ports when old ports were zero or absent\n\nCamera and migration: 12 passed, 0 failed.\n"
+      "file": "atlas.css",
+      "gitBlob": "774d799a0d9813c8fc32da97daae1d554b47f3a7"
     },
+    {
+      "file": "battles.css",
+      "gitBlob": "5e95a41b94c51323135bd38487a97f6bfb0e0c1b"
+    },
+    {
+      "file": "economy.css",
+      "gitBlob": "3b190ca88f148b38f0fb74fc634e3de6e03eceb6"
+    },
+    {
+      "file": "icon.svg",
+      "gitBlob": "dffba49adfc5439930b7ad661d9c97513b66b5c3"
+    },
+    {
+      "file": "index.html",
+      "gitBlob": "426eac46caa5c4194da4d35acd2376bf17c7e107"
+    },
+    {
+      "file": "js/actions.js",
+      "gitBlob": "4eb658fc0450937c8af00be2c03ba03982e74bdb"
+    },
+    {
+      "file": "js/atlas-coast.js",
+      "gitBlob": "dfc93767716e9c63b828153be921f89d904d5b2d"
+    },
+    {
+      "file": "js/atlas-data.js",
+      "gitBlob": "dcf92c14408f3ac75830638b32ab56f540b553b8"
+    },
+    {
+      "file": "js/atlas-routes.js",
+      "gitBlob": "5fa22e921fd066ba92e0ac05e4424180060431f7"
+    },
+    {
+      "file": "js/battle-narrative.js",
+      "gitBlob": "f22756726ac693a882c917a1625a20f8b4e1be1f"
+    },
+    {
+      "file": "js/battle-scene.js",
+      "gitBlob": "db3e605b8838953e6a6da376d7c866e2381318fd"
+    },
+    {
+      "file": "js/battlecmd.js",
+      "gitBlob": "834b571e759d973c733a2642c9117abd2f8f09e9"
+    },
+    {
+      "file": "js/campaign-ai.js",
+      "gitBlob": "10945259166a1bbd59066839864a12bc197f9ec1"
+    },
+    {
+      "file": "js/campaign-ui.js",
+      "gitBlob": "9477ab379d71c8cab4fd129354efca4d99ffe020"
+    },
+    {
+      "file": "js/campaign.js",
+      "gitBlob": "91e4d117df41dacb08b7206c81aafa2b50d68a1d"
+    },
+    {
+      "file": "js/cmd-ui.js",
+      "gitBlob": "36e7839e2c452eac0b8d6f9d628f5b41b07d33e9"
+    },
+    {
+      "file": "js/commander-data.js",
+      "gitBlob": "e491de9bed0991bc2d5d33d120b45fa1a655e892"
+    },
+    {
+      "file": "js/commanders.js",
+      "gitBlob": "31a40978d2f76bb1ec9310b8292a6df5b3b1f052"
+    },
+    {
+      "file": "js/data.js",
+      "gitBlob": "e5af40449cb87687cbbf802c695428a90dda930b"
+    },
+    {
+      "file": "js/diplomacy.js",
+      "gitBlob": "d72ed4a0afdaa81deaf38d9ff3ce09bef4fcfd88"
+    },
+    {
+      "file": "js/economy-trade.js",
+      "gitBlob": "837e5f2eed5f7a050016a7059c0758dd575e5dd6"
+    },
+    {
+      "file": "js/economy-ui.js",
+      "gitBlob": "bbcdc69b288291c658246ad19a350152816194ca"
+    },
+    {
+      "file": "js/economy.js",
+      "gitBlob": "2a46792e80c439334ca7fa3b04acca1af5a6ff6b"
+    },
+    {
+      "file": "js/engine.js",
+      "gitBlob": "5596c7c9074789b45455360251a70f7491e41f91"
+    },
+    {
+      "file": "js/explain.js",
+      "gitBlob": "5ad80001e57fcb55c3d0e659e3b0f563a37fad03"
+    },
+    {
+      "file": "js/icons.js",
+      "gitBlob": "f318dd5042d0d3bb34a27621e630545ced96d48c"
+    },
+    {
+      "file": "js/leader-system.js",
+      "gitBlob": "ff8e4aeaa65549487b0a992f434a7e94ba1a806f"
+    },
+    {
+      "file": "js/main.js",
+      "gitBlob": "def7472fb447c251eeace67f6e9b4c995489de3e"
+    },
+    {
+      "file": "js/map-art.js",
+      "gitBlob": "e0c1816ca11d98a50fb36ed19cdde92f6ffa68dd"
+    },
+    {
+      "file": "js/panels.js",
+      "gitBlob": "d4ce634c688258551266fbff215379dd30711bfc"
+    },
+    {
+      "file": "js/pathing.js",
+      "gitBlob": "d3dd5d70741598748ce3e72f644c351cf2b8016b"
+    },
+    {
+      "file": "js/political-allies.js",
+      "gitBlob": "a21c5a56a6fa06a0bc49616b1e759e7624df5e93"
+    },
+    {
+      "file": "js/political-spy.js",
+      "gitBlob": "a8482fb64d145225799a017acc3b68abd7e5ecbf"
+    },
+    {
+      "file": "js/politics-ui.js",
+      "gitBlob": "de538c87a50a40501254e982007a5fa625b568b5"
+    },
+    {
+      "file": "js/politics.js",
+      "gitBlob": "bc94c09111f76ff39b3b54d6adb7ca80a9bb6322"
+    },
+    {
+      "file": "js/portraits.js",
+      "gitBlob": "7045c2259f0c895ad522b42e50cc2e062a466779"
+    },
+    {
+      "file": "js/readiness.js",
+      "gitBlob": "d43a67aff3f7bac1bc3aa5af71365a1dc209975a"
+    },
+    {
+      "file": "js/realm.js",
+      "gitBlob": "ea73a4d3781a4a6bed378fa4734fd743b883c93e"
+    },
+    {
+      "file": "js/save-safety.js",
+      "gitBlob": "4ebc1b9ecef62d85fa40725e8dd36f586315df33"
+    },
+    {
+      "file": "js/siegecraft.js",
+      "gitBlob": "1d436e5c99c4e776240ffeae8f837381590b37cc"
+    },
+    {
+      "file": "js/statecraft-ui.js",
+      "gitBlob": "fc2db43f388127ce6547008367e47517ce463cf8"
+    },
+    {
+      "file": "js/statecraft.js",
+      "gitBlob": "f72c7db58d3eaa3a131a8c6218a1da8e60d7d213"
+    },
+    {
+      "file": "js/ui.js",
+      "gitBlob": "e820a317bcd70e13a6efb049069a6062de25bd2c"
+    },
+    {
+      "file": "js/util.js",
+      "gitBlob": "a5bc815845f4eed736bd8ec02966d4099c845dbf"
+    },
+    {
+      "file": "js/voices.js",
+      "gitBlob": "e1389c04a0dd8c366e185e41f947f68208f0cb6b"
+    },
+    {
+      "file": "js/warsim.js",
+      "gitBlob": "797c18940f8ae1ae1ee125e7b09a2c27510e138b"
+    },
+    {
+      "file": "js/world.js",
+      "gitBlob": "d90a36cd27447198d5024167e87cf7682509af08"
+    },
+    {
+      "file": "leaders.css",
+      "gitBlob": "be18ae00cd50180bda111e1c329938f062a92895"
+    },
+    {
+      "file": "manifest.json",
+      "gitBlob": "b14b94ee37d0158d5d335825036f73f0634a398a"
+    },
+    {
+      "file": "politics.css",
+      "gitBlob": "e0724f65ac12d514fc3d51b83ea87a1673b81b9d"
+    },
+    {
+      "file": "style.css",
+      "gitBlob": "ab187775b96fdd0a5f4169dcc7b5de036a2d7536"
+    }
+  ],
+  "snapshot": "C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-final-ctUOqW",
+  "method": "Current working-tree snapshot; runtime Git blob manifest allows exact post-commit verification even when sourceCommit is the pre-stage HEAD. URL-only test adaptation to private local server. All suite artifacts remain in TEMP and are copied under Phase R evidence. Original F evidence is not overwritten. Synthetic fixtures and Playwright Edge emulation; no real owner saves or physical phones.",
+  "started": "2026-10-12T20:30:17.822Z",
+  "results": [
     {
       "script": "map-routes",
       "exitCode": 0,
       "signal": null,
       "status": "passed",
-      "seconds": 0.6,
+      "seconds": 2.8,
       "passLines": 10,
-      "log": "artifacts/phase-r/final-logs/map-routes.log",
+      "log": "artifacts/phase-r/targeted-logs/map-routes.log",
       "tail": "PASS supported campaign has valid, unique, bidirectional graph edges and bounded cities\nPASS expanded atlas remains a single connected network including maritime islands\nPASS every caravan template follows actual route segments\nPASS western maritime endpoints allow a normal army to embark in both directions\nPASS Tarsus and Tartus are distinct cities and the Cilician pass has two strategic approaches\nPASS Tarsus reaches the enemy pass but cannot skip a hostile checkpoint to Amorium\nPASS controlling the pass opens the route to Amorium with normal points on the next turn\nPASS allied access opens transit generically, while exhausted armies remain stationary\nPASS Tartus has a connected land approach without an accidental forced sea crossing\nPASS winter mountain passes consume the turn without becoming permanent movement locks\n\nMap routes: 10 passed, 0 failed.\n"
     },
     {
-      "script": "phase-f-campaign",
+      "script": "camera",
       "exitCode": 0,
       "signal": null,
       "status": "passed",
-      "seconds": 8.6,
-      "passLines": 5,
-      "log": "artifacts/phase-r/final-logs/phase-f-campaign.log",
-      "tail": "PASS identical A–E and Phase F Umayyad initial campaign (all saved fields)\nPASS identical real construction/Undo resources and campaign state\nPASS identical endRound military, economy, buildings, leaders and diplomatic fields\nPASS baseline A–E synthetic save loads identically into Phase F\nPASS Phase F save/load roundtrip and stale Undo cleanup\n"
+      "seconds": 3,
+      "passLines": 12,
+      "log": "artifacts/phase-r/targeted-logs/camera.log",
+      "tail": "PASS world and screen transforms round-trip at every supported viewport and zoom\nPASS every settlement can be focused inside the unobstructed frame at all zoom levels\nPASS camera clamps finite coordinates at all extreme bounds and pan directions\nPASS zoom keeps the finger anchor stable whenever the map boundary does not constrain it\nPASS resize preserves the camera location and zoom when they remain legal\nPASS legacy 22-city western save expands to the atlas without resetting armies, turn or conquered cities\nPASS unsupported synthetic 20-city Chinese legacy save is rejected and preserved byte-for-byte\nPASS atlas expansion never revives an eliminated state through newly added cities\nPASS existing expanded-atlas save retains historical ownership instead of replaying starting borders\nPASS legacy active caravan routes migrate to valid atlas segments without erasing their state\nPASS caravan status rejects nonexistent graph segments even between peaceful cities\nPASS existing legacy harbor cities gain atlas embarkation ports when old ports were zero or absent\n\nCamera and migration: 12 passed, 0 failed.\n"
+    },
+    {
+      "script": "battles",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 2.6,
+      "passLines": 31,
+      "log": "artifacts/phase-r/targeted-logs/battles.log",
+      "tail": "PASS Preparation is paused before all combat and ignores repeated begin\nPASS Every phase has a command boundary, repeated commit/end cannot execute twice\nPASS Card costs, duplicate orders and incompatible postures enforced\nPASS Manual stepping and Quick Resolve share exact outcomes across 40 seeds\nPASS Formation preview never changes combat RNG or generates arrows\nPASS Empty quivers cause zero arrow damage and ammo never increases\nPASS Event choice is once-only and unavailable choices are rejected\nPASS Guards are capped by soldiers and do not create a hero army\nPASS Reserves stay out until committed; exhausted and fresh rows mix their fatigue\nPASS Emergency retreat costs more than successful organized withdrawal\nPASS Persistent readiness degrades across fights without ammo or supply refills\nPASS Result/report/fates are cached; narrative consumes no battle RNG\nPASS AI observation hides unrevealed plan and supply\nPASS Siege equipment opens breaches, unavailable maneuvers stay unavailable\nPASS Army and garrison readiness survive save/load; old partial saves migrate\nPASS Campaign application is idempotent and preserves the pre-casualty baseline\nPASS Marching costs readiness; safe-city rest recovers it without restoring casualties\nPASS Narrative has >100 unique fact-bound passages and reports factual evidence\nPASS Splitting and partial merging transfer weighted readiness without replenishing source\nPASS Keeping a siege returns only held men, all survivors keep the cost of battle\nPASS No equipment produces a siege postponement, not a fake defeat\nPASS A blocked retreat cannot teleport to a distant friendly preferred city\nPASS No pursuit is honored during sector collapse and after withdrawal\nPASS Hard pursuit causes more losses but exposes cavalry to an actual reserve trap\nPASS AI can use emergency retreat at zero command points\nPASS Wave assault cannot spend absent supplies; specialized plans require their troops\nPASS Campaign passes actual leader personality and abilities to tactical AI\nPASS AI choices respond to personality, condition, composition and phase\nPASS Report commander fate matches the cached campaign outcome\nPASS Exposed skirmishers take melee losses when cavalry catches them\nPASS Rapid assault counters the extra uncontested attrition volley from either side\n31 battle logic groups passed\n"
+    },
+    {
+      "script": "economy",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 1.7,
+      "passLines": 18,
+      "log": "artifacts/phase-r/targeted-logs/economy.log",
+      "tail": "PASS income and expense categories sum to the live forecast\nPASS administrative paths use actual geography and bounded isolation, never 99 hops\nPASS local administration does not multiply existing city costs after expansion\nPASS population growth smoothly diminishes and preserves oversized old cities\nPASS all building previews equal actual formula changes and do not mutate saved state\nPASS construction charges once, grants no premature yield, completes on its due turn\nPASS investment preference changes with local resources and route position\nPASS leader contracts and assigned officers are charged exactly once\nPASS upkeep and campaign supply use the existing unit and readiness integration formulas\nPASS full endRound ledger reconciles construction, reinforcement and recurring collection\nPASS settlement is idempotent and cannot duplicate income after reload\nPASS tribute and vassal transfers reconcile symmetrically and are not paid twice\nPASS Annexation and Aman previews match execution with declining local costs\nPASS save migration preserves population, buildings, burdens and route disruption\nPASS occupation keeps defender choices and previews their gold and production effects exactly\nPASS saving a large treasury carries no fee or change to normal recurring costs\nPASS equipment replacement is proportional to unit cost and reconciles with the live round\nPASS unclassified events reconcile exactly and reading explanations never collects money\nEconomy: 18 groups passed.\n"
     },
     {
       "script": "economy-trade",
       "exitCode": 0,
       "signal": null,
       "status": "passed",
-      "seconds": 7.8,
+      "seconds": 7.6,
       "passLines": 12,
-      "log": "artifacts/phase-r/final-logs/economy-trade.log",
+      "log": "artifacts/phase-r/targeted-logs/economy-trade.log",
       "tail": "PASS treaties pay only for connected usable links, symmetrically and at the existing cap\nPASS isolated cities reduce income and reconnection restores it without creating money\nPASS ports are required at both ends of maritime trade, with an actionable cause\nPASS merchant paths can reroute around a disrupted port without changing caravan or movement paths\nPASS war, hostile third-party territory, siege and hostile armies interrupt merchant access\nPASS sabotage reports an exact remaining duration and automatically recovers at expiry\nPASS bandit remedies match loyalty thresholds, guards expire, and duplicate causes merge\nPASS quarantine and world events have temporary contextual explanations\nPASS caravan migration does not falsely shut every treaty trade link in the world\nPASS changing city ownership changes the recipient, not the meaning of automatic caravans\nPASS old atlas routes migrate while preserving guards and permanent state for supported factions\nPASS save/load preserves economic route state and reading forecasts never collects trade twice\n\nEconomy trade: 12 passed.\n"
+    },
+    {
+      "script": "politics",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 1.7,
+      "passLines": 23,
+      "log": "artifacts/phase-r/targeted-logs/politics.log",
+      "tail": "PASS money offers change willingness monotonically, with contextual reasons\nPASS invalid money, missing payer, excessive tribute and stale prisoners cannot negotiate\nPASS rejection consumes one envoy, persists and cannot be rerolled by changing offers\nPASS pending counter survives reload and applies exactly once with reconciled money\nPASS counter cannot be accepted after peace, expiry, a new war or edited terms\nPASS peace terms apply money, captives, city, truce and memory through actual campaign APIs\nPASS peace settlement itself rejects duplicate execution, even without a counter id\nPASS counter respects current city ownership and excludes impossible final-city concessions\nPASS treaty actions cannot renew truces or farm relations by repeated calls\nPASS trade toggling, marriage and gifts have bounded persistent effects\nPASS one diplomatic proposal interval applies across types and survives reload\nPASS memory deduplicates keys, caps repetition, decays and affects diplomacy\nPASS personalities affect war and trade without bypassing unsafe conditions\nPASS threatened vassal considers survival, allies, distance and exhaustion\nPASS vassalage preserves autonomy, pays once, forbids chains and independent wars\nPASS tribute is not renewed, not immediately collected and ledger collection is idempotent\nPASS many allies share a bounded actual peace payment and cannot collect it twice\nPASS incoming offer survives reload and cannot execute twice or after context changes\nPASS surrender rejection expires instead of permanently disabling negotiations\nPASS surrender and contribution previews never mutate campaign state\nPASS broken and kept treaties produce different persistent memories\nPASS political save roundtrip retains offers, counters, terms, memory, spy effects and war effort\nPASS legacy cooldown and tribute migration is idempotent without adding empty node fields\n23 political logic groups passed\n"
+    },
+    {
+      "script": "political-spy",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 2.6,
+      "passLines": 15,
+      "log": "artifacts/phase-r/targeted-logs/political-spy.log",
+      "tail": "PASS assessment explains approximate chances, concrete costs, consequences and cooldowns\nPASS same-turn operations and post-detection recovery reject without charging again\nPASS save/reload cannot change outcome or reset operation cooldown and ledger charge\nPASS realm intelligence uses one deterministic draw regardless of an omitted target ID\nPASS incitement weakens loyalty, actual tax and reinforcement/recruitment for exact duration\nPASS loyal stable cities are harder to incite than restive cities\nPASS security and intelligence investment are finite, meaningful, charged once and saved\nPASS road sabotage changes movement without changing road data, then recovers\nPASS each sabotage has live consequences and the stated inclusive duration\nPASS siege-equipment sabotage affects only targeted camp and is persisted/repaired\nPASS another intact allied camp keeps its own siege equipment\nPASS invalid targets and ineffective sabotage are refused before charging\nPASS old-save migration preserves histories, derives cooldowns and is idempotent\nPASS repeated espionage chooses contextual varied targets and does not fixate on Nicaea\nPASS strategic siege and unrest changes alter priorities\n15 espionage groups passed\n"
+    },
+    {
+      "script": "political-allies",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 7.3,
+      "passLines": 12,
+      "log": "artifacts/phase-r/targeted-logs/political-allies.log",
+      "tail": "PASS new alliance has no invented contribution; accepting or arriving earns no points\nPASS same-turn requests are bounded and survive reload without relation farming\nPASS blocked geography and insufficient armies produce concrete refusal\nPASS the ally protects its threatened home and cannot be commandeered by defense requests\nPASS exhausted available armies are not sent on new allied expeditions\nPASS allied siege reinforcement uses existing movement and preserves siege age\nPASS siege contribution requires real supply attrition and cannot multiply by army splitting\nPASS legacy contribution migrates factual casualties and captures without fabricated aid/siege evidence\nPASS mixed allied battle records actual unit damage and loss separately by faction\nPASS contribution survives save/load; settled wars retain their effort for peace comparison\nPASS peace contribution feedback and shared spoils persist and can only pay once\nPASS independent military dispatch performs a useful common-front action with limited forces\n12 allied-action checks passed.\n"
+    },
+    {
+      "script": "phase-f-undo",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 0.8,
+      "passLines": 13,
+      "log": "artifacts/phase-r/targeted-logs/phase-f-undo.log",
+      "tail": "PASS X keeps the undo stack intact and remains dismissed through 25 UI shows\nPASS a genuine new same-turn action shows, but undoing it cannot revive an older dismissed action\nPASS distinct dismissals survive revealing older entries and token IDs are never reused\nPASS the 12-action cap prunes discarded dismissal identities without reviving retained entries\nPASS invalidating a newer action does not resurrect a dismissed valid older action\nPASS clear resets only Undo UI state and a new action can notify immediately\nPASS advancing the turn invalidates UI generation and never restores previous-turn actions\nPASS save/load and a new campaign discard closure-bound undo entries without changing save data\nPASS a failed load preserves the active campaign, undo stack and dismissal identities\nPASS refresh preserves a single DOM bar and stable accessible buttons, including during pointer activation\nPASS real construction Undo still refunds correctly after dismissal and newer action Undo\nPASS real recruitment stays undoable after X and restores soldiers, manpower and gold\nPASS 12 Phase F Undo checks\n"
     },
     {
       "script": "leaders",
       "exitCode": 0,
       "signal": null,
       "status": "passed",
-      "seconds": 26.8,
+      "seconds": 29.6,
       "passLines": 29,
-      "log": "artifacts/phase-r/final-logs/leaders.log",
+      "log": "artifacts/phase-r/targeted-logs/leaders.log",
       "tail": "pacity and state\nPASS Earned keys including turn zero cannot grant twice; cooldown and bank cap\nPASS One replacement per delegation, capped earned tokens, no repeated-city tokens\nPASS Contract hires exactly one, deducts one-turn advance and retires the other name\nPASS Invalid salaries, no funds and full capacity never create leaders or consume attempts\nPASS Salary acceptance rises with offer, prestige and personality change expectations\nPASS Insult ends negotiation, two ordinary refusals exhaust attempts, fixed saved threshold\nPASS Pending offers freeze salary through treasury changes and save/load\nPASS Old saves retain leader IDs, contracts, army references, XP and biography identity\nPASS Legacy invalid candidates and duplicate offers are migrated safely\nPASS Historical candidate timing, affiliation, local fallback and spoiler-free copy\nPASS Rerolls persist after load; dismissed hires do not refresh offers\nPASS Relationships materially change loyalty, honor cannot be bought repeatedly\nPASS Assignment, rivalry, ignored requests and promises have distinct consequences\nPASS Capture, valid rescue, invalid rescue and repeated fate callbacks are safe\nPASS Execution records a loss without generating a fictional replacement; invalid execution does nothing\nPASS Defection produces a memorial and surviving friendship becomes rivalry\nPASS Specialized growth persists, grants mobility only to qualified leaders; officers stay modest\nPASS Late-game treasury does not buy opportunities; repeated losses and recaptures cannot spam\nPASS End-round and world-tick integration stay runnable for supported factions\nPASS Context and personality change spoken reactions; city service and scars are recorded\nPASS Synthetic catalog rivals link when hired later and exert political pressure\nPASS Prestige adds social abilities and mentorship rather than only raw bonuses\nPASS Direct event deaths have consequences once; expired opportunities never reopen\nPASS Geography and political context gate recruitment and salary expectations\nPASS A rest request requires a real idle friendly turn, not merely moving home\nPASS Starting armies use their intended historical leaders without stealing rulers\nPASS Campaign randomness is saved: new campaigns vary, reloads retain the same candidates\nPASS Expanded starting empires retain viable leader loyalty and meaningful personal choices\n29/29 leader tests passed\n"
     },
     {
-      "script": "economy-balance",
+      "script": "phase-f-campaign",
       "exitCode": 0,
       "signal": null,
       "status": "passed",
-      "seconds": 60.1,
-      "passLines": 0,
-      "log": "artifacts/phase-r/final-logs/economy-balance.log",
-      "tail": "0→77; wages 62; military 198\nhigh_payroll: 5→5 cities; gold 600→-6212; net -163→-165; income 353→351; admin 0→0; wages 342; military 130 [NEGATIVE from turn 4]\nlarge_standing_army: 10→10 cities; gold 12000→-21786; net -870→-810; income 604→665; admin 28→29; wages 127; military 1218 [NEGATIVE from turn 55]\n\n16 scenarios; 840 simulated turns; 120 actual endRound turns.\nReplacement comparison: [{\"mode\":\"old-flat\",\"startGold\":100000,\"endGold\":89712,\"prices\":{\"spear\":0.4,\"sword\":0.4,\"archer\":0.4,\"cavalry\":0.4,\"horsearcher\":0.4,\"cataphract\":0.4,\"catapult\":0.4},\"lost\":8400,\"recovered\":8400,\"replacementPaid\":3360,\"averageCostPerReplacement\":0.4},{\"mode\":\"production\",\"startGold\":100000,\"endGold\":80352,\"prices\":{\"spear\":0.4,\"sword\":0.68,\"archer\":0.56,\"cavalry\":1.8,\"horsearcher\":1.5333333333333334,\"cataphract\":3.2857142857142856,\"catapult\":5.333333333333333},\"lost\":8400,\"recovered\":8400,\"replacementPaid\":12720,\"averageCostPerReplacement\":1.51}]\nConcerns: [{\"scenario\":\"late_large_empire\",\"severity\":\"hoarding-surplus\",\"detail\":\"A peaceful established empire can accumulate a large stockpile with no ongoing purchases. This is a linear bounded-income surplus, not gold interest or uncapped exponential population growth.\"},{\"scenario\":\"late_small_army_upper_bound\",\"severity\":\"hoarding-surplus\",\"detail\":\"A peaceful established empire can accumulate a large stockpile with no ongoing purchases. This is a linear bounded-income surplus, not gold interest or uncapped exponential population growth.\"},{\"scenario\":\"late_saturated_population\",\"severity\":\"hoarding-surplus\",\"detail\":\"A peaceful established empire can accumulate a large stockpile with no ongoing purchases. This is a linear bounded-income surplus, not gold interest or uncapped exponential population growth.\"},{\"scenario\":\"prolonged_war\",\"severity\":\"stress-deficit\",\"detail\":\"Fixed commitments exceed resources; this replay retains commitments rather than invoking live desertion.\"},{\"scenario\":\"high_payroll\",\"severity\":\"stress-deficit\",\"detail\":\"Fixed commitments exceed resources; this replay retains commitments rather than invoking live desertion.\"},{\"scenario\":\"large_standing_army\",\"severity\":\"stress-deficit\",\"detail\":\"Fixed commitments exceed resources; this replay retains commitments rather than invoking live desertion.\"}]\nSaved C:\\Users\\Abdul\\AppData\\Local\\Temp\\suyuf-r-final-qx4MXv\\artifacts\\economy\\balance-results.json\n"
+      "seconds": 7.2,
+      "passLines": 5,
+      "log": "artifacts/phase-r/targeted-logs/phase-f-campaign.log",
+      "tail": "PASS identical A–E and Phase F Umayyad initial campaign (all saved fields)\nPASS identical real construction/Undo resources and campaign state\nPASS identical endRound military, economy, buildings, leaders and diplomatic fields\nPASS baseline A–E synthetic save loads identically into Phase F\nPASS Phase F save/load roundtrip and stale Undo cleanup\n"
     },
     {
-      "script": "map-interactions",
+      "script": "phase-r-saves",
       "exitCode": 0,
       "signal": null,
       "status": "passed",
-      "seconds": 58.5,
-      "passLines": 1,
-      "log": "artifacts/phase-r/final-logs/map-interactions.log",
-      "tail": "PASS real pointer/touch interactions, army occlusion and critical alerts at 8 sizes; Byzantine and Khazar renderer.\n"
+      "seconds": 29.1,
+      "passLines": 39,
+      "log": "artifacts/phase-r/targeted-logs/phase-r-saves.log",
+      "tail": "PASS Umayyad saves roundtrip all normalized fields\nPASS supported Umayyad schema 1\nPASS supported Umayyad schema 2\nPASS supported Umayyad schema 3\nPASS supported Umayyad schema 4\nPASS supported Umayyad schema 5\nPASS incomplete display fields derive from supported state\nPASS incomplete display fields derive from supported state\nPASS absent envelope metadata is rejected and protected before replacement\nPASS safe rejection: unknown scenario\nPASS safe rejection: future schema\nPASS safe rejection: future explicit schema\nPASS safe rejection: invalid schema\nPASS safe rejection: mismatched title\nPASS safe rejection: missing factions\nPASS safe rejection: missing nodes\nPASS safe rejection: missing armies\nPASS safe rejection: missing generals\nPASS safe rejection: invalid node\nPASS safe rejection: invalid army\nPASS safe rejection: invalid player\nPASS safe rejection: cancelled v4 layout\nPASS malformed raw {broken\nPASS malformed raw null\nPASS malformed raw {}\nPASS malformed raw {\"meta\":{}}\nPASS Chinese manual bytes preserved, rejected before normalization\nPASS only Umayyad direct activation, active state untouched\nPASS verified Chinese backup before new campaign; retries idempotent\nPASS v1 Chinese auto retained and separately backed up\nPASS backup failure blocks replacement: quota\nPASS backup failure blocks replacement: denied\nPASS backup failure blocks replacement: truncated-backup\nPASS backup failure blocks replacement: interrupted-index\nPASS backup failure blocks replacement: unreadable-verification\nPASS different autosaves get independent exact backups\nPASS malformed legacy index never replaces auto\nPASS load failure rolls back current state, leaves raw intact\nPASS explicit slot deletion removes only displayed source, not another v1 save\n39/39 save cases passed\n"
+    },
+    {
+      "script": "phase-r-identity",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 3.7,
+      "passLines": 8,
+      "log": "artifacts/phase-r/targeted-logs/phase-r-identity.log",
+      "tail": "PASS direct start requires own supported faction: __proto__\nPASS saved player requires own supported faction: __proto__\nPASS direct start requires own supported faction: constructor\nPASS saved player requires own supported faction: constructor\nPASS direct start requires own supported faction: toString\nPASS saved player requires own supported faction: toString\nPASS explicit metadata/player disagreement rejected before normalization\nPASS malformed player object cannot crash startup or mutate stored bytes\n8/8 identity guard cases passed\n"
+    },
+    {
+      "script": "phase-r-content",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 1,
+      "passLines": 6,
+      "log": "artifacts/phase-r/targeted-logs/phase-r-content.log",
+      "tail": "PASS only supported scenario catalogs exist\nPASS exact 63 Umayyad leaders including all 20 legacy identities\nPASS China-exclusive units, icon aliases and names removed; shared elites retained\nPASS supported geography, world, objectives, units, traits and economic formulas preserved exactly\nPASS no China production selectors or generated style remain\nPASS all three supported factions start, save and restore on 66-city world without Chinese portraits\n"
     },
     {
       "script": "leader-preview",
       "exitCode": 0,
       "signal": null,
       "status": "passed",
-      "seconds": 70.1,
+      "seconds": 102,
       "passLines": 0,
-      "log": "artifacts/phase-r/final-logs/leader-preview.log",
-      "tail": "{\n  \"viewports\": [\n    [\n      1440,\n      900\n    ],\n    [\n      1024,\n      768\n    ],\n    [\n      390,\n      844\n    ],\n    [\n      360,\n      740\n    ],\n    [\n      320,\n      568\n    ],\n    [\n      844,\n      390\n    ],\n    [\n      568,\n      320\n    ]\n  ],\n  \"profilesChecked\": 51,\n  \"errors\": [],\n  \"report\": \"C:\\\\Users\\\\Abdul\\\\AppData\\\\Local\\\\Temp\\\\suyuf-r-final-qx4MXv\\\\artifacts\\\\leaders\\\\verification.json\"\n}\n"
+      "log": "artifacts/phase-r/targeted-logs/leader-preview.log",
+      "tail": "{\n  \"viewports\": [\n    [\n      1440,\n      900\n    ],\n    [\n      1024,\n      768\n    ],\n    [\n      390,\n      844\n    ],\n    [\n      360,\n      740\n    ],\n    [\n      320,\n      568\n    ],\n    [\n      844,\n      390\n    ],\n    [\n      568,\n      320\n    ]\n  ],\n  \"profilesChecked\": 50,\n  \"errors\": [],\n  \"report\": \"C:\\\\Users\\\\Abdul\\\\AppData\\\\Local\\\\Temp\\\\suyuf-r-final-ctUOqW\\\\artifacts\\\\leaders\\\\verification.json\"\n}\n"
+    },
+    {
+      "script": "phase-r-ui",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 110,
+      "passLines": 5,
+      "log": "artifacts/phase-r/targeted-logs/phase-r-ui.log",
+      "tail": "PASS R UI 1365x900: 12 checks\nPASS R UI 320x568: 12 checks\nPASS R UI 390x844: 12 checks\nPASS R UI 568x320: 12 checks\nPASS R UI 844x390: 12 checks\n"
+    },
+    {
+      "script": "phase-f-mobile",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 347.8,
+      "passLines": 7,
+      "log": "artifacts/phase-r/targeted-logs/phase-f-mobile.log",
+      "tail": "PASS 320x568: Undo25, valid touch, refresh race, delayed AI10, busy, modal, over\nPASS 360x740: Undo25, valid touch, refresh race, delayed AI10, busy, modal, over\nPASS 390x844: Undo25, valid touch, refresh race, delayed AI10, busy, modal, over\nPASS 430x932: Undo25, valid touch, refresh race, delayed AI10, busy, modal, over\nPASS 568x320: Undo25, valid touch, refresh race, delayed AI10, busy, modal, over\nPASS 844x390: Undo25, valid touch, refresh race, delayed AI10, busy, modal, over\nPASS 127 mobile touch attempts; real Umayyad turn and save/reload; error recovery\n"
+    },
+    {
+      "script": "phase-f-lifecycle",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 69.6,
+      "passLines": 6,
+      "log": "artifacts/phase-r/targeted-logs/phase-f-lifecycle.log",
+      "tail": "PASS load during initial AI wait cancels old turn\nPASS load during AI await + independent lock\nPASS load during world tick cannot save/settle replacement\nPASS confirming state blocks duplicate; loaded campaign remains intact\nPASS AI failure restores checkpoint and releases busy\nPASS settlement error guards duplicate and stale checkpoint\n"
+    },
+    {
+      "script": "phase-f-ui",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 55.9,
+      "passLines": 4,
+      "log": "artifacts/phase-r/targeted-logs/phase-f-ui.log",
+      "tail": "PASS 1440x900 desktop/keyboard, real captives and pending decisions, save\nPASS 1024x768 desktop/keyboard, real captives and pending decisions, save\nPASS 390x844 desktop/keyboard, real captives and pending decisions, save\nPASS 844x390 desktop/keyboard, real captives and pending decisions, save\n"
+    },
+    {
+      "script": "agent2-phase-r-save-safety",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "seconds": 752.3,
+      "passLines": 45,
+      "log": "artifacts/phase-r/targeted-logs/agent2-phase-r-save-safety.log",
+      "tail": "s intact\nPASS [phase-r] R02 v1 Chinese rejected before migrate or normalize\nPASS [phase-r] R03 reject without replacing active campaign: metadata Umayyad but state Chinese\nPASS [phase-r] R03 reject without replacing active campaign: metadata Umayyad but state unknown\nPASS [phase-r] R03 reject without replacing active campaign: missing state scenario\nPASS [phase-r] R03 reject without replacing active campaign: future version\nPASS [phase-r] R03 reject without replacing active campaign: string version\nPASS [phase-r] R03 reject without replacing active campaign: missing nodes\nPASS [phase-r] R03 reject without replacing active campaign: missing factions\nPASS [phase-r] R04 Chinese autosave protected before newGame\nPASS [phase-r] R04 Chinese autosave protected before save\nPASS [phase-r] R05 failed backup (quota) cannot overwrite original\nPASS [phase-r] R05 failed backup (silent-drop) cannot overwrite original\nPASS [phase-r] R05 failed backup (read-denied) cannot overwrite original\nPASS [phase-r] R06 retry and process restart preserve original without duplicate backups\nPASS [phase-r] R07 interruption after backup before auto replacement is recoverable on retry\nPASS [phase-r] R08 a second different Chinese autosave cannot destroy the first backup\nPASS [phase-r] R09 new game preserves unreadable/unsupported auto: malformed JSON\nPASS [phase-r] R09 new game preserves unreadable/unsupported auto: missing metadata\nPASS [phase-r] R09 new game preserves unreadable/unsupported auto: future schema\nPASS [phase-r] R10 invalid v2 auto cannot silently fall back to v1 then overwrite v2\nPASS [phase-r] R11 startup metadata guards: unknown v1 scenario\nPASS [phase-r] R11 startup metadata guards: v1 missing factions\nPASS [phase-r] R12 Chinese save UI explains unsupported status and does not offer resume\nPASS [phase-r] R13 new campaign defaults to Umayyad only\nPASS [phase-r] R14 stale direct Chinese newGame request cannot replace active state or auto\nPASS [phase-r] R15 failed manual save UI must not claim success\nPASS [phase-r] R16 normalization exception leaves previously active campaign intact\nPASS [phase-r] R17 missing display metadata never renders undefined or NaN\nRESULT executed=45 passed=45 failed=0 skipped=0\nNOT AUTOMATED: physical-device Safari/Chrome, real-owner-save acceptance, actual export/download and legacy-version restore, real crash/storage durability, cross-tab races.\n"
     },
     {
       "script": "phase-f-preview",
       "exitCode": 0,
       "signal": null,
       "status": "passed",
-      "seconds": 105.2,
+      "seconds": 56.9,
       "passLines": 1,
-      "log": "artifacts/phase-r/final-logs/phase-f-preview.log",
+      "log": "artifacts/phase-r/targeted-logs/phase-f-preview.log",
       "tail": "PASS Phase F preview: 51 allowlisted runtime files; exact Git blob SHA256 manifest with clean-filter/EOL equivalence; strict rejection of genuine runtime changes; fresh-output protection; 390×844 touch landing; same-origin save/load and get/set/delete/legacy isolation; official saves unchanged; zero page errors.\n"
     }
   ],
@@ -117,7 +443,7 @@
       "reason": "public URL must remain approved F, not R; no R publication authorized"
     }
   ],
-  "finished": "2026-10-12T19:11:19.678Z",
-  "passed": 9,
+  "finished": "2026-10-12T20:43:48.408Z",
+  "passed": 21,
   "failed": 0
 }

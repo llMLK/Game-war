@@ -1,0 +1,8 @@
+PASS UI 1440x900
+PASS UI 1024x768
+PASS UI 390x844
+PASS UI 360x740
+PASS UI 320x568
+PASS UI 844x390
+PASS UI 568x320
+Economy visual checks passed: 7 viewports this run; 0 unchanged desktop checks retained; two browser save/load passes.

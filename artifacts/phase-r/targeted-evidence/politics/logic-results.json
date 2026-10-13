@@ -1,0 +1,28 @@
+{
+  "passed": 23,
+  "checks": [
+    "money offers change willingness monotonically, with contextual reasons",
+    "invalid money, missing payer, excessive tribute and stale prisoners cannot negotiate",
+    "rejection consumes one envoy, persists and cannot be rerolled by changing offers",
+    "pending counter survives reload and applies exactly once with reconciled money",
+    "counter cannot be accepted after peace, expiry, a new war or edited terms",
+    "peace terms apply money, captives, city, truce and memory through actual campaign APIs",
+    "peace settlement itself rejects duplicate execution, even without a counter id",
+    "counter respects current city ownership and excludes impossible final-city concessions",
+    "treaty actions cannot renew truces or farm relations by repeated calls",
+    "trade toggling, marriage and gifts have bounded persistent effects",
+    "one diplomatic proposal interval applies across types and survives reload",
+    "memory deduplicates keys, caps repetition, decays and affects diplomacy",
+    "personalities affect war and trade without bypassing unsafe conditions",
+    "threatened vassal considers survival, allies, distance and exhaustion",
+    "vassalage preserves autonomy, pays once, forbids chains and independent wars",
+    "tribute is not renewed, not immediately collected and ledger collection is idempotent",
+    "many allies share a bounded actual peace payment and cannot collect it twice",
+    "incoming offer survives reload and cannot execute twice or after context changes",
+    "surrender rejection expires instead of permanently disabling negotiations",
+    "surrender and contribution previews never mutate campaign state",
+    "broken and kept treaties produce different persistent memories",
+    "political save roundtrip retains offers, counters, terms, memory, spy effects and war effort",
+    "legacy cooldown and tribute migration is idempotent without adding empty node fields"
+  ]
+}

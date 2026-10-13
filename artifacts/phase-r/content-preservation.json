@@ -1,0 +1,30 @@
+{
+  "phase": "R3",
+  "supportedDataBefore": "bf9316dcd09f00188b5a720cfc8cd50a7586fee23852809956ffa05bc2f5b8b3",
+  "supportedDataAfter": "bf9316dcd09f00188b5a720cfc8cd50a7586fee23852809956ffa05bc2f5b8b3",
+  "exactSupportedDataPreserved": true,
+  "catalogHash": "dad1e1168b933adf18e21a07b62172ef5c00fdbf3fe7ee042c18dad889f33b79",
+  "catalogEntries": 63,
+  "legacyEntries": 20,
+  "removedChineseCatalogEntries": 67,
+  "removedChineseCities": 20,
+  "removedChineseUniqueUnits": [
+    "repeater",
+    "tigerleopard",
+    "jinfan"
+  ],
+  "files": [
+    "js/data.js",
+    "js/commander-data.js",
+    "js/world.js",
+    "js/realm.js",
+    "js/commanders.js",
+    "js/campaign.js",
+    "js/politics.js",
+    "js/icons.js",
+    "js/warsim.js",
+    "js/battle-scene.js",
+    "js/portraits.js",
+    "js/map-art.js"
+  ]
+}

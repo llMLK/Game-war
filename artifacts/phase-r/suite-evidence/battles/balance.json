@@ -1,0 +1,392 @@
+{
+  "seeds": 160,
+  "simulations": 5824,
+  "results": [
+    {
+      "name": "400 average vs 190 three-star",
+      "seeds": 160,
+      "sideBWinRate": 0.144,
+      "sideALossPct": 20.4,
+      "sideBLossPct": 46.6,
+      "sideBFatigue": 36.1,
+      "breachRate": 0,
+      "plans": {
+        "defensive": 160
+      }
+    },
+    {
+      "name": "400 average vs 190 veteran hill defenders",
+      "seeds": 160,
+      "sideBWinRate": 0.425,
+      "sideALossPct": 21.8,
+      "sideBLossPct": 43.4,
+      "sideBFatigue": 49.4,
+      "breachRate": 0,
+      "plans": {
+        "highground": 160
+      }
+    },
+    {
+      "name": "320 vs 260 defenders: plain, fixed balanced/defensive plans",
+      "seeds": 160,
+      "sideBWinRate": 0.063,
+      "sideALossPct": 28.5,
+      "sideBLossPct": 37.3,
+      "sideBFatigue": 55.3,
+      "breachRate": 0,
+      "plans": {
+        "defensive": 160
+      }
+    },
+    {
+      "name": "320 vs 260 defenders: hills, same plans",
+      "seeds": 160,
+      "sideBWinRate": 0.163,
+      "sideALossPct": 27,
+      "sideBLossPct": 36.5,
+      "sideBFatigue": 59.7,
+      "breachRate": 0,
+      "plans": {
+        "defensive": 160
+      }
+    },
+    {
+      "name": "400 exhausted vs 190 fresh",
+      "seeds": 160,
+      "sideBWinRate": 0.969,
+      "sideALossPct": 32.8,
+      "sideBLossPct": 13.8,
+      "sideBFatigue": 33.8,
+      "breachRate": 0,
+      "plans": {
+        "defensive": 160
+      }
+    },
+    {
+      "name": "400 fresh vs 190 fresh",
+      "seeds": 160,
+      "sideBWinRate": 0.006,
+      "sideALossPct": 14.2,
+      "sideBLossPct": 48.2,
+      "sideBFatigue": 31.8,
+      "breachRate": 0,
+      "plans": {
+        "defensive": 160
+      }
+    },
+    {
+      "name": "Cavalry side B on plains",
+      "seeds": 160,
+      "sideBWinRate": 1,
+      "sideALossPct": 60.1,
+      "sideBLossPct": 16.2,
+      "sideBFatigue": 21.3,
+      "breachRate": 0,
+      "plans": {
+        "assault": 81,
+        "flanking": 79
+      }
+    },
+    {
+      "name": "Cavalry side B in forest",
+      "seeds": 160,
+      "sideBWinRate": 0.819,
+      "sideALossPct": 49.8,
+      "sideBLossPct": 16.7,
+      "sideBFatigue": 33,
+      "breachRate": 0,
+      "plans": {
+        "assault": 160
+      }
+    },
+    {
+      "name": "Cavalry side B against spear line on plains",
+      "seeds": 160,
+      "sideBWinRate": 0.256,
+      "sideALossPct": 33,
+      "sideBLossPct": 33,
+      "sideBFatigue": 40.5,
+      "breachRate": 0,
+      "plans": {
+        "flanking": 142,
+        "assault": 14,
+        "feigned": 4
+      }
+    },
+    {
+      "name": "Strong leader militia vs average leader quality troops",
+      "seeds": 160,
+      "sideBWinRate": 1,
+      "sideALossPct": 37.5,
+      "sideBLossPct": 10.4,
+      "sideBFatigue": 28.5,
+      "breachRate": 0,
+      "plans": {
+        "breakcenter": 160
+      }
+    },
+    {
+      "name": "Equal units: one-star vs two-star",
+      "seeds": 160,
+      "sideBWinRate": 0.681,
+      "sideALossPct": 32.5,
+      "sideBLossPct": 28,
+      "sideBFatigue": 53.4,
+      "breachRate": 0,
+      "plans": {
+        "defensive": 98,
+        "balanced": 53,
+        "breakcenter": 4,
+        "assault": 3,
+        "attrition": 2
+      }
+    },
+    {
+      "name": "Equal units: three-star vs two-star",
+      "seeds": 160,
+      "sideBWinRate": 0.356,
+      "sideALossPct": 28.3,
+      "sideBLossPct": 37.6,
+      "sideBFatigue": 53.3,
+      "breachRate": 0,
+      "plans": {
+        "defensive": 98,
+        "balanced": 53,
+        "breakcenter": 4,
+        "assault": 3,
+        "attrition": 2
+      }
+    },
+    {
+      "name": "Matched force in field",
+      "seeds": 160,
+      "sideBWinRate": 0,
+      "sideALossPct": 16.8,
+      "sideBLossPct": 51.7,
+      "sideBFatigue": 50.8,
+      "breachRate": 0,
+      "plans": {
+        "defensive": 160
+      }
+    },
+    {
+      "name": "Fresh garrison, walls 2, full equipment",
+      "seeds": 160,
+      "sideBWinRate": 0.831,
+      "sideALossPct": 43,
+      "sideBLossPct": 29.5,
+      "sideBFatigue": 51.2,
+      "breachRate": 0.819,
+      "plans": {
+        "walls": 42,
+        "depth": 118
+      }
+    },
+    {
+      "name": "Fresh garrison, walls 1",
+      "seeds": 160,
+      "sideBWinRate": 0.406,
+      "sideALossPct": 37.1,
+      "sideBLossPct": 39.4,
+      "sideBFatigue": 56.9,
+      "breachRate": 0.931,
+      "plans": {
+        "walls": 22,
+        "depth": 138
+      }
+    },
+    {
+      "name": "Fresh garrison, walls 3",
+      "seeds": 160,
+      "sideBWinRate": 1,
+      "sideALossPct": 45.8,
+      "sideBLossPct": 24.4,
+      "sideBFatigue": 42,
+      "breachRate": 0.744,
+      "plans": {
+        "walls": 45,
+        "depth": 115
+      }
+    },
+    {
+      "name": "Starved exhausted garrison, walls 2",
+      "seeds": 160,
+      "sideBWinRate": 0,
+      "sideALossPct": 8.9,
+      "sideBLossPct": 32.9,
+      "sideBFatigue": 88.5,
+      "breachRate": 0.95,
+      "plans": {
+        "walls": 160
+      }
+    },
+    {
+      "name": "Walls 2, ladders only",
+      "seeds": 160,
+      "sideBWinRate": 0.988,
+      "sideALossPct": 47.6,
+      "sideBLossPct": 16.3,
+      "sideBFatigue": 39.9,
+      "breachRate": 0.013,
+      "plans": {
+        "walls": 159,
+        "depth": 1
+      }
+    },
+    {
+      "name": "Walls 2, siege specialist at same rank",
+      "seeds": 160,
+      "sideBWinRate": 0.863,
+      "sideALossPct": 43.1,
+      "sideBLossPct": 29.6,
+      "sideBFatigue": 50,
+      "breachRate": 0.975,
+      "plans": {
+        "depth": 141,
+        "walls": 19
+      }
+    },
+    {
+      "name": "Siege skill control: fixed plans, no tactical orders",
+      "seeds": 160,
+      "sideBWinRate": 0.675,
+      "sideALossPct": 35.3,
+      "sideBLossPct": 32.1,
+      "sideBFatigue": 44.8,
+      "breachRate": 0.881,
+      "plans": {
+        "depth": 118,
+        "walls": 42
+      }
+    },
+    {
+      "name": "Siege skill specialist: same fixed decisions",
+      "seeds": 160,
+      "sideBWinRate": 0.506,
+      "sideALossPct": 34.1,
+      "sideBLossPct": 35.6,
+      "sideBFatigue": 45.4,
+      "breachRate": 0.956,
+      "plans": {
+        "depth": 129,
+        "walls": 31
+      }
+    }
+  ],
+  "repeated": [
+    {
+      "battle": 1,
+      "wins": 0.419,
+      "men": 190,
+      "fat": 0,
+      "morale": 72,
+      "coh": 100,
+      "supply": 100,
+      "ammo": 100,
+      "strain": 0,
+      "readiness": 99
+    },
+    {
+      "battle": 2,
+      "wins": 0,
+      "men": 104.8,
+      "fat": 48.6,
+      "morale": 43.8,
+      "coh": 49.9,
+      "supply": 75.8,
+      "ammo": 2.6,
+      "strain": 25.9,
+      "readiness": 53.5
+    },
+    {
+      "battle": 3,
+      "wins": 0,
+      "men": 54.3,
+      "fat": 69.9,
+      "morale": 6.7,
+      "coh": 5.6,
+      "supply": 56.3,
+      "ammo": 0,
+      "strain": 49.4,
+      "readiness": 24
+    }
+  ],
+  "tacticSeeds": 64,
+  "tactics": [
+    {
+      "name": "Mixed force vs spears",
+      "winRates": {
+        "balanced": 0.969,
+        "assault": 0.922,
+        "flanking": 0.688,
+        "attrition": 0.984,
+        "breakcenter": 0.563,
+        "hunt": 0.859
+      },
+      "unavailable": []
+    },
+    {
+      "name": "Cavalry vs exposed archers",
+      "winRates": {
+        "balanced": 0.234,
+        "assault": 0.75,
+        "flanking": 0.984,
+        "attrition": 0.922,
+        "breakcenter": 0.781,
+        "hunt": 0.906
+      },
+      "unavailable": []
+    },
+    {
+      "name": "Archers vs guarded hillside",
+      "winRates": {
+        "balanced": 0,
+        "assault": 0.016,
+        "attrition": 0.172,
+        "breakcenter": 0
+      },
+      "unavailable": [
+        "flanking",
+        "hunt"
+      ]
+    },
+    {
+      "name": "Cavalry in forest vs infantry",
+      "winRates": {
+        "balanced": 0.688,
+        "assault": 0.656,
+        "flanking": 0.938,
+        "breakcenter": 0.813,
+        "hunt": 0.938
+      },
+      "unavailable": [
+        "attrition"
+      ]
+    },
+    {
+      "name": "Ranged army under cavalry charge",
+      "winRates": {
+        "balanced": 0,
+        "assault": 0.094,
+        "attrition": 0.328,
+        "breakcenter": 0
+      },
+      "unavailable": [
+        "flanking",
+        "hunt"
+      ]
+    },
+    {
+      "name": "Mixed troops in rain against assault",
+      "winRates": {
+        "balanced": 0.766,
+        "assault": 0.719,
+        "flanking": 0.813,
+        "attrition": 0.844,
+        "breakcenter": 0.172,
+        "hunt": 0.469
+      },
+      "unavailable": []
+    }
+  ]
+}

@@ -49,7 +49,6 @@ const FIC_NAMES = {
   rum: ['نقيطاس', 'يوحنا', 'ميخائيل', 'ثيوفيلاكتوس', 'بطرس', 'قسطا', 'ديمتريوس', 'لاون الصغير', 'ستافراكيوس', 'بردانيس'],
   steppe: ['قاطون', 'قوتلوغ', 'تونغا', 'قرلغ', 'ساروخ', 'باغاتور', 'إلتر', 'كوباك', 'تارغو'],
   caucasus: ['فاسك', 'غريغور', 'ساهاك', 'فاختانغ', 'أرشاك'],
-  han: ['لي تشنغ', 'وانغ شو', 'جانغ مينغ', 'تشن لي', 'ليو فانغ', 'جاو هونغ', 'سون جي', 'هو يان', 'دنغ شي', 'فنغ تشاو'],
 };
 const WAGE_BASE = [0, 4, 8, 14];
 
@@ -63,7 +62,6 @@ Object.assign(Game, {
     return e.ar ? 'https://ar.wikipedia.org/wiki/' + encodeURIComponent(e.ar.replace(/ /g, '_')) : 'https://en.wikipedia.org/wiki/' + encodeURIComponent(e.wiki);
   },
   cultureOf(fid) {
-    if (this.S.scenario === 'threeKingdoms') return 'han';
     return { umayyad: 'arab', byzantine: 'rum', khazar: 'steppe' }[fid] || (this.f(fid) && this.f(fid).kind === 'horde' ? 'steppe' : 'caucasus');
   },
   isOfficer(g) { return !!g && (g.name.startsWith('الضابط') || g.name.startsWith('الوصي')); },
