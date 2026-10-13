@@ -1,0 +1,23 @@
+
+Reserve variant: production
+early_umayyad: 38→38 cities; gold 600→10018; net 404→485; income 1479→1571; admin 367→369; wages 132; military 442
+early_byzantine: 18→18 cities; gold 600→7010; net 280→337; income 802→864; admin 90→90; wages 62; military 261
+early_khazar: 3→3 cities; gold 600→1582; net 42→51; income 185→194; admin 0→0; wages 5; military 129
+early_umayyad_seed43: 38→38 cities; gold 600→10018; net 404→485; income 1479→1571; admin 367→369; wages 132; military 442
+early_byzantine_seed43: 18→18 cities; gold 600→7010; net 280→337; income 802→864; admin 90→90; wages 62; military 261
+early_khazar_seed43: 3→3 cities; gold 600→1582; net 42→51; income 185→194; admin 0→0; wages 5; military 129
+mid_realm: 10→10 cities; gold 12000→20901; net 164→268; income 711→816; admin 28→29; wages 82; military 336
+late_large_empire: 58→58 cities; gold 12000→162011; net 672→1899; income 3624→4923; admin 454→526; wages 268; military 1635
+late_small_army_upper_bound: 58→58 cities; gold 12000→294961; net 1854→2988; income 3706→4912; admin 454→526; wages 168; military 635
+late_saturated_population: 58→58 cities; gold 12000→435477; net 3725→3531; income 6841→6647; admin 618→618; wages 268; military 1635
+prolonged_war: 38→38 cities; gold 12000→-37; net -263→-115; income 1757→1922; admin 339→356; wages 208; military 1182 [NEGATIVE from turn 100]
+trade_focused: 18→18 cities; gold 11900→50046; net 502→928; income 1255→1711; admin 84→92; wages 82; military 403
+conquest_annex: 5→15 cities; gold 2000→15529; net 117→350; income 353→781; admin 0→97; wages 62; military 198
+conquest_aman: 5→15 cities; gold 2000→15169; net 117→322; income 353→733; admin 0→77; wages 62; military 198
+high_payroll: 5→5 cities; gold 600→-6212; net -163→-165; income 353→351; admin 0→0; wages 342; military 130 [NEGATIVE from turn 4]
+large_standing_army: 10→10 cities; gold 12000→-21786; net -870→-810; income 604→665; admin 28→29; wages 127; military 1218 [NEGATIVE from turn 55]
+
+16 scenarios; 840 simulated turns; 120 actual endRound turns.
+Replacement comparison: [{"mode":"old-flat","startGold":100000,"endGold":89712,"prices":{"spear":0.4,"sword":0.4,"archer":0.4,"cavalry":0.4,"horsearcher":0.4,"cataphract":0.4,"catapult":0.4},"lost":8400,"recovered":8400,"replacementPaid":3360,"averageCostPerReplacement":0.4},{"mode":"production","startGold":100000,"endGold":80352,"prices":{"spear":0.4,"sword":0.68,"archer":0.56,"cavalry":1.8,"horsearcher":1.5333333333333334,"cataphract":3.2857142857142856,"catapult":5.333333333333333},"lost":8400,"recovered":8400,"replacementPaid":12720,"averageCostPerReplacement":1.51}]
+Concerns: [{"scenario":"late_large_empire","severity":"hoarding-surplus","detail":"A peaceful established empire can accumulate a large stockpile with no ongoing purchases. This is a linear bounded-income surplus, not gold interest or uncapped exponential population growth."},{"scenario":"late_small_army_upper_bound","severity":"hoarding-surplus","detail":"A peaceful established empire can accumulate a large stockpile with no ongoing purchases. This is a linear bounded-income surplus, not gold interest or uncapped exponential population growth."},{"scenario":"late_saturated_population","severity":"hoarding-surplus","detail":"A peaceful established empire can accumulate a large stockpile with no ongoing purchases. This is a linear bounded-income surplus, not gold interest or uncapped exponential population growth."},{"scenario":"prolonged_war","severity":"stress-deficit","detail":"Fixed commitments exceed resources; this replay retains commitments rather than invoking live desertion."},{"scenario":"high_payroll","severity":"stress-deficit","detail":"Fixed commitments exceed resources; this replay retains commitments rather than invoking live desertion."},{"scenario":"large_standing_army","severity":"stress-deficit","detail":"Fixed commitments exceed resources; this replay retains commitments rather than invoking live desertion."}]
+Saved C:\Users\Abdul\AppData\Local\Temp\suyuf-r-final-LLSFJG\artifacts\economy\balance-results.json

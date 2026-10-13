@@ -1,0 +1,864 @@
+{
+  "phase": "R",
+  "status": "implementation-and-automated-validation-complete; owner approval pending",
+  "created": "2026-10-13T14:30:18.148Z",
+  "baseline": "2deaa02de02b1e87321d01651ec725da19930ede",
+  "branch": "codex/phase-r-umayyad-only",
+  "batchResults": [
+    {
+      "file": "regression-results.json",
+      "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+      "passed": 32,
+      "failed": 1,
+      "finished": "2026-10-12T20:26:00.250Z"
+    },
+    {
+      "file": "targeted-regression-results.json",
+      "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+      "passed": 21,
+      "failed": 0,
+      "finished": "2026-10-12T20:43:48.408Z"
+    },
+    {
+      "file": "final-save-regression-results.json",
+      "sourceCommit": "f13ea76fbce0b46598434d556295ea912fb49a0f",
+      "passed": 7,
+      "failed": 0,
+      "finished": "2026-10-13T13:48:15.189Z"
+    }
+  ],
+  "distinctSuites": 34,
+  "distinctSuitesWithPassingEvidence": 34,
+  "method": "Three recorded batches, not one 34/34 run. Runtime manifests capture working-tree R3 content; final latest save-boundary batch has the delivery runtime manifest.",
+  "independentQA": {
+    "baseline": {
+      "passed": 13,
+      "failed": 32,
+      "total": 45
+    },
+    "phaseR": {
+      "passed": 45,
+      "failed": 0,
+      "total": 45,
+      "skipped": 0
+    },
+    "previouslyFailingNowPass": 32,
+    "unchangedFiles": [
+      {
+        "file": "tests/agent2-phase-r-save-safety.cjs",
+        "sha256": "71f571b625006a245b6f04f698504de7d760b94c2582cb07003f8b0e6983c8a5",
+        "byteIdenticalToIndependent": true
+      },
+      {
+        "file": "tests/agent2-phase-r-umayyad-fixture.json",
+        "sha256": "d999d0888bfd1c73eb863219d33ae5f5a114d71eec4800b67a8c4ddb7f36a926",
+        "byteIdenticalToIndependent": true
+      },
+      {
+        "file": "tests/agent2-phase-r-chinese-fixture.json",
+        "sha256": "14a1b0cc9c25b9ef6894468939bec1356a04218a12d6957b7f3fbfed3d949153",
+        "byteIdenticalToIndependent": true
+      }
+    ]
+  },
+  "checks": {
+    "implementationSaves": 39,
+    "malformedIdentity": 14,
+    "contentGroups": 6,
+    "rUi": 60,
+    "existingLogicGroups": 179,
+    "mobileTouchAttempts": 127,
+    "phoneSizesForPhaseF": 6,
+    "undoRefreshesPerSize": 25,
+    "battleSimulations": 5824,
+    "economicMain": {
+      "scenarios": 16,
+      "turns": 840
+    },
+    "economicWithControls": {
+      "scenarios": 18,
+      "turns": 920
+    },
+    "politicalControlled": {
+      "campaigns": 192,
+      "turns": 6912
+    },
+    "espionageTurns": 60,
+    "integratedPolitical": {
+      "samples": 6,
+      "roundsPerSample": 24,
+      "totalRounds": 144
+    },
+    "leaderProfiles": 50
+  },
+  "suites": [
+    {
+      "script": "agent2-phase-r-save-safety",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/agent2-phase-r-save-safety.log"
+        },
+        {
+          "report": "targeted-regression-results.json",
+          "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+          "status": "passed",
+          "log": "artifacts/phase-r/targeted-logs/agent2-phase-r-save-safety.log"
+        },
+        {
+          "report": "final-save-regression-results.json",
+          "sourceCommit": "f13ea76fbce0b46598434d556295ea912fb49a0f",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-save-logs/agent2-phase-r-save-safety.log"
+        }
+      ],
+      "latestPass": {
+        "report": "final-save-regression-results.json",
+        "sourceCommit": "f13ea76fbce0b46598434d556295ea912fb49a0f",
+        "status": "passed",
+        "log": "artifacts/phase-r/final-save-logs/agent2-phase-r-save-safety.log"
+      }
+    },
+    {
+      "script": "battle-balance",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/battle-balance.log"
+        }
+      ],
+      "latestPass": {
+        "report": "regression-results.json",
+        "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+        "status": "passed",
+        "log": "artifacts/phase-r/final-logs/battle-balance.log"
+      }
+    },
+    {
+      "script": "battle-preview",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/battle-preview.log"
+        }
+      ],
+      "latestPass": {
+        "report": "regression-results.json",
+        "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+        "status": "passed",
+        "log": "artifacts/phase-r/final-logs/battle-preview.log"
+      }
+    },
+    {
+      "script": "battles",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/battles.log"
+        },
+        {
+          "report": "targeted-regression-results.json",
+          "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+          "status": "passed",
+          "log": "artifacts/phase-r/targeted-logs/battles.log"
+        }
+      ],
+      "latestPass": {
+        "report": "targeted-regression-results.json",
+        "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+        "status": "passed",
+        "log": "artifacts/phase-r/targeted-logs/battles.log"
+      }
+    },
+    {
+      "script": "camera",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/camera.log"
+        },
+        {
+          "report": "targeted-regression-results.json",
+          "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+          "status": "passed",
+          "log": "artifacts/phase-r/targeted-logs/camera.log"
+        }
+      ],
+      "latestPass": {
+        "report": "targeted-regression-results.json",
+        "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+        "status": "passed",
+        "log": "artifacts/phase-r/targeted-logs/camera.log"
+      }
+    },
+    {
+      "script": "economy",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/economy.log"
+        },
+        {
+          "report": "targeted-regression-results.json",
+          "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+          "status": "passed",
+          "log": "artifacts/phase-r/targeted-logs/economy.log"
+        }
+      ],
+      "latestPass": {
+        "report": "targeted-regression-results.json",
+        "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+        "status": "passed",
+        "log": "artifacts/phase-r/targeted-logs/economy.log"
+      }
+    },
+    {
+      "script": "economy-balance",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/economy-balance.log"
+        }
+      ],
+      "latestPass": {
+        "report": "regression-results.json",
+        "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+        "status": "passed",
+        "log": "artifacts/phase-r/final-logs/economy-balance.log"
+      }
+    },
+    {
+      "script": "economy-preview",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/economy-preview.log"
+        }
+      ],
+      "latestPass": {
+        "report": "regression-results.json",
+        "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+        "status": "passed",
+        "log": "artifacts/phase-r/final-logs/economy-preview.log"
+      }
+    },
+    {
+      "script": "economy-trade",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/economy-trade.log"
+        },
+        {
+          "report": "targeted-regression-results.json",
+          "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+          "status": "passed",
+          "log": "artifacts/phase-r/targeted-logs/economy-trade.log"
+        }
+      ],
+      "latestPass": {
+        "report": "targeted-regression-results.json",
+        "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+        "status": "passed",
+        "log": "artifacts/phase-r/targeted-logs/economy-trade.log"
+      }
+    },
+    {
+      "script": "inspect-geometry",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/inspect-geometry.log"
+        }
+      ],
+      "latestPass": {
+        "report": "regression-results.json",
+        "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+        "status": "passed",
+        "log": "artifacts/phase-r/final-logs/inspect-geometry.log"
+      }
+    },
+    {
+      "script": "leader-actions",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/leader-actions.log"
+        }
+      ],
+      "latestPass": {
+        "report": "regression-results.json",
+        "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+        "status": "passed",
+        "log": "artifacts/phase-r/final-logs/leader-actions.log"
+      }
+    },
+    {
+      "script": "leader-preview",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "failed",
+          "log": "artifacts/phase-r/final-logs/leader-preview.log"
+        },
+        {
+          "report": "targeted-regression-results.json",
+          "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+          "status": "passed",
+          "log": "artifacts/phase-r/targeted-logs/leader-preview.log"
+        }
+      ],
+      "latestPass": {
+        "report": "targeted-regression-results.json",
+        "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+        "status": "passed",
+        "log": "artifacts/phase-r/targeted-logs/leader-preview.log"
+      }
+    },
+    {
+      "script": "leaders",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/leaders.log"
+        },
+        {
+          "report": "targeted-regression-results.json",
+          "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+          "status": "passed",
+          "log": "artifacts/phase-r/targeted-logs/leaders.log"
+        }
+      ],
+      "latestPass": {
+        "report": "targeted-regression-results.json",
+        "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+        "status": "passed",
+        "log": "artifacts/phase-r/targeted-logs/leaders.log"
+      }
+    },
+    {
+      "script": "map-interactions",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/map-interactions.log"
+        }
+      ],
+      "latestPass": {
+        "report": "regression-results.json",
+        "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+        "status": "passed",
+        "log": "artifacts/phase-r/final-logs/map-interactions.log"
+      }
+    },
+    {
+      "script": "map-preview",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/map-preview.log"
+        }
+      ],
+      "latestPass": {
+        "report": "regression-results.json",
+        "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+        "status": "passed",
+        "log": "artifacts/phase-r/final-logs/map-preview.log"
+      }
+    },
+    {
+      "script": "map-routes",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/map-routes.log"
+        },
+        {
+          "report": "targeted-regression-results.json",
+          "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+          "status": "passed",
+          "log": "artifacts/phase-r/targeted-logs/map-routes.log"
+        }
+      ],
+      "latestPass": {
+        "report": "targeted-regression-results.json",
+        "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+        "status": "passed",
+        "log": "artifacts/phase-r/targeted-logs/map-routes.log"
+      }
+    },
+    {
+      "script": "phase-f-baseline",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/phase-f-baseline.log"
+        }
+      ],
+      "latestPass": {
+        "report": "regression-results.json",
+        "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+        "status": "passed",
+        "log": "artifacts/phase-r/final-logs/phase-f-baseline.log"
+      }
+    },
+    {
+      "script": "phase-f-campaign",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/phase-f-campaign.log"
+        },
+        {
+          "report": "targeted-regression-results.json",
+          "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+          "status": "passed",
+          "log": "artifacts/phase-r/targeted-logs/phase-f-campaign.log"
+        },
+        {
+          "report": "final-save-regression-results.json",
+          "sourceCommit": "f13ea76fbce0b46598434d556295ea912fb49a0f",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-save-logs/phase-f-campaign.log"
+        }
+      ],
+      "latestPass": {
+        "report": "final-save-regression-results.json",
+        "sourceCommit": "f13ea76fbce0b46598434d556295ea912fb49a0f",
+        "status": "passed",
+        "log": "artifacts/phase-r/final-save-logs/phase-f-campaign.log"
+      }
+    },
+    {
+      "script": "phase-f-lifecycle",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/phase-f-lifecycle.log"
+        },
+        {
+          "report": "targeted-regression-results.json",
+          "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+          "status": "passed",
+          "log": "artifacts/phase-r/targeted-logs/phase-f-lifecycle.log"
+        }
+      ],
+      "latestPass": {
+        "report": "targeted-regression-results.json",
+        "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+        "status": "passed",
+        "log": "artifacts/phase-r/targeted-logs/phase-f-lifecycle.log"
+      }
+    },
+    {
+      "script": "phase-f-mobile",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/phase-f-mobile.log"
+        },
+        {
+          "report": "targeted-regression-results.json",
+          "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+          "status": "passed",
+          "log": "artifacts/phase-r/targeted-logs/phase-f-mobile.log"
+        }
+      ],
+      "latestPass": {
+        "report": "targeted-regression-results.json",
+        "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+        "status": "passed",
+        "log": "artifacts/phase-r/targeted-logs/phase-f-mobile.log"
+      }
+    },
+    {
+      "script": "phase-f-preview",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/phase-f-preview.log"
+        },
+        {
+          "report": "targeted-regression-results.json",
+          "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+          "status": "passed",
+          "log": "artifacts/phase-r/targeted-logs/phase-f-preview.log"
+        },
+        {
+          "report": "final-save-regression-results.json",
+          "sourceCommit": "f13ea76fbce0b46598434d556295ea912fb49a0f",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-save-logs/phase-f-preview.log"
+        }
+      ],
+      "latestPass": {
+        "report": "final-save-regression-results.json",
+        "sourceCommit": "f13ea76fbce0b46598434d556295ea912fb49a0f",
+        "status": "passed",
+        "log": "artifacts/phase-r/final-save-logs/phase-f-preview.log"
+      }
+    },
+    {
+      "script": "phase-f-ui",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/phase-f-ui.log"
+        },
+        {
+          "report": "targeted-regression-results.json",
+          "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+          "status": "passed",
+          "log": "artifacts/phase-r/targeted-logs/phase-f-ui.log"
+        }
+      ],
+      "latestPass": {
+        "report": "targeted-regression-results.json",
+        "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+        "status": "passed",
+        "log": "artifacts/phase-r/targeted-logs/phase-f-ui.log"
+      }
+    },
+    {
+      "script": "phase-f-undo",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/phase-f-undo.log"
+        },
+        {
+          "report": "targeted-regression-results.json",
+          "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+          "status": "passed",
+          "log": "artifacts/phase-r/targeted-logs/phase-f-undo.log"
+        }
+      ],
+      "latestPass": {
+        "report": "targeted-regression-results.json",
+        "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+        "status": "passed",
+        "log": "artifacts/phase-r/targeted-logs/phase-f-undo.log"
+      }
+    },
+    {
+      "script": "phase-r-content",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/phase-r-content.log"
+        },
+        {
+          "report": "targeted-regression-results.json",
+          "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+          "status": "passed",
+          "log": "artifacts/phase-r/targeted-logs/phase-r-content.log"
+        },
+        {
+          "report": "final-save-regression-results.json",
+          "sourceCommit": "f13ea76fbce0b46598434d556295ea912fb49a0f",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-save-logs/phase-r-content.log"
+        }
+      ],
+      "latestPass": {
+        "report": "final-save-regression-results.json",
+        "sourceCommit": "f13ea76fbce0b46598434d556295ea912fb49a0f",
+        "status": "passed",
+        "log": "artifacts/phase-r/final-save-logs/phase-r-content.log"
+      }
+    },
+    {
+      "script": "phase-r-identity",
+      "attempts": [
+        {
+          "report": "targeted-regression-results.json",
+          "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+          "status": "passed",
+          "log": "artifacts/phase-r/targeted-logs/phase-r-identity.log"
+        },
+        {
+          "report": "final-save-regression-results.json",
+          "sourceCommit": "f13ea76fbce0b46598434d556295ea912fb49a0f",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-save-logs/phase-r-identity.log"
+        }
+      ],
+      "latestPass": {
+        "report": "final-save-regression-results.json",
+        "sourceCommit": "f13ea76fbce0b46598434d556295ea912fb49a0f",
+        "status": "passed",
+        "log": "artifacts/phase-r/final-save-logs/phase-r-identity.log"
+      }
+    },
+    {
+      "script": "phase-r-saves",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/phase-r-saves.log"
+        },
+        {
+          "report": "targeted-regression-results.json",
+          "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+          "status": "passed",
+          "log": "artifacts/phase-r/targeted-logs/phase-r-saves.log"
+        },
+        {
+          "report": "final-save-regression-results.json",
+          "sourceCommit": "f13ea76fbce0b46598434d556295ea912fb49a0f",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-save-logs/phase-r-saves.log"
+        }
+      ],
+      "latestPass": {
+        "report": "final-save-regression-results.json",
+        "sourceCommit": "f13ea76fbce0b46598434d556295ea912fb49a0f",
+        "status": "passed",
+        "log": "artifacts/phase-r/final-save-logs/phase-r-saves.log"
+      }
+    },
+    {
+      "script": "phase-r-ui",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/phase-r-ui.log"
+        },
+        {
+          "report": "targeted-regression-results.json",
+          "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+          "status": "passed",
+          "log": "artifacts/phase-r/targeted-logs/phase-r-ui.log"
+        },
+        {
+          "report": "final-save-regression-results.json",
+          "sourceCommit": "f13ea76fbce0b46598434d556295ea912fb49a0f",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-save-logs/phase-r-ui.log"
+        }
+      ],
+      "latestPass": {
+        "report": "final-save-regression-results.json",
+        "sourceCommit": "f13ea76fbce0b46598434d556295ea912fb49a0f",
+        "status": "passed",
+        "log": "artifacts/phase-r/final-save-logs/phase-r-ui.log"
+      }
+    },
+    {
+      "script": "political-allies",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/political-allies.log"
+        },
+        {
+          "report": "targeted-regression-results.json",
+          "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+          "status": "passed",
+          "log": "artifacts/phase-r/targeted-logs/political-allies.log"
+        }
+      ],
+      "latestPass": {
+        "report": "targeted-regression-results.json",
+        "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+        "status": "passed",
+        "log": "artifacts/phase-r/targeted-logs/political-allies.log"
+      }
+    },
+    {
+      "script": "political-sim",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/political-sim.log"
+        }
+      ],
+      "latestPass": {
+        "report": "regression-results.json",
+        "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+        "status": "passed",
+        "log": "artifacts/phase-r/final-logs/political-sim.log"
+      }
+    },
+    {
+      "script": "political-spy",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/political-spy.log"
+        },
+        {
+          "report": "targeted-regression-results.json",
+          "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+          "status": "passed",
+          "log": "artifacts/phase-r/targeted-logs/political-spy.log"
+        }
+      ],
+      "latestPass": {
+        "report": "targeted-regression-results.json",
+        "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+        "status": "passed",
+        "log": "artifacts/phase-r/targeted-logs/political-spy.log"
+      }
+    },
+    {
+      "script": "politics",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/politics.log"
+        },
+        {
+          "report": "targeted-regression-results.json",
+          "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+          "status": "passed",
+          "log": "artifacts/phase-r/targeted-logs/politics.log"
+        }
+      ],
+      "latestPass": {
+        "report": "targeted-regression-results.json",
+        "sourceCommit": "51fdfe6211a01cc59fd671c8147a990833607929",
+        "status": "passed",
+        "log": "artifacts/phase-r/targeted-logs/politics.log"
+      }
+    },
+    {
+      "script": "politics-final-ui",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/politics-final-ui.log"
+        }
+      ],
+      "latestPass": {
+        "report": "regression-results.json",
+        "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+        "status": "passed",
+        "log": "artifacts/phase-r/final-logs/politics-final-ui.log"
+      }
+    },
+    {
+      "script": "politics-preview",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/politics-preview.log"
+        }
+      ],
+      "latestPass": {
+        "report": "regression-results.json",
+        "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+        "status": "passed",
+        "log": "artifacts/phase-r/final-logs/politics-preview.log"
+      }
+    },
+    {
+      "script": "politics-spy-ui",
+      "attempts": [
+        {
+          "report": "regression-results.json",
+          "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+          "status": "passed",
+          "log": "artifacts/phase-r/final-logs/politics-spy-ui.log"
+        }
+      ],
+      "latestPass": {
+        "report": "regression-results.json",
+        "sourceCommit": "2de898dbbcc42376df6b274358d23fa8446eb378",
+        "status": "passed",
+        "log": "artifacts/phase-r/final-logs/politics-spy-ui.log"
+      }
+    }
+  ],
+  "knownIssues": [
+    {
+      "suite": "leader-preview",
+      "attempt": "primary batch",
+      "cause": "Edge launch timeout before game opened; successful retry retained and original failed log preserved",
+      "resolvedByRetry": true
+    }
+  ],
+  "remainingAutomatedFailures": [],
+  "notPerformed": [
+    "Physical owner phone and Safari",
+    "Owner real old save",
+    "Actual device quota, power loss and concurrent-tab races (write failures simulated)",
+    "Restore exported Chinese JSON in older deployed runtime (exact download bytes verified)",
+    "R public preview publication (not authorized)",
+    "Offline atlas regeneration (unchanged assets; geometry test passed)"
+  ],
+  "ownerSavesModified": false,
+  "independentWorktreesModified": false,
+  "deploymentsModified": false,
+  "preview": "Approved F public build unchanged; R screenshots are local only",
+  "screenshots": [
+    "artifacts/phase-r/final-save-evidence/phase-r/legacy-save-320x568.png",
+    "artifacts/phase-r/final-save-evidence/phase-r/backup-export-568x320.png",
+    "artifacts/phase-r/final-save-evidence/phase-r/umayyad-390x844.png",
+    "artifacts/phase-r/targeted-evidence/leaders/profile-320x568.png"
+  ],
+  "stopUntil": "اعتمد R"
+}

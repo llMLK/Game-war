@@ -1,0 +1,14 @@
+PASS world and screen transforms round-trip at every supported viewport and zoom
+PASS every settlement can be focused inside the unobstructed frame at all zoom levels
+PASS camera clamps finite coordinates at all extreme bounds and pan directions
+PASS zoom keeps the finger anchor stable whenever the map boundary does not constrain it
+PASS resize preserves the camera location and zoom when they remain legal
+PASS legacy 22-city western save expands to the atlas without resetting armies, turn or conquered cities
+PASS unsupported synthetic 20-city Chinese legacy save is rejected and preserved byte-for-byte
+PASS atlas expansion never revives an eliminated state through newly added cities
+PASS existing expanded-atlas save retains historical ownership instead of replaying starting borders
+PASS legacy active caravan routes migrate to valid atlas segments without erasing their state
+PASS caravan status rejects nonexistent graph segments even between peaceful cities
+PASS existing legacy harbor cities gain atlas embarkation ports when old ports were zero or absent
+
+Camera and migration: 12 passed, 0 failed.

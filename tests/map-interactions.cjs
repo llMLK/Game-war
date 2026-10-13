@@ -38,8 +38,11 @@ const {chromium}=require(process.env.PLAYWRIGHT_PATH||'C:/Users/Abdul/.cache/cod
   await page.evaluate(()=>{Game.S.alerts=Game.S.alerts.filter(a=>a.key!=='map-qa');AlertsUI.render();App.scene.selArmy=null;});
   results.push({viewport:[w,h],mousePan:true,wheel:true,pinch:true,touchPan:true,atlasSearch:true,armyTap:true,armyTargetsClear:true,criticalAlertFits:true});
  }
- // The shared renderer must also keep the original eastern scenario runnable.
- await page.setViewportSize({width:390,height:844});await page.evaluate(()=>{Game.newGame('threeKingdoms','shu','normal');startCampaign();document.querySelectorAll('.modal-layer').forEach(e=>e.remove());});
- await page.screenshot({path:path.resolve(__dirname,'../artifacts/map/eastern-390x844.png')});assert.equal(await page.evaluate(()=>Game.S.nodes.length),20);
- assert.deepEqual(errors,[]);fs.writeFileSync(path.resolve(__dirname,'../artifacts/map/interactions.json'),JSON.stringify({results,easternScenario:true,errors},null,2));console.log('PASS real pointer/touch interactions, army occlusion and critical alerts at '+results.length+' sizes; eastern renderer.');await browser.close();
+ // The shared renderer remains usable for both other supported player factions.
+ await page.setViewportSize({width:390,height:844});
+ for(const faction of ['byzantine','khazar']){
+  await page.evaluate(faction=>{Game.newGame('umayyad',faction,'normal');startCampaign();document.querySelectorAll('.modal-layer').forEach(e=>e.remove());},faction);
+  await page.screenshot({path:path.resolve(__dirname,`../artifacts/map/${faction}-390x844.png`)});assert.equal(await page.evaluate(()=>Game.S.nodes.length),66);assert.ok(await page.evaluate(()=>Game.armiesOf(Game.S.player).length>0));
+ }
+ assert.deepEqual(errors,[]);fs.writeFileSync(path.resolve(__dirname,'../artifacts/map/interactions.json'),JSON.stringify({results,supportedFactions:['byzantine','khazar'],errors},null,2));console.log('PASS real pointer/touch interactions, army occlusion and critical alerts at '+results.length+' sizes; Byzantine and Khazar renderer.');await browser.close();
 })().catch(e=>{console.error(e);process.exit(1)});

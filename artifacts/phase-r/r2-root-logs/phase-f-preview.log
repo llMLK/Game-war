@@ -1,0 +1,1 @@
+PASS Phase F preview: 51 allowlisted runtime files; exact Git blob SHA256 manifest with clean-filter/EOL equivalence; strict rejection of genuine runtime changes; fresh-output protection; 390×844 touch landing; same-origin save/load and get/set/delete/legacy isolation; official saves unchanged; zero page errors.

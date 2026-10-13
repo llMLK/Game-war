@@ -1,0 +1,82 @@
+{
+  "engine": "Playwright Edge mobile emulation; no physical phone or personal save",
+  "checks": 60,
+  "passed": 60,
+  "results": [
+    {
+      "viewport": [
+        1365,
+        900
+      ],
+      "checks": 12,
+      "passed": 12,
+      "touch": true,
+      "rtl": true,
+      "exportExact": true,
+      "backupFailure": true,
+      "manualPreserved": true,
+      "assets": true,
+      "errors": []
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "checks": 12,
+      "passed": 12,
+      "touch": true,
+      "rtl": true,
+      "exportExact": true,
+      "backupFailure": true,
+      "manualPreserved": true,
+      "assets": true,
+      "errors": []
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "checks": 12,
+      "passed": 12,
+      "touch": true,
+      "rtl": true,
+      "exportExact": true,
+      "backupFailure": true,
+      "manualPreserved": true,
+      "assets": true,
+      "errors": []
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "checks": 12,
+      "passed": 12,
+      "touch": true,
+      "rtl": true,
+      "exportExact": true,
+      "backupFailure": true,
+      "manualPreserved": true,
+      "assets": true,
+      "errors": []
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "checks": 12,
+      "passed": 12,
+      "touch": true,
+      "rtl": true,
+      "exportExact": true,
+      "backupFailure": true,
+      "manualPreserved": true,
+      "assets": true,
+      "errors": []
+    }
+  ]
+}

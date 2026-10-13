@@ -1227,17 +1227,30 @@ const Panels = {
     for (const { slot, data } of Game.listSaves()) {
       const m = data && data.meta;
       const label = slot === 'auto' ? 'الحفظ التلقائي' : `الخانة ${slot}`;
-      const desc = data && data.bad ? 'حفظ ' + data.bad + '. يمكنك حذفه.' : m ? `${SCENARIOS[m.scenario].name} · ${m.fname} · ${SEASONS[m.turn % 4]} ${SCENARIOS[m.scenario].startYear + Math.floor(m.turn / 4)}م${m.time ? ' · ' + new Date(m.time).toLocaleDateString('ar-EG-u-nu-latn') : ''}` : 'فارغة';
+      const desc = data?.bad || (m && SCENARIOS[m.scenario] ? `${SCENARIOS[m.scenario].name} · ${m.fname} · ${SEASONS[m.turn % 4]} ${SCENARIOS[m.scenario].startYear + Math.floor(m.turn / 4)}م${m.time ? ' · ' + new Date(m.time).toLocaleDateString('ar-EG-u-nu-latn') : ''}` : 'فارغة');
       list.appendChild(h('div', { class: 'save-row' },
         h('div', null, h('b', null, label), h('p', { class: 'small muted' }, desc)),
         h('div', { class: 'row-btns' },
-          scene && slot !== 'auto' ? h('button', { class: 'chip', onclick: () => { Game.save(slot); UI.toast('حُفظت في ' + label); close(); this.saves(scene); } }, 'احفظ هنا') : null,
-          data && data.bad ? h('button', { class: 'chip', onclick: () => { Game.deleteSlot(slot); close(); this.saves(scene); } }, 'احذف') : null,
+          scene && slot !== 'auto' && !data?.bad ? h('button', { class: 'chip', onclick: () => { const ok = Game.save(slot); UI.toast(ok ? 'حُفظت في ' + label : Game.lastSaveError); close(); this.saves(scene); } }, 'احفظ هنا') : null,
+          data?.raw != null ? h('button', { class: 'chip', onclick: () => this.exportSave(data.raw, 'suyuf-slot-' + slot) }, 'تصدير JSON') : null,
+          data && data.bad ? h('button', { class: 'chip', onclick: async () => {
+            const yes = await UI.ask({ title: 'حذف الحفظ القديم؟', body: h('p', null, 'احفظ نسخة JSON أولًا. الحذف يزيل هذه الخانة فقط ولا يمكن التراجع عنه.'), buttons: [{ label: 'إلغاء', value: false }, { label: 'احذف الخانة', danger: true, value: true }] });
+            if (yes) { if (!Game.deleteSlot(slot)) UI.toast('تعذّر حذف الخانة؛ بقيت البيانات محفوظة'); close(); this.saves(scene); }
+          } }, 'حذف صريح…') : null,
           m && !data.bad ? h('button', { class: 'chip', onclick: () => { close(); if (Game.load(slot)) { UI.toast('تم التحميل'); startCampaign(); } else UI.toast('تعذّر التحميل'); } }, 'حمّل') : null,
         ),
       ));
     }
+    for (const backup of SaveSafety.backups()) list.appendChild(h('div', { class: 'save-row' },
+      h('div', null, h('b', null, 'نسخة احتياطية للحفظ القديم'), h('p', { class: 'small muted' }, 'محفوظة منفصلة قبل استبدال الحفظ التلقائي. تُفتح في إصدار أقدم يدعمها.')),
+      h('button', { class: 'chip', onclick: () => this.exportSave(backup.raw, 'suyuf-legacy-' + backup.created) }, 'تصدير JSON')));
     close = UI.modal({ title: 'حفظ وتحميل', icon: 'scroll', body: list, buttons: [{ label: 'إغلاق' }], dismissable: true });
+  },
+  exportSave(raw, name) {
+    const url = URL.createObjectURL(new Blob([raw], { type: 'application/json' }));
+    const link = h('a', { href: url, download: name + '.json' });
+    document.body.appendChild(link); link.click(); link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
   },
 
   intro(scene) {

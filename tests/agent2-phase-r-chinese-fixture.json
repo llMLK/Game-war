@@ -1,0 +1,3349 @@
+{
+  "_fixture": {
+    "synthetic": true,
+    "sourceCommit": "2deaa02de02b1e87321d01651ec725da19930ede",
+    "seed": 212,
+    "note": "Generated in Node VM on Phase F for unsupported-save QA only. No browser storage or real owner data."
+  },
+  "meta": {
+    "scenario": "threeKingdoms",
+    "player": "shu",
+    "fname": "شو",
+    "turn": 23,
+    "time": 0,
+    "over": null
+  },
+  "S": {
+    "v": 5,
+    "atlas": 3,
+    "scenario": "threeKingdoms",
+    "turn": 23,
+    "player": "shu",
+    "difficulty": "normal",
+    "nextId": 34,
+    "factions": {
+      "shu": {
+        "id": "shu",
+        "name": "شو",
+        "color": "#3f8a4f",
+        "gold": 7654,
+        "food": 222,
+        "alive": true,
+        "isPlayer": true,
+        "rel": {
+          "wei": -40,
+          "wu": 15
+        },
+        "status": {
+          "wei": "war",
+          "wu": "peace"
+        },
+        "truce": {
+          "wei": 0,
+          "wu": 0
+        },
+        "warTurns": {
+          "wei": 0,
+          "wu": 0
+        },
+        "lostRecently": 0,
+        "rep": 50,
+        "tax": "normal",
+        "treaty": {},
+        "grievance": {},
+        "vendetta": {},
+        "intel": {},
+        "claims": [],
+        "mercs": [
+          {
+            "type": "archer",
+            "exp": 1
+          },
+          {
+            "type": "cavalry",
+            "exp": 1
+          },
+          {
+            "type": "cavalry",
+            "exp": 1
+          }
+        ],
+        "lastWarTurn": 0,
+        "goals": null,
+        "ruler": "g1",
+        "heir": null,
+        "finance": {
+          "version": 1,
+          "history": [],
+          "entries": [],
+          "anchor": 600,
+          "lastSettled": -1
+        }
+      },
+      "wei": {
+        "id": "wei",
+        "name": "وي",
+        "color": "#3a5f9a",
+        "gold": 550,
+        "food": 40,
+        "alive": true,
+        "isPlayer": false,
+        "rel": {
+          "shu": -40,
+          "wu": -40
+        },
+        "status": {
+          "shu": "war",
+          "wu": "war"
+        },
+        "truce": {
+          "shu": 0,
+          "wu": 0
+        },
+        "warTurns": {
+          "shu": 0,
+          "wu": 0
+        },
+        "lostRecently": 0,
+        "rep": 50,
+        "tax": "normal",
+        "treaty": {},
+        "grievance": {},
+        "vendetta": {},
+        "intel": {},
+        "claims": [],
+        "mercs": [
+          {
+            "type": "sword",
+            "exp": 1
+          },
+          {
+            "type": "horsearcher",
+            "exp": 1
+          }
+        ],
+        "lastWarTurn": 0,
+        "goals": null,
+        "ruler": "g6",
+        "heir": null,
+        "finance": {
+          "version": 1,
+          "history": [],
+          "entries": [],
+          "anchor": 550,
+          "lastSettled": -1
+        }
+      },
+      "wu": {
+        "id": "wu",
+        "name": "وو",
+        "color": "#b0392c",
+        "gold": 528,
+        "food": 40,
+        "alive": true,
+        "isPlayer": false,
+        "rel": {
+          "shu": 15,
+          "wei": -40
+        },
+        "status": {
+          "shu": "peace",
+          "wei": "war"
+        },
+        "truce": {
+          "shu": 0,
+          "wei": 0
+        },
+        "warTurns": {
+          "shu": 0,
+          "wei": 0
+        },
+        "lostRecently": 0,
+        "rep": 50,
+        "tax": "normal",
+        "treaty": {},
+        "grievance": {},
+        "vendetta": {},
+        "intel": {},
+        "claims": [],
+        "mercs": [
+          {
+            "type": "archer",
+            "exp": 1
+          },
+          {
+            "type": "cavalry",
+            "exp": 1
+          }
+        ],
+        "lastWarTurn": 0,
+        "goals": null,
+        "ruler": "g12",
+        "heir": null,
+        "finance": {
+          "version": 1,
+          "history": [],
+          "entries": [
+            {
+              "turn": 0,
+              "amount": -22,
+              "kind": "leaders",
+              "label": "مقدم عقد قائد"
+            }
+          ],
+          "anchor": 550,
+          "lastSettled": -1
+        }
+      },
+      "neutral": {
+        "id": "neutral",
+        "name": "المدن المستقلة",
+        "color": "#8a8378",
+        "gold": 550,
+        "food": 40,
+        "alive": true,
+        "isPlayer": false,
+        "rel": {},
+        "status": {},
+        "truce": {},
+        "warTurns": {},
+        "lostRecently": 0,
+        "rep": 50,
+        "tax": "normal",
+        "treaty": {},
+        "grievance": {},
+        "vendetta": {},
+        "intel": {},
+        "claims": [],
+        "mercs": [],
+        "lastWarTurn": 0,
+        "goals": null,
+        "neutral": true,
+        "finance": {
+          "version": 1,
+          "history": [],
+          "entries": [],
+          "anchor": 550,
+          "lastSettled": -1
+        }
+      }
+    },
+    "nodes": [
+      {
+        "id": "chengdu",
+        "name": "تشنغدو",
+        "x": 150,
+        "y": 470,
+        "owner": "shu",
+        "origOwner": "shu",
+        "pop": 30000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 1,
+        "region": null,
+        "resource": null,
+        "loyalty": 75,
+        "capital": true,
+        "terrain": "plains",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 600,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "jiangzhou",
+        "name": "جيانغتشو",
+        "x": 290,
+        "y": 540,
+        "owner": "shu",
+        "origOwner": "shu",
+        "pop": 14000,
+        "walls": 1,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": null,
+        "resource": null,
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "river",
+        "stores": 4,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 280,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "yongan",
+        "name": "يونغآن",
+        "x": 390,
+        "y": 470,
+        "owner": "shu",
+        "origOwner": "shu",
+        "pop": 9000,
+        "walls": 1,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": null,
+        "resource": null,
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "mountains",
+        "stores": 4,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 180,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "jiangling",
+        "name": "جيانغلينغ",
+        "x": 520,
+        "y": 440,
+        "owner": "shu",
+        "origOwner": "shu",
+        "pop": 22000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": null,
+        "resource": null,
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "river",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 440,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "changsha",
+        "name": "تشانغشا",
+        "x": 560,
+        "y": 580,
+        "owner": "shu",
+        "origOwner": "shu",
+        "pop": 15000,
+        "walls": 1,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": null,
+        "resource": null,
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "forest",
+        "stores": 4,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 300,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "hanzhong",
+        "name": "هانزونغ",
+        "x": 260,
+        "y": 320,
+        "owner": "neutral",
+        "origOwner": "neutral",
+        "pop": 16000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": null,
+        "resource": null,
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "mountains",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 320,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "nanzhong",
+        "name": "نانزونغ",
+        "x": 130,
+        "y": 640,
+        "owner": "neutral",
+        "origOwner": "neutral",
+        "pop": 9000,
+        "walls": 0,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": null,
+        "resource": null,
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "forest",
+        "stores": 3,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 180,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "tianshui",
+        "name": "تيانشوي",
+        "x": 180,
+        "y": 190,
+        "owner": "neutral",
+        "origOwner": "neutral",
+        "pop": 10000,
+        "walls": 1,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": null,
+        "resource": null,
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "hills",
+        "stores": 4,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 200,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "wuwei",
+        "name": "وووي",
+        "x": 80,
+        "y": 80,
+        "owner": "neutral",
+        "origOwner": "neutral",
+        "pop": 8000,
+        "walls": 1,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": null,
+        "resource": null,
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "desert",
+        "stores": 4,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 160,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "jiaozhou",
+        "name": "جياوتشو",
+        "x": 700,
+        "y": 660,
+        "owner": "neutral",
+        "origOwner": "neutral",
+        "pop": 11000,
+        "walls": 1,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": null,
+        "resource": null,
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 4,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 220,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "changan",
+        "name": "تشانغآن",
+        "x": 360,
+        "y": 190,
+        "owner": "wei",
+        "origOwner": "wei",
+        "pop": 26000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": null,
+        "resource": null,
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "plains",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 520,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "luoyang",
+        "name": "لوويانغ",
+        "x": 520,
+        "y": 140,
+        "owner": "wei",
+        "origOwner": "wei",
+        "pop": 24000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": null,
+        "resource": null,
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "hills",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 480,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "xuchang",
+        "name": "شوتشانغ",
+        "x": 680,
+        "y": 170,
+        "owner": "wei",
+        "origOwner": "wei",
+        "pop": 34000,
+        "walls": 3,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 1,
+        "region": null,
+        "resource": null,
+        "loyalty": 75,
+        "capital": true,
+        "terrain": "plains",
+        "stores": 6,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 680,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "wan",
+        "name": "وان",
+        "x": 560,
+        "y": 260,
+        "owner": "wei",
+        "origOwner": "wei",
+        "pop": 13000,
+        "walls": 1,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": null,
+        "resource": null,
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "plains",
+        "stores": 4,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 260,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "xiangyang",
+        "name": "شيانغيانغ",
+        "x": 520,
+        "y": 345,
+        "owner": "wei",
+        "origOwner": "wei",
+        "pop": 20000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": null,
+        "resource": null,
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "river",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 400,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "hefei",
+        "name": "خفي",
+        "x": 780,
+        "y": 300,
+        "owner": "wei",
+        "origOwner": "wei",
+        "pop": 12000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": null,
+        "resource": null,
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "plains",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 240,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "jianye",
+        "name": "جيانيه",
+        "x": 900,
+        "y": 420,
+        "owner": "wu",
+        "origOwner": "wu",
+        "pop": 32000,
+        "walls": 3,
+        "market": 1,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 1,
+        "region": null,
+        "resource": null,
+        "loyalty": 75,
+        "capital": true,
+        "terrain": "river",
+        "stores": 6,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 640,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "chaisang",
+        "name": "تشايسانغ",
+        "x": 690,
+        "y": 450,
+        "owner": "wu",
+        "origOwner": "wu",
+        "pop": 15000,
+        "walls": 2,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": null,
+        "resource": null,
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "river",
+        "stores": 5,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 300,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "yuzhang",
+        "name": "يوجانغ",
+        "x": 740,
+        "y": 560,
+        "owner": "wu",
+        "origOwner": "wu",
+        "pop": 13000,
+        "walls": 1,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": null,
+        "resource": null,
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "forest",
+        "stores": 4,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 260,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      },
+      {
+        "id": "kuaiji",
+        "name": "كوايجي",
+        "x": 900,
+        "y": 570,
+        "owner": "wu",
+        "origOwner": "wu",
+        "pop": 16000,
+        "walls": 1,
+        "market": 0,
+        "farm": 0,
+        "granary": 0,
+        "roads": 0,
+        "port": 0,
+        "barracks": 0,
+        "region": null,
+        "resource": null,
+        "loyalty": 75,
+        "capital": false,
+        "terrain": "coast",
+        "stores": 4,
+        "garrison": [
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "militia",
+            "men": 40,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "capturedTurn": -99,
+        "unrest": 0,
+        "manpower": 320,
+        "parley": -1,
+        "built": -1,
+        "festival": -99
+      }
+    ],
+    "armies": [
+      {
+        "id": 22,
+        "fid": "shu",
+        "node": "chengdu",
+        "from": "chengdu",
+        "gen": "g1",
+        "regs": [
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          },
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          },
+          {
+            "type": "sword",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "cavalry",
+            "men": 30,
+            "exp": 0
+          }
+        ],
+        "mp": 4,
+        "siege": null,
+        "mood": null
+      },
+      {
+        "id": 23,
+        "fid": "shu",
+        "node": "jiangling",
+        "from": "jiangling",
+        "gen": "g2",
+        "regs": [
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          },
+          {
+            "type": "sword",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "cavalry",
+            "men": 30,
+            "exp": 0
+          }
+        ],
+        "mp": 4,
+        "siege": null,
+        "mood": null
+      },
+      {
+        "id": 24,
+        "fid": "wei",
+        "node": "xuchang",
+        "from": "xuchang",
+        "gen": "g6",
+        "regs": [
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          },
+          {
+            "type": "sword",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "sword",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "cavalry",
+            "men": 30,
+            "exp": 0
+          },
+          {
+            "type": "cavalry",
+            "men": 30,
+            "exp": 0
+          }
+        ],
+        "mp": 4,
+        "siege": null,
+        "mood": null
+      },
+      {
+        "id": 25,
+        "fid": "wei",
+        "node": "xiangyang",
+        "from": "xiangyang",
+        "gen": "g10",
+        "regs": [
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          },
+          {
+            "type": "sword",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "cavalry",
+            "men": 30,
+            "exp": 0
+          }
+        ],
+        "mp": 4,
+        "siege": null,
+        "mood": null
+      },
+      {
+        "id": 26,
+        "fid": "wei",
+        "node": "changan",
+        "from": "changan",
+        "gen": "g8",
+        "regs": [
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "horsearcher",
+            "men": 30,
+            "exp": 0
+          }
+        ],
+        "mp": 6,
+        "siege": null,
+        "mood": null
+      },
+      {
+        "id": 27,
+        "fid": "wu",
+        "node": "jianye",
+        "from": "jianye",
+        "gen": "g13",
+        "regs": [
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          },
+          {
+            "type": "sword",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "cavalry",
+            "men": 30,
+            "exp": 0
+          }
+        ],
+        "mp": 4,
+        "siege": null,
+        "mood": null
+      },
+      {
+        "id": 28,
+        "fid": "wu",
+        "node": "chaisang",
+        "from": "chaisang",
+        "gen": "g14",
+        "regs": [
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          },
+          {
+            "type": "sword",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "mp": 4,
+        "siege": null,
+        "mood": null
+      },
+      {
+        "id": 29,
+        "fid": "neutral",
+        "node": "hanzhong",
+        "from": "hanzhong",
+        "gen": "g18",
+        "regs": [
+          {
+            "type": "spear",
+            "men": 60,
+            "exp": 0
+          },
+          {
+            "type": "archer",
+            "men": 50,
+            "exp": 0
+          },
+          {
+            "type": "sword",
+            "men": 50,
+            "exp": 0
+          }
+        ],
+        "mp": 4,
+        "siege": null,
+        "mood": null
+      }
+    ],
+    "gens": {
+      "g1": {
+        "id": "g1",
+        "name": "ليو باي",
+        "fid": "shu",
+        "orig": "shu",
+        "trait": "merchant",
+        "flaw": null,
+        "rank": 2,
+        "xp": 0,
+        "status": "army",
+        "army": 22,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "ليو باي",
+        "src": "hist",
+        "born": 161,
+        "died": 223,
+        "lead": 3,
+        "fame": 55,
+        "arch": "merchant",
+        "style": "careful",
+        "doctrine": "cautious",
+        "terrain": [],
+        "units": [],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [
+          "g2",
+          "g3",
+          "g4"
+        ],
+        "culture": "han",
+        "wage": 30,
+        "bond": {
+          "trust": 65,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 58,
+          "ambition": 30
+        },
+        "growth": {
+          "path": "merchant",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {
+          "g2": {
+            "kind": "friend",
+            "since": 0
+          },
+          "g3": {
+            "kind": "friend",
+            "since": 0
+          },
+          "g4": {
+            "kind": "friend",
+            "since": 0
+          }
+        },
+        "leaderFlags": {},
+        "observedFid": "shu",
+        "observedStatus": "pool",
+        "loy": 100,
+        "age0": 47,
+        "bornTurn": 0
+      },
+      "g2": {
+        "id": "g2",
+        "name": "قوان يو",
+        "fid": "shu",
+        "orig": "shu",
+        "trait": "brave",
+        "flaw": "arrogant",
+        "rank": 2,
+        "xp": 0,
+        "status": "army",
+        "army": 23,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "قوان يو",
+        "src": "hist",
+        "born": null,
+        "died": 220,
+        "lead": 4,
+        "fame": 48,
+        "arch": "brave",
+        "style": "fearless",
+        "doctrine": "aggressive",
+        "terrain": [],
+        "units": [
+          "inf"
+        ],
+        "ambition": 2,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [
+          "g1",
+          "g3"
+        ],
+        "culture": "han",
+        "wage": 35,
+        "bond": {
+          "trust": 45,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 48,
+          "ambition": 72
+        },
+        "growth": {
+          "path": "brave",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {
+          "g1": {
+            "kind": "friend",
+            "since": 0
+          },
+          "g3": {
+            "kind": "friend",
+            "since": 0
+          }
+        },
+        "leaderFlags": {},
+        "observedFid": "shu",
+        "observedStatus": "pool",
+        "loy": 54
+      },
+      "g3": {
+        "id": "g3",
+        "name": "جانغ في",
+        "fid": "shu",
+        "orig": "shu",
+        "trait": "brave",
+        "flaw": "harsh",
+        "rank": 1,
+        "xp": 0,
+        "status": "pool",
+        "army": null,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "جانغ في",
+        "src": "hist",
+        "born": null,
+        "died": 221,
+        "lead": 3,
+        "fame": 30,
+        "arch": "brave",
+        "style": "fearless",
+        "doctrine": "aggressive",
+        "terrain": [],
+        "units": [
+          "inf"
+        ],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [
+          "g1",
+          "g2"
+        ],
+        "culture": "han",
+        "wage": 22,
+        "bond": {
+          "trust": 52,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 51,
+          "ambition": 65
+        },
+        "growth": {
+          "path": "brave",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {
+          "g1": {
+            "kind": "friend",
+            "since": 0
+          },
+          "g2": {
+            "kind": "friend",
+            "since": 0
+          }
+        },
+        "leaderFlags": {},
+        "observedFid": "shu",
+        "observedStatus": "pool",
+        "loy": 77
+      },
+      "g4": {
+        "id": "g4",
+        "name": "جاو يون",
+        "fid": "shu",
+        "orig": "shu",
+        "trait": "cavalier",
+        "flaw": null,
+        "rank": 2,
+        "xp": 0,
+        "status": "pool",
+        "army": null,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "جاو يون",
+        "src": "hist",
+        "born": null,
+        "died": 229,
+        "lead": 4,
+        "fame": 32,
+        "arch": "cavalier",
+        "style": "fearless",
+        "doctrine": "maneuver",
+        "terrain": [
+          "plains",
+          "desert"
+        ],
+        "units": [
+          "cav"
+        ],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [
+          "g1"
+        ],
+        "culture": "han",
+        "wage": 27,
+        "bond": {
+          "trust": 65,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 58,
+          "ambition": 30
+        },
+        "growth": {
+          "path": "cavalier",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {
+          "g1": {
+            "kind": "friend",
+            "since": 0
+          }
+        },
+        "leaderFlags": {},
+        "observedFid": "shu",
+        "observedStatus": "pool",
+        "loy": 65
+      },
+      "g5": {
+        "id": "g5",
+        "name": "جوغه ليانغ",
+        "fid": "shu",
+        "orig": "shu",
+        "trait": "elite",
+        "flaw": null,
+        "rank": 1,
+        "xp": 0,
+        "status": "pool",
+        "army": null,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "جوغه ليانغ",
+        "src": "hist",
+        "born": 181,
+        "died": 234,
+        "lead": 3,
+        "fame": 18,
+        "arch": "elite",
+        "style": "inspiring",
+        "doctrine": "aggressive",
+        "terrain": [],
+        "units": [],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "han",
+        "wage": 21,
+        "bond": {
+          "trust": 50,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 50,
+          "ambition": 40
+        },
+        "growth": {
+          "path": "elite",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "shu",
+        "observedStatus": "pool",
+        "loy": 73
+      },
+      "g6": {
+        "id": "g6",
+        "name": "تساو تساو",
+        "fid": "wei",
+        "orig": "wei",
+        "trait": "tactician",
+        "flaw": "harsh",
+        "rank": 3,
+        "xp": 0,
+        "status": "army",
+        "army": 24,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "تساو تساو",
+        "src": "hist",
+        "born": 155,
+        "died": 220,
+        "lead": 5,
+        "fame": 70,
+        "arch": "tactician",
+        "style": "cunning",
+        "doctrine": "maneuver",
+        "terrain": [],
+        "units": [],
+        "ambition": 2,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [
+          "g7",
+          "g8"
+        ],
+        "culture": "han",
+        "wage": 44,
+        "bond": {
+          "trust": 38,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 44,
+          "ambition": 85
+        },
+        "growth": {
+          "path": "tactician",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {
+          "g7": {
+            "kind": "friend",
+            "since": 0
+          },
+          "g8": {
+            "kind": "friend",
+            "since": 0
+          }
+        },
+        "leaderFlags": {},
+        "observedFid": "wei",
+        "observedStatus": "pool",
+        "loy": 100,
+        "age0": 53,
+        "bornTurn": 0
+      },
+      "g7": {
+        "id": "g7",
+        "name": "شياهو دون",
+        "fid": "wei",
+        "orig": "wei",
+        "trait": "brave",
+        "flaw": "reckless",
+        "rank": 1,
+        "xp": 0,
+        "status": "pool",
+        "army": null,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "شياهو دون",
+        "src": "hist",
+        "born": null,
+        "died": 220,
+        "lead": 3,
+        "fame": 30,
+        "arch": "brave",
+        "style": "fearless",
+        "doctrine": "aggressive",
+        "terrain": [],
+        "units": [
+          "inf"
+        ],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [
+          "g6"
+        ],
+        "culture": "han",
+        "wage": 25,
+        "bond": {
+          "trust": 65,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 58,
+          "ambition": 30
+        },
+        "growth": {
+          "path": "brave",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {
+          "g6": {
+            "kind": "friend",
+            "since": 0
+          }
+        },
+        "leaderFlags": {},
+        "observedFid": "wei",
+        "observedStatus": "pool",
+        "loy": 71
+      },
+      "g8": {
+        "id": "g8",
+        "name": "شياهو يوان",
+        "fid": "wei",
+        "orig": "wei",
+        "trait": "swift",
+        "flaw": "reckless",
+        "rank": 1,
+        "xp": 0,
+        "status": "army",
+        "army": 26,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "شياهو يوان",
+        "src": "hist",
+        "born": null,
+        "died": 219,
+        "lead": 3,
+        "fame": 30,
+        "arch": "swift",
+        "style": "fearless",
+        "doctrine": "aggressive",
+        "terrain": [
+          "plains",
+          "desert"
+        ],
+        "units": [
+          "cav"
+        ],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [
+          "g6"
+        ],
+        "culture": "han",
+        "wage": 25,
+        "bond": {
+          "trust": 52,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 51,
+          "ambition": 65
+        },
+        "growth": {
+          "path": "swift",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {
+          "g6": {
+            "kind": "friend",
+            "since": 0
+          }
+        },
+        "leaderFlags": {},
+        "observedFid": "wei",
+        "observedStatus": "pool",
+        "loy": 71
+      },
+      "g9": {
+        "id": "g9",
+        "name": "جانغ لياو",
+        "fid": "wei",
+        "orig": "wei",
+        "trait": "cavalier",
+        "flaw": null,
+        "rank": 2,
+        "xp": 0,
+        "status": "pool",
+        "army": null,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "جانغ لياو",
+        "src": "hist",
+        "born": 169,
+        "died": 222,
+        "lead": 4,
+        "fame": 40,
+        "arch": "cavalier",
+        "style": "fearless",
+        "doctrine": "maneuver",
+        "terrain": [
+          "plains",
+          "desert"
+        ],
+        "units": [
+          "cav"
+        ],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "han",
+        "wage": 27,
+        "bond": {
+          "trust": 52,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 51,
+          "ambition": 65
+        },
+        "growth": {
+          "path": "cavalier",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "wei",
+        "observedStatus": "pool",
+        "loy": 65
+      },
+      "g10": {
+        "id": "g10",
+        "name": "تساو رن",
+        "fid": "wei",
+        "orig": "wei",
+        "trait": "defender",
+        "flaw": null,
+        "rank": 1,
+        "xp": 0,
+        "status": "army",
+        "army": 25,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "تساو رن",
+        "src": "hist",
+        "born": 168,
+        "died": 223,
+        "lead": 3,
+        "fame": 30,
+        "arch": "defender",
+        "style": "disciplined",
+        "doctrine": "defensive",
+        "terrain": [],
+        "units": [
+          "inf"
+        ],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "han",
+        "wage": 24,
+        "bond": {
+          "trust": 65,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 58,
+          "ambition": 30
+        },
+        "growth": {
+          "path": "defender",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "wei",
+        "observedStatus": "pool",
+        "loy": 70
+      },
+      "g11": {
+        "id": "g11",
+        "name": "شو هوانغ",
+        "fid": "wei",
+        "orig": "wei",
+        "trait": "siege",
+        "flaw": null,
+        "rank": 1,
+        "xp": 0,
+        "status": "pool",
+        "army": null,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "شو هوانغ",
+        "src": "hist",
+        "born": null,
+        "died": 227,
+        "lead": 3,
+        "fame": 30,
+        "arch": "siege",
+        "style": "careful",
+        "doctrine": "siegecraft",
+        "terrain": [],
+        "units": [
+          "mach"
+        ],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "han",
+        "wage": 23,
+        "bond": {
+          "trust": 50,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 50,
+          "ambition": 40
+        },
+        "growth": {
+          "path": "siege",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "wei",
+        "observedStatus": "pool",
+        "loy": 68
+      },
+      "g12": {
+        "id": "g12",
+        "name": "سون تشوان",
+        "fid": "wu",
+        "orig": "wu",
+        "trait": "merchant",
+        "flaw": "cautious",
+        "rank": 1,
+        "xp": 0,
+        "status": "pool",
+        "army": null,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "سون تشوان",
+        "src": "hist",
+        "born": 182,
+        "died": 252,
+        "lead": 3,
+        "fame": 30,
+        "arch": "merchant",
+        "style": "careful",
+        "doctrine": "cautious",
+        "terrain": [],
+        "units": [],
+        "ambition": 0,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [
+          "g13",
+          "g17"
+        ],
+        "culture": "han",
+        "wage": 25,
+        "bond": {
+          "trust": 52,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 51,
+          "ambition": 50
+        },
+        "growth": {
+          "path": "merchant",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {
+          "g13": {
+            "kind": "friend",
+            "since": 0
+          },
+          "g17": {
+            "kind": "friend",
+            "since": 0
+          }
+        },
+        "leaderFlags": {},
+        "observedFid": "wu",
+        "observedStatus": "pool",
+        "loy": 100,
+        "age0": 26,
+        "bornTurn": 0
+      },
+      "g13": {
+        "id": "g13",
+        "name": "جو يو",
+        "fid": "wu",
+        "orig": "wu",
+        "trait": "naval",
+        "flaw": null,
+        "rank": 2,
+        "xp": 0,
+        "status": "army",
+        "army": 27,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "جو يو",
+        "src": "hist",
+        "born": 175,
+        "died": 210,
+        "lead": 4,
+        "fame": 50,
+        "arch": "naval",
+        "style": "careful",
+        "doctrine": "maneuver",
+        "terrain": [
+          "river",
+          "coast"
+        ],
+        "units": [],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [
+          "g12"
+        ],
+        "culture": "han",
+        "wage": 35,
+        "bond": {
+          "trust": 45,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 48,
+          "ambition": 72
+        },
+        "growth": {
+          "path": "naval",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {
+          "g12": {
+            "kind": "friend",
+            "since": 0
+          }
+        },
+        "leaderFlags": {},
+        "observedFid": "wu",
+        "observedStatus": "pool",
+        "loy": 71
+      },
+      "g14": {
+        "id": "g14",
+        "name": "لو منغ",
+        "fid": "wu",
+        "orig": "wu",
+        "trait": "tactician",
+        "flaw": null,
+        "rank": 1,
+        "xp": 0,
+        "status": "army",
+        "army": 28,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "لو منغ",
+        "src": "hist",
+        "born": 178,
+        "died": 220,
+        "lead": 3,
+        "fame": 30,
+        "arch": "tactician",
+        "style": "cunning",
+        "doctrine": "maneuver",
+        "terrain": [],
+        "units": [],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "han",
+        "wage": 23,
+        "bond": {
+          "trust": 52,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 51,
+          "ambition": 50
+        },
+        "growth": {
+          "path": "tactician",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "wu",
+        "observedStatus": "pool",
+        "loy": 72
+      },
+      "g15": {
+        "id": "g15",
+        "name": "غان نينغ",
+        "fid": "wu",
+        "orig": "wu",
+        "trait": "elite",
+        "flaw": "reckless",
+        "rank": 1,
+        "xp": 0,
+        "status": "pool",
+        "army": null,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "غان نينغ",
+        "src": "hist",
+        "born": null,
+        "died": 220,
+        "lead": 3,
+        "fame": 30,
+        "arch": "elite",
+        "style": "fearless",
+        "doctrine": "aggressive",
+        "terrain": [],
+        "units": [],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "han",
+        "wage": 25,
+        "bond": {
+          "trust": 52,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 51,
+          "ambition": 65
+        },
+        "growth": {
+          "path": "elite",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "wu",
+        "observedStatus": "pool",
+        "loy": 72
+      },
+      "g16": {
+        "id": "g16",
+        "name": "هوانغ غاي",
+        "fid": "wu",
+        "orig": "wu",
+        "trait": "naval",
+        "flaw": null,
+        "rank": 1,
+        "xp": 0,
+        "status": "pool",
+        "army": null,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "هوانغ غاي",
+        "src": "hist",
+        "born": null,
+        "died": 215,
+        "lead": 2,
+        "fame": 30,
+        "arch": "naval",
+        "style": "careful",
+        "doctrine": "maneuver",
+        "terrain": [
+          "river",
+          "coast"
+        ],
+        "units": [],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "han",
+        "wage": 21,
+        "bond": {
+          "trust": 58,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 54,
+          "ambition": 42
+        },
+        "growth": {
+          "path": "naval",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "wu",
+        "observedStatus": "pool",
+        "loy": 74
+      },
+      "g17": {
+        "id": "g17",
+        "name": "لو سو",
+        "fid": "wu",
+        "orig": "wu",
+        "trait": "logistician",
+        "flaw": null,
+        "rank": 1,
+        "xp": 0,
+        "status": "pool",
+        "army": null,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "لو سو",
+        "src": "hist",
+        "born": 172,
+        "died": 217,
+        "lead": 2,
+        "fame": 30,
+        "arch": "logistician",
+        "style": "disciplined",
+        "doctrine": "cautious",
+        "terrain": [],
+        "units": [],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [
+          "g12"
+        ],
+        "culture": "han",
+        "wage": 23,
+        "bond": {
+          "trust": 52,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 51,
+          "ambition": 50
+        },
+        "growth": {
+          "path": "logistician",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {
+          "g12": {
+            "kind": "friend",
+            "since": 0
+          }
+        },
+        "leaderFlags": {},
+        "observedFid": "wu",
+        "observedStatus": "pool",
+        "loy": 73
+      },
+      "g18": {
+        "id": "g18",
+        "name": "جانغ لو",
+        "fid": "neutral",
+        "orig": "neutral",
+        "trait": "defender",
+        "flaw": null,
+        "rank": 1,
+        "xp": 0,
+        "status": "army",
+        "army": 29,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "جانغ لو",
+        "src": "hist",
+        "born": null,
+        "died": 216,
+        "lead": 2,
+        "fame": 30,
+        "arch": "defender",
+        "style": "disciplined",
+        "doctrine": "defensive",
+        "terrain": [],
+        "units": [
+          "inf"
+        ],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "han",
+        "wage": 23,
+        "bond": {
+          "trust": 65,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 58,
+          "ambition": 30
+        },
+        "growth": {
+          "path": "defender",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "neutral",
+        "observedStatus": "pool",
+        "loy": 70
+      },
+      "g19": {
+        "id": "g19",
+        "name": "شي شيه",
+        "fid": "neutral",
+        "orig": "neutral",
+        "trait": "merchant",
+        "flaw": null,
+        "rank": 1,
+        "xp": 0,
+        "status": "pool",
+        "army": null,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "شي شيه",
+        "src": "hist",
+        "born": 137,
+        "died": 226,
+        "lead": 2,
+        "fame": 30,
+        "arch": "merchant",
+        "style": "careful",
+        "doctrine": "cautious",
+        "terrain": [],
+        "units": [],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "han",
+        "wage": 23,
+        "bond": {
+          "trust": 52,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 51,
+          "ambition": 50
+        },
+        "growth": {
+          "path": "merchant",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "neutral",
+        "observedStatus": "pool",
+        "loy": 80
+      },
+      "g20": {
+        "id": "g20",
+        "name": "هان سوي",
+        "fid": "neutral",
+        "orig": "neutral",
+        "trait": "desert",
+        "flaw": "disloyal",
+        "rank": 1,
+        "xp": 0,
+        "status": "pool",
+        "army": null,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "هان سوي",
+        "src": "hist",
+        "born": null,
+        "died": 215,
+        "lead": 2,
+        "fame": 30,
+        "arch": "desert",
+        "style": "cunning",
+        "doctrine": "maneuver",
+        "terrain": [
+          "desert"
+        ],
+        "units": [
+          "cav"
+        ],
+        "ambition": 2,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "han",
+        "wage": 25,
+        "bond": {
+          "trust": 38,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 44,
+          "ambition": 85
+        },
+        "growth": {
+          "path": "desert",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "neutral",
+        "observedStatus": "pool",
+        "loy": 46
+      },
+      "g21": {
+        "id": "g21",
+        "name": "ما تنغ",
+        "fid": "neutral",
+        "orig": "neutral",
+        "trait": "cavalier",
+        "flaw": null,
+        "rank": 1,
+        "xp": 0,
+        "status": "pool",
+        "army": null,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "cat": "ما تنغ",
+        "src": "hist",
+        "born": null,
+        "died": 212,
+        "lead": 2,
+        "fame": 30,
+        "arch": "cavalier",
+        "style": "fearless",
+        "doctrine": "maneuver",
+        "terrain": [
+          "plains",
+          "desert"
+        ],
+        "units": [
+          "cav"
+        ],
+        "ambition": 1,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "culture": "han",
+        "wage": 22,
+        "bond": {
+          "trust": 52,
+          "respect": 50,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 51,
+          "ambition": 50
+        },
+        "growth": {
+          "path": "cavalier",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [],
+        "relationships": {},
+        "leaderFlags": {},
+        "observedFid": "neutral",
+        "observedStatus": "pool",
+        "loy": 72
+      },
+      "g33": {
+        "id": "g33",
+        "name": "جو هوان",
+        "fid": "wu",
+        "orig": "wu",
+        "trait": "siege",
+        "flaw": "arrogant",
+        "rank": 1,
+        "xp": 0,
+        "status": "pool",
+        "army": null,
+        "captor": null,
+        "since": 0,
+        "vendetta": null,
+        "lead": 2,
+        "fame": 30,
+        "culture": "han",
+        "cat": "جو هوان",
+        "src": "hist",
+        "born": 177,
+        "died": 238,
+        "arch": "siege",
+        "style": "careful",
+        "doctrine": "siegecraft",
+        "terrain": [],
+        "units": [
+          "mach"
+        ],
+        "ambition": 2,
+        "rec": {
+          "battles": 0,
+          "wins": 0,
+          "losses": 0,
+          "cities": [],
+          "wounds": 0,
+          "captured": 0,
+          "beaten": [],
+          "famous": []
+        },
+        "titles": [],
+        "mem": [],
+        "scars": [],
+        "friends": [],
+        "wage": 22,
+        "bond": {
+          "trust": 48,
+          "respect": 53,
+          "resentment": 0,
+          "gratitude": 0,
+          "opinion": 51,
+          "ambition": 72
+        },
+        "growth": {
+          "path": "siege",
+          "insight": 0,
+          "level": 0
+        },
+        "dialogue": [
+          {
+            "k": "recruited",
+            "turn": 0,
+            "text": "لي مقام أحفظه. أضع خبرتي في خدمتكم؛ والعهد بيننا يحفظه العمل.",
+            "why": "دخول المجلس"
+          }
+        ],
+        "relationships": {},
+        "leaderFlags": {
+          "recruited:": 0
+        },
+        "observedFid": "wu",
+        "observedStatus": "pool",
+        "contract": {
+          "signed": 0,
+          "expected": 22,
+          "advance": 22
+        },
+        "loy": 67
+      }
+    },
+    "tributes": [],
+    "log": [
+      {
+        "turn": 0,
+        "cat": "pol",
+        "text": "بدأت الحملة. انهارت أسرة هان، وتقاسمت الأرضَ ثلاثُ ممالك. من يوحّد ما تحت السماء؟",
+        "imp": 3,
+        "fids": [],
+        "node": null
+      },
+      {
+        "turn": 0,
+        "cat": "int",
+        "text": "جو هوان يدخل المجلس بعطاء 22 كل دور.",
+        "imp": 2,
+        "fids": [
+          "wu"
+        ],
+        "node": null
+      }
+    ],
+    "over": null,
+    "alerts": [
+      {
+        "id": 1,
+        "turn": 0,
+        "level": "imp",
+        "text": "وفد إلى المجلس: بداية الحملة",
+        "node": null,
+        "army": null,
+        "icon": "helmet",
+        "key": "opp:o30",
+        "cond": false,
+        "until": 2,
+        "win": "opps",
+        "crisis": null
+      }
+    ],
+    "scars": [],
+    "chron": [
+      {
+        "turn": 0,
+        "kind": "start",
+        "text": "شو تبدأ طريقها. انهارت أسرة هان، وتقاسمت الأرضَ ثلاثُ ممالك. من يوحّد ما تحت السماء؟",
+        "fids": [
+          "shu"
+        ],
+        "node": null,
+        "imp": 3,
+        "icon": "flag",
+        "story": null
+      }
+    ],
+    "aid": 2,
+    "wars": {
+      "shu|wei": {
+        "a": "wei",
+        "b": "shu",
+        "since": 0,
+        "ended": null,
+        "st": {
+          "wei": {
+            "kills": 0,
+            "lost": 0,
+            "won": 0,
+            "battles": 0,
+            "took": [],
+            "sieges": 0,
+            "aid": 0
+          },
+          "shu": {
+            "kills": 0,
+            "lost": 0,
+            "won": 0,
+            "battles": 0,
+            "took": [],
+            "sieges": 0,
+            "aid": 0
+          }
+        },
+        "politicalId": "war:shu|wei:0:1"
+      },
+      "wei|wu": {
+        "a": "wei",
+        "b": "wu",
+        "since": 0,
+        "ended": null,
+        "st": {
+          "wei": {
+            "kills": 0,
+            "lost": 0,
+            "won": 0,
+            "battles": 0,
+            "took": [],
+            "sieges": 0,
+            "aid": 0
+          },
+          "wu": {
+            "kills": 0,
+            "lost": 0,
+            "won": 0,
+            "battles": 0,
+            "took": [],
+            "sieges": 0,
+            "aid": 0
+          }
+        },
+        "politicalId": "war:wei|wu:0:2"
+      }
+    },
+    "politics": {
+      "version": 1,
+      "memory": {},
+      "waits": {},
+      "counters": {},
+      "peaces": [],
+      "aiTurns": {},
+      "treaties": {},
+      "offers": {},
+      "serial": 2
+    },
+    "crises": [],
+    "dir": {
+      "calm": 0,
+      "lastStart": -99,
+      "domTurns": 0,
+      "dom": null,
+      "starts": 0,
+      "log": [],
+      "gold": []
+    },
+    "stats": {
+      "acts": {},
+      "cur": {},
+      "hist": [],
+      "dead": 0
+    },
+    "flips": {},
+    "route": {
+      "key": "silk",
+      "name": "طريق الحرير",
+      "path": [
+        "wuwei",
+        "tianshui",
+        "changan",
+        "luoyang",
+        "xuchang"
+      ],
+      "bad": 0,
+      "dead": false
+    },
+    "obj": {
+      "tradeKey": "silk"
+    },
+    "leaders": {
+      "version": 2,
+      "factions": {
+        "shu": {
+          "earned": {
+            "start": 0,
+            "reroll:start": 0
+          },
+          "retiredNames": [],
+          "lastGrant": 0,
+          "lastHire": -99,
+          "serial": 1,
+          "hires": 0,
+          "lastTick": -1,
+          "lossGrants": 0
+        },
+        "wei": {
+          "earned": {
+            "start": 0,
+            "reroll:start": 0
+          },
+          "retiredNames": [],
+          "lastGrant": 0,
+          "lastHire": -99,
+          "serial": 1,
+          "hires": 0,
+          "lastTick": -1,
+          "lossGrants": 0
+        },
+        "wu": {
+          "earned": {
+            "start": 0,
+            "reroll:start": 0
+          },
+          "retiredNames": [
+            "جيانغ تشين"
+          ],
+          "lastGrant": 0,
+          "lastHire": 0,
+          "serial": 1,
+          "hires": 1,
+          "lastTick": -1,
+          "lossGrants": 0
+        },
+        "neutral": {
+          "earned": {},
+          "retiredNames": [],
+          "lastGrant": -99,
+          "lastHire": -99,
+          "serial": 0,
+          "hires": 0,
+          "lastTick": -1,
+          "lossGrants": 0
+        }
+      },
+      "memorials": [],
+      "seed": 3254708327
+    },
+    "oppKeys": {
+      "shu:start": 0,
+      "wei:start": 0,
+      "wu:start": 0
+    },
+    "opps": {
+      "shu": [
+        {
+          "id": "o30",
+          "why": "start",
+          "key": "start",
+          "turn": 0,
+          "expires": 8,
+          "cands": [
+            {
+              "n": "ما ليانغ",
+              "cat": true,
+              "seed": 145161485,
+              "quote": {
+                "total": 21,
+                "reasons": [
+                  "مكانته وخبرته",
+                  "تخصصه القيادي",
+                  "ندرة اختصاصه في المجلس"
+                ],
+                "parts": []
+              }
+            },
+            {
+              "n": "شو شو",
+              "cat": true,
+              "seed": 790173942,
+              "quote": {
+                "total": 19,
+                "reasons": [
+                  "مكانته وخبرته",
+                  "تخصصه القيادي",
+                  "ندرة اختصاصه في المجلس"
+                ],
+                "parts": []
+              }
+            }
+          ],
+          "tries": {},
+          "rerolls": 0
+        }
+      ],
+      "wei": [
+        {
+          "id": "o31",
+          "why": "start",
+          "key": "start",
+          "turn": 0,
+          "expires": 8,
+          "cands": [
+            {
+              "n": "مان تشونغ",
+              "cat": true,
+              "seed": 702455636,
+              "quote": {
+                "total": 23,
+                "reasons": [
+                  "مكانته وخبرته",
+                  "تخصصه القيادي",
+                  "القتال على جبهات متعددة"
+                ],
+                "parts": []
+              }
+            },
+            {
+              "n": "شو تشو",
+              "cat": true,
+              "seed": 823309867,
+              "quote": {
+                "total": 21,
+                "reasons": [
+                  "مكانته وخبرته",
+                  "تخصصه القيادي",
+                  "القتال على جبهات متعددة"
+                ],
+                "parts": []
+              }
+            }
+          ],
+          "tries": {
+            "0": 1
+          },
+          "rerolls": 0
+        }
+      ],
+      "wu": [],
+      "neutral": []
+    },
+    "draft": {
+      "shu": 1,
+      "wei": 1,
+      "wu": 1,
+      "neutral": 0
+    },
+    "qaSentinel": "synthetic-chinese-save-preserve-exactly"
+  }
+}

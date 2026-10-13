@@ -1,0 +1,13 @@
+PASS X keeps the undo stack intact and remains dismissed through 25 UI shows
+PASS a genuine new same-turn action shows, but undoing it cannot revive an older dismissed action
+PASS distinct dismissals survive revealing older entries and token IDs are never reused
+PASS the 12-action cap prunes discarded dismissal identities without reviving retained entries
+PASS invalidating a newer action does not resurrect a dismissed valid older action
+PASS clear resets only Undo UI state and a new action can notify immediately
+PASS advancing the turn invalidates UI generation and never restores previous-turn actions
+PASS save/load and a new campaign discard closure-bound undo entries without changing save data
+PASS a failed load preserves the active campaign, undo stack and dismissal identities
+PASS refresh preserves a single DOM bar and stable accessible buttons, including during pointer activation
+PASS real construction Undo still refunds correctly after dismissal and newer action Undo
+PASS real recruitment stays undoable after X and restores soldiers, manpower and gold
+PASS 12 Phase F Undo checks

@@ -1,0 +1,6 @@
+Independent save QA | source=C:\Users\Abdul\Game-war | fixture baseline=2deaa02de02b1e87321d01651ec725da19930ede
+PASS [phase-r] R09 new game preserves unreadable/unsupported auto: malformed JSON
+PASS [phase-r] R09 new game preserves unreadable/unsupported auto: missing metadata
+PASS [phase-r] R09 new game preserves unreadable/unsupported auto: future schema
+RESULT executed=3 passed=3 failed=0 skipped=0
+NOT AUTOMATED: physical-device Safari/Chrome, real-owner-save acceptance, actual export/download and legacy-version restore, real crash/storage durability, cross-tab races.

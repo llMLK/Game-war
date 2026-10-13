@@ -1,0 +1,40 @@
+PASS Umayyad saves roundtrip all normalized fields
+PASS supported Umayyad schema 1
+PASS supported Umayyad schema 2
+PASS supported Umayyad schema 3
+PASS supported Umayyad schema 4
+PASS supported Umayyad schema 5
+PASS incomplete display fields derive from supported state
+PASS incomplete display fields derive from supported state
+PASS absent envelope metadata is rejected and protected before replacement
+PASS safe rejection: unknown scenario
+PASS safe rejection: future schema
+PASS safe rejection: future explicit schema
+PASS safe rejection: invalid schema
+PASS safe rejection: mismatched title
+PASS safe rejection: missing factions
+PASS safe rejection: missing nodes
+PASS safe rejection: missing armies
+PASS safe rejection: missing generals
+PASS safe rejection: invalid node
+PASS safe rejection: invalid army
+PASS safe rejection: invalid player
+PASS safe rejection: cancelled v4 layout
+PASS malformed raw {broken
+PASS malformed raw null
+PASS malformed raw {}
+PASS malformed raw {"meta":{}}
+PASS Chinese manual bytes preserved, rejected before normalization
+PASS only Umayyad direct activation, active state untouched
+PASS verified Chinese backup before new campaign; retries idempotent
+PASS v1 Chinese auto retained and separately backed up
+PASS backup failure blocks replacement: quota
+PASS backup failure blocks replacement: denied
+PASS backup failure blocks replacement: truncated-backup
+PASS backup failure blocks replacement: interrupted-index
+PASS backup failure blocks replacement: unreadable-verification
+PASS different autosaves get independent exact backups
+PASS malformed legacy index never replaces auto
+PASS load failure rolls back current state, leaves raw intact
+PASS explicit slot deletion removes only displayed source, not another v1 save
+39/39 save cases passed

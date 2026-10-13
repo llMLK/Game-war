@@ -5,38 +5,6 @@
 
 // ——— مادة تاريخية لكل سيناريو ———
 const WORLD_DATA = {
-  threeKingdoms: {
-    plague: 'الوباء',
-    rulers: { shu: ['ليو باي', 47], wei: ['تساو تساو', 53], wu: ['سون تشوان', 26] },
-    hordes: [
-      {
-        key: 'xianbei', name: 'الشيانبي', people: 'قبائل الشيانبي', color: '#8a6a3c', from: 'سهوب الشمال', dir: 'الشمال', away: 'الغرب البعيد',
-        gates: [['wuwei', 'tianshui'], ['luoyang', 'xuchang']],
-        leaders: [['كبي نينغ', 'cavalier', null, 3], ['بو دو غن', 'swift', 'harsh', 2], ['سو لي', 'archer', null, 2]],
-        beyond: ['حصون السور العظيم الغربية', 'مراعي الوو هوان', 'إمارة داي'],
-        units: { horsearcher: 5, cavalry: 3, spear: 1, sword: 1 },
-      },
-      {
-        key: 'nanman', name: 'النانمان', people: 'قبائل النانمان', color: '#5f6e2d', from: 'أدغال الجنوب', dir: 'الجنوب', away: 'ممالك الجنوب البعيدة',
-        gates: [['nanzhong', 'jiangzhou'], ['jiaozhou', 'changsha']],
-        leaders: [['مولو ملك الوحوش', 'brave', 'reckless', 2], ['وو تو قو', 'defender', null, 3], ['تشو رونغ', 'swift', null, 2]],
-        beyond: ['ممالك يونان', 'قرى الأدغال الحدودية'],
-        units: { sword: 3, spear: 3, archer: 2, cavalry: 0.5 },
-      },
-    ],
-    migrants: [{ key: 'qiang', name: 'التشيانغ', people: 'قبائل التشيانغ', color: '#7d5a44', from: 'هضاب الغرب', gates: ['wuwei', 'tianshui', 'hanzhong'], leader: ['يو فو لوو', 'mountaineer', null, 2], units: { cavalry: 3, horsearcher: 2, spear: 2 } }],
-    uprisings: { def: ['بقايا العمائم الصفراء', 'جانغ يان'], shu: ['أتباع طريق الأرزات الخمسة', 'جانغ شيو'] },
-    stars: [['جونغ هوي', 'tactician', 'arrogant'], ['لو كانغ', 'defender', null], ['يانغ هو', 'merchant', null], ['وين يانغ', 'brave', 'reckless'], ['دو يو', 'siege', null], ['شو شنغ', 'naval', null]],
-    mercs: [
-      { name: 'عصابات بايبو', leader: 'هان شيان', trait: 'swift', units: { sword: 3, spear: 2, archer: 2 } },
-      { name: 'قراصنة البحيرة', leader: 'جانغ باو', trait: 'naval', units: { sword: 3, archer: 3, spear: 1 } },
-    ],
-    routes: [
-      { key: 'silk', name: 'طريق الحرير', path: ['wuwei', 'tianshui', 'changan', 'luoyang', 'xuchang'] },
-      { key: 'brocade', name: 'طريق الديباج', path: ['chengdu', 'jiangzhou', 'yongan', 'jiangling', 'chaisang', 'jianye'] },
-      { key: 'sea', name: 'طريق البحر الجنوبي', path: ['jiaozhou', 'kuaiji', 'jianye'] },
-    ],
-  },
   umayyad: {
     plague: 'الطاعون',
     rulers: { umayyad: ['سليمان بن عبد الملك', 41, 'merchant', 'greedy', 2], byzantine: ['ثيودوسيوس', 55], khazar: ['خاقان الخزر', 44, 'cavalier', null, 2] },

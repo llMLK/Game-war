@@ -6,7 +6,7 @@ const { createContext } = require('./harness.cjs');
 const c = createContext(98), failures = [];
 let passed = 0;
 const read = code => JSON.parse(c.run(`JSON.stringify(${code})`));
-const fresh = scenario => c.run(`Game.newGame('${scenario}','${scenario === 'umayyad' ? 'umayyad' : 'shu'}','normal');`);
+const fresh = (scenario='umayyad', player='umayyad') => c.run(`Game.newGame('${scenario}','${player}','normal');`);
 const viewports = [[1440,900],[1024,768],[844,390],[390,844],[360,740],[320,568]];
 const oldWestIds = ['constantinople','nicaea','amorium','ancyra','caesarea','trebizond','tarsus','malatya','antioch','aleppo','damascus','palmyra','raqqa','mosul','kufa','dvin','tiflis','cherson','derbent','balanjar','samandar','atil'];
 function test(name, fn) {
@@ -23,8 +23,8 @@ function setupCamera(w, h, sheet) {
 }
 
 test('world and screen transforms round-trip at every supported viewport and zoom', () => {
-  for (const scenario of ['umayyad','threeKingdoms']) {
-    fresh(scenario);
+  for (const player of ['umayyad','byzantine','khazar']) {
+    const scenario='umayyad'; fresh(scenario,player);
     for (const [w,h] of viewports) for (const sheet of [false,true]) {
       setupCamera(w,h,sheet);
       const errors = read(`(() => {
@@ -45,8 +45,8 @@ test('world and screen transforms round-trip at every supported viewport and zoo
 
 test('every settlement can be focused inside the unobstructed frame at all zoom levels', () => {
   let count = 0;
-  for (const scenario of ['umayyad','threeKingdoms']) {
-    fresh(scenario);
+  for (const player of ['umayyad','byzantine','khazar']) {
+    const scenario='umayyad'; fresh(scenario,player);
     for (const [w,h] of viewports) for (const sheet of [false,true]) {
       setupCamera(w,h,sheet);
       const result = read(`(() => {
@@ -65,8 +65,8 @@ test('every settlement can be focused inside the unobstructed frame at all zoom 
 });
 
 test('camera clamps finite coordinates at all extreme bounds and pan directions', () => {
-  for (const scenario of ['umayyad','threeKingdoms']) {
-    fresh(scenario);
+  for (const player of ['umayyad','byzantine','khazar']) {
+    const scenario='umayyad'; fresh(scenario,player);
     for (const [w,h] of viewports) {
       setupCamera(w,h,true);
       const errors = read(`(() => {
@@ -87,8 +87,8 @@ test('camera clamps finite coordinates at all extreme bounds and pan directions'
 
 test('zoom keeps the finger anchor stable whenever the map boundary does not constrain it', () => {
   let checks = 0;
-  for (const scenario of ['umayyad','threeKingdoms']) {
-    fresh(scenario);
+  for (const player of ['umayyad','byzantine','khazar']) {
+    const scenario='umayyad'; fresh(scenario,player);
     for (const [w,h] of viewports) for (const sheet of [false,true]) {
       setupCamera(w,h,sheet);
       const result = read(`(() => {
@@ -114,8 +114,8 @@ test('zoom keeps the finger anchor stable whenever the map boundary does not con
 });
 
 test('resize preserves the camera location and zoom when they remain legal', () => {
-  for (const scenario of ['umayyad','threeKingdoms']) {
-    fresh(scenario);
+  for (const player of ['umayyad','byzantine','khazar']) {
+    const scenario='umayyad'; fresh(scenario,player);
     setupCamera(390,844,false);
     const result = read(`(() => {
       const cam=cameraScene.cam;cam.z=2.8;cam.x=MW/2;cam.y=MH/2;cam.clamp();
@@ -145,12 +145,16 @@ test('legacy 22-city western save expands to the atlas without resetting armies,
   assert.deepEqual(read(`Game.S.nodes.filter(n=>{const d=Game.sc.nodes.find(d=>d.id===n.id);return n.x!==d.x||n.y!==d.y;}).map(n=>n.id)`),[]);
 });
 
-test('legacy 20-city Three Kingdoms save keeps its city set, units and progression', () => {
-  prepareOld('threeKingdoms');
-  const before = read(`({ids:Game.S.nodes.map(n=>n.id),turn:Game.S.turn,gold:Game.f('shu').gold,armies:Game.S.armies.map(a=>({id:a.id,node:a.node,gen:a.gen,regs:a.regs}))})`);
-  c.run(`Game.save('2');Game.S=null;Game.load('2');`);
-  assert.deepEqual(read(`({ids:Game.S.nodes.map(n=>n.id),turn:Game.S.turn,gold:Game.f('shu').gold,armies:Game.S.armies.map(a=>({id:a.id,node:a.node,gen:a.gen,regs:a.regs}))})`),before);
-  assert.equal(before.ids.length,20);
+test('unsupported synthetic 20-city Chinese legacy save is rejected and preserved byte-for-byte', () => {
+  fresh();
+  const before=read('Game.S'),data=read("Game.readSlot('auto')");
+  data.S.scenario=data.meta.scenario='threeKingdoms';data.S.player=data.meta.player='shu';data.S.v=3;data.S.nodes=data.S.nodes.slice(0,20);
+  const raw=JSON.stringify(data,null,2);c.saved.set('swords-kingdoms-v2:1',raw);
+  assert.equal(c.run("Game.load('1')"),null);
+  assert.equal(c.saved.get('swords-kingdoms-v2:1'),raw);
+  assert.deepEqual(read('Game.S'),before);
+  assert.equal(JSON.parse(c.saved.get('swords-kingdoms-v2:1')).S.nodes.length,20);
+  assert.match(c.run("Game.readSlot('1').bad"),/غير مدعوم/);
 });
 
 test('atlas expansion never revives an eliminated state through newly added cities', () => {

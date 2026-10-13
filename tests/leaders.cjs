@@ -1,13 +1,15 @@
 const assert=require('node:assert/strict');
 const {createContext}=require('./harness.cjs');
 const tests=[];function test(name,fn){tests.push([name,fn]);}
-function world(s='umayyad',p='umayyad'){const c=createContext(11);c.run(`Game.newGame('${s}','${p}','normal')`);return {c,G:c.run('Game'),P:p};}
+function world(s='umayyad',p='umayyad',difficulty='normal'){const c=createContext(11);c.run(`Game.newGame('${s}','${p}','${difficulty}')`);return {c,G:c.run('Game'),P:p};}
+// Synthetic campaign relationships exercise shared mechanics, not historical claims.
+function friendPair(w){const G=w.G,g=G.gensOf(w.P).find(g=>g.name==='مسلمة بن عبد الملك'),friend=G.gensOf(w.P).find(g=>g.name==='العباس بن الوليد');assert.ok(g&&friend);for(const [a,b]of [[g,friend],[friend,g]]){a.friends=[...new Set([...a.friends,b.id])];a.relationships[b.id]={kind:'friend',since:G.S.turn};}return {g,friend};}
 function opOf(w){return w.G.oppsOf(w.P)[0];}
 function seedFor(w,candidate,predicate){for(let n=1;n<20000;n++)if(predicate(w.c.run(`rng(${n})()`))){candidate.seed=n;return;}throw Error('seed');}
 function hire(w,op=opOf(w),idx=0){const cand=op.cands[idx];seedFor(w,cand,r=>r<.5);return w.G.proposeContract(w.P,op.id,idx,Math.floor(w.G.candView(cand,w.P).demand.total*1.4),false);}
-test('Six campaign starts: valid two-candidate opportunities, capacity and state',()=>{
- for(const [s,p]of [['umayyad','umayyad'],['umayyad','byzantine'],['umayyad','khazar'],['threeKingdoms','shu'],['threeKingdoms','wei'],['threeKingdoms','wu']]){
-  const w=world(s,p),op=opOf(w);assert.equal(op.cands.length,2);assert.notEqual(op.cands[0].n,op.cands[1].n);assert.equal(w.G.draftOf(p),1);w.G.validate();assert.equal(w.c.errors.length,0);
+test('Six supported faction/difficulty starts: valid two-candidate opportunities, capacity and state',()=>{
+ for(const p of ['umayyad','byzantine','khazar'])for(const difficulty of ['normal','hard']){
+  const w=world('umayyad',p,difficulty),op=opOf(w);assert.equal(op.cands.length,2);assert.notEqual(op.cands[0].n,op.cands[1].n);assert.equal(w.G.draftOf(p),1);w.G.validate();assert.equal(w.c.errors.length,0);
  }
 });
 test('Earned keys including turn zero cannot grant twice; cooldown and bank cap',()=>{
@@ -64,10 +66,10 @@ test('Capture, valid rescue, invalid rescue and repeated fate callbacks are safe
  const snapshot=JSON.stringify([g,G.f(w.P).gold,G.f('byzantine').gold]);assert.ok(G.ransomCaptive(g,'khazar',1));assert.ok(G.ransomCaptive(g,'byzantine',-1));assert.equal(JSON.stringify([g,G.f(w.P).gold,G.f('byzantine').gold]),snapshot);G.f(w.P).gold=10000;const trust=g.bond.trust;G.ransomCaptive(g,'byzantine',150);assert.equal(g.status,'pool');assert.ok(g.bond.trust>trust);assert.ok(G.ransomCaptive(g,'byzantine',150));
 });
 test('Execution records a loss without generating a fictional replacement; invalid execution does nothing',()=>{
- const w=world('threeKingdoms','shu'),G=w.G,g=G.gensOf(w.P).find(x=>x.name==='قوان يو'),friend=G.gensOf(w.P).find(x=>x.name==='جانغ في'),n=Object.keys(G.S.gens).length;assert.ok(G.executeCaptive(g,'wei'));assert.equal(g.status,'army');G.setGenFate(g,'captured','wei');const trust=friend.bond.trust;G.executeCaptive(g,'wei');assert.equal(g.status,'dead');assert.equal(Object.keys(G.S.gens).length,n);assert.ok(friend.bond.trust<trust);assert.ok(G.S.leaders.memorials.some(m=>m.id===g.id));const memorials=G.S.leaders.memorials.length;assert.ok(G.executeCaptive(g,'wei'));assert.equal(G.S.leaders.memorials.length,memorials);
+ const w=world(),G=w.G,{g,friend}=friendPair(w),n=Object.keys(G.S.gens).length;assert.ok(G.executeCaptive(g,'byzantine'));assert.equal(g.status,'army');G.setGenFate(g,'captured','byzantine');const trust=friend.bond.trust;G.executeCaptive(g,'byzantine');assert.equal(g.status,'dead');assert.equal(Object.keys(G.S.gens).length,n);assert.ok(friend.bond.trust<trust);assert.ok(G.S.leaders.memorials.some(m=>m.id===g.id));const memorials=G.S.leaders.memorials.length;assert.ok(G.executeCaptive(g,'byzantine'));assert.equal(G.S.leaders.memorials.length,memorials);
 });
 test('Defection produces a memorial and surviving friendship becomes rivalry',()=>{
- const w=world('threeKingdoms','shu'),G=w.G,g=G.gensOf(w.P).find(x=>x.name==='قوان يو'),friend=G.gensOf(w.P).find(x=>x.name==='جانغ في');g.fid='wei';G.S.turn=1;G.leaderTick();assert.ok(G.S.leaders.memorials.some(m=>m.id===g.id&&m.fid==='shu'&&m.fate==='betrayed'));assert.equal(friend.relationships[g.id].kind,'rival');
+ const w=world(),G=w.G,{g,friend}=friendPair(w);g.fid='byzantine';G.S.turn=1;G.leaderTick();assert.ok(G.S.leaders.memorials.some(m=>m.id===g.id&&m.fid==='umayyad'&&m.fate==='betrayed'));assert.equal(friend.relationships[g.id].kind,'rival');
 });
 test('Specialized growth persists, grants mobility only to qualified leaders; officers stay modest',()=>{
  const w=world(),G=w.G,g=G.gensOf(w.P).find(g=>g.name==='مسلمة بن عبد الملك'),a=G.army(g.army);const trait=g.trait,mp=G.mpMax(a);G.gainXp(g,25);assert.equal(g.growth.level,1);assert.equal(g.trait,trait);assert.equal(G.mpMax(a),mp+1);G.gainXp(g,500);assert.equal(g.growth.level,2);assert.equal(G.mpMax(a),mp+1);const officer=G.officer(w.P);G.gainXp(officer,999);assert.equal(officer.rank,1);assert.equal(officer.xp,0);G.save('slot1');G.load('slot1');assert.equal(G.gen(g.id).growth.level,2);
@@ -77,8 +79,8 @@ test('Late-game treasury does not buy opportunities; repeated losses and recaptu
  for(let i=0;i<200;i++)G.grantOpp(w.P,'city','city:damascus');assert.equal(G.oppsOf(w.P).length,1);const op=opOf(w);assert.equal(op.cands.length,2);G.dropOpp(w.P,op.id);G.S.turn=304;assert.equal(G.grantOpp(w.P,'city','city:damascus'),null);
  let count=0;for(let i=0;i<15;i++){G.S.turn=312+i*8;const o=G.grantOpp(w.P,'loss','lost:'+i);if(o){count++;G.dropOpp(w.P,o.id);}}assert.ok(count<=2);assert.equal(G.leaderState(w.P).lossGrants,count);
 });
-test('End-round and world-tick integration stay runnable for both scenarios',async()=>{
- for(const [s,p]of [['umayyad','umayyad'],['threeKingdoms','shu']]){const w=world(s,p),G=w.G;for(let n=0;n<24;n++){G.endRound();await G.worldTick();}G.save('slot1');assert.ok(G.load('slot1'));assert.ok(G.oppsOf(p).length<=2);assert.ok(G.draftOf(p)<=3);assert.equal(w.c.errors.length,0,w.c.errors.join('\n'));for(const g of Object.values(G.S.gens)){assert.ok(Number.isFinite(g.bond.trust));assert.ok(Number.isFinite(G.wageDemand(g).total));}}
+test('End-round and world-tick integration stay runnable for supported factions',async()=>{
+ for(const p of ['umayyad','byzantine','khazar']){const w=world('umayyad',p),G=w.G;for(let n=0;n<24;n++){G.endRound();await G.worldTick();}G.save('slot1');assert.ok(G.load('slot1'));assert.ok(G.oppsOf(p).length<=2);assert.ok(G.draftOf(p)<=3);assert.equal(w.c.errors.length,0,w.c.errors.join('\n'));for(const g of Object.values(G.S.gens)){assert.ok(Number.isFinite(g.bond.trust));assert.ok(Number.isFinite(G.wageDemand(g).total));}}
 });
 
 test('Context and personality change spoken reactions; city service and scars are recorded',()=>{
@@ -87,16 +89,18 @@ test('Context and personality change spoken reactions; city service and scars ar
  const army=G.army(a.army),node=G.node(army.node);G.recordCapture(node,w.P,[army]);assert.equal(a.dialogue.at(-1).k,'city');assert.ok(a.rec.cities.includes(node.name));
  const enc={node:node.id,kind:'field',type:'battle'},side={attGens:[a],defGens:[b],attRegs:army.regs,defRegs:[],attArmies:[army],defArmies:[]};G.recordBattle(enc,{winner:1,fates:{},wounded:[a.id]},side);assert.equal(a.rec.losses,1);assert.equal(a.rec.wounds,1);assert.equal(a.dialogue.at(-1).k,'defeat');assert.ok(a.scars.length);
 });
-test('Historical rivals link when hired later and exert political pressure',()=>{
- const w=world('threeKingdoms','wu'),G=w.G,op=opOf(w);op.cands[0]={n:'لينغ تونغ',cat:true,seed:1};G.freezeCandidate(op.cands[0],w.P);const r=hire(w,op,0);assert.ok(r.ok);const gan=G.gensOf(w.P).find(g=>g.name==='غان نينغ');assert.equal(gan.relationships[r.g.id].kind,'rival');assert.equal(r.g.relationships[gan.id].kind,'rival');assert.ok(G.genLoyParts(r.g).some(([label,value])=>label==='منافس في المجلس'&&value<0));
+test('Synthetic catalog rivals link when hired later and exert political pressure',()=>{
+ const w=world(),G=w.G,op=opOf(w),incumbent=G.gensOf(w.P).find(g=>g.name==='مسلمة بن عبد الملك');G.catFind(incumbent.name).rivals=['طارق بن زياد'];G.catFind('طارق بن زياد').rivals=[incumbent.name];op.cands[0]={n:'طارق بن زياد',cat:true,seed:1};G.freezeCandidate(op.cands[0],w.P);G.f(w.P).gold=10000;const r=hire(w,op,0);assert.ok(r.ok);assert.equal(incumbent.relationships[r.g.id].kind,'rival');assert.equal(r.g.relationships[incumbent.id].kind,'rival');assert.ok(G.genLoyParts(r.g).some(([label,value])=>label==='منافس في المجلس'&&value<0));
 });
 test('Prestige adds social abilities and mentorship rather than only raw bonuses',()=>{
- const w=world('threeKingdoms','wei'),G=w.G,tutor=G.gensOf(w.P).find(g=>g.name==='تساو تساو'),pupil=G.gensOf(w.P).find(g=>g.name==='شياهو دون');
+ const w=world(),G=w.G,tutor=G.gensOf(w.P).find(g=>g.name==='مسلمة بن عبد الملك'),pupil=G.gensOf(w.P).find(g=>g.name==='العباس بن الوليد');
+ // Synthetic earned prestige enables mentoring at the same threshold as the old fixture.
+ tutor.fame=75;tutor.loy=75;
  tutor.status=pupil.status='pool';tutor.army=pupil.army=null;pupil.xp=-1;G.S.turn=4;G.leaderTick();assert.equal(pupil.xp,0);assert.ok(pupil.dialogue.some(d=>d.k==='lesson'));assert.equal(G.leaderPerks(tutor).length,3);G.leaderTick();assert.equal(pupil.xp,0);
- const w2=world('threeKingdoms','shu'),g=w2.G.gensOf('shu').find(g=>g.name==='قوان يو'),friend=w2.G.gensOf('shu').find(g=>g.name==='جانغ في'),trust=friend.bond.trust;w2.G.f('shu').gold=10000;w2.G.honorGeneral('shu',g);assert.ok(friend.bond.trust>trust);assert.equal(friend.dialogue.at(-1).k,'peerHonor');
+ const w2=world(),{g,friend}=friendPair(w2),trust=friend.bond.trust;w2.G.f(w2.P).gold=10000;w2.G.honorGeneral(w2.P,g);assert.ok(friend.bond.trust>trust);assert.equal(friend.dialogue.at(-1).k,'peerHonor');
 });
 test('Direct event deaths have consequences once; expired opportunities never reopen',()=>{
- const w=world('threeKingdoms','shu'),G=w.G,g=G.gensOf(w.P).find(g=>g.name==='قوان يو'),friend=G.gensOf(w.P).find(g=>g.name==='جانغ في'),trust=friend.bond.trust;g.status='dead';G.S.turn=1;G.leaderTick();assert.ok(friend.bond.trust<trust);assert.ok(G.S.leaders.memorials.some(m=>m.id===g.id));const rep=G.f(w.P).rep;G.S.turn=2;G.leaderTick();assert.equal(G.f(w.P).rep,rep);
+ const w=world(),G=w.G,{g,friend}=friendPair(w),trust=friend.bond.trust;g.status='dead';G.S.turn=1;G.leaderTick();assert.ok(friend.bond.trust<trust);assert.ok(G.S.leaders.memorials.some(m=>m.id===g.id));const rep=G.f(w.P).rep;G.S.turn=2;G.leaderTick();assert.equal(G.f(w.P).rep,rep);
  const w2=world(),op=opOf(w2);w2.G.S.turn=op.expires;assert.ok(w2.G.proposeContract(w2.P,op.id,0,20,false).err);w2.G.leaderTick();assert.equal(w2.G.oppsOf(w2.P).length,0);assert.ok(op.cands.every(c=>w2.G.leaderState(w2.P).retiredNames.includes(c.n)));
 });
 test('Geography and political context gate recruitment and salary expectations',()=>{

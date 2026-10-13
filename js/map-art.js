@@ -14,7 +14,6 @@ class MapArt {
     mapDimensions(sc);
     this.sc = sc;
     this.colorOf = opts.colorOf || (() => '#8a8378');
-    this.style = sc.id === 'threeKingdoms' ? 'east' : 'west';
     this.sprites = new Map();
     // Baked sprites remain sharp at phone zoom without 66 large fivefold canvases.
     this.K = sc.nodes.length > 40 ? 2.5 : 3;
@@ -61,7 +60,6 @@ class MapArt {
   rad(n) { return [12.5, 15, 17.5, 20.5][this.tier(n)] + (n.capital ? 1.5 : 0) + Math.min(n.walls || 0, 4) * 0.9; }
 
   culture(n) {
-    if (this.style === 'east') return 'east';
     const origin = n.origOwner || (this.nodesDef.find((p) => p.id === n.id) || {}).owner || n.owner;
     return origin === 'byzantine' ? 'roman' : origin === 'khazar' ? 'steppe' : 'umayyad';
   }
@@ -126,9 +124,9 @@ class MapArt {
 
     // الأرض
     const base = g.createLinearGradient(0, 0, MW, MH);
-    base.addColorStop(0, this.style === 'east' ? '#e4d8b8' : '#eee0ba');
-    base.addColorStop(.55, this.style === 'east' ? '#c7c6a1' : '#d9c89c');
-    base.addColorStop(1, this.style === 'east' ? '#c8b68f' : '#c4a574');
+    base.addColorStop(0, '#eee0ba');
+    base.addColorStop(.55, '#d9c89c');
+    base.addColorStop(1, '#c4a574');
     g.fillStyle = base; g.fillRect(0, 0, MW, MH);
     // بقع لونية حسب التضاريس
     const tint = { forest: 'rgba(96,128,68,.30)', hills: 'rgba(140,138,80,.22)', mountains: 'rgba(120,105,85,.26)', plains: 'rgba(150,170,90,.16)', river: 'rgba(120,160,95,.2)', coast: 'rgba(200,190,140,.18)', desert: 'rgba(225,195,130,.3)' };
@@ -306,7 +304,7 @@ class MapArt {
         const x = ax + (bx - ax) * t + side * (by - ay) / (len || 1) * 7;
         const y = ay + (by - ay) * t - side * (bx - ax) / (len || 1) * 7;
         if (nearNode(x, y, 28) || nearRoad(x, y, 4)) continue;
-        const kind = this.style !== 'east' && y > MH * 0.42 ? 'palm' : 'round';
+        const kind = y > MH * 0.42 ? 'palm' : 'round';
         place(x, y, () => tree(x, y, 2.8 + r(), kind));
       }
     }
@@ -429,7 +427,6 @@ class MapArt {
     const culture = this.culture(n);
     const L = { ...(this.layout[n.id] || this.nodeLayout(n)), culture };
     const r = rng(L.seed);
-    const east = culture === 'east';
     const tier = this.tier(n);
     const walls = Math.min(4, n.walls || 0);
     const avoid = (a) => L.angs.some((b) => Math.abs(angDiff(a, b)) < 0.42);
@@ -529,10 +526,10 @@ class MapArt {
 
   wallRing(L, R, r) {
     const pts = [];
-    if (L.culture === 'roman' || L.culture === 'east' || L.culture === 'umayyad') {
+    if (L.culture === 'roman' || L.culture === 'umayyad') {
       // Rectangular urban circuits, with bevelled corners, replace identical tokens.
-      const shape = L.culture === 'roman' ? [[1, 0], [1, .6], [.72, .87], [-.7, .87], [-1, .62], [-1, -.6], [-.72, -.86], [.72, -.86], [1, -.6]] : L.culture === 'east' ? [[1, 0], [1, .73], [.78, .9], [-.8, .9], [-1, .72], [-1, -.73], [-.78, -.9], [.8, -.9], [1, -.73]] : [[1, 0], [.92, .62], [.5, .91], [-.62, .83], [-1, .36], [-.94, -.57], [-.38, -.84], [.67, -.78], [1, -.4]];
-      const a = L.culture === 'roman' ? -0.2 : L.culture === 'east' ? 0.12 : -0.1;
+      const shape = L.culture === 'roman' ? [[1, 0], [1, .6], [.72, .87], [-.7, .87], [-1, .62], [-1, -.6], [-.72, -.86], [.72, -.86], [1, -.6]] : [[1, 0], [.92, .62], [.5, .91], [-.62, .83], [-1, .36], [-.94, -.57], [-.38, -.84], [.67, -.78], [1, -.4]];
+      const a = L.culture === 'roman' ? -0.2 : -0.1;
       for (const [x, y] of shape) { const jitter = .96 + r() * .07; pts.push([(x * Math.cos(a) - y * Math.sin(a)) * R * jitter, (x * Math.sin(a) + y * Math.cos(a)) * R * jitter]); }
       // Gate position remains tied to a real road for the street and port drawing.
       const gate = pts.reduce((best, p, i) => Math.abs(angDiff(Math.atan2(p[1], p[0]), L.gate)) < Math.abs(angDiff(Math.atan2(pts[best][1], pts[best][0]), L.gate)) ? i : best, 0);
@@ -606,7 +603,6 @@ class MapArt {
   }
   house(g, q, culture, burnt) {
     const { x, y, w, d } = q;
-    const east = culture === 'east';
     if (culture === 'steppe') {
       g.fillStyle = 'rgba(64,44,25,.25)'; g.beginPath(); g.ellipse(x + .6, y + .9, w * .7, d * .45, 0, 0, TAU); g.fill();
       g.fillStyle = burnt ? '#655344' : '#dacdaf'; g.beginPath(); g.ellipse(x, y, w * .64, d * .5, 0, 0, Math.PI); g.lineTo(x - w * .64, y - d * .22); g.quadraticCurveTo(x, y - d * 1.3, x + w * .64, y - d * .22); g.closePath(); g.fill();
@@ -623,12 +619,7 @@ class MapArt {
       g.fillStyle = '#927a55'; g.fillRect(x + w * .12, y + d * .12, .55, d * .38); return;
     }
     g.fillStyle = 'rgba(40,28,15,.28)'; g.fillRect(x - w / 2 + 0.6, y - d / 2 + 0.8, w, d);
-    if (east) {
-      g.fillStyle = burnt ? '#6d5a48' : '#e3d7bd'; g.fillRect(x - w / 2, y - d * 0.1, w, d * 0.6);
-      g.fillStyle = burnt ? '#2e2620' : '#4d5560';
-      g.beginPath(); g.moveTo(x - w / 2 - 0.6, y); g.lineTo(x - w / 2 + 0.3, y - d * 0.75); g.lineTo(x + w / 2 - 0.3, y - d * 0.75); g.lineTo(x + w / 2 + 0.6, y); g.closePath(); g.fill();
-      g.strokeStyle = burnt ? '#1c1612' : '#343a42'; g.lineWidth = 0.35; g.beginPath(); g.moveTo(x - w / 2 + 0.3, y - d * 0.75); g.lineTo(x + w / 2 - 0.3, y - d * 0.75); g.stroke();
-    } else {
+    {
       g.fillStyle = burnt ? '#5f5043' : '#cdb991'; g.fillRect(x - w / 2, y - d / 2 + d * 0.55, w, d * 0.35);
       g.fillStyle = burnt ? '#3b322a' : '#eadcb8'; g.fillRect(x - w / 2, y - d / 2, w, d * 0.58);
       g.strokeStyle = 'rgba(120,95,60,.6)'; g.lineWidth = 0.3; g.strokeRect(x - w / 2, y - d / 2, w, d * 0.58);
@@ -652,7 +643,6 @@ class MapArt {
     g.strokeStyle = 'rgba(60,45,30,.7)'; g.lineWidth = 0.3; g.beginPath(); g.moveTo(x - s, y + s * 0.5); g.lineTo(x, y - s); g.lineTo(x + s, y + s * 0.5); g.stroke();
   }
   palace(g, culture, tier, burnt) {
-    const east = culture === 'east';
     if (culture === 'roman') {
       const s = 4 + tier * .8;
       g.fillStyle = 'rgba(53,40,27,.28)'; g.fillRect(-s + 1, -s * .4, s * 2.2, s * 1.4);
@@ -678,16 +668,7 @@ class MapArt {
       this.house(g, { x: -s * 1.3, y: s * .6, w: 3.6, d: 3 }, 'steppe', burnt);
       return;
     }
-    if (east) {
-      const w = 6 + tier;
-      g.fillStyle = 'rgba(40,28,15,.3)'; g.fillRect(-w / 2 + 0.8, -1, w, 4.4);
-      g.fillStyle = '#e8dcc0'; g.fillRect(-w / 2, -2.4, w, 4.2);
-      g.fillStyle = burnt ? '#3b2a22' : '#9b3226'; g.fillRect(-w / 2 + 0.6, -1.2, w - 1.2, 2.6);
-      g.fillStyle = burnt ? '#2a221c' : '#3f4852';
-      g.beginPath(); g.moveTo(-w / 2 - 1.4, -2); g.quadraticCurveTo(-w / 2, -2.4, -w / 2 + 0.8, -4.6); g.lineTo(w / 2 - 0.8, -4.6); g.quadraticCurveTo(w / 2, -2.4, w / 2 + 1.4, -2); g.closePath(); g.fill();
-      g.beginPath(); g.moveTo(-w / 3 - 1, -4.8); g.quadraticCurveTo(-w / 3, -5, -w / 3 + 0.6, -6.6); g.lineTo(w / 3 - 0.6, -6.6); g.quadraticCurveTo(w / 3, -5, w / 3 + 1, -4.8); g.closePath(); g.fill();
-      g.fillStyle = '#d9b45a'; g.fillRect(-0.4, -7.4, 0.8, 0.8);
-    } else {
+    {
       // Early courtyard complex: low prayer hall and square corner pavilions.
       // No later Ottoman pencil minaret or oversized bulbous dome.
       const s = 4.4 + tier * .65;
@@ -703,12 +684,11 @@ class MapArt {
     }
   }
   keep(g, R, culture) {
-    const east = culture === 'east';
     const s = R * 0.3;
     g.fillStyle = 'rgba(40,28,15,.35)'; g.fillRect(-s + 1, -s + 1, s * 2, s * 2);
     g.fillStyle = '#4a4034'; g.fillRect(-s - 0.5, -s - 0.5, s * 2 + 1, s * 2 + 1);
     g.fillStyle = '#b8ad93'; g.fillRect(-s, -s, s * 2, s * 2);
-    g.fillStyle = east ? '#4d5560' : '#9a8c70'; g.fillRect(-s * 0.55, -s * 0.9, s * 1.1, s * 1.1);
+    g.fillStyle = '#9a8c70'; g.fillRect(-s * 0.55, -s * 0.9, s * 1.1, s * 1.1);
     g.save(); g.scale(.65, .65); g.translate(0, -s * .3); this.palace(g, culture, 1, false); g.restore();
     for (const [x, y] of [[-s, -s], [s, -s], [-s, s], [s, s]]) this.towerAt(g, x, y, 1.9, 4, culture);
   }

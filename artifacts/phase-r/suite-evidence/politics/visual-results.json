@@ -1,0 +1,636 @@
+{
+  "checks": [
+    {
+      "viewport": [
+        1440,
+        900
+      ],
+      "diplomacy": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "peace": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "peaceTerms": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "counter": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "spy": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "sabotage": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "spyResult": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "security": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "vassal": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "alliance": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "incoming": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "coordination": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      }
+    },
+    {
+      "viewport": [
+        1024,
+        768
+      ],
+      "diplomacy": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "peace": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "peaceTerms": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "counter": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "spy": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "sabotage": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "spyResult": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "security": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "vassal": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "alliance": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "incoming": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "coordination": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "diplomacy": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "peace": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "peaceTerms": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "counter": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "spy": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "sabotage": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "spyResult": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "security": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "vassal": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "alliance": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "incoming": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "coordination": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      }
+    },
+    {
+      "viewport": [
+        360,
+        740
+      ],
+      "diplomacy": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "peace": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "peaceTerms": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "counter": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "spy": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "sabotage": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "spyResult": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "security": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "vassal": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "alliance": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "incoming": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "coordination": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      }
+    },
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "diplomacy": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "peace": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "peaceTerms": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "counter": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 52.5,
+        "clippedControls": []
+      },
+      "spy": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "sabotage": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "spyResult": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "security": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "vassal": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "alliance": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "incoming": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "coordination": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "diplomacy": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "peace": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "peaceTerms": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "counter": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "spy": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "sabotage": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "spyResult": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "security": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "vassal": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "alliance": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "incoming": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "coordination": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "diplomacy": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "peace": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "peaceTerms": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "counter": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "spy": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "sabotage": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "spyResult": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "security": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "vassal": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "alliance": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "incoming": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      },
+      "coordination": {
+        "fits": true,
+        "overflow": false,
+        "direction": "rtl",
+        "minTarget": 44,
+        "clippedControls": []
+      }
+    }
+  ],
+  "saveReloads": 2,
+  "errors": []
+}

@@ -1,0 +1,6 @@
+diff --git a/js/campaign.js b/js/campaign.js
+--- a/js/campaign.js
++++ b/js/campaign.js
+@@ -40 +39 @@ const Game = {
+-    if (scId !== 'umayyad' || typeof player !== 'string' || !Object.hasOwn(SCENARIOS.umayyad.factions, player) || !DIFFS[diff]) {
++    if (scId !== 'umayyad' || typeof player !== 'string' || !Object.hasOwn(SCENARIOS.umayyad.factions, player) || typeof diff !== 'string' || !Object.hasOwn(DIFFS, diff)) {

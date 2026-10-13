@@ -1,0 +1,15 @@
+PASS direct start requires own supported faction: __proto__
+PASS saved player requires own supported faction: __proto__
+PASS direct start requires own supported faction: constructor
+PASS saved player requires own supported faction: constructor
+PASS direct start requires own supported faction: toString
+PASS saved player requires own supported faction: toString
+PASS explicit metadata/player disagreement rejected before normalization
+PASS malformed player object cannot crash startup or mutate stored bytes
+FAIL direct difficulty is canonical: __proto__: Expected values to be strictly equal:
+FAIL direct difficulty is canonical: constructor: Expected values to be strictly equal:
+FAIL direct difficulty is canonical: toString: Expected values to be strictly equal:
+FAIL malformed node owner remains unavailable without startup exception: Cannot convert object to primitive value
+FAIL malformed army faction remains unavailable without startup exception: Cannot convert object to primitive value
+FAIL malformed faction name remains unavailable without startup exception: Expected values to be strictly equal:
+8/14 identity guard cases passed

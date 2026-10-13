@@ -1,0 +1,8 @@
+PASS political UI 1440x900
+PASS political UI 1024x768
+PASS political UI 390x844
+PASS political UI 360x740
+PASS political UI 320x568
+PASS political UI 844x390
+PASS political UI 568x320
+Political visuals, real touch/slider/select/confirm actions and two page reloads passed.

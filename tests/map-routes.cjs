@@ -12,11 +12,12 @@ function test(name, body) {
 }
 const context = createContext(42);
 const read = code => JSON.parse(context.run(`JSON.stringify(${code})`));
-const fresh = (scenario = 'umayyad') => context.run(`Game.newGame('${scenario}', '${scenario === 'umayyad' ? 'umayyad' : 'shu'}', 'normal');`);
+const fresh = (scenario = 'umayyad') => context.run(`Game.newGame('${scenario}', 'umayyad', 'normal');`);
 const armyAt = (node = 'tarsus') => context.run(`globalThis.routeArmy = {id: -7, fid:'umayyad', node:'${node}', from:'${node}', gen:null, regs:[Game.newReg('spear')], mp:4, siege:null, mood:null}; routeArmy.mp=Game.mpMax(routeArmy);`);
 
-test('all scenarios have valid, unique, bidirectional graph edges and bounded cities', () => {
-  for (const scenario of read('Object.keys(SCENARIOS)')) {
+test('supported campaign has valid, unique, bidirectional graph edges and bounded cities', () => {
+  assert.ok(read('!!SCENARIOS.umayyad'));
+  for (const scenario of ['umayyad']) {
     fresh(scenario);
     const errors = read(`(() => {
       const sc=Game.sc, ids=new Set(), pairs=new Set(), errors=[];
@@ -58,7 +59,7 @@ test('expanded atlas remains a single connected network including maritime islan
 
 test('every caravan template follows actual route segments', () => {
   const broken = [];
-  for (const scenario of read('Object.keys(SCENARIOS)')) {
+  for (const scenario of ['umayyad']) {
     fresh(scenario);
     broken.push(...read(`WORLD_DATA['${scenario}'].routes.flatMap(route=>route.path.slice(1).filter((id,i)=>!Game.edge(route.path[i],id)).map((id)=>route.key+': missing edge into '+id))`).map(value => `${scenario}: ${value}`));
   }

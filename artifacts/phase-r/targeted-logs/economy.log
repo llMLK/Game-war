@@ -1,0 +1,19 @@
+PASS income and expense categories sum to the live forecast
+PASS administrative paths use actual geography and bounded isolation, never 99 hops
+PASS local administration does not multiply existing city costs after expansion
+PASS population growth smoothly diminishes and preserves oversized old cities
+PASS all building previews equal actual formula changes and do not mutate saved state
+PASS construction charges once, grants no premature yield, completes on its due turn
+PASS investment preference changes with local resources and route position
+PASS leader contracts and assigned officers are charged exactly once
+PASS upkeep and campaign supply use the existing unit and readiness integration formulas
+PASS full endRound ledger reconciles construction, reinforcement and recurring collection
+PASS settlement is idempotent and cannot duplicate income after reload
+PASS tribute and vassal transfers reconcile symmetrically and are not paid twice
+PASS Annexation and Aman previews match execution with declining local costs
+PASS save migration preserves population, buildings, burdens and route disruption
+PASS occupation keeps defender choices and previews their gold and production effects exactly
+PASS saving a large treasury carries no fee or change to normal recurring costs
+PASS equipment replacement is proportional to unit cost and reconciles with the live round
+PASS unclassified events reconcile exactly and reading explanations never collects money
+Economy: 18 groups passed.

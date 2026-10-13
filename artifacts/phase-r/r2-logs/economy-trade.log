@@ -1,0 +1,14 @@
+PASS treaties pay only for connected usable links, symmetrically and at the existing cap
+PASS isolated cities reduce income and reconnection restores it without creating money
+PASS ports are required at both ends of maritime trade, with an actionable cause
+PASS merchant paths can reroute around a disrupted port without changing caravan or movement paths
+PASS war, hostile third-party territory, siege and hostile armies interrupt merchant access
+PASS sabotage reports an exact remaining duration and automatically recovers at expiry
+PASS bandit remedies match loyalty thresholds, guards expire, and duplicate causes merge
+PASS quarantine and world events have temporary contextual explanations
+PASS caravan migration does not falsely shut every treaty trade link in the world
+PASS changing city ownership changes the recipient, not the meaning of automatic caravans
+PASS old atlas routes migrate while preserving guards and permanent state for supported factions
+PASS save/load preserves economic route state and reading forecasts never collects trade twice
+
+Economy trade: 12 passed.

@@ -1,0 +1,13 @@
+PASS new alliance has no invented contribution; accepting or arriving earns no points
+PASS same-turn requests are bounded and survive reload without relation farming
+PASS blocked geography and insufficient armies produce concrete refusal
+PASS the ally protects its threatened home and cannot be commandeered by defense requests
+PASS exhausted available armies are not sent on new allied expeditions
+PASS allied siege reinforcement uses existing movement and preserves siege age
+PASS siege contribution requires real supply attrition and cannot multiply by army splitting
+PASS legacy contribution migrates factual casualties and captures without fabricated aid/siege evidence
+PASS mixed allied battle records actual unit damage and loss separately by faction
+PASS contribution survives save/load; settled wars retain their effort for peace comparison
+PASS peace contribution feedback and shared spoils persist and can only pay once
+PASS independent military dispatch performs a useful common-front action with limited forces
+12 allied-action checks passed.

@@ -1,0 +1,16 @@
+PASS assessment explains approximate chances, concrete costs, consequences and cooldowns
+PASS same-turn operations and post-detection recovery reject without charging again
+PASS save/reload cannot change outcome or reset operation cooldown and ledger charge
+PASS realm intelligence uses one deterministic draw regardless of an omitted target ID
+PASS incitement weakens loyalty, actual tax and reinforcement/recruitment for exact duration
+PASS loyal stable cities are harder to incite than restive cities
+PASS security and intelligence investment are finite, meaningful, charged once and saved
+PASS road sabotage changes movement without changing road data, then recovers
+PASS each sabotage has live consequences and the stated inclusive duration
+PASS siege-equipment sabotage affects only targeted camp and is persisted/repaired
+PASS another intact allied camp keeps its own siege equipment
+PASS invalid targets and ineffective sabotage are refused before charging
+PASS old-save migration preserves histories, derives cooldowns and is idempotent
+PASS repeated espionage chooses contextual varied targets and does not fixate on Nicaea
+PASS strategic siege and unrest changes alter priorities
+15 espionage groups passed

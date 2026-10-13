@@ -16,18 +16,13 @@ const EDICTS = {
 };
 // أحلام تاريخية لكل مملكة
 const HISTORIC = {
-  threeKingdoms: {
-    shu: { name: 'استعادة عرش هان', desc: 'احكم العاصمتين القديمتين تشانغآن ولوويانغ مع تشنغدو.', nodes: ['changan', 'luoyang', 'chengdu'] },
-    wei: { name: 'السهول الوسطى والنهر', desc: 'اجمع شوتشانغ وشيانغيانغ وجيانغلينغ وخفي وتشايسانغ.', nodes: ['xuchang', 'xiangyang', 'jiangling', 'hefei', 'chaisang'] },
-    wu: { name: 'سيادة النهر الطويل', desc: 'املك النهر من جيانغتشو إلى جيانيه.', nodes: ['jiangzhou', 'jiangling', 'xiangyang', 'chaisang', 'jianye'] },
-  },
   umayyad: {
     umayyad: { name: 'فتح القسطنطينية', desc: 'الحلم الذي لم يتحقق: القسطنطينية ودمشق معاً.', nodes: ['constantinople', 'damascus'] },
     byzantine: { name: 'استعادة الشام', desc: 'أنطاكية وحلب ودمشق مع القسطنطينية.', nodes: ['antioch', 'aleppo', 'damascus', 'constantinople'] },
     khazar: { name: 'أبواب القوقاز والجزيرة', desc: 'باب الأبواب ودبيل وتفليس وملطية والموصل مع إتل.', nodes: ['derbent', 'dvin', 'tiflis', 'malatya', 'mosul', 'atil'] },
   },
 };
-const RIVAL = { threeKingdoms: { shu: 'wei', wei: 'shu', wu: 'wei' }, umayyad: { umayyad: 'byzantine', byzantine: 'umayyad', khazar: 'umayyad' } };
+const RIVAL = { umayyad: { umayyad: 'byzantine', byzantine: 'umayyad', khazar: 'umayyad' } };
 const CHAPTERS = [
   { name: 'الفصل الأول: البقاء', short: 'I البقاء', desc: 'ثبّت أقدامك: مدن قليلة، وجيران أقوياء.' },
   { name: 'الفصل الثاني: الطموح', short: 'II الطموح', desc: 'حان وقت التوسع واختيار الطريق.' },

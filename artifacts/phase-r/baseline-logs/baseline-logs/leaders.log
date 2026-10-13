@@ -1,0 +1,30 @@
+PASS Six campaign starts: valid two-candidate opportunities, capacity and state
+PASS Earned keys including turn zero cannot grant twice; cooldown and bank cap
+PASS One replacement per delegation, capped earned tokens, no repeated-city tokens
+PASS Contract hires exactly one, deducts one-turn advance and retires the other name
+PASS Invalid salaries, no funds and full capacity never create leaders or consume attempts
+PASS Salary acceptance rises with offer, prestige and personality change expectations
+PASS Insult ends negotiation, two ordinary refusals exhaust attempts, fixed saved threshold
+PASS Pending offers freeze salary through treasury changes and save/load
+PASS Old saves retain leader IDs, contracts, army references, XP and biography identity
+PASS Legacy invalid candidates and duplicate offers are migrated safely
+PASS Historical candidate timing, affiliation, local fallback and spoiler-free copy
+PASS Rerolls persist after load; dismissed hires do not refresh offers
+PASS Relationships materially change loyalty, honor cannot be bought repeatedly
+PASS Assignment, rivalry, ignored requests and promises have distinct consequences
+PASS Capture, valid rescue, invalid rescue and repeated fate callbacks are safe
+PASS Execution records a loss without generating a fictional replacement; invalid execution does nothing
+PASS Defection produces a memorial and surviving friendship becomes rivalry
+PASS Specialized growth persists, grants mobility only to qualified leaders; officers stay modest
+PASS Late-game treasury does not buy opportunities; repeated losses and recaptures cannot spam
+PASS End-round and world-tick integration stay runnable for both scenarios
+PASS Context and personality change spoken reactions; city service and scars are recorded
+PASS Historical rivals link when hired later and exert political pressure
+PASS Prestige adds social abilities and mentorship rather than only raw bonuses
+PASS Direct event deaths have consequences once; expired opportunities never reopen
+PASS Geography and political context gate recruitment and salary expectations
+PASS A rest request requires a real idle friendly turn, not merely moving home
+PASS Starting armies use their intended historical leaders without stealing rulers
+PASS Campaign randomness is saved: new campaigns vary, reloads retain the same candidates
+PASS Expanded starting empires retain viable leader loyalty and meaningful personal choices
+29/29 leader tests passed

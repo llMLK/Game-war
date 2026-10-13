@@ -1,0 +1,46 @@
+[
+  {
+    "viewport": [
+      1440,
+      900
+    ],
+    "captives": true,
+    "pendingDecision": true,
+    "keyboard": true,
+    "once": true,
+    "save": true
+  },
+  {
+    "viewport": [
+      1024,
+      768
+    ],
+    "captives": true,
+    "pendingDecision": true,
+    "keyboard": true,
+    "once": true,
+    "save": true
+  },
+  {
+    "viewport": [
+      390,
+      844
+    ],
+    "captives": true,
+    "pendingDecision": true,
+    "keyboard": true,
+    "once": true,
+    "save": true
+  },
+  {
+    "viewport": [
+      844,
+      390
+    ],
+    "captives": true,
+    "pendingDecision": true,
+    "keyboard": true,
+    "once": true,
+    "save": true
+  }
+]

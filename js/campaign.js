@@ -22,7 +22,6 @@ const ECON = {
   foodCap: 300, foodSale: 0.5,
 };
 const INIT_DIPLO = {
-  threeKingdoms: [['wei', 'shu', 'war'], ['wei', 'wu', 'war'], ['shu', 'wu', 'peace']],
   umayyad: [['umayyad', 'byzantine', 'war'], ['umayyad', 'khazar', 'war'], ['byzantine', 'khazar', 'alliance', true]],
 };
 const GENERIC_NAMES = ['عامر', 'خالد', 'منصور', 'ثابت', 'حمزة', 'سالم', 'نصر', 'ليث', 'زياد', 'مالك', 'حارث', 'عتبة', 'رافع', 'عمرو'];
@@ -37,6 +36,11 @@ const Game = {
 
   // ——————————————————— الإنشاء ———————————————————
   newGame(scId, player, diff) {
+    if (scId !== 'umayyad' || typeof player !== 'string' || !Object.hasOwn(SCENARIOS.umayyad.factions, player) || typeof diff !== 'string' || !Object.hasOwn(DIFFS, diff)) {
+      this.lastSaveError = 'هذه النسخة تدعم الحملة الأموية سنة 715م فقط'; return null;
+    }
+    this.lastSaveError = SaveSafety.beforeAutosave();
+    if (this.lastSaveError) return null;
     const sc = SCENARIOS[scId];
     mapDimensions(sc);
     const S = {
@@ -106,40 +110,52 @@ const Game = {
 
   // ——————————————————— الحفظ والتحميل ———————————————————
   save(slot = 'auto') {
-    if (!this.S) return false;
+    this.lastSaveError = SaveSafety.problem(this.S);
+    if (typeof slot !== 'string' || !/^[a-zA-Z0-9_-]+$/.test(slot) || this.lastSaveError) return false;
+    if (slot === 'auto') this.lastSaveError = SaveSafety.beforeAutosave();
+    else if (this.readSlot(slot)?.bad) this.lastSaveError = 'هذه الخانة تحتوي حفظًا غير مدعوم. صدّره أولًا؛ لا يُستبدل تلقائيًا.';
+    if (this.lastSaveError) return false;
     const f = this.f(this.S.player);
     const meta = { scenario: this.S.scenario, player: this.S.player, fname: f.name, turn: this.S.turn, time: Date.now(), over: this.S.over };
-    return store.set(SAVE_PREFIX + slot, { meta, S: this.S });
+    const ok = SaveSafety.writeVerified(SAVE_PREFIX + slot, JSON.stringify({ meta, S: this.S }));
+    if (!ok) this.lastSaveError = 'تعذّر حفظ الحملة؛ تحقق من مساحة التخزين وصلاحيات المتصفح';
+    return ok;
   },
   readSlot(slot) {
-    const d = store.get(SAVE_PREFIX + slot);
-    if (d && d.S) { d.bad = this.saveProblem(d); return d; }
-    if (slot === 'auto') {
-      const old = store.get(SAVE_KEY_V1);
-      if (old && old.v === 1) return { meta: { scenario: old.scenario, player: old.player, fname: (old.factions[old.player] || {}).name, turn: old.turn, time: 0, over: old.over }, S: old };
-    }
-    return null;
+    return typeof slot === 'string' && /^[a-zA-Z0-9_-]+$/.test(slot) ? SaveSafety.readSlot(slot) : null;
   },
   // حفظ لا يمكن تحميله: سيناريو غير موجود في هذا الإصدار، أو حفظ من الإصدار الرابع الذي أُلغي
   saveProblem(d) {
-    if (!d.meta || !SCENARIOS[d.meta.scenario]) return 'من خريطة لم تعد موجودة في هذا الإصدار';
-    if (d.S.rec !== undefined || d.S.cid !== undefined) return 'من الإصدار الرابع الملغى، وبنيته لا تتوافق مع هذا الإصدار';
-    return null;
+    return SaveSafety.problem(d?.S, d?.meta);
   },
-  deleteSlot(slot) { store.del(SAVE_PREFIX + slot); if (slot === 'auto') store.del(SAVE_KEY_V1); },
+  deleteSlot(slot) {
+    const d = this.readSlot(slot);
+    if (!d || d.raw === null) return false;
+    store.del(d.key);
+    const check = store.readText(d.key);
+    return check.ok && check.raw === null;
+  },
   load(slot = 'auto') {
     const d = this.readSlot(slot);
+    this.lastSaveError = d?.bad || (!d ? 'لا يوجد حفظ في هذه الخانة' : null);
     if (!d || d.bad) return null;
+    const previous = this.S;
+    try {
     let S = JSON.parse(JSON.stringify(d.S));
     if (!S.v || S.v === 1) S = this.migrateV1(S);
     this.S = S;
     this.normalizeState();
     this.validate();
-    return S;
+    return this.S;
+    } catch {
+      this.S = previous;
+      this.lastSaveError = 'تعذّر فتح بنية الحفظ؛ بقيت بياناته الأصلية دون تعديل ويمكن تصديرها';
+      return null;
+    }
   },
   listSaves() { return SAVE_SLOTS.map((s) => ({ slot: s, data: this.readSlot(s) })); },
   hasSave() { const d = this.readSlot('auto'); return !!(d && !d.bad && !d.meta.over); },
-  clearSave() { store.del(SAVE_PREFIX + 'auto'); store.del(SAVE_KEY_V1); },
+  clearSave() { for (const key of [SAVE_PREFIX + 'auto', SAVE_KEY_V1]) { const d = SaveSafety.readKey(key); if (d && !d.bad) store.del(key); } },
 
   // ترقية حفظ الإصدار الأول
   migrateV1(o) {
@@ -172,6 +188,8 @@ const Game = {
   // ملء الحقول الناقصة (يحمي الحفظ القديم من أي حقل جديد)
   normalizeState() {
     const S = this.S;
+    const problem = SaveSafety.problem(S);
+    if (problem) throw new Error(problem);
     S.tributes = S.tributes || [];
     S.alerts = S.alerts || []; S.scars = S.scars || []; S.chron = S.chron || []; S.aid = S.aid || 1;
     S.v = 5;
@@ -1224,7 +1242,7 @@ const Game = {
     return {
       kind: enc.kind, terrain: enc.terrain || s.node.terrain, walls: this.effWalls(s.node), equip: enc.equip || {},
       capital: s.node.capital, stores: s.node.stores, weather: this.battleWeather(s.node),
-      seed: hashStr(s.node.id) + this.S.turn * 131 + (this.S.nextId || 0), title: s.node.name, style: this.sc.id === 'threeKingdoms' ? 'east' : 'west',
+      seed: hashStr(s.node.id) + this.S.turn * 131 + (this.S.nextId || 0), title: s.node.name, style: 'west',
       sides: [side(enc.attFid, s.attRegs, s.attGens, s.attArmies, false), side(enc.defFid, s.defRegs, s.defGens, s.defArmies, true)],
     };
   },

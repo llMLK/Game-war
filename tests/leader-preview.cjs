@@ -55,7 +55,8 @@ const {chromium}=require(process.env.PLAYWRIGHT_PATH||'C:/Users/Abdul/.cache/cod
  // Every initially available leader profile at phone width: scan visible copy and link targets.
  await page.setViewportSize({width:320,height:568});
  let profilesChecked=0;
- for(const [scenario,faction]of [['umayyad','umayyad'],['threeKingdoms','shu']]){
+ for(const faction of ['umayyad','byzantine','khazar']){
+  const scenario='umayyad';
   await start(scenario,faction);const ids=await page.evaluate(()=>Object.keys(Game.S.gens));
   for(const id of ids){
    await page.evaluate(id=>Panels.cmdProfile(Game.gen(id)),id);
@@ -63,11 +64,11 @@ const {chromium}=require(process.env.PLAYWRIGHT_PATH||'C:/Users/Abdul/.cache/cod
    const overflow=await page.locator('.leader-modal .modal-body').evaluate(e=>e.scrollWidth>e.clientWidth+2);assert.equal(overflow,false);await page.getByRole('button',{name:'إغلاق السجل',exact:true}).click();profilesChecked++;
   }
  }
- // Chinese culture, known friendships and loss memorial presentation.
- await page.setViewportSize({width:1440,height:900});await start('threeKingdoms','shu');
- await page.evaluate(()=>Panels.cmdProfile(Game.gensOf(Game.S.player).find(g=>g.name==='قوان يو')));await check('guan-yu',1440,900);
+ // Supported Byzantine portrait/culture and shared loss memorial presentation.
+ await page.setViewportSize({width:1440,height:900});await start('umayyad','byzantine');
+ await page.evaluate(()=>Panels.cmdProfile(Game.gensOf(Game.S.player).find(g=>g.name==='ليون الإيساوري')));await check('byzantine-leader',1440,900);
  await page.getByRole('button',{name:'إغلاق السجل',exact:true}).click();
- await page.evaluate(()=>{const g=Game.gensOf(Game.S.player).find(g=>g.name==='قوان يو');Game.setGenFate(g,'killed','wei');Panels.leaderMemorials(Game.S.player);});await check('memorial',1440,900);
+ await page.evaluate(()=>{const g=Game.gensOf(Game.S.player).find(g=>g.name==='ليون الإيساوري');Game.setGenFate(g,'killed','umayyad');Panels.leaderMemorials(Game.S.player);});await check('memorial',1440,900);
  // Keyboard tab cycle stays within modal; Escape closes only the top dossier.
  await page.keyboard.press('Tab');await page.keyboard.press('Shift+Tab');assert.ok(await page.evaluate(()=>!!document.activeElement.closest('.leader-modal')));await page.keyboard.press('Escape');assert.equal(await page.locator('.leader-modal').count(),0);
  const report={results,profilesChecked,errors};fs.writeFileSync(path.join(out,'verification.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({viewports:results.map(r=>r.viewport),profilesChecked,errors,report:path.join(out,'verification.json')},null,2));await b.close();assert.equal(errors.length,0);

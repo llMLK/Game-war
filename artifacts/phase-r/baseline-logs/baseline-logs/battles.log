@@ -1,0 +1,32 @@
+PASS Preparation is paused before all combat and ignores repeated begin
+PASS Every phase has a command boundary, repeated commit/end cannot execute twice
+PASS Card costs, duplicate orders and incompatible postures enforced
+PASS Manual stepping and Quick Resolve share exact outcomes across 40 seeds
+PASS Formation preview never changes combat RNG or generates arrows
+PASS Empty quivers cause zero arrow damage and ammo never increases
+PASS Event choice is once-only and unavailable choices are rejected
+PASS Guards are capped by soldiers and do not create a hero army
+PASS Reserves stay out until committed; exhausted and fresh rows mix their fatigue
+PASS Emergency retreat costs more than successful organized withdrawal
+PASS Persistent readiness degrades across fights without ammo or supply refills
+PASS Result/report/fates are cached; narrative consumes no battle RNG
+PASS AI observation hides unrevealed plan and supply
+PASS Siege equipment opens breaches, unavailable maneuvers stay unavailable
+PASS Army and garrison readiness survive save/load; old partial saves migrate
+PASS Campaign application is idempotent and preserves the pre-casualty baseline
+PASS Marching costs readiness; safe-city rest recovers it without restoring casualties
+PASS Narrative has >100 unique fact-bound passages and reports factual evidence
+PASS Splitting and partial merging transfer weighted readiness without replenishing source
+PASS Keeping a siege returns only held men, all survivors keep the cost of battle
+PASS No equipment produces a siege postponement, not a fake defeat
+PASS A blocked retreat cannot teleport to a distant friendly preferred city
+PASS No pursuit is honored during sector collapse and after withdrawal
+PASS Hard pursuit causes more losses but exposes cavalry to an actual reserve trap
+PASS AI can use emergency retreat at zero command points
+PASS Wave assault cannot spend absent supplies; specialized plans require their troops
+PASS Campaign passes actual leader personality and abilities to tactical AI
+PASS AI choices respond to personality, condition, composition and phase
+PASS Report commander fate matches the cached campaign outcome
+PASS Exposed skirmishers take melee losses when cavalry catches them
+PASS Rapid assault counters the extra uncontested attrition volley from either side
+31 battle logic groups passed

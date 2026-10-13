@@ -54,7 +54,7 @@ function collectRuntimeFiles() {
 }
 
 function bootstrap(commit, developmentSnapshot) {
-  return `'use strict';\n(() => {\n  const info = Object.freeze(${JSON.stringify({ sourceCommit: commit, storageNamespace: STORAGE_NAMESPACE, developmentSnapshot })});\n  if (window.PHASE_F_PREVIEW) throw new Error('Preview storage initialized twice');\n  const base = { get: store.get, set: store.set, del: store.del };\n  for (const method of ['get', 'set', 'del']) {\n    store[method] = (key, ...args) => base[method].call(store, info.storageNamespace + key, ...args);\n  }\n  Object.defineProperty(window, 'PHASE_F_PREVIEW', { value: info });\n})();\n`;
+  return `'use strict';\n(() => {\n  const info = Object.freeze(${JSON.stringify({ sourceCommit: commit, storageNamespace: STORAGE_NAMESPACE, developmentSnapshot })});\n  if (window.PHASE_F_PREVIEW) throw new Error('Preview storage initialized twice');\n  const methods = ['get', 'set', 'del', 'readText', 'writeText'].filter(m => typeof store[m] === 'function');\n  const base = Object.fromEntries(methods.map(m => [m, store[m]]));\n  for (const method of methods) {\n    store[method] = (key, ...args) => base[method].call(store, info.storageNamespace + key, ...args);\n  }\n  Object.defineProperty(window, 'PHASE_F_PREVIEW', { value: info });\n})();\n`;
 }
 
 function landing(commit, developmentSnapshot) {

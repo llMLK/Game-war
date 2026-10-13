@@ -1,0 +1,17 @@
+SIM {"name":"equalRivals","samples":24,"turns":36,"peaceReached":24,"medianFirstPeace":8,"warStarts":27,"endingVassals":20,"allianceBreaks":8,"stillAtWar":12,"invalidOffers":0}
+SIM {"name":"dominantVsWeak","samples":24,"turns":36,"peaceReached":24,"medianFirstPeace":1,"warStarts":30,"endingVassals":23,"allianceBreaks":16,"stillAtWar":6,"invalidOffers":0}
+SIM {"name":"twoFronts","samples":24,"turns":36,"peaceReached":24,"medianFirstPeace":2,"warStarts":28,"endingVassals":19,"allianceBreaks":6,"stillAtWar":9,"invalidOffers":0}
+SIM {"name":"commonEnemyAlliance","samples":24,"turns":36,"peaceReached":24,"medianFirstPeace":7,"warStarts":19,"endingVassals":21,"allianceBreaks":11,"stillAtWar":16,"invalidOffers":0}
+SIM {"name":"prolongedWar","samples":24,"turns":36,"peaceReached":24,"medianFirstPeace":0,"warStarts":31,"endingVassals":20,"allianceBreaks":11,"stillAtWar":12,"invalidOffers":0}
+SIM {"name":"exhaustedPeace","samples":24,"turns":36,"peaceReached":24,"medianFirstPeace":0,"warStarts":36,"endingVassals":19,"allianceBreaks":9,"stillAtWar":8,"invalidOffers":0}
+SIM {"name":"threatenedVassal","samples":24,"turns":36,"peaceReached":24,"medianFirstPeace":8,"warStarts":18,"endingVassals":20,"allianceBreaks":9,"stillAtWar":14,"invalidOffers":0}
+SIM {"name":"limitedAlly","samples":24,"turns":36,"peaceReached":24,"medianFirstPeace":7,"warStarts":17,"endingVassals":20,"allianceBreaks":9,"stillAtWar":13,"invalidOffers":0}
+SIM repeatedEspionage 5 distinct targets
+SIM highUnrest 10 distinct targets
+INTEGRATION {"scenario":"umayyad","sample":1,"turn":12,"alive":["umayyad","byzantine","khazar","k34"],"wars":2,"battles":4,"peace":2,"contribution":8,"spy":2}
+INTEGRATION {"scenario":"umayyad","sample":2,"turn":12,"alive":["umayyad","byzantine","khazar","k40"],"wars":0,"battles":3,"peace":2,"contribution":6,"spy":1}
+INTEGRATION {"scenario":"umayyad","sample":3,"turn":12,"alive":["umayyad","byzantine","khazar"],"wars":0,"battles":0,"peace":2,"contribution":0,"spy":0}
+INTEGRATION {"scenario":"threeKingdoms","sample":1,"turn":12,"alive":["shu","wei","wu"],"wars":0,"battles":3,"peace":4,"contribution":6,"spy":2}
+INTEGRATION {"scenario":"threeKingdoms","sample":2,"turn":12,"alive":["shu","wei","wu"],"wars":0,"battles":4,"peace":2,"contribution":8,"spy":0}
+INTEGRATION {"scenario":"threeKingdoms","sample":3,"turn":12,"alive":["shu","wei","wu"],"wars":0,"battles":1,"peace":2,"contribution":2,"spy":2}
+Political simulations completed: 192 controlled campaigns / 6912 turns, 60 espionage turns, 72 full gameplay rounds.

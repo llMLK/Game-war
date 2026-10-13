@@ -1,0 +1,46 @@
+{
+  "baseline": "a721b9d",
+  "viewport": "390x844",
+  "undo": {
+    "hiddenAfterX": true,
+    "hiddenAfterRefresh": false,
+    "stack": 1
+  },
+  "race": {
+    "replaced": true,
+    "events": [
+      {
+        "type": "pointerdown",
+        "target": "BUTTON"
+      },
+      {
+        "type": "touchstart",
+        "target": "BUTTON"
+      },
+      {
+        "type": "pointerup",
+        "target": "BUTTON"
+      },
+      {
+        "type": "touchend",
+        "target": "BUTTON"
+      },
+      {
+        "type": "click",
+        "target": "BUTTON"
+      }
+    ],
+    "settlements": 1,
+    "turn": 1
+  },
+  "ordinaryTap": {
+    "settlements": 2,
+    "turn": 2
+  },
+  "busy": {
+    "settlements": 2,
+    "beforeBusy": 2,
+    "feedback": "",
+    "button": "إنهاء الدور\n4 جيوش تنتظر"
+  }
+}

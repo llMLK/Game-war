@@ -1,0 +1,48 @@
+Independent save QA | source=C:\Users\Abdul\AppData\Local\Temp\suyuf-r-final-ctUOqW | fixture baseline=2deaa02de02b1e87321d01651ec725da19930ede
+PASS [baseline] B01 frozen Phase F Umayyad preserves cities armies commanders and resources
+PASS [baseline] B02 synthetic v1 Umayyad migrates without deleting original
+PASS [baseline] B03 repeated normalization preserves core Umayyad data
+PASS [baseline] B09 synthetic older Umayyad schema v2 preserves core data
+PASS [baseline] B09 synthetic older Umayyad schema v3 preserves core data
+PASS [baseline] B04 safe rejection: missing metadata
+PASS [baseline] B04 safe rejection: unknown scenario metadata
+PASS [baseline] B04 safe rejection: discontinued rec schema
+PASS [baseline] B04 safe rejection: discontinued cid schema
+PASS [baseline] B05 malformed JSON load alone leaves raw bytes intact
+PASS [baseline] B06 quota error on normal save returns false and preserves old bytes
+PASS [baseline] B07 new Umayyad does not automatically touch Chinese manual slots
+PASS [baseline] B08 empty startup and corrupt v2 metadata render without storage mutation
+PASS [phase-r] R01 Chinese auto rejected before normalize with bytes intact
+PASS [phase-r] R01 Chinese 1 rejected before normalize with bytes intact
+PASS [phase-r] R01 Chinese 2 rejected before normalize with bytes intact
+PASS [phase-r] R01 Chinese 3 rejected before normalize with bytes intact
+PASS [phase-r] R02 v1 Chinese rejected before migrate or normalize
+PASS [phase-r] R03 reject without replacing active campaign: metadata Umayyad but state Chinese
+PASS [phase-r] R03 reject without replacing active campaign: metadata Umayyad but state unknown
+PASS [phase-r] R03 reject without replacing active campaign: missing state scenario
+PASS [phase-r] R03 reject without replacing active campaign: future version
+PASS [phase-r] R03 reject without replacing active campaign: string version
+PASS [phase-r] R03 reject without replacing active campaign: missing nodes
+PASS [phase-r] R03 reject without replacing active campaign: missing factions
+PASS [phase-r] R04 Chinese autosave protected before newGame
+PASS [phase-r] R04 Chinese autosave protected before save
+PASS [phase-r] R05 failed backup (quota) cannot overwrite original
+PASS [phase-r] R05 failed backup (silent-drop) cannot overwrite original
+PASS [phase-r] R05 failed backup (read-denied) cannot overwrite original
+PASS [phase-r] R06 retry and process restart preserve original without duplicate backups
+PASS [phase-r] R07 interruption after backup before auto replacement is recoverable on retry
+PASS [phase-r] R08 a second different Chinese autosave cannot destroy the first backup
+PASS [phase-r] R09 new game preserves unreadable/unsupported auto: malformed JSON
+PASS [phase-r] R09 new game preserves unreadable/unsupported auto: missing metadata
+PASS [phase-r] R09 new game preserves unreadable/unsupported auto: future schema
+PASS [phase-r] R10 invalid v2 auto cannot silently fall back to v1 then overwrite v2
+PASS [phase-r] R11 startup metadata guards: unknown v1 scenario
+PASS [phase-r] R11 startup metadata guards: v1 missing factions
+PASS [phase-r] R12 Chinese save UI explains unsupported status and does not offer resume
+PASS [phase-r] R13 new campaign defaults to Umayyad only
+PASS [phase-r] R14 stale direct Chinese newGame request cannot replace active state or auto
+PASS [phase-r] R15 failed manual save UI must not claim success
+PASS [phase-r] R16 normalization exception leaves previously active campaign intact
+PASS [phase-r] R17 missing display metadata never renders undefined or NaN
+RESULT executed=45 passed=45 failed=0 skipped=0
+NOT AUTOMATED: physical-device Safari/Chrome, real-owner-save acceptance, actual export/download and legacy-version restore, real crash/storage durability, cross-tab races.

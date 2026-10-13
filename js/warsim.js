@@ -606,7 +606,7 @@ class WarSim {
         for (const u of us) {
           if (u.resupply) { u.resupply = false; continue; }
           const ammo = u.ammo > 0 ? 1 : 0;
-          const rate = u.type === 'repeater' ? 1.6 : 1;
+          const rate = 1;
           const melee = (ph === 'main' || ph === 'crisis' || ph === 'collapse') && s.sec[k].stance !== 'skirmish' && !vo && u.role === 'missile' ? 0.5 : 1;
           pow += u.men * u.missile * rate * ammo * melee * (1 + 0.1 * u.exp);
           if (u.ammo > 0) u.ammo -= vo && u.ammo > 1 ? 2 : 1;
