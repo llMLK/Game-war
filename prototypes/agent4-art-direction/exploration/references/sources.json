@@ -1,0 +1,64 @@
+[
+  {
+    "id": "R1",
+    "file": "R1-theodosian-walls.jpg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Theodosian_Walls_in_Constantinople_2.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Theodosian_Walls_in_Constantinople_2.jpg",
+    "title": "Theodosian Walls",
+    "credit": "CrniBombarder!!! / Wikimedia Commons",
+    "date": "Modern photograph; uploaded 2006",
+    "rights": "Author-released public domain, per source page",
+    "use": "Heavy masonry, brick bands, tower/curtain rhythm.",
+    "limit": "Surviving/restored fabric is not a complete 715 state."
+  },
+  {
+    "id": "R2",
+    "file": "R2-hagia-sophia.png",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/0/07/View_of_Haghia_Sophia%2C_plate_from_Wilhelm_Salzenbergs_Alt-Christliche_Baudenkmale_von_Constantinopel_vom_V._bis_XII._Jahrhundert_%28alternate_version%29.png",
+    "source": "https://commons.wikimedia.org/wiki/File:View_of_Haghia_Sophia,_plate_from_Wilhelm_Salzenbergs_Alt-Christliche_Baudenkmale_von_Constantinopel_vom_V._bis_XII._Jahrhundert_(alternate_version).png",
+    "title": "Hagia Sophia / Salzenberg plate",
+    "credit": "C. W. Kortum, W. Salzenberg et al., 1854 / Commons",
+    "date": "Nineteenth-century architectural representation",
+    "rights": "Public domain / PD-Art as marked on source page",
+    "use": "Dome and supporting volumes; disciplined architectural drawing.",
+    "limit": "Later depiction: not direct 715 evidence; reject later attachments."
+  },
+  {
+    "id": "R3",
+    "file": "R3-vienna-genesis.jpg",
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/ViennaGenesisPict13RebeccaEliezer.jpg/960px-ViennaGenesisPict13RebeccaEliezer.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:ViennaGenesisPict13RebeccaEliezer.jpg",
+    "title": "Vienna Genesis / Rebecca and Eliezer",
+    "credit": "Anonymous late antique illuminators; ONB scan / Commons",
+    "date": "Sixth-century manuscript; modern digital reproduction",
+    "rights": "Public domain / PD-Art as marked; no modern facsimile rights assumed",
+    "use": "Precious pigment, patterned narrative space, assured fine drawing.",
+    "limit": "A biblical scene, not Constantinople's street plan."
+  },
+  {
+    "id": "R4",
+    "file": "R4-carved-limestone.jpg",
+    "availability": "metadata-only",
+    "download_note": "The file name is reserved, not an included binary. Advertised web-large and original image endpoints returned HTTP 404 during the completed research; the object record remains the source.",
+    "url": "https://images.metmuseum.org/CRDImages/is/web-large/jc09.217.11_1.jpg",
+    "source": "https://www.metmuseum.org/art/collection/search/456089",
+    "title": "Carved limestone capital",
+    "credit": "The Met, Rogers Fund 1909; 09.217.11",
+    "date": "Egypt, fifth-sixth century",
+    "rights": "Public Domain / Met Open Access on object page",
+    "use": "Carved relief, material depth and precise shadows in stone.",
+    "limit": "Egyptian comparator; not a capital proven to belong to Hagia Sophia."
+  },
+  {
+    "id": "R5",
+    "file": "R5-turner-atmosphere.jpg",
+    "url": "https://api.nga.gov/iiif/e69c25bb-f772-4ac2-966f-2954eb420a84/full/%21800%2C800/0/default.jpg",
+    "source": "https://www.nga.gov/artworks/1224-venice-dogana-and-san-giorgio-maggiore",
+    "title": "Turner / Venice: The Dogana...",
+    "credit": "J. M. W. Turner, 1834; NGA, Widener Collection, 1942.9.85",
+    "date": "1834 oil painting - TECHNIQUE ONLY",
+    "rights": "Media marked public domain by the National Gallery of Art",
+    "use": "Marine light, luminous warm/cool intervals, atmospheric recession.",
+    "limit": "Do not borrow Venetian buildings, gondolas or later sail rigs."
+  }
+]

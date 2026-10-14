@@ -1,0 +1,102 @@
+{
+  "project": "Suyuf Al-Mamalik / Imperial Illuminated Atlas",
+  "subject": "Constantinople, 715 CE",
+  "delivery_verification_date": "2026-10-14",
+  "baseline_commit": "6c19f3a1044249bdb473778efe101fd6d2896129",
+  "branch": "codex/agent4-imperial-art-direction",
+  "tool": "image_gen.imagegen (image_gen__imagegen)",
+  "model_version": null,
+  "seed": null,
+  "unavailable_settings_note": "The session tool did not expose a model/version, seed or exact pixel-size control. Dimensions were read from the returned PNG files.",
+  "generation_count": 3,
+  "edit_count": 1,
+  "resume_note": "All four raster outputs predated resumption and were preserved; no images were regenerated during delivery completion.",
+  "external_reference_images_supplied_to_generator": false,
+  "outputs": [
+    {
+      "id": "A",
+      "status": "final",
+      "operation": "text-to-image",
+      "file": "concepts/A-monumental-imperial-grandeur.png",
+      "sha256": "a58c1fd1c00fb89fe313ae570459b9201bc22dd0d983f4c2386a6ebc07c26e0f",
+      "bytes": 3761911,
+      "format": "PNG",
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "color_mode": "RGB",
+      "transparent_background": false,
+      "exact_executed_prompt": "prompts/A-monumental-imperial-grandeur.txt",
+      "prompt_sha256": "91e892c9b8dff55ea7ed02c0ebb02f22e16e139b50bf4ec3ec0a1be0e45a58f7",
+      "input_image": null,
+      "original_tool_output_filename": "exec-8e932fdc-a57a-4671-a572-da32038957db.png",
+      "byte_identical_to_original_tool_output": true
+    },
+    {
+      "id": "B-initial",
+      "status": "preserved-draft",
+      "operation": "text-to-image",
+      "file": "concepts/drafts/B-initial.png",
+      "sha256": "36b690d900a168e722c860ab0c3159fb4a52785c90ee3c9bbed45340c62636e3",
+      "bytes": 4091126,
+      "format": "PNG",
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "color_mode": "RGB",
+      "transparent_background": false,
+      "exact_executed_prompt": "prompts/B-exquisite-illuminated-atlas.txt",
+      "prompt_sha256": "eb2e5c1609eb32cc26b3e393d81f1ab3293b5a1f13a09e392b5b3dbab2863e89",
+      "input_image": null,
+      "original_tool_output_filename": "exec-dc64f653-a4ee-4ccc-ba5f-2eb8c118595d.png",
+      "byte_identical_to_original_tool_output": true
+    },
+    {
+      "id": "C",
+      "status": "final",
+      "operation": "text-to-image",
+      "file": "concepts/C-epic-historical-painting.png",
+      "sha256": "1338ca6f58d72cb0cd691a118a021413f038c0349558257ca0fa2fe74fa7d9a3",
+      "bytes": 3552318,
+      "format": "PNG",
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "color_mode": "RGB",
+      "transparent_background": false,
+      "exact_executed_prompt": "prompts/C-epic-historical-painting.txt",
+      "prompt_sha256": "9652bc53e55828c8eff63ea11563787ae536f329c575a3f147e9c710a40831de",
+      "input_image": null,
+      "original_tool_output_filename": "exec-1a27e1f2-9c08-442d-a3a1-fd34f1b3734d.png",
+      "byte_identical_to_original_tool_output": true
+    },
+    {
+      "id": "B",
+      "status": "final",
+      "operation": "edit",
+      "file": "concepts/B-exquisite-illuminated-atlas-refined.png",
+      "sha256": "fe5ead9f8777e00a9432c36f3d982934676f1dc6d13140406c61b38221048bfa",
+      "bytes": 4099134,
+      "format": "PNG",
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "color_mode": "RGB",
+      "transparent_background": false,
+      "exact_executed_prompt": "prompts/B-refinement-edit.txt",
+      "prompt_sha256": "531784a307539b0b218a5e8e49d871024e8a4126eb60ca7eba972adea2edbb6e",
+      "input_image": "concepts/drafts/B-initial.png",
+      "original_tool_output_filename": "exec-58623ab2-8aa0-4a95-948f-319033601beb.png",
+      "byte_identical_to_original_tool_output": true
+    }
+  ],
+  "reference_board": "reference-board.pdf",
+  "reference_board_sha256": "fed70a3054f28c3e313bdc23ccc320257c3bd51ecdbc2943aa9982a4879d7b2e",
+  "review_status": "Pending owner visual review; final identity is not approved.",
+  "historical_status": "Interpretive concepts, not certified archaeological reconstructions. Palace facades, fortification hierarchy, small towers and vessels require further dated review.",
+  "production_status": "No sprites, Phase J integration, game-code changes, merge or deployment in this delivery."
+}
