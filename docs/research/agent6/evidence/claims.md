@@ -29,3 +29,17 @@ Access2026-10-17. Claim IDs identify bounded observations; source IDs resolve to
 | DO-C1/2 | DO1 | EXTERNAL-EVIDENCE | high | Sequel QoL diplomacy AI features |
 | DO-C3 | DO2 DO3 | EXTERNAL-EVIDENCE | medium | Preplanned resolution; no extracted implementation claim |
 | DO-C4/5 | DO3 DO4 | EXTERNAL-EVIDENCE | medium/low | Depth and ordinary army praise; workload and contrasting QoL reports |
+| CV-C0/1/2 | CV1 CV2 | EXTERNAL-EVIDENCE | high/medium | 2016-10-21 PC; spatial districts; indexed manual only |
+| CV-C3 | CV3 CV4 | EXTERNAL-EVIDENCE | high/unknown outcome | April2021 navalAI unit/civ balance; release confirmed |
+| CV-C4/5 | CV5 CV6 CV7 | EXTERNAL-EVIDENCE | medium/low | Positive2016 endgame counterexample vs2024 selected complaints |
+| BB-C0/1/2 | BB1 BB2 | EXTERNAL-EVIDENCE | high | Release date; persistent injuries design |
+| BB-C3 | BB3 | EXTERNAL-EVIDENCE | high for proposed change | 2018 retreat rework; not replay verification |
+| BB-C4/5 | BB4 BB5 | EXTERNAL-EVIDENCE | medium/low | Tutorial/inventory friction; no current feature absence claimed |
+| BB-C6 | BB6 | EXTERNAL-EVIDENCE | high | 2025 patch confirmation and follow-up regression fixes |
+| AN-C0/1 | AN1 AN3 | EXTERNAL-EVIDENCE | high/medium | PC release and location/chain interdependence |
+| AN-C2/3/4/5 | AN2 AN3 AN4 AN5 | EXTERNAL-EVIDENCE | high/medium/low | Pre-stats diagnosis complaints; GU6 release; limited player praise |
+| AS-C0/1 | AS1 AS2 | EXTERNAL-EVIDENCE | high | Full releaseDec8; Dec30 blog metadata conflict noted |
+| AS-C2 | AS3 AS1 | EXTERNAL-EVIDENCE | high/unknown outcome | Hauling/reserves controls; not proof repetition solved |
+| AS-C3/4/5 | AS4 AS5 AS6 | EXTERNAL-EVIDENCE | medium/low | Variety praise and reset/pressure fatigue concerns |
+| AS-C6 | AS7 | EXTERNAL-EVIDENCE | medium | Indexed1.10.3 notice; direct fetch unavailable |
+| HIST-C1/2 | HI1 HI2 | EXTERNAL-EVIDENCE | medium-high broad context | Diwans/postal institutions; exact715 routes/rates unverified |
