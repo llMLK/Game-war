@@ -1,0 +1,94 @@
+{
+  "observedDate": "2026-10-17",
+  "operation": "mcp__rea__binary_session({})",
+  "open": false,
+  "binding": null,
+  "server": {
+    "name": "rea",
+    "version": "6.5.0",
+    "started_at": "2026-10-17T14:39:41.474Z"
+  },
+  "package": "rea-agents",
+  "ghidra": [
+    {
+      "selected": false,
+      "availability": {
+        "status": "available",
+        "code": null,
+        "reason": null,
+        "diagnostics": {
+          "install_dir": "C:\\tools\\ghidra_12.1.4_PUBLIC_20260921\\ghidra_12.1.4_PUBLIC",
+          "analyze_headless_path": "C:\\tools\\ghidra_12.1.4_PUBLIC_20260921\\ghidra_12.1.4_PUBLIC\\support\\analyzeHeadless.bat",
+          "native_decompiler_path": "C:\\tools\\ghidra_12.1.4_PUBLIC_20260921\\ghidra_12.1.4_PUBLIC\\Ghidra\\Features\\Decompiler\\os\\win_x86_64\\decompile.exe",
+          "application_properties_path": "C:\\tools\\ghidra_12.1.4_PUBLIC_20260921\\ghidra_12.1.4_PUBLIC\\Ghidra\\application.properties",
+          "provider_version": "12.1.4",
+          "java_command": "java.exe",
+          "java_home": "C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.12.101-hotspot",
+          "java_version": "21.0.12.1",
+          "java_vm_name": "OpenJDK 64-Bit Server VM",
+          "java_os_arch": "amd64",
+          "java_os_name": "Windows 11",
+          "platform": "win32",
+          "architecture": "x64",
+          "checks": [
+            {
+              "name": "configuration",
+              "ok": true,
+              "code": null,
+              "detail": "C:\\tools\\ghidra_12.1.4_PUBLIC_20260921\\ghidra_12.1.4_PUBLIC"
+            },
+            {
+              "name": "platform",
+              "ok": true,
+              "code": null,
+              "detail": "win32"
+            },
+            {
+              "name": "architecture",
+              "ok": true,
+              "code": null,
+              "detail": "x64"
+            },
+            {
+              "name": "installation",
+              "ok": true,
+              "code": null,
+              "detail": "C:\\tools\\ghidra_12.1.4_PUBLIC_20260921\\ghidra_12.1.4_PUBLIC\\Ghidra\\application.properties"
+            },
+            {
+              "name": "version",
+              "ok": true,
+              "code": null,
+              "detail": "12.1.4"
+            },
+            {
+              "name": "headless",
+              "ok": true,
+              "code": null,
+              "detail": "C:\\tools\\ghidra_12.1.4_PUBLIC_20260921\\ghidra_12.1.4_PUBLIC\\support\\analyzeHeadless.bat"
+            },
+            {
+              "name": "native_decompiler",
+              "ok": true,
+              "code": null,
+              "detail": "C:\\tools\\ghidra_12.1.4_PUBLIC_20260921\\ghidra_12.1.4_PUBLIC\\Ghidra\\Features\\Decompiler\\os\\win_x86_64\\decompile.exe reports pe x86_64, which matches win32/x64"
+            },
+            {
+              "name": "java",
+              "ok": true,
+              "code": null,
+              "detail": "21.0.12.1; 64-bit; JDK; C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.12.101-hotspot; accepted a 64-bit full JDK 21 or newer"
+            }
+          ]
+        }
+      },
+      "target_support": {
+        "status": "unknown",
+        "code": null,
+        "reason": "No target is open.",
+        "diagnostics": {}
+      }
+    }
+  ],
+  "targetAnalysisPerformed": false
+}

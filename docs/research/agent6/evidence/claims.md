@@ -43,3 +43,12 @@ Access2026-10-17. Claim IDs identify bounded observations; source IDs resolve to
 | AS-C3/4/5 | AS4 AS5 AS6 | EXTERNAL-EVIDENCE | medium/low | Variety praise and reset/pressure fatigue concerns |
 | AS-C6 | AS7 | EXTERNAL-EVIDENCE | medium | Indexed1.10.3 notice; direct fetch unavailable |
 | HIST-C1/2 | HI1 HI2 | EXTERNAL-EVIDENCE | medium-high broad context | Diwans/postal institutions; exact715 routes/rates unverified |
+| CODE01–05 | CODE-A | CONFIRMED-IN-OUR-CODE | high static | Save serializer/node filter/legacy score/null-cancel/battle UI; exact lines in06 |
+| CODE06–14 | CODE-B | CONFIRMED-IN-OUR-CODE | high static; runtime untested | Existing net/route/admin/politics/AI/occupation/leader override; exact lines in06 |
+| CODE15 | CODE-R | EXTERNAL-EVIDENCE | report verified; no rerun | Prior PhaseR test batches not Agent6 results |
+| G0DOC | G0DOC | EXTERNAL-EVIDENCE | high document; no implementation | Proposed contracts in committedREADME/06/12; no owner acceptance inferred |
+| REA-READY | REA1 | EXTERNAL-EVIDENCE | high status only | Candidate available; no target/provider binding or binary experiment |
+
+## Analytical and proposed claims
+
+Failure loops FM-* in04 and prototypes P1/P2/P3 in05 are ANALYST-INFERENCE/PROPOSED, supported by the bounded external claims cited in those sections. They are not discovered formulas or observed outcomes in our game. R01–R17 are PROPOSED with explicit objections and falsification; T01–T18 are NOT EXECUTED. They do not acquire EXTERNAL-EVIDENCE status by reusing a game name.
