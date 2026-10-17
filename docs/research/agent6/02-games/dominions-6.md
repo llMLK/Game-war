@@ -5,6 +5,8 @@
 **EXTERNAL-EVIDENCE DO-C1/3/4:** campaign orders precede simultaneous resolution; battles are watched after planning rather than individually directed during execution. Commanders/squads, scripted plans, equipment and scouting determine available choices; enemy preparation is uncertain. Feedback is the resolved battle and losses persistent in the campaign. Victory has multiple routes including thrones. Detailed spell/battle RNG/replay formats are not inferred from a review. [official features](https://www.illwinter.com/dom6/changes.html) · [DO3](https://www.wargamer.com/dominions-6/review)
 
 ## B — Why it works
+**EXTERNAL-EVIDENCE DO-C7 — outcome/scale:** the official description gives conquest of enemy land, extinguishing enemy dominion or claiming Thrones of Ascension as victory routes. Order preparation pays off in resolved battles and campaign position; a failed plan can permanently lose troops/commanders. Map exploration and rival plans provide uncertainty across repeated simultaneous turns. [DO6](https://www.illwinter.com/dom6/index.html)
+
 **ANALYST-INFERENCE:** preparation has stakes because commitment precedes knowing the opponent's plan. Changing information can make similar armies interact differently. This is useful evidence for command abstraction, but does not validate our manual/delegated equivalence: that remains our own requirement to prove.
 
 ## C/D — Breaks and counterexamples

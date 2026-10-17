@@ -5,6 +5,8 @@
 **EXTERNAL-EVIDENCE AS-C1/3:** short settlements combine variable resources/blueprints, species needs, orders and storm pressure. Player adapts production and favouring to available means; reputation/progression and failure pressure bound each run. Revealed goods and needs inform planning while future offers/events remain uncertain. Reset changes the next settlement's constraints. This is a roguelite loop, not a persistent historical empire. [review](https://www.pcgamer.com/against-the-storm-review/)
 
 ## B — Why it works
+**EXTERNAL-EVIDENCE AS-C3 — outcome/scale:** the1.0-period review describes winning a settlement by filling the favourable progress meter first, and expedition failure if impatience fills first; mission completion and satisfied needs advance progress. Short settlements feed a larger cycle rather than preserve one city forever. Exact thresholds vary by settings and are not copied. [AS4](https://www.pcgamer.com/against-the-storm-review/)
+
 **ANALYST-INFERENCE:** changing the feasible set breaks a memorized build sequence. Ending a settlement near the point where the puzzle is solved can avoid prolonged routine. It also removes the player's long-term spatial attachment: a feature for one audience and a loss for another.
 
 ## C/D — Failure and opposition

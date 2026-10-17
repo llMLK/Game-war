@@ -5,6 +5,8 @@
 **EXTERNAL-EVIDENCE TW-C1/2:** turn-based diplomacy and character relationships change who fights whom; field battles resolve those strategic commitments. Player offers treaties, vassalage and coalitions under acceptance/reputation constraints. Visible offers/relationships provide feedback; counterpart intentions and future defections remain uncertain. A threatened enemy becoming an ally's vassal can interrupt an intended war. [manual](https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/779340/manuals/TW3K_PC_MAN_UK.pdf?t=1763646247) · [TW2](https://www.pcgamer.com/total-war-three-kingdoms-review/)
 
 ## B — Why it works
+**EXTERNAL-EVIDENCE TW-C2 — outcome/scale:** a negotiated agreement can secure protection or interrupt a conquest through vassalage; refusal and lost credibility limit future options. The decision lasts beyond one campaign turn and can affect the next real-time battle. Exact imperial-victory and treaty penalty formulas are outside the verified scope.
+
 **ANALYST-INFERENCE:** independent interests make diplomacy an alternative path to security; armies matter as bargaining power before contact. A treaty creates a future constraint, so winning a battle need not make another conquest immediately sensible.
 
 ## C/D — Failure and opposition

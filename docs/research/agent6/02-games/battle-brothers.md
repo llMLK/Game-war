@@ -5,6 +5,8 @@
 **EXTERNAL-EVIDENCE BB-C1/2:** mercenaries persist between battles; death removes a character, temporary/permanent injuries affect future service. Player chooses contract, equipment and battle exposure under wages, recovery and replacement costs. Feedback is an injured/dead roster plus loot/payment; opponent strength and rolls create risk. Health returning is not equivalent to lost capability returning. [BB2](https://battlebrothersgame.com/dev-blog-79-progress-update-injury-mechanics/)
 
 ## B — Why it works
+**EXTERNAL-EVIDENCE BB-C4 — outcome/scale:** completing a contract may still leave the company with no net improvement after transport, deaths, repair and replacement. Maintaining the roster and ability to take the next contract is the relevant persistent success criterion; no claim that every campaign has a fixed final victory. Tactical rounds feed back to days of travel/recovery. [BB4](https://www.pcgamer.com/battle-brothers-review/)
+
 **ANALYST-INFERENCE:** the relevant outcome is company survival/net capability, not victory alone. Saving a veteran or declining an unattractive contract can be a meaningful success. Persistent cost gives retreat an economic and personal role.
 
 ## C/D — Failure and opposition

@@ -5,6 +5,8 @@
 **EXTERNAL-EVIDENCE FG-C2/3:** formation positioning, terrain and cohesion tests matter to fighting/routing; neighbours can react to a rout/general loss. Player selects formation movement, facing and attacks within action constraints; casualties and cohesion feedback create tactical risks extending beyond the attacked unit. Opponent action and random checks make predictions uncertain. Alternating tactical turns differ from our locked simultaneous execution. No morale threshold/formula is copied. [manual indexed passages](https://ftp.matrixgames.com/pub/FieldofGloryIIMedieval/FOG2%20Medieval%20Manual%20EN%20EBook.pdf)
 
 ## B — Why it works
+**EXTERNAL-EVIDENCE FG-C2/3 — outcome/scale:** loss of cohesion, rout and neighbour reaction are local tactical failure states; useful positioning preserves organized fighting ability. Battles and linked tactical campaigns, not a simulated empire economy, are the relevant scale. Exact army-break percentages are UNVERIFIED here and not proposed as BattleV2 endings.
+
 **ANALYST-INFERENCE:** a flank can be valuable because it changes contact and cohesion, not because it triggers a global victory flag. Reserves have a purpose while a neighbour can fail. A bounded formation scale makes cause-and-effect teachable.
 
 ## C/D — Failure, verification and dissent

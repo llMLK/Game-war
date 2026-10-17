@@ -5,6 +5,8 @@
 **EXTERNAL-EVIDENCE CK-C1/2:** the persistent unit of political identity is a character/dynasty; relationships, office and succession connect personal interests to territorial rule. Administrative government adds governors/families and competition inside an empire. Player chooses appointments and influence commitments; office/control/relationships constrain choices and feed back into future political leverage. Some intentions/secrets remain hidden. Monthly political simulation and generational succession make consequences outlast a single interaction. Pre-release diary values are not final rules. [CK2](https://store.steampowered.com/news/posts/?appids=1158310&enddate=1718712086&feed=steam_community_announcements)
 
 ## B — Why it works
+**EXTERNAL-EVIDENCE CK-C2 — outcome/scale:** office/family competition concerns obtaining and retaining useful governorships/influence over successive appointments; losing office or a desired successor is a political setback, not necessarily the end of the entire game. Exact game-over and succession eligibility rules across2026 governments remain UNVERIFIED; no generic feudal rule is asserted for administrative play.
+
 **ANALYST-INFERENCE:** rewarding a competent governor creates both a useful administrator and an actor with resources. This generates a story when a remembered promise changes a later appointment; a random betrayal popup does not establish such a chain. Success and succession keep an empire's internal choices relevant without fabricating external armies.
 
 ## C/D — Failure and counterevidence

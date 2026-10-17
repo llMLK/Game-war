@@ -5,6 +5,8 @@
 **EXTERNAL-EVIDENCE CV-C1/2:** districts occupy map space outside the city centre, with terrain-dependent adjacency benefits. Player chooses what to build and where; available tiles, production and future alternatives constrain the choice. Visible tile yields show benefits, future district needs are less obvious to a newcomer. Placement changes a city's lasting specialization and what can fit later; cities then support campaign victory. Exact adjacency tables not copied. [CV2 indexed manual](https://downloads.2kgames.com/civilization/vi/manuals/eu/CIV_VI_25TH_ONLINE_MANUAL_ENG.pdf)
 
 ## B — Why it works
+**EXTERNAL-EVIDENCE CV-C1/2 — outcome/scale:** district choices contribute to campaign victory paths; consuming a tile can forgo another later role. A successful specialization serves a chosen victory plan, while a bad placement can lose future options even if the city survives. The review praises spatial tradeoffs but reports frustration from not knowing future placement needs. [CV8](https://www.pcgamer.com/civilization-6-review/)
+
 **ANALYST-INFERENCE:** investing in a port-facing trade city differs from improving a frontier fortress. Opportunity cost arises from geography, not simply purchasing the same level in every city. An improvement should remain recognizable as part of the player's investment history.
 
 ## C/D — Failure and counterexample

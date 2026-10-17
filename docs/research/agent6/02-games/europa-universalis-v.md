@@ -5,6 +5,8 @@
 **EXTERNAL-EVIDENCE EU-C1:** population needs, markets, supply and estates connect economic strength to ruling a society. Player invests in infrastructure, administrative reach, trade and war; population and available goods constrain output. Place and access matter, rather than treasury being the only state. **EU-C2:** the first-hand review describes control/tax collection, population loss removing workers and dynamic trade maps. State is partly visible through layered panels, but causal understanding is expensive. Pauseable long-horizon strategy; no exact production/pricing formula inferred from prose. [EU2](https://www.pcgamer.com/games/strategy/europa-universalis-5-review/)
 
 ## B — Why it works
+**ANALYST-INFERENCE — operational success/failure measure:** evaluate this economic mechanism by whether investment improves reachable production, effective revenue and a chosen state's objective; losing labour/access can reverse it despite nominal territorial growth. These are analytical measures, not invented universal victory/game-over rules. Scale: repeated economic updates across a centuries-long PC campaign; exact current update timing/formulas not assumed.
+
 **ANALYST-INFERENCE:** conquering population, a market or a route offers different benefits. War that removes labour or access has a cost after the peace treaty. Such interdependence can sustain regional choices after the player's treasury grows.
 
 ## C/D — Failures and counterevidence

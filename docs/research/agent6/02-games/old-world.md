@@ -5,6 +5,8 @@
 **EXTERNAL-EVIDENCE OW-C1:** a shared Orders pool pays for movement and other commands. Unit fatigue constrains concentrating repeated moves; roads improve order efficiency. Player sees remaining orders, units and map; enemy intentions remain uncertain. Spending on one front leaves less for workers or another front. State changes consume orders and move/build/act; renewal creates a turn-scale allocation cycle. Victory and character succession act over a campaign. Exact production/fatigue formulas vary by rule version and are not imported. [OW1](https://www.designer-notes.com/old-world-designer-notes-1-orders/)
 
 ## B — Why it works
+**EXTERNAL-EVIDENCE OW-C4 — outcome/scale:** allocation succeeds when the chosen turn's priorities are executed within available orders; neglected fronts/workers are its opportunity cost. Campaign endings include points, ambitions and conquest in the2021 review, with edition-dependent thresholds deliberately not imported. [OW2](https://www.pcgamer.com/old-world-review/)
+
 **ANALYST-INFERENCE:** an idle unit can be a good decision because its action competes with a better one. Empire growth creates more choices without requiring all pieces to act. Roads gain military and civilian value. This works only while the pool remains scarce enough to create alternatives and the player understands what was forgone.
 
 ## C/D — Failure and counterevidence

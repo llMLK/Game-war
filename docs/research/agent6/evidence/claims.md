@@ -48,6 +48,8 @@ Access2026-10-17. Claim IDs identify bounded observations; source IDs resolve to
 | CODE15 | CODE-R | EXTERNAL-EVIDENCE | report verified; no rerun | Prior PhaseR test batches not Agent6 results |
 | G0DOC | G0DOC | EXTERNAL-EVIDENCE | high document; no implementation | Proposed contracts in committedREADME/06/12; no owner acceptance inferred |
 | REA-READY | REA1 | EXTERNAL-EVIDENCE | high status only | Candidate available; no target/provider binding or binary experiment |
+| CV-C6 | CV8 | EXTERNAL-EVIDENCE | medium | Spatial tradeoff praise and frustration from future placement needs; PC launch review |
+| DO-C7 | DO6 | EXTERNAL-EVIDENCE | high official description | Conquest/dominion/thrones victory routes; no numerical requirements imported |
 
 ## Analytical and proposed claims
 

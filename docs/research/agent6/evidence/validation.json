@@ -1,0 +1,22 @@
+{
+  "accessDate": "2026-10-17",
+  "branch": "codex/agent6-strategy-systems-research",
+  "headBeforeFinal": "3d53da235cb0a7246ed2cb5bbe6e0b1eed5ef5d5",
+  "baseline": "29f34b333ff4c424e0b0a987838138a4bf697d94",
+  "sourceRecords": 67,
+  "duplicateSourceIds": [],
+  "dossiers": 10,
+  "paperTestCases": 18,
+  "brokenLocalLinks": [],
+  "scoreErrors": [],
+  "outsideResearch": [],
+  "researchFilesAtCheck": 29,
+  "missingDossierSections": [],
+  "mergeBase": "29f34b333ff4c424e0b0a987838138a4bf697d94",
+  "reaOpen": false,
+  "productionTestsRunByAgent6": 0,
+  "agent4Head": "30247cd5ed8795b67a78bf424a5382eeaca4d544",
+  "agent5Head": "f39af991964db4f5e0443ad661066a2765a1edb1",
+  "gitDiffCheckExitCode": 0,
+  "method": "PowerShell Import-Csv, local Markdown link resolution, independent weighted-score recomputation, git diff baseline plus untracked inventory, branch ref comparison. No production/game tests."
+}
