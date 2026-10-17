@@ -1,0 +1,666 @@
+{
+  "date": "2026-10-17",
+  "images": [
+    {
+      "file": "art/A1-style-master.png",
+      "sha256": "0be16076df69848916ba6ac84ab9d608671da039874d5d4e13e930d1a53ae2bd",
+      "bytes": 3564887,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "art/A2-strategic-compact-v2.png",
+      "sha256": "3255018e4f77ccf22ec5c2ddf1f5bbd50e5fccf55c6626daf1bdb74e8041aaad",
+      "bytes": 958677,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pixels": 1177803,
+        "fully_opaque_pixels": 372533,
+        "partial_alpha_pixels": 22528
+      }
+    },
+    {
+      "file": "art/A2-strategic-compact.png",
+      "sha256": "ef42fedbfc2bdea93b0ffbe6c26377c38b5587edcf129e2da7855771d8cd262d",
+      "bytes": 1177580,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pixels": 1092409,
+        "fully_opaque_pixels": 453964,
+        "partial_alpha_pixels": 26491
+      }
+    },
+    {
+      "file": "art/A2-strategic-detail.png",
+      "sha256": "a2b954412be48c66a01563068ea08e04d9ca967f0a07f958a2438efbd91ae11e",
+      "bytes": 1198569,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pixels": 1133356,
+        "fully_opaque_pixels": 416464,
+        "partial_alpha_pixels": 23044
+      }
+    },
+    {
+      "file": "art/A3-expanded-inspection.png",
+      "sha256": "d2bf5ed3987eace8aace820f6b546985dab33227fe08942f0a103270f04d5f50",
+      "bytes": 3174549,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "drafts/A1-first-pass.png",
+      "sha256": "8a44a0c21c1c0f1c48c61d3f7896ae8534513376cb53bd4435763b3c25bed687",
+      "bytes": 3875140,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "drafts/A2-generated.png",
+      "sha256": "62beec805cc5cc4428e79695dbb1a8e2932b0ca9d1a99c6d0402487e06a66be7",
+      "bytes": 2565551,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha": {
+        "min": 0,
+        "max": 254,
+        "fully_transparent_pixels": 792187,
+        "fully_opaque_pixels": 0,
+        "partial_alpha_pixels": 780677
+      }
+    },
+    {
+      "file": "drafts/A2-lod-generated.png",
+      "sha256": "86992c93cc2c062c4e2686df9fe3477f1a75665821a03b8aad78ba573012c868",
+      "bytes": 2448061,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha": {
+        "min": 0,
+        "max": 254,
+        "fully_transparent_pixels": 715128,
+        "fully_opaque_pixels": 0,
+        "partial_alpha_pixels": 857736
+      }
+    },
+    {
+      "file": "drafts/A2-lod2-generated.png",
+      "sha256": "f2c87b6f76da964f9dad09948647720f7e248eff4279fec89613ca085d6c2de6",
+      "bytes": 2134048,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha": {
+        "min": 0,
+        "max": 254,
+        "fully_transparent_pixels": 874841,
+        "fully_opaque_pixels": 0,
+        "partial_alpha_pixels": 698023
+      }
+    },
+    {
+      "file": "drafts/A3-context-generated.png",
+      "sha256": "206789cb398121db8789e489ddf449075e2446ae96fa50b51e4bac0089b5671e",
+      "bytes": 3291278,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "drafts/B-defense-donor.png",
+      "sha256": "859174b4fa3ff7374ee887928197d9fa023b80f7c2d5a6ee8dffb3f12ca1c365",
+      "bytes": 2048322,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha": {
+        "min": 0,
+        "max": 254,
+        "fully_transparent_pixels": 880953,
+        "fully_opaque_pixels": 0,
+        "partial_alpha_pixels": 691911
+      }
+    },
+    {
+      "file": "drafts/B-facilities-donor.png",
+      "sha256": "0bb40f38305d084d2a5100c6252f2272fa8712f644263eef3e71199f724adccb",
+      "bytes": 2074259,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha": {
+        "min": 0,
+        "max": 254,
+        "fully_transparent_pixels": 877271,
+        "fully_opaque_pixels": 0,
+        "partial_alpha_pixels": 695593
+      }
+    },
+    {
+      "file": "evidence/A2-A3-identity-comparison.png",
+      "sha256": "c462e6c67103e0025efad9a5416b05539460dc9ead80dfb33cb3ffdd951316d2",
+      "bytes": 1218717,
+      "dimensions_px": [
+        1600,
+        900
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "evidence/B-cumulative-overview.png",
+      "sha256": "a89650e9c151e96e8a42a3d0e9916519dbb7f7b99a3adadcbf9bc3e22f9d672e",
+      "bytes": 248282,
+      "dimensions_px": [
+        1100,
+        920
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "evidence/B-defense-comparison.png",
+      "sha256": "9f35aa438dbc3b94be57c09c4925511068733aa1aa36de0d483d5a00e91d7c62",
+      "bytes": 297278,
+      "dimensions_px": [
+        1100,
+        750
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "evidence/B-difference-comparison.png",
+      "sha256": "36e67ef5f8d58b9f9c3e5d60ada9d04679c5dbf75ebe72d37a30ea85dabdb012",
+      "bytes": 30654,
+      "dimensions_px": [
+        1100,
+        920
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "evidence/crowded-dpr1.png",
+      "sha256": "b789bbfded0a526852822cf412f006e256baa6f167989bf5b34f69456b0a6822",
+      "bytes": 73280,
+      "dimensions_px": [
+        1104,
+        791
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "evidence/difference-S0-S1.png",
+      "sha256": "9d82790f3bba77adc081b6b34698f4b430aa478173be78e0c86e278c9befa631",
+      "bytes": 14134,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "evidence/difference-S1-S2.png",
+      "sha256": "31e3d758be3aa4f59a25c3eadbf3d49aeb4a09c3f97ffc5e3815b4b4bf25205c",
+      "bytes": 14590,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "evidence/difference-S2-S3.png",
+      "sha256": "20d6fe3233f42723b252e349dc37ccba4f11be1da73a125cfc78aa07fb358b0c",
+      "bytes": 14292,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "evidence/difference-S3-S3-defense.png",
+      "sha256": "1d6bcd64843fa22aee21fb23920bae2fd8cd2f4e2af44e833d86ead48d65ffdb",
+      "bytes": 14926,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "evidence/first-reduction-check.png",
+      "sha256": "9043b84ce261b0f75532ae32fe5b9c761e0ce21bcc8418204e13399f7959f3f9",
+      "bytes": 22243,
+      "dimensions_px": [
+        800,
+        300
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "evidence/LOD-reduction-diagnostic.png",
+      "sha256": "a0ae734ff4cd2ddf15a3594d05c517ce8722bbcfa9bbbdebb2eb5a2e36f15588",
+      "bytes": 90804,
+      "dimensions_px": [
+        1000,
+        660
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "evidence/LOD2-reduction-diagnostic.png",
+      "sha256": "9e4d29d3ed7eb91255ca2e2e321055be1073a7afb22b5fec774f30157395e833",
+      "bytes": 15595,
+      "dimensions_px": [
+        700,
+        280
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "evidence/mobile-matrix-dpr1.png",
+      "sha256": "d3206f206e25aafd0cc78c28d22fcd2eebbf91f17eec09052cf88fed8417a897",
+      "bytes": 65071,
+      "dimensions_px": [
+        1104,
+        716
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "evidence/mobile-matrix-dpr2.png",
+      "sha256": "3a94167c2ec12c6c98be37e0165b42bd14864d04da0e17c5db43f1828197eb81",
+      "bytes": 214180,
+      "dimensions_px": [
+        2208,
+        1432
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "evidence/phaseR-dpr1.png",
+      "sha256": "a374667fb03bc32f2d73c2c62242117eb7ca73e33a3bfa955d3263af6195234d",
+      "bytes": 402966,
+      "dimensions_px": [
+        1104,
+        1029
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "evidence/phone-390x844-dpr1.png",
+      "sha256": "243f383a383d68fbf3b069d429986624051ec083ddc0097f3025f056df73d366",
+      "bytes": 62983,
+      "dimensions_px": [
+        390,
+        844
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "evidence/state-matrix-dpr1.png",
+      "sha256": "3649ac686c6c9d8be856e6dbfa6936b14869ed73f6aed0ad4981f3aa31374c47",
+      "bytes": 39418,
+      "dimensions_px": [
+        1104,
+        873
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "evidence/state-matrix-dpr2.png",
+      "sha256": "1c143601982a66c5c55d92b4e274a79e3dcca846bbe0f0d6958eaa7c2cec5982",
+      "bytes": 126666,
+      "dimensions_px": [
+        2208,
+        1746
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "evidence/value-check-dpr1.png",
+      "sha256": "eed6c2992c7ce0cd246eacb86379aacca95c94500190c86d8562627b2a33d4f5",
+      "bytes": 22090,
+      "dimensions_px": [
+        1104,
+        273
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "guides/city-layout-annotated.png",
+      "sha256": "586a1b893fc4b9c657875a135a559de95697d38c7375baccc162957fd2bf5285",
+      "bytes": 112486,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "guides/upgrade-regions-annotated-v2.png",
+      "sha256": "59604bae13c54c3092fdaf0f60a4fa9679150d1fb5b509dbc06bb27e6eb35e02",
+      "bytes": 1310349,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "guides/upgrade-regions-annotated.png",
+      "sha256": "b33fe5deaaa2e68d9b59ebb271d40de97cc85c2358a066b94effeba99c49804e",
+      "bytes": 1305892,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "guides/upgrade-regions-final.png",
+      "sha256": "0d9c7004e6d690108b2b05bd620fbaa02275043e82edea21e61ca78110ba7dac",
+      "bytes": 1311426,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "layers/compact-city-fixed.png",
+      "sha256": "f9017e951af4ea5f58a6f87f8a198010e90745e6a900ea8fa6ce91650719d469",
+      "bytes": 2452266,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pixels": 747017,
+        "fully_opaque_pixels": 790630,
+        "partial_alpha_pixels": 35217
+      }
+    },
+    {
+      "file": "layers/compact-v2-fixed.png",
+      "sha256": "dff2102ac069ddc11b497512e577898f70163f743e30652b0cefe190d77a09ae",
+      "bytes": 2155786,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pixels": 895017,
+        "fully_opaque_pixels": 649807,
+        "partial_alpha_pixels": 28040
+      }
+    },
+    {
+      "file": "layers/defense-replacement-crop.png",
+      "sha256": "3d7b9081d8775adb3fb630291fbbeee001f26ca766526266795ea4f92275ae58",
+      "bytes": 107994,
+      "dimensions_px": [
+        209,
+        250
+      ],
+      "mode": "RGBA",
+      "alpha": {
+        "min": 255,
+        "max": 255,
+        "fully_transparent_pixels": 0,
+        "fully_opaque_pixels": 52250,
+        "partial_alpha_pixels": 0
+      }
+    },
+    {
+      "file": "layers/defense-replacement-mask.png",
+      "sha256": "64ecba67ef9a8270d429d84e2874a095824638116d18372e33fb18198018d9b3",
+      "bytes": 3609,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "L"
+    },
+    {
+      "file": "layers/detail-city-fixed.png",
+      "sha256": "8eba8b6f426c0a157f9f679c39f9aea23147e8a80db9318366520baeb655186a",
+      "bytes": 2557486,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pixels": 818208,
+        "fully_opaque_pixels": 725980,
+        "partial_alpha_pixels": 28676
+      }
+    },
+    {
+      "file": "layers/granary-replacement-crop.png",
+      "sha256": "78cee6747a88916ed93843b263ca1785317631ca473116a909fd3606b4899a86",
+      "bytes": 40109,
+      "dimensions_px": [
+        171,
+        99
+      ],
+      "mode": "RGBA",
+      "alpha": {
+        "min": 255,
+        "max": 255,
+        "fully_transparent_pixels": 0,
+        "fully_opaque_pixels": 16929,
+        "partial_alpha_pixels": 0
+      }
+    },
+    {
+      "file": "layers/granary-replacement-mask.png",
+      "sha256": "f04e349b7680a73b01eca9b836341f89f64c205c9d3e27afac0c99a7dfaa063b",
+      "bytes": 3101,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "L"
+    },
+    {
+      "file": "layers/market-replacement-crop.png",
+      "sha256": "8309595efe301ca0c9dae61f1915e9713b1f8edc5a5b90924236132c6cd2f349",
+      "bytes": 43040,
+      "dimensions_px": [
+        187,
+        99
+      ],
+      "mode": "RGBA",
+      "alpha": {
+        "min": 255,
+        "max": 255,
+        "fully_transparent_pixels": 0,
+        "fully_opaque_pixels": 18513,
+        "partial_alpha_pixels": 0
+      }
+    },
+    {
+      "file": "layers/market-replacement-mask.png",
+      "sha256": "51babe5ff85a32c91af8fa250cc82ea952cc2353344bc7c0a066311d9f8ce430",
+      "bytes": 3307,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "L"
+    },
+    {
+      "file": "layers/port-replacement-crop.png",
+      "sha256": "a2350a833a0ec724fc51aab0ac749213d6bae610c9a65186454add1392aca1ed",
+      "bytes": 54759,
+      "dimensions_px": [
+        238,
+        146
+      ],
+      "mode": "RGBA",
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pixels": 20787,
+        "fully_opaque_pixels": 11332,
+        "partial_alpha_pixels": 2629
+      }
+    },
+    {
+      "file": "layers/port-replacement-mask.png",
+      "sha256": "eddc2b9ba4c2a403e0d7b3e5a666a0699aeb34120070658b51861b5f908f84ff",
+      "bytes": 3277,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "L"
+    },
+    {
+      "file": "references/phase-r-synthetic-390x844.png",
+      "sha256": "1db72745f8bd0ace2436597cbc76c538937dccb43421492724f6501f2d6086f6",
+      "bytes": 340626,
+      "dimensions_px": [
+        390,
+        844
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "states/S0.png",
+      "sha256": "3255018e4f77ccf22ec5c2ddf1f5bbd50e5fccf55c6626daf1bdb74e8041aaad",
+      "bytes": 958677,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pixels": 1177803,
+        "fully_opaque_pixels": 372533,
+        "partial_alpha_pixels": 22528
+      }
+    },
+    {
+      "file": "states/S1.png",
+      "sha256": "d4f5a56649e10a0e0a1a29bdb1e81c36481a5adfe6612764c6664bc9b3925b20",
+      "bytes": 960267,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pixels": 1177803,
+        "fully_opaque_pixels": 372533,
+        "partial_alpha_pixels": 22528
+      }
+    },
+    {
+      "file": "states/S2.png",
+      "sha256": "d0ff4ac79a7b36f620c8f36f64d1d4c5d9782299df633d40c74bf55d2e29a237",
+      "bytes": 967110,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pixels": 1175482,
+        "fully_opaque_pixels": 374019,
+        "partial_alpha_pixels": 23363
+      }
+    },
+    {
+      "file": "states/S3-defense.png",
+      "sha256": "d5128d880947442ad5d97d2242927a5cce0b155962f0ab26d006fe1c85512c26",
+      "bytes": 967076,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pixels": 1175482,
+        "fully_opaque_pixels": 374019,
+        "partial_alpha_pixels": 23363
+      }
+    },
+    {
+      "file": "states/S3.png",
+      "sha256": "843ee8f5d57d28d8dec86aff2d2de131883dade6633a1917c687e805467e3c68",
+      "bytes": 967812,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "fully_transparent_pixels": 1175482,
+        "fully_opaque_pixels": 374019,
+        "partial_alpha_pixels": 23363
+      }
+    }
+  ],
+  "memory_note": "A 1536x1024 RGBA decoded buffer uses 6291456 bytes (6 MiB), regardless of PNG transfer bytes. These are authoring/evidence files, not measured runtime budgets."
+}

@@ -1,0 +1,127 @@
+{
+  "coordinates": "source 1536x1024 before common registration",
+  "regions": {
+    "market": [
+      [
+        610,
+        555
+      ],
+      [
+        691,
+        532
+      ],
+      [
+        789,
+        586
+      ],
+      [
+        752,
+        652
+      ],
+      [
+        674,
+        644
+      ],
+      [
+        607,
+        606
+      ]
+    ],
+    "port": [
+      [
+        1090,
+        687
+      ],
+      [
+        1155,
+        680
+      ],
+      [
+        1280,
+        733
+      ],
+      [
+        1278,
+        803
+      ],
+      [
+        1139,
+        768
+      ]
+    ],
+    "granary": [
+      [
+        852,
+        646
+      ],
+      [
+        932,
+        598
+      ],
+      [
+        1053,
+        635
+      ],
+      [
+        1080,
+        700
+      ],
+      [
+        1007,
+        742
+      ],
+      [
+        867,
+        711
+      ]
+    ],
+    "defense": [
+      [
+        386,
+        589
+      ],
+      [
+        470,
+        565
+      ],
+      [
+        531,
+        613
+      ],
+      [
+        532,
+        754
+      ],
+      [
+        491,
+        781
+      ],
+      [
+        389,
+        733
+      ]
+    ]
+  },
+  "intent": "Masks limit compositing to intended facilities. Geometry outside masks is immutable.",
+  "state_mapping": {
+    "S0": [],
+    "S1": [
+      "market"
+    ],
+    "S2": [
+      "market",
+      "port"
+    ],
+    "S3": [
+      "market",
+      "port",
+      "granary"
+    ],
+    "S3-defense": [
+      "market",
+      "port",
+      "granary",
+      "defense"
+    ]
+  }
+}

@@ -1,0 +1,185 @@
+{
+  "canvas": [
+    1536,
+    1024
+  ],
+  "camera": "C01",
+  "elevation_degrees": 35,
+  "projection": "parallel",
+  "look": "NE from SW",
+  "light": "L01 upper-left, shadows lower-right",
+  "anchor": [
+    768,
+    799
+  ],
+  "peninsula_polygon": [
+    [
+      340,
+      450
+    ],
+    [
+      700,
+      260
+    ],
+    [
+      1040,
+      225
+    ],
+    [
+      1280,
+      290
+    ],
+    [
+      1210,
+      480
+    ],
+    [
+      1120,
+      610
+    ],
+    [
+      680,
+      820
+    ]
+  ],
+  "north_shore": [
+    [
+      340,
+      450
+    ],
+    [
+      700,
+      260
+    ],
+    [
+      1040,
+      225
+    ],
+    [
+      1280,
+      290
+    ]
+  ],
+  "south_shore": [
+    [
+      680,
+      820
+    ],
+    [
+      1120,
+      610
+    ],
+    [
+      1210,
+      480
+    ],
+    [
+      1280,
+      290
+    ]
+  ],
+  "land_wall": [
+    [
+      340,
+      450
+    ],
+    [
+      680,
+      820
+    ]
+  ],
+  "road_gate": [
+    520,
+    650
+  ],
+  "hagia_sophia_ground_center": [
+    1050,
+    410
+  ],
+  "hippodrome_center": [
+    905,
+    535
+  ],
+  "palace_center": [
+    1125,
+    512
+  ],
+  "slots": {
+    "market": {
+      "center": [
+        730,
+        535
+      ],
+      "polygon": [
+        [
+          660,
+          527
+        ],
+        [
+          735,
+          483
+        ],
+        [
+          797,
+          524
+        ],
+        [
+          727,
+          570
+        ]
+      ],
+      "class": "R/I"
+    },
+    "port": {
+      "center": [
+        925,
+        710
+      ],
+      "polygon": [
+        [
+          878,
+          675
+        ],
+        [
+          943,
+          639
+        ],
+        [
+          1008,
+          690
+        ],
+        [
+          951,
+          739
+        ]
+      ],
+      "class": "H coast / R facility / I upgrade"
+    },
+    "granary": {
+      "center": [
+        818,
+        646
+      ],
+      "polygon": [
+        [
+          767,
+          629
+        ],
+        [
+          831,
+          594
+        ],
+        [
+          883,
+          632
+        ],
+        [
+          820,
+          670
+        ]
+      ],
+      "class": "R/I"
+    }
+  },
+  "note": "Illustrative compressed art blockout. Output compliance must be reviewed, not assumed."
+}

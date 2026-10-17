@@ -1,0 +1,242 @@
+{
+  "project": "Suyuf Al-Mamalik / Imperial Illuminated Atlas / feasibility pilot 01",
+  "baseline_commit": "f31d11c570ece0e838fd000fb663317d31f8fc28",
+  "branch": "codex/agent4-imperial-art-direction",
+  "delivery_verified_date": "2026-10-17",
+  "tool": "image_gen.imagegen / image_gen__imagegen",
+  "model_version": null,
+  "seed": null,
+  "settings_note": "Built-in tool exposes no model/version, seed or exact raster-size control in this session. All measured outputs are 1536x1024.",
+  "call_count": 8,
+  "ordering_note": "IDs describe dependency order. G04/G05 and G07/G08 were independent concurrent calls; IDs do not assert their completion order. Generation dates/times were not separately logged.",
+  "calls": [
+    {
+      "id": "G01",
+      "role": "A1 style generation",
+      "prompt": "prompts/A1-style-master.txt",
+      "prompt_file_sha256": "86af6a6d15e43a131ffc509f7bfc88fc86aa8db0cb2675050af8a471b78d4172",
+      "request_text_sha256": "9373491f5c1592b8ab1f41013ab07527cd3e5a3dc67941644b2c55b1cce4db6a",
+      "request_text_note": "File text with surrounding whitespace stripped, as sent by the recorded execution.",
+      "inputs": [
+        {
+          "file": "guides/city-layout-annotated.png",
+          "sha256": "586a1b893fc4b9c657875a135a559de95697d38c7375baccc162957fd2bf5285"
+        },
+        {
+          "file": "../exploration/concepts/C-epic-historical-painting.png",
+          "sha256": "1338ca6f58d72cb0cd691a118a021413f038c0349558257ca0fa2fe74fa7d9a3"
+        },
+        {
+          "file": "../exploration/concepts/A-monumental-imperial-grandeur.png",
+          "sha256": "a58c1fd1c00fb89fe313ae570459b9201bc22dd0d983f4c2386a6ebc07c26e0f"
+        },
+        {
+          "file": "../exploration/concepts/B-exquisite-illuminated-atlas-refined.png",
+          "sha256": "fe5ead9f8777e00a9432c36f3d982934676f1dc6d13140406c61b38221048bfa"
+        }
+      ],
+      "transparent_background_requested": false,
+      "output": "drafts/A1-first-pass.png",
+      "original_tool_output_filename": "exec-e57f2cce-a6e1-445c-96fa-1e4a338ca0c5.png",
+      "byte_identical_to_original": true,
+      "sha256": "8a44a0c21c1c0f1c48c61d3f7896ae8534513376cb53bd4435763b3c25bed687",
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "id": "G02",
+      "role": "A1 local historical/style correction",
+      "prompt": "prompts/A1-refinement.txt",
+      "prompt_file_sha256": "9f22b82dce7ad021bf197b9922e1548c0c0e642c3fdb9586cabedcf7fd77c4e9",
+      "request_text_sha256": "4e49b8d4212a882637997fee6ef2c0c00b8b8003cc2c80269032b8eede60c453",
+      "request_text_note": "File text with surrounding whitespace stripped, as sent by the recorded execution.",
+      "inputs": [
+        {
+          "file": "drafts/A1-first-pass.png",
+          "sha256": "8a44a0c21c1c0f1c48c61d3f7896ae8534513376cb53bd4435763b3c25bed687"
+        }
+      ],
+      "transparent_background_requested": false,
+      "output": "art/A1-style-master.png",
+      "original_tool_output_filename": "exec-ec95becd-7f64-4076-8754-bd500ae3877c.png",
+      "byte_identical_to_original": true,
+      "sha256": "0be16076df69848916ba6ac84ab9d608671da039874d5d4e13e930d1a53ae2bd",
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "id": "G03",
+      "role": "Dedicated compact interpretation",
+      "prompt": "prompts/A2-strategic-city.txt",
+      "prompt_file_sha256": "e904417d99b2882f0bbfb0c7bda55dadcc8d5e3fe958ebdf8e16a47d700c3ef3",
+      "request_text_sha256": "5f826f70ef0fa5dd78923e078de02eb930120739e03a9acbc2dffa27d42285d6",
+      "request_text_note": "File text with surrounding whitespace stripped, as sent by the recorded execution.",
+      "inputs": [
+        {
+          "file": "art/A1-style-master.png",
+          "sha256": "0be16076df69848916ba6ac84ab9d608671da039874d5d4e13e930d1a53ae2bd"
+        },
+        {
+          "file": "guides/city-layout-annotated.png",
+          "sha256": "586a1b893fc4b9c657875a135a559de95697d38c7375baccc162957fd2bf5285"
+        }
+      ],
+      "transparent_background_requested": true,
+      "output": "drafts/A2-generated.png",
+      "original_tool_output_filename": "exec-c1edde9b-fff8-411e-95b3-39506b03a34f.png",
+      "byte_identical_to_original": true,
+      "sha256": "62beec805cc5cc4428e79695dbb1a8e2932b0ca9d1a99c6d0402487e06a66be7",
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "G04",
+      "role": "First purpose-painted LOD",
+      "prompt": "prompts/A2-compact-lod.txt",
+      "prompt_file_sha256": "a943f1d3d5c2d9912996d5afcb200abfd694f7262ab1dd4d0c773c8fe15e1b41",
+      "request_text_sha256": "aefd0ce96f1a73a2311b1d040baaecfc42a7102f3d47f33bec25b821a3dcd146",
+      "request_text_note": "File text with surrounding whitespace stripped, as sent by the recorded execution.",
+      "inputs": [
+        {
+          "file": "drafts/A2-generated.png",
+          "sha256": "62beec805cc5cc4428e79695dbb1a8e2932b0ca9d1a99c6d0402487e06a66be7"
+        }
+      ],
+      "transparent_background_requested": true,
+      "output": "drafts/A2-lod-generated.png",
+      "original_tool_output_filename": "exec-608f1788-0ce1-408b-9609-ba971d5ea014.png",
+      "byte_identical_to_original": true,
+      "sha256": "86992c93cc2c062c4e2686df9fe3477f1a75665821a03b8aad78ba573012c868",
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "G05",
+      "role": "Matching inspection surroundings",
+      "prompt": "prompts/A3-expanded-context.txt",
+      "prompt_file_sha256": "aaaebb9124be4dc374953fb54ec3f71488d76aec6132091cff858a77c7179ad5",
+      "request_text_sha256": "282fdad676c54f392e3e78fb20ad60efa99d6964e200aa576a081734c54324d2",
+      "request_text_note": "File text with surrounding whitespace stripped, as sent by the recorded execution.",
+      "inputs": [
+        {
+          "file": "drafts/A2-generated.png",
+          "sha256": "62beec805cc5cc4428e79695dbb1a8e2932b0ca9d1a99c6d0402487e06a66be7"
+        }
+      ],
+      "transparent_background_requested": false,
+      "output": "drafts/A3-context-generated.png",
+      "original_tool_output_filename": "exec-aae5525b-fb93-41e3-9ba4-13f5c16fa978.png",
+      "byte_identical_to_original": true,
+      "sha256": "206789cb398121db8789e489ddf449075e2446ae96fa50b51e4bac0089b5671e",
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "id": "G06",
+      "role": "Bounded final small-scale recomposition",
+      "prompt": "prompts/A2-low-scale-recomposition.txt",
+      "prompt_file_sha256": "f789ac0e4fce4a5c43ba66720f0ca88dc01cdd13ed758b7cc678ecf0d1176683",
+      "request_text_sha256": "55195b4ee0b24bb068eeddb0277a8b13ce78122ff9a2dc8d87a8b96278d84f50",
+      "request_text_note": "File text with surrounding whitespace stripped, as sent by the recorded execution.",
+      "inputs": [
+        {
+          "file": "drafts/A2-lod-generated.png",
+          "sha256": "86992c93cc2c062c4e2686df9fe3477f1a75665821a03b8aad78ba573012c868"
+        }
+      ],
+      "transparent_background_requested": true,
+      "output": "drafts/A2-lod2-generated.png",
+      "original_tool_output_filename": "exec-5d23ee3f-9dc4-46a3-a021-11d499f2e672.png",
+      "byte_identical_to_original": true,
+      "sha256": "f2c87b6f76da964f9dad09948647720f7e248eff4279fec89613ca085d6c2de6",
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "G07",
+      "role": "Three facility donor regions",
+      "prompt": "prompts/B-facility-patches.txt",
+      "prompt_file_sha256": "295eb7faf402585273b7f7baabe40e3bc837de4add5c9c2649d431fc72eee96c",
+      "request_text_sha256": "7c86fd36f7ef04b118c2a7e964bd4086c14cb653bb56f7aa87a3ce6a1d48daf7",
+      "request_text_note": "File text with surrounding whitespace stripped, as sent by the recorded execution.",
+      "inputs": [
+        {
+          "file": "layers/compact-v2-fixed.png",
+          "sha256": "dff2102ac069ddc11b497512e577898f70163f743e30652b0cefe190d77a09ae"
+        },
+        {
+          "file": "guides/upgrade-regions-annotated-v2.png",
+          "sha256": "59604bae13c54c3092fdaf0f60a4fa9679150d1fb5b509dbc06bb27e6eb35e02"
+        }
+      ],
+      "transparent_background_requested": true,
+      "output": "drafts/B-facilities-donor.png",
+      "original_tool_output_filename": "exec-b8e876e2-ede1-4c11-8574-99a8a1524c06.png",
+      "byte_identical_to_original": true,
+      "sha256": "0bb40f38305d084d2a5100c6252f2272fa8712f644263eef3e71199f724adccb",
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "G08",
+      "role": "Separate gate donor region",
+      "prompt": "prompts/B-defense-patch.txt",
+      "prompt_file_sha256": "41e8f722e62241769879c240c58bd96cb4c31efe14dab94f4f3ebb436885b7d5",
+      "request_text_sha256": "1ac9d7834c7cbaef565670386dabfa499a9d3a144abbdfa8474d40ce91ff8941",
+      "request_text_note": "File text with surrounding whitespace stripped, as sent by the recorded execution.",
+      "inputs": [
+        {
+          "file": "layers/compact-v2-fixed.png",
+          "sha256": "dff2102ac069ddc11b497512e577898f70163f743e30652b0cefe190d77a09ae"
+        },
+        {
+          "file": "guides/upgrade-regions-annotated-v2.png",
+          "sha256": "59604bae13c54c3092fdaf0f60a4fa9679150d1fb5b509dbc06bb27e6eb35e02"
+        }
+      ],
+      "transparent_background_requested": true,
+      "output": "drafts/B-defense-donor.png",
+      "original_tool_output_filename": "exec-88fcc5fe-e6b6-4f52-8c50-4a13aa1ba47e.png",
+      "byte_identical_to_original": true,
+      "sha256": "859174b4fa3ff7374ee887928197d9fa023b80f7c2d5a6ee8dffb3f12ca1c365",
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA"
+    }
+  ],
+  "offline_derivatives": "See scripts/prepare_assets.py, scripts/build_modularity.py and guides/registration.json. No procedural city art was substituted.",
+  "selected_deliverables": {
+    "A1": "art/A1-style-master.png",
+    "A2": "art/A2-strategic-compact-v2.png",
+    "A3": "art/A3-expanded-inspection.png",
+    "S0": "states/S0.png",
+    "S1": "states/S1.png",
+    "S2": "states/S2.png",
+    "S3": "states/S3.png",
+    "defense": "states/S3-defense.png"
+  },
+  "approval_status": "Owner review pending. Production and Phase J integration not authorized."
+}

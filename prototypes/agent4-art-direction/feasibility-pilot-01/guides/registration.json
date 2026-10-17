@@ -1,0 +1,25 @@
+{
+  "canvas": [
+    1536,
+    1024
+  ],
+  "source_anchor": [
+    768,
+    953
+  ],
+  "registered_anchor": [
+    768,
+    799
+  ],
+  "uniform_scale": 0.76,
+  "translation_px": [
+    184,
+    75
+  ],
+  "resampling": "Pillow LANCZOS, one fixed registration, not per-state fitting",
+  "alpha_cleanup": "alpha <=8 becomes 0; alpha >=250 becomes 255; all intermediate values retained. Original generated RGBA preserved in drafts.",
+  "expanded_composite": "A2 detailed fixed city alpha-composited over A3 generated environmental plate; no source city pixels moved.",
+  "opaque_source_pixels": 725980,
+  "opaque_source_rgb_mismatches_in_expanded": 0,
+  "status": "Technical registration only; no owner approval or historic certification."
+}

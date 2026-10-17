@@ -1,0 +1,128 @@
+{
+  "coordinates": "source 1536x1024 before common registration",
+  "regions": {
+    "market": [
+      [
+        610,
+        551
+      ],
+      [
+        690,
+        526
+      ],
+      [
+        787,
+        579
+      ],
+      [
+        746,
+        619
+      ],
+      [
+        699,
+        600
+      ],
+      [
+        665,
+        570
+      ]
+    ],
+    "port": [
+      [
+        1090,
+        687
+      ],
+      [
+        1155,
+        680
+      ],
+      [
+        1280,
+        733
+      ],
+      [
+        1278,
+        803
+      ],
+      [
+        1139,
+        768
+      ]
+    ],
+    "granary": [
+      [
+        874,
+        666
+      ],
+      [
+        944,
+        637
+      ],
+      [
+        1045,
+        673
+      ],
+      [
+        1043,
+        715
+      ],
+      [
+        970,
+        738
+      ],
+      [
+        883,
+        704
+      ]
+    ],
+    "defense": [
+      [
+        386,
+        589
+      ],
+      [
+        470,
+        565
+      ],
+      [
+        531,
+        613
+      ],
+      [
+        532,
+        754
+      ],
+      [
+        491,
+        781
+      ],
+      [
+        389,
+        733
+      ]
+    ]
+  },
+  "intent": "Masks limit compositing to intended facilities. Geometry outside masks is immutable.",
+  "state_mapping": {
+    "S0": [],
+    "S1": [
+      "market"
+    ],
+    "S2": [
+      "market",
+      "port"
+    ],
+    "S3": [
+      "market",
+      "port",
+      "granary"
+    ],
+    "S3-defense": [
+      "market",
+      "port",
+      "granary",
+      "defense"
+    ]
+  },
+  "revision_note": "Market and granary masks tightened after visual inspection to avoid existing wall crowns and palace facade. First guide preserved."
+}

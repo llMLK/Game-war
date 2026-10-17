@@ -1,0 +1,865 @@
+{
+  "kind": "Isolated static preview capture; not game integration or physical-device testing",
+  "date": "2026-10-17",
+  "zoom": "100% default browser page zoom; image widths checked with getBoundingClientRect",
+  "screenshots": "DPR1 images have one raster pixel per CSS pixel; DPR2 have two. Image viewers may rescale them.",
+  "reports": [
+    {
+      "viewportCss": [
+        1180,
+        950
+      ],
+      "dpr": 1,
+      "engine": "155.0.4283.45",
+      "measurements": [
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 32,
+          "width": 32,
+          "height": 21.328125,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 48,
+          "width": 48,
+          "height": 32,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 96,
+          "width": 96,
+          "height": 64,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 32,
+          "width": 32,
+          "height": 21.328125,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 48,
+          "width": 48,
+          "height": 32,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 96,
+          "width": 96,
+          "height": 64,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 32,
+          "width": 32,
+          "height": 21.328125,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 48,
+          "width": 48,
+          "height": 32,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 96,
+          "width": 96,
+          "height": 64,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3.png",
+          "expectedWidth": 32,
+          "width": 32,
+          "height": 21.328125,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3.png",
+          "expectedWidth": 48,
+          "width": 48,
+          "height": 32,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3.png",
+          "expectedWidth": 96,
+          "width": 96,
+          "height": 64,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S0.png",
+          "expectedWidth": 32,
+          "width": 32,
+          "height": 21.328125,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S1.png",
+          "expectedWidth": 32,
+          "width": 32,
+          "height": 21.328125,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S2.png",
+          "expectedWidth": 32,
+          "width": 32,
+          "height": 21.328125,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3.png",
+          "expectedWidth": 32,
+          "width": 32,
+          "height": 21.328125,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3-defense.png",
+          "expectedWidth": 32,
+          "width": 32,
+          "height": 21.328125,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S0.png",
+          "expectedWidth": 48,
+          "width": 48,
+          "height": 32,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S1.png",
+          "expectedWidth": 48,
+          "width": 48,
+          "height": 32,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S2.png",
+          "expectedWidth": 48,
+          "width": 48,
+          "height": 32,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3.png",
+          "expectedWidth": 48,
+          "width": 48,
+          "height": 32,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3-defense.png",
+          "expectedWidth": 48,
+          "width": 48,
+          "height": 32,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S0.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S1.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S2.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3-defense.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S0.png",
+          "expectedWidth": 96,
+          "width": 96,
+          "height": 64,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S1.png",
+          "expectedWidth": 96,
+          "width": 96,
+          "height": 64,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S2.png",
+          "expectedWidth": 96,
+          "width": 96,
+          "height": 64,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3.png",
+          "expectedWidth": 96,
+          "width": 96,
+          "height": 64,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3-defense.png",
+          "expectedWidth": 96,
+          "width": 96,
+          "height": 64,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-detail.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        }
+      ],
+      "errors": []
+    },
+    {
+      "viewportCss": [
+        1180,
+        950
+      ],
+      "dpr": 2,
+      "engine": "155.0.4283.45",
+      "measurements": [
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 32,
+          "width": 32,
+          "height": 21.328125,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 48,
+          "width": 48,
+          "height": 32,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 96,
+          "width": 96,
+          "height": 64,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 32,
+          "width": 32,
+          "height": 21.328125,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 48,
+          "width": 48,
+          "height": 32,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 96,
+          "width": 96,
+          "height": 64,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 32,
+          "width": 32,
+          "height": 21.328125,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 48,
+          "width": 48,
+          "height": 32,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 96,
+          "width": 96,
+          "height": 64,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3.png",
+          "expectedWidth": 32,
+          "width": 32,
+          "height": 21.328125,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3.png",
+          "expectedWidth": 48,
+          "width": 48,
+          "height": 32,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3.png",
+          "expectedWidth": 96,
+          "width": 96,
+          "height": 64,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S0.png",
+          "expectedWidth": 32,
+          "width": 32,
+          "height": 21.328125,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S1.png",
+          "expectedWidth": 32,
+          "width": 32,
+          "height": 21.328125,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S2.png",
+          "expectedWidth": 32,
+          "width": 32,
+          "height": 21.328125,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3.png",
+          "expectedWidth": 32,
+          "width": 32,
+          "height": 21.328125,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3-defense.png",
+          "expectedWidth": 32,
+          "width": 32,
+          "height": 21.328125,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S0.png",
+          "expectedWidth": 48,
+          "width": 48,
+          "height": 32,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S1.png",
+          "expectedWidth": 48,
+          "width": 48,
+          "height": 32,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S2.png",
+          "expectedWidth": 48,
+          "width": 48,
+          "height": 32,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3.png",
+          "expectedWidth": 48,
+          "width": 48,
+          "height": 32,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3-defense.png",
+          "expectedWidth": 48,
+          "width": 48,
+          "height": 32,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S0.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S1.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S2.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3-defense.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S0.png",
+          "expectedWidth": 96,
+          "width": 96,
+          "height": 64,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S1.png",
+          "expectedWidth": 96,
+          "width": 96,
+          "height": 64,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S2.png",
+          "expectedWidth": 96,
+          "width": 96,
+          "height": 64,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3.png",
+          "expectedWidth": 96,
+          "width": 96,
+          "height": 64,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3-defense.png",
+          "expectedWidth": 96,
+          "width": 96,
+          "height": 64,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-detail.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "art/A2-strategic-compact-v2.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        },
+        {
+          "src": "states/S3.png",
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625,
+          "anchor": "768,799",
+          "naturalWidth": 1536,
+          "naturalHeight": 1024
+        }
+      ],
+      "errors": []
+    },
+    {
+      "viewportCss": [
+        390,
+        844
+      ],
+      "dpr": 1,
+      "hasTouch": true,
+      "isMobile": true,
+      "scrollWidth": 390,
+      "measurements": [
+        {
+          "expectedWidth": 32,
+          "width": 32,
+          "height": 21.328125
+        },
+        {
+          "expectedWidth": 48,
+          "width": 48,
+          "height": 32
+        },
+        {
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625
+        },
+        {
+          "expectedWidth": 96,
+          "width": 96,
+          "height": 64
+        },
+        {
+          "expectedWidth": 32,
+          "width": 32,
+          "height": 21.328125
+        },
+        {
+          "expectedWidth": 48,
+          "width": 48,
+          "height": 32
+        },
+        {
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625
+        },
+        {
+          "expectedWidth": 96,
+          "width": 96,
+          "height": 64
+        },
+        {
+          "expectedWidth": 32,
+          "width": 32,
+          "height": 21.328125
+        },
+        {
+          "expectedWidth": 48,
+          "width": 48,
+          "height": 32
+        },
+        {
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625
+        },
+        {
+          "expectedWidth": 96,
+          "width": 96,
+          "height": 64
+        },
+        {
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625
+        },
+        {
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625
+        },
+        {
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625
+        },
+        {
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625
+        },
+        {
+          "expectedWidth": 64,
+          "width": 64,
+          "height": 42.65625
+        }
+      ]
+    }
+  ]
+}

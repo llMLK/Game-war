@@ -1,0 +1,16 @@
+{
+  "source_commit": "29f34b333ff4c424e0b0a987838138a4bf697d94",
+  "source_path": "artifacts/phase-r/umayyad-390x844.png",
+  "sha256": "1db72745f8bd0ace2436597cbc76c538937dccb43421492724f6501f2d6086f6",
+  "test_script": "tests/phase-r-ui.cjs",
+  "test_method": "Fresh Playwright context; Game.newGame; synthetic legacy-save payload; screenshot after entering Umayyad campaign. No owner saves. Existing committed screenshot copied read-only.",
+  "viewport_css": [
+    390,
+    844
+  ],
+  "device_scale_factor": 1,
+  "device": "Edge mobile emulation, not a physical phone",
+  "captured_this_pilot": false,
+  "screenshot_unmodified": true,
+  "composite_warning": "Any artwork placed over this screenshot is an offline composition experiment, not a screenshot of game integration."
+}

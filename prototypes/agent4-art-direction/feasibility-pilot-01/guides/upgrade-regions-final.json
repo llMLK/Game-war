@@ -1,0 +1,136 @@
+{
+  "coordinates": "source 1536x1024 before common registration",
+  "regions": {
+    "market": [
+      [
+        608,
+        545
+      ],
+      [
+        698,
+        518
+      ],
+      [
+        800,
+        567
+      ],
+      [
+        778,
+        601
+      ],
+      [
+        750,
+        619
+      ],
+      [
+        710,
+        608
+      ],
+      [
+        674,
+        593
+      ],
+      [
+        629,
+        580
+      ]
+    ],
+    "port": [
+      [
+        1090,
+        687
+      ],
+      [
+        1155,
+        680
+      ],
+      [
+        1330,
+        732
+      ],
+      [
+        1330,
+        828
+      ],
+      [
+        1139,
+        790
+      ]
+    ],
+    "granary": [
+      [
+        874,
+        666
+      ],
+      [
+        944,
+        637
+      ],
+      [
+        1045,
+        673
+      ],
+      [
+        1043,
+        715
+      ],
+      [
+        970,
+        738
+      ],
+      [
+        883,
+        704
+      ]
+    ],
+    "defense": [
+      [
+        355,
+        581
+      ],
+      [
+        467,
+        557
+      ],
+      [
+        551,
+        603
+      ],
+      [
+        559,
+        768
+      ],
+      [
+        488,
+        808
+      ],
+      [
+        351,
+        773
+      ]
+    ]
+  },
+  "intent": "Masks limit compositing to intended facilities. Geometry outside masks is immutable.",
+  "state_mapping": {
+    "S0": [],
+    "S1": [
+      "market"
+    ],
+    "S2": [
+      "market",
+      "port"
+    ],
+    "S3": [
+      "market",
+      "port",
+      "granary"
+    ],
+    "S3-defense": [
+      "market",
+      "port",
+      "granary",
+      "defense"
+    ]
+  },
+  "revision_note": "Final bounded masks fit the generated canopy, seaward pier extension and gateway buttresses. Earlier guides preserved. Coastline and neighboring facilities remain outside edit regions."
+}

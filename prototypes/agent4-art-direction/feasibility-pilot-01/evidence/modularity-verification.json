@@ -1,0 +1,112 @@
+{
+  "method": "One fixed compact-v2 master + three bounded facility replacements + one separate gate replacement. S0/S1/S2/S3 are never independent generations.",
+  "masks": {
+    "market": {
+      "bbox": [
+        611,
+        520,
+        798,
+        619
+      ],
+      "mask": "layers/market-replacement-mask.png",
+      "donor_crop": "layers/market-replacement-crop.png"
+    },
+    "port": {
+      "bbox": [
+        1093,
+        681,
+        1331,
+        827
+      ],
+      "mask": "layers/port-replacement-mask.png",
+      "donor_crop": "layers/port-replacement-crop.png"
+    },
+    "granary": {
+      "bbox": [
+        875,
+        639,
+        1046,
+        738
+      ],
+      "mask": "layers/granary-replacement-mask.png",
+      "donor_crop": "layers/granary-replacement-crop.png"
+    },
+    "defense": {
+      "bbox": [
+        351,
+        558,
+        560,
+        808
+      ],
+      "mask": "layers/defense-replacement-mask.png",
+      "donor_crop": "layers/defense-replacement-crop.png"
+    }
+  },
+  "checks": [
+    {
+      "from": "S0",
+      "to": "S1",
+      "region": "market",
+      "changed_pixels": 10615,
+      "outside_mask_changed_pixels": 0,
+      "prior_facility_changed_pixels": {},
+      "new_coverage_pixels": 0,
+      "replaced_coverage_pixels": 10615,
+      "removed_coverage_pixels": 0,
+      "registered_outside_filter_support_changed_pixels": 0
+    },
+    {
+      "from": "S1",
+      "to": "S2",
+      "region": "port",
+      "changed_pixels": 22549,
+      "outside_mask_changed_pixels": 0,
+      "prior_facility_changed_pixels": {
+        "market": 0
+      },
+      "new_coverage_pixels": 3936,
+      "replaced_coverage_pixels": 9119,
+      "removed_coverage_pixels": 149,
+      "registered_outside_filter_support_changed_pixels": 0
+    },
+    {
+      "from": "S2",
+      "to": "S3",
+      "region": "granary",
+      "changed_pixels": 11123,
+      "outside_mask_changed_pixels": 0,
+      "prior_facility_changed_pixels": {
+        "market": 0,
+        "port": 0
+      },
+      "new_coverage_pixels": 0,
+      "replaced_coverage_pixels": 11123,
+      "removed_coverage_pixels": 0,
+      "registered_outside_filter_support_changed_pixels": 0
+    },
+    {
+      "from": "S3",
+      "to": "S3-defense",
+      "region": "defense",
+      "changed_pixels": 42534,
+      "outside_mask_changed_pixels": 0,
+      "prior_facility_changed_pixels": {
+        "market": 0,
+        "port": 0,
+        "granary": 0
+      },
+      "new_coverage_pixels": 0,
+      "replaced_coverage_pixels": 42534,
+      "removed_coverage_pixels": 0,
+      "registered_outside_filter_support_changed_pixels": 0
+    }
+  ],
+  "geometry_scope": "Pixel identity outside the edit regions is proved. Historical correctness and aesthetic continuity require visual review.",
+  "not_claimed": [
+    "Owner style approval",
+    "QA17 human success",
+    "Physical-device performance",
+    "Tiny-scale upgrade recognition"
+  ],
+  "state_meaning": "Illustrative gameplay development, not exact historical upgrade stages in 715."
+}
