@@ -1,0 +1,22 @@
+# Crusader Kings III — أشخاص لهم مصالح
+**Coverage: COMPLETE (documentary); confidence medium.** PC release2020-09-01 [CK1](https://www.paradoxinteractive.com/media/press-releases/paradox-interactive/long-live-the-king-crusader-kings-iii-now-available). Separate base launch from paid Roads to Power2024 and PC1.13.1 (2024-10-08); console/latest2026 parity is UNVERIFIED.
+
+## A — System model
+**EXTERNAL-EVIDENCE CK-C1/2:** the persistent unit of political identity is a character/dynasty; relationships, office and succession connect personal interests to territorial rule. Administrative government adds governors/families and competition inside an empire. Player chooses appointments and influence commitments; office/control/relationships constrain choices and feed back into future political leverage. Some intentions/secrets remain hidden. Monthly political simulation and generational succession make consequences outlast a single interaction. Pre-release diary values are not final rules. [CK2](https://store.steampowered.com/news/posts/?appids=1158310&enddate=1718712086&feed=steam_community_announcements)
+
+## B — Why it works
+**ANALYST-INFERENCE:** rewarding a competent governor creates both a useful administrator and an actor with resources. This generates a story when a remembered promise changes a later appointment; a random betrayal popup does not establish such a chain. Success and succession keep an empire's internal choices relevant without fabricating external armies.
+
+## C/D — Failure and counterevidence
+**EXTERNAL-EVIDENCE CK-C5:** a 2025 player discussion questions whether administrative government is simply stronger; build/difficulty are not reported. It is an exploit/balance hypothesis, not measured dominance. **CK-C6:** a launch-period review describes motivation/getting-lost problems. **CK-C4** counters with praise for modernized UI and accessibility. [balance discussion](https://www.reddit.com/r/CrusaderKings/comments/1j46b1i/is_admin_government_just_straight_up_always_better/) · [critique](https://www.gamespot.com/reviews/crusader-kings-3-review-pass-the-duchy/1900-6417551/) · [counterreview](https://www.pcgamesn.com/crusader-kings-3/review-ck3)
+**ANALYST-INFERENCE FM-SNOWBALL/FM-OPAQUE-POLITICS:** a supposedly constraining bureaucracy may amplify power if players stack its rewards while AI cannot use it equally. Too many individually trivial events can conceal the one consequential dispute.
+
+## E — Response and outcome
+**EXTERNAL-EVIDENCE CK-C3:** PC1.13.1 corrected an unintended Akritai maintenance cost, AI estate construction, and factions whose entire membership could be coerced; it also exposes coercion in the faction UI. These are specific documented corrections. They do not prove administrative balance or empire engagement fixed. **UNKNOWN** broad balance outcome; no quantitative post-patch campaign. [CK3](https://store.steampowered.com/news/posts/?appids=1158310&enddate=1728489572&feed=steam_community_announcements)
+
+## F/G — Transfer
+**PROPOSED R07, ADAPT? I/J.** Input: an existing governor, appointment history, actual pay/supply and competing office claims. Player renews, divides or withdraws a defined remit. Transition changes real access to revenue/levies plus remembered obligations; a dissatisfied faction must have a named interest and means before opposing. Feedback shows known motives, report confidence and appeal/removal choices. Anti-exploit: no farming appointment rewards through appoint-dismiss loops; preserve identity and fulfilled promises across saves. No automatic revolt for high fame, no import of Byzantine feudal/administrative institutions as proven Umayyad history.
+Mobile: summarize regional actors and exceptions; detail on demand. Campaign/save schema and AI policy make this medium-high cost. **T07/T03:** matched realms with reliable versus repeatedly broken promises; observable motive-linked reactions, no invented resources. Falsify if responses ignore interests or merely force regular loyalty taps.
+
+## H/I — Ledger and judgment
+CK1–6 provide release, design, patch, critique and player objection; access2026-10-17. Current post2025 balance not established. **الخلاصة: تكييف المصالح والذاكرة؛ رفض الولاء الغامض والأحداث المتكررة.** Objection: a governance layer can become another optimization spreadsheet and dominate war; retain a small number of consequential actors and prove agency first.
